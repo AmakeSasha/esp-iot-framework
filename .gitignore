@@ -1,0 +1,5 @@
+build/
+test_project/
+sdkconfig
+sdkconfig.old
+cmd.exe
