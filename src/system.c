@@ -95,11 +95,11 @@ void memory_monitor_task(void *pvParameters) {
         CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
 
     while (1) {
-        size_t heap_free = esp_get_free_heap_size();
         size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
         bool is_critical = largest_block < CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE;
 
         #ifdef CONFIG_EIF_LOG_ENABLE_MEM_MONITOR
+            size_t heap_free = esp_get_free_heap_size();
             CORE_LOG(I, "free=%u, largest=%u, critical=%s",
                 heap_free, largest_block, is_critical ? "YES" : "NO");
         #endif

@@ -84,9 +84,9 @@ menu "ESP IoT Framework"
     config EIF_ENABLE_TLS
         bool "Enable HTTPS (TLS/SSL) Support"
         default y
-        select HTTPD_SSL_SUPPORT if ENABLE_TLS
-        select MBEDTLS_CERTIFICATE_BUNDLE if ENABLE_TLS
-        select MBEDTLS_TLS_ENABLED if ENABLE_TLS
+        select HTTPD_SSL_SUPPORT if EIF_ENABLE_TLS
+        select MBEDTLS_CERTIFICATE_BUNDLE if EIF_ENABLE_TLS
+        select MBEDTLS_TLS_ENABLED if EIF_ENABLE_TLS
         help
             Switch the web server from insecure HTTP to encrypted HTTPS (Port 443).
 

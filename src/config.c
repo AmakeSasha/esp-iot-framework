@@ -49,6 +49,10 @@
 
 static eif_t cfg;
 
+/* ===================== */
+/*    Framework Entry    */
+/* ===================== */
+
 void eif_initialize(void) {
     const esp_partition_t *running = esp_ota_get_running_partition();
     esp_ota_img_states_t state;
@@ -125,22 +129,30 @@ void eif_initialize(void) {
 
 /* Public setters */
 
-esp_err_t eif_register_pre_reboot_callback(eif_pre_reboot_callback_t cb) {
+esp_err_t eif_register_pre_reboot_callback(eif_pre_reboot_callback_t callback) {
     CORE_LOG(D, _MSG_CALL_SETTER, __func__);
 
-    if (cb == NULL) return ESP_ERR_INVALID_ARG;
-    cfg.user_pre_reboot_cb = cb;
+    if (callback == NULL) return ESP_ERR_INVALID_ARG;
+    cfg.user_pre_reboot_cb = callback;
     return ESP_OK;
 }
+/* Framework Entry */
 
+/* ========================= */
+/*    Wi-Fi Configuration    */
+/* ========================= */
 esp_err_t eif_set_wifi_config(
-    wifi_init_config_t wifi_driver_config,
+    const wifi_init_config_t *wifi_driver_config,
     wifi_ps_type_t wifi_power_mode,
     uint32_t wifi_attempt_delay_ms
 ) {
     CORE_LOG(D, _MSG_CALL_SETTER, __func__);
 
-    cfg.wifi_driver_config = wifi_driver_config;
+    if (wifi_driver_config == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    cfg.wifi_driver_config = *wifi_driver_config;
     cfg.wifi_power_mode = wifi_power_mode;
     cfg.wifi_attempt_delay_ms = wifi_attempt_delay_ms;
 
@@ -161,9 +173,50 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 
     return ESP_OK;
 }
+/* end Wi-Fi Configuration */
+
+/* ================================== */
+/*    HTTP(S) Server Configuration    */
+/* ================================== */
+#ifdef CONFIG_EIF_ENABLE_TLS
+    esp_err_t eif_set_server_config_https(const httpd_ssl_config_t *server_config) {
+        CORE_LOG(D, _MSG_CALL_SETTER, __func__);
+
+        esp_err_t ret = ESP_OK;
+        CHECK_NOT_NULL(server_config, ESP_ERR_INVALID_ARG, goto cleanup);
+
+        memcpy(&cfg.server_config, server_config, sizeof(httpd_ssl_config_t));
+
+        if (cfg.server_config.cacert_pem) free((void *)cfg.server_config.cacert_pem);
+        cfg.server_config.cacert_pem = NULL;
+        cfg.server_config.cacert_len = 0;
+
+        if (cfg.server_config.prvtkey_pem) free((void *)cfg.server_config.prvtkey_pem);
+        cfg.server_config.prvtkey_pem = NULL;
+        cfg.server_config.prvtkey_len = 0;
+
+        #ifdef CONFIG_EIF_ENABLE_TLS
+            cfg.server_config.transport_mode = HTTPD_SSL_TRANSPORT_SECURE;
+            cfg.server_config.session_tickets = false;
+        #endif
+    cleanup:
+        return ret;
+    }
+#else
+    esp_err_t eif_set_server_config_http(const httpd_config_t *server_config) {
+        CORE_LOG(D, _MSG_CALL_SETTER, __func__);
+
+        esp_err_t ret = ESP_OK;
+        CHECK_NOT_NULL(server_config, ESP_ERR_INVALID_ARG, goto cleanup);
+
+        memcpy(&cfg.server_config, server_config, sizeof(httpd_config_t));
+    cleanup:
+        return ret;
+    }
+#endif
 
 esp_err_t eif_set_uri_handlers(
-    httpd_uri_t *uri_handlers, size_t uri_handlers_count
+    const httpd_uri_t *uri_handlers, size_t uri_handlers_count
 ) {
     CORE_LOG(D, _MSG_CALL_SETTER, __func__);
 
@@ -190,39 +243,11 @@ cleanup:
     }
     return ret;
 }
+/* end HTTP(S) Server Configuration */
 
-#ifdef CONFIG_EIF_ENABLE_TLS
-    esp_err_t eif_set_server_config_https(httpd_ssl_config_t *server_config) {
-        CORE_LOG(D, _MSG_CALL_SETTER, __func__);
-
-        esp_err_t ret = ESP_OK;
-        CHECK_NOT_NULL(server_config, ESP_ERR_INVALID_ARG, goto cleanup);
-
-        memcpy(&cfg.server_config, server_config, sizeof(httpd_ssl_config_t));
-
-        if (cfg.server_config.cacert_pem) free((void *)cfg.server_config.cacert_pem);
-        cfg.server_config.cacert_pem = NULL;
-        cfg.server_config.cacert_len = 0;
-
-        if (cfg.server_config.prvtkey_pem) free((void *)cfg.server_config.prvtkey_pem);
-        cfg.server_config.prvtkey_pem = NULL;
-        cfg.server_config.prvtkey_len = 0;
-    cleanup:
-        return ret;
-    }
-#else
-    esp_err_t eif_set_server_config_http(httpd_config_t *server_config) {
-        CORE_LOG(D, _MSG_CALL_SETTER, __func__);
-
-        esp_err_t ret = ESP_OK;
-        CHECK_NOT_NULL(server_config, ESP_ERR_INVALID_ARG, goto cleanup);
-
-        memcpy(&cfg.server_config, server_config, sizeof(httpd_config_t));
-    cleanup:
-        return ret;
-    }
-#endif
-
+/* ======================== */
+/*    mDNS Configuration    */
+/* ======================== */
 #ifdef CONFIG_EIF_ENABLE_MDNS
     #include "mdns.h"
 
@@ -238,13 +263,13 @@ cleanup:
         if (strlen(mdns_hostname) >= MDNS_HOSTNAME_PREFIX_MAX_LEN) {
             CORE_LOG(E, _ERR_INVALID_LEN, "mdns_hostname",
                 strlen(mdns_hostname), 0, MDNS_HOSTNAME_PREFIX_MAX_LEN);
-            ret = ESP_ERR_INVALID_ARG;
+            ret = ESP_ERR_INVALID_SIZE;
             goto cleanup; 
         }
         if (strlen(mdns_instance_name) >= MDNS_INSTANCE_NAME_MAX_LEN) {
             CORE_LOG(E, _ERR_INVALID_LEN, "mdns_instance_name",
                 strlen(mdns_hostname), 0, MDNS_INSTANCE_NAME_MAX_LEN);
-            ret = ESP_ERR_INVALID_ARG;
+            ret = ESP_ERR_INVALID_SIZE;
             goto cleanup; 
         }
 
@@ -276,13 +301,13 @@ cleanup:
         if (txt_records_count > MDNS_TXT_RECORDS_MAX_COUNT) {
             CORE_LOG(E, _ERR_INVALID_LEN, "txt_records_count",
                 txt_records_count, 0, MDNS_TXT_RECORDS_MAX_COUNT);
-            txt_records_count = MDNS_TXT_RECORDS_MAX_COUNT;
+            return ESP_ERR_INVALID_ARG;
         }
 
         for (size_t i = 0; i < txt_records_count; i++) {
             if (txt_records[i].key == NULL || txt_records[i].value == NULL) {
                 CORE_LOG(E, "Invalid MDNS record at index %zu (NULL detected)", i);
-                return ESP_ERR_INVALID_ARG;
+                return ESP_ERR_INVALID_SIZE;
             }
             cfg.mdns_txt_records[i] = txt_records[i];
         }
@@ -297,6 +322,9 @@ cleanup:
         return ret;
     }
 #endif
+/* end mDNS Configuration */
+
+
 
 /* Private setters */
 

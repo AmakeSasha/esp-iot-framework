@@ -56,8 +56,10 @@
             {}, GOTO_CLEANUP_ERR(), 
             "Could not set hostname to '%s'", cfg->mdns_hostname);
         
-        CHECK_ESP_ERR_T(E, mdns_instance_name_set(cfg->mdns_instance_name), {}, 
-            {}, "Failed to set instance name: %s", cfg->mdns_instance_name);
+        const char* instance_name = (strlen(cfg->mdns_instance_name) > 0) 
+            ? cfg->mdns_instance_name : cfg->mdns_hostname;
+        CHECK_ESP_ERR_T(E, mdns_instance_name_set(instance_name), 
+            {}, {}, "Failed to set instance name: %s", instance_name);
 
         bool has_txt = (cfg->mdns_txt_records_count > 0);
         CHECK_ESP_ERR_T(W, mdns_service_add(

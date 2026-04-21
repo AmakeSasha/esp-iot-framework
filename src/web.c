@@ -33,7 +33,11 @@
 #include "core_internal.h"
 #include "esp_iot_framework.h"
 
-#define TAG "HTTPS server"
+#ifdef CONFIG_EIF_ENABLE_TLS
+    #define TAG "HTTPS server"
+#else
+    #define TAG "HTTP server"
+#endif
 #define SIZE_OTA_BUFFER 1024
 
 /* --- */
@@ -958,6 +962,8 @@ void eif_server_stop(void) {
 }
 
 esp_err_t eif_server_launch(void) {
+    CORE_LOG(I, "Starting server launch");
+
     if (g_server_handle != NULL) {
         CORE_LOG(W, "There is an old server: %p, must be deleted",
             g_server_handle);
@@ -1018,7 +1024,11 @@ esp_err_t eif_server_launch(void) {
         #endif
     }
 
-    CORE_LOG(I, "HTTPS Server launched successfully");
+    #ifdef CONFIG_EIF_ENABLE_TLS
+        CORE_LOG(I, "HTTPS Server launched successfully");
+    #else
+        CORE_LOG(I, "HTTP Server launched successfully");
+    #endif
 
     return ESP_OK;
 }
