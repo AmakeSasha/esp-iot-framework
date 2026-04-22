@@ -68,13 +68,16 @@
   <iframe id="f" frameborder="0"></iframe>
   <script language="JavaScript">
     function init() {
-      var p = "main.html", s = window.location.search, f = document.getElementById('f'), b = document.getElementsByTagName('input');
+      var p = "main.html", 
+          s = window.location.search, 
+          f = document.getElementById('f'), 
+          b = document.getElementsByTagName('input');
       
       if (s.indexOf('p=') !== -1) {
         p = s.split('p=')[1].split('&')[0];
       }
 
-      f.src = p;
+      f.src = "/_/files/" + p;
 
       for (var i = 0; i < b.length; i++) {
         if (b[i].type === 'button') {

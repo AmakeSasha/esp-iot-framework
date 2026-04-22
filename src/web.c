@@ -427,7 +427,7 @@ cleanup:
     return ret;
 }
 
-static esp_err_t h_wifi_status_json(httpd_req_t *req) {
+static esp_err_t h_wifi_result_json(httpd_req_t *req) {
     esp_err_t ret = ESP_OK;
     const char *http_status = HTTPD_204;
     set_cache(req, false);
@@ -487,20 +487,6 @@ cleanup:
 #endif
 
 /* System */
-
-static esp_err_t h_sys_reboot_do(httpd_req_t *req) {
-    esp_err_t ret = ESP_OK;
-    const char *http_status = HTTPD_202;
-    set_cache(req, false);
-
-    int result = xTaskCreate(reboot_task, "reboot_task",
-        1024, NULL, configMAX_PRIORITIES - 1, NULL);
-    CHECK_CONDITION_WEB(result != pdPASS, HTTPD_500, ESP_ERR_NO_MEM,
-        _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
-cleanup:
-    req_send_http_status(req, http_status);
-    return ret;
-}
 
 static esp_err_t h_sys_info_json(httpd_req_t *req) {
     esp_err_t ret = ESP_OK;
@@ -563,7 +549,78 @@ cleanup_real:
     return ret;
 }
 
+static esp_err_t h_sys_reboot_do(httpd_req_t *req) {
+    esp_err_t ret = ESP_OK;
+    const char *http_status = HTTPD_202;
+    set_cache(req, false);
+
+    int result = xTaskCreate(reboot_task, "reboot_task",
+        1024, NULL, configMAX_PRIORITIES - 1, NULL);
+    CHECK_CONDITION_WEB(result != pdPASS, HTTPD_500, ESP_ERR_NO_MEM,
+        _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
+cleanup:
+    req_send_http_status(req, http_status);
+    return ret;
+}
+
 /* OTA */
+
+static esp_err_t h_ota_info_json(httpd_req_t *req) {
+    esp_err_t ret = ESP_OK;
+    const char *http_status = HTTPD_204; 
+    set_cache(req, false);
+
+    cJSON *root = NULL;
+    char *json_str = NULL;
+    
+    const esp_app_desc_t *app = esp_ota_get_app_description();
+    const esp_partition_t *running = esp_ota_get_running_partition();
+    
+    char sha_str[65] = {0}; 
+    esp_ota_get_app_elf_sha256(sha_str, sizeof(sha_str));
+
+    root = cJSON_CreateObject();
+    CHECK_CONDITION_WEB(!root, HTTPD_500, ESP_ERR_NO_MEM, _ERR_JSON_NO_MEM);
+
+    esp_ota_img_states_t ota_state;
+    const char* status_str = "unknown";
+    if (esp_ota_get_state_partition(running, &ota_state) == ESP_OK) {
+        switch (ota_state) {
+            case ESP_OTA_IMG_NEW:            status_str = "new"; break;
+            case ESP_OTA_IMG_PENDING_VERIFY: status_str = "pending_verify"; break;
+            case ESP_OTA_IMG_VALID:          status_str = "valid"; break;
+            case ESP_OTA_IMG_INVALID:        status_str = "invalid"; break;
+            case ESP_OTA_IMG_ABORTED:        status_str = "aborted"; break;
+            default:                         status_str = "undefined"; break;
+        }
+    } else {
+        status_str = "factory";
+    }
+
+    cJSON_AddStringToObject(root, _F_OTA_PROJECT,    app->project_name);
+    cJSON_AddStringToObject(root, _F_OTA_VER,        app->version);
+    cJSON_AddStringToObject(root, _F_OTA_BUILD_ID,   sha_str);
+    cJSON_AddStringToObject(root, _F_OTA_BUILD_DATE, app->date);
+    cJSON_AddStringToObject(root, _F_OTA_BUILD_TIME, app->time);
+    cJSON_AddStringToObject(root, _F_OTA_IDF_VER,    app->idf_ver);
+    cJSON_AddStringToObject(root, _F_OTA_GCC_VER,    __VERSION__);
+    cJSON_AddStringToObject(root, _F_OTA_TARGET,     CONFIG_IDF_TARGET); 
+    cJSON_AddStringToObject(root, _F_OTA_PARTITION,  running->label);
+    cJSON_AddStringToObject(root, _F_OTA_STATUS,     status_str);
+
+    json_str = cJSON_PrintUnformatted(root);
+    CHECK_CONDITION_WEB(!json_str, HTTPD_500, ESP_ERR_NO_MEM, _ERR_JSON_SER);
+
+    httpd_resp_set_type(req, RESP_TYPE_JSON);
+    ret = httpd_resp_sendstr(req, json_str);
+    goto cleanup_real;
+cleanup:
+    req_send_http_status(req, http_status);
+cleanup_real:
+    if (json_str) free(json_str);
+    if (root) cJSON_Delete(root);
+    return ret;
+}
 
 static bool is_ota_busy = false;
 static esp_err_t h_ota_update_do(httpd_req_t *req) {
@@ -638,63 +695,6 @@ cleanup:
     if (buf) free(buf);
     req_send_http_status(req, http_status);
     is_ota_busy = false;
-    return ret;
-}
-
-static esp_err_t h_ota_info_json(httpd_req_t *req) {
-    esp_err_t ret = ESP_OK;
-    const char *http_status = HTTPD_204; 
-    set_cache(req, false);
-
-    cJSON *root = NULL;
-    char *json_str = NULL;
-    
-    const esp_app_desc_t *app = esp_ota_get_app_description();
-    const esp_partition_t *running = esp_ota_get_running_partition();
-    
-    char sha_str[65] = {0}; 
-    esp_ota_get_app_elf_sha256(sha_str, sizeof(sha_str));
-
-    root = cJSON_CreateObject();
-    CHECK_CONDITION_WEB(!root, HTTPD_500, ESP_ERR_NO_MEM, _ERR_JSON_NO_MEM);
-
-    esp_ota_img_states_t ota_state;
-    const char* status_str = "unknown";
-    if (esp_ota_get_state_partition(running, &ota_state) == ESP_OK) {
-        switch (ota_state) {
-            case ESP_OTA_IMG_NEW:            status_str = "new"; break;
-            case ESP_OTA_IMG_PENDING_VERIFY: status_str = "pending_verify"; break;
-            case ESP_OTA_IMG_VALID:          status_str = "valid"; break;
-            case ESP_OTA_IMG_INVALID:        status_str = "invalid"; break;
-            case ESP_OTA_IMG_ABORTED:        status_str = "aborted"; break;
-            default:                         status_str = "undefined"; break;
-        }
-    } else {
-        status_str = "factory";
-    }
-
-    cJSON_AddStringToObject(root, _F_OTA_PROJECT,    app->project_name);
-    cJSON_AddStringToObject(root, _F_OTA_VER,        app->version);
-    cJSON_AddStringToObject(root, _F_OTA_BUILD_ID,   sha_str);
-    cJSON_AddStringToObject(root, _F_OTA_BUILD_DATE, app->date);
-    cJSON_AddStringToObject(root, _F_OTA_BUILD_TIME, app->time);
-    cJSON_AddStringToObject(root, _F_OTA_IDF_VER,    app->idf_ver);
-    cJSON_AddStringToObject(root, _F_OTA_GCC_VER,    __VERSION__);
-    cJSON_AddStringToObject(root, _F_OTA_TARGET,     CONFIG_IDF_TARGET); 
-    cJSON_AddStringToObject(root, _F_OTA_PARTITION,  running->label);
-    cJSON_AddStringToObject(root, _F_OTA_STATUS,     status_str);
-
-    json_str = cJSON_PrintUnformatted(root);
-    CHECK_CONDITION_WEB(!json_str, HTTPD_500, ESP_ERR_NO_MEM, _ERR_JSON_SER);
-
-    httpd_resp_set_type(req, RESP_TYPE_JSON);
-    ret = httpd_resp_sendstr(req, json_str);
-    goto cleanup_real;
-cleanup:
-    req_send_http_status(req, http_status);
-cleanup_real:
-    if (json_str) free(json_str);
-    if (root) cJSON_Delete(root);
     return ret;
 }
 
@@ -894,54 +894,54 @@ cleanup:
 
 static const httpd_uri_t handlers[] = {
     #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-        /* ------------------------ Files ------------------------ */
-        {"/_/license.txt",      HTTP_GET,  h_file_license,      NULL},
-        {"/_/index.html",       HTTP_GET,  h_file_index_html,   NULL},
-        {"/_/network.html",     HTTP_GET,  h_file_network_html, NULL},
-        {"/_/system.html",      HTTP_GET,  h_file_system_html,  NULL},
-        {"/_/style.css",        HTTP_GET,  h_file_style_css,    NULL},
-        {"/_/json2.js",         HTTP_GET,  h_file_json2_js,     NULL},
-        {"/_/api.js",           HTTP_GET,  h_file_api_js,       NULL},
+        /* ------------------------- Files ------------------------ */
+        {"/_/files/license.txt",  HTTP_GET, h_file_license,      NULL},
+        {"/_/files/index.html",   HTTP_GET, h_file_index_html,   NULL},
+        {"/_/files/network.html", HTTP_GET, h_file_network_html, NULL},
+        {"/_/files/system.html",  HTTP_GET, h_file_system_html,  NULL},
+        {"/_/files/style.css",    HTTP_GET, h_file_style_css,    NULL},
+        {"/_/files/json2.js",     HTTP_GET, h_file_json2_js,     NULL},
+        {"/_/files/api.js",       HTTP_GET, h_file_api_js,       NULL},
     #endif
 
     /* ----------------------- WiFi API ---------------------- */
     /* Get parameters of all WiFi profiles */
     {"/_/wifi/list.json",   HTTP_GET,  h_wifi_list_json,    NULL},
-    /* Getting the result from 'POST /_/wifi/check.do' */
-    {"/_/wifi/status.json", HTTP_POST, h_wifi_status_json,  NULL},
     /* Update WiFi profile under index X */
     {"/_/wifi/update.do",   HTTP_POST, h_wifi_update_do,    NULL},
-    /* Check WiFi availability using parameters under index X */
-    {"/_/wifi/check.do",    HTTP_POST, h_wifi_check_do,     NULL},
     /* Clear WiFi profile under index X */
     {"/_/wifi/clear.do",    HTTP_POST, h_wifi_clear_do,     NULL},
+    /* Check WiFi availability using parameters under index X */
+    {"/_/wifi/check.do",    HTTP_POST, h_wifi_check_do,     NULL},
+    /* Getting the result from 'POST /_/wifi/check.do' */
+    {"/_/wifi/result.json", HTTP_POST, h_wifi_result_json,  NULL},
 
     #ifdef CONFIG_EIF_ENABLE_TLS
-        /* ----------------------- TLS API ----------------------- */
+        /* ----------------------- TLS API ---------------- ---- */
         /* Generate new TLS keys and certificate */
-        {"/_/tls/recreate.do",  HTTP_POST, h_tls_recreate_do,   NULL},
+        {"/_/tls/recreate.do", HTTP_POST, h_tls_recreate_do, NULL},
     #endif
 
     /* ----------------------- System API ------------------------ */
-    /* Reboot system (ESP) */
-    {"/_/sys/reboot.do",    HTTP_POST, h_sys_reboot_do,     NULL},
     /* Getting information about the current system */
     {"/_/sys/info.json",    HTTP_GET,  h_sys_info_json,     NULL},
+    /* Reboot system (ESP) */
+    {"/_/sys/reboot.do",    HTTP_POST, h_sys_reboot_do,     NULL},
 
     /* ----------------------- OTA API ----------------------- */
-    /* Receiving new firmware */
-    {"/_/ota/update.do",    HTTP_POST, h_ota_update_do,     NULL},
     /* Getting information about the current firmware */
     {"/_/ota/info.json",    HTTP_GET,  h_ota_info_json,     NULL},
+    /* Receiving new firmware */
+    {"/_/ota/update.do",    HTTP_POST, h_ota_update_do,     NULL},
     /* Confirmation of a successful firmware update */
     {"/_/ota/confirm.do",   HTTP_POST, h_ota_action_do,     NULL},
     /* Rollback to previous firmware */
     {"/_/ota/rollback.do",  HTTP_POST, h_ota_action_do,     NULL},
 
     #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
-        /* ----------------- Admin Password API ------------------ */
+        /* ---------------- Admin Password API ---------------- */
         /* Update Admin Password (for Web GUI) */
-        {"/_/apass/update.do",  HTTP_POST, h_apass_update_do,   NULL},
+        {"/_/apass/update.do", HTTP_POST, h_apass_update_do, NULL},
     #endif
 };
 

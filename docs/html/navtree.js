@@ -1,6 +1,7 @@
 var NAVTREE =
 [
   [ "esp_iot_framework", "index.html", [
+    [ "Web API documentation", "md_web_api.html", null ],
     [ "Modules", "modules.html", "modules" ]
   ] ]
 ];

@@ -27,9 +27,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="referrer" content="no-referrer">
-  <script type="text/javascript" src="/_/json2.js"></script>
-  <script type="text/javascript" src="/_/api.js"></script>
-  <link rel="stylesheet" type="text/css" href="/_/style.css">
+  <script type="text/javascript" src="/_/files/json2.js"></script>
+  <script type="text/javascript" src="/_/files/api.js"></script>
+  <link rel="stylesheet" type="text/css" href="/_/files/style.css">
   <style>
     [data-state="view"] [id^="btnShow"], 
     [data-state="view"] [id^="btnTest"] { 
@@ -106,7 +106,7 @@
     var countTestButtons = 0;
 
     API.getProfiles =   function(cb)    { API._sendJson("GET",  "/_/wifi/list.json",   null, cb); };
-    API.getStatus =     function(cb, d) { API._sendJson("POST", "/_/wifi/status.json",    d, cb); };
+    API.getResult =     function(cb, d) { API._sendJson("POST", "/_/wifi/result.json",    d, cb); };
     API.updateProfile = function(cb, d) { API._sendJson("POST", "/_/wifi/update.do",      d, cb); };
     API.clearProfile =  function(cb, d) { API._sendJson("POST", "/_/wifi/clear.do",       d, cb); };
     API.checkProfile =  function(cb, d) { API._sendJson("POST", "/_/wifi/check.do",       d, cb); };
@@ -154,7 +154,7 @@
       
       API.sendWithBtn(btn, API.checkProfile, { profile_index: slot }, function() {
         var i = setInterval(function() {
-          API.getStatus(function(err, res) {
+          API.getResult(function(err, res) {
             if (!err && res && typeof res.result !== 'undefined'&& res.rssi !== 'undefined') {
               clearInterval(i);
               updateStatusTestButton(slot, (res.result === true), res);
