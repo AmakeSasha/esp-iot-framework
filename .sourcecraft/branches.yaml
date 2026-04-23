@@ -1,0 +1,19 @@
+branch_protection:
+  policies:
+    - target: default_branch
+      message: "Force push and deletion of the default branch are prohibited. Regular pushes are allowed."
+      rules:
+        - prevent_force_push
+        - prevent_deletion
+
+    - target: branch
+      matches: ["**", "!feature/**", "!bugfix/**", "!hotfix/**", "!chore/**", "!docs/**", "!refactor/**", "!release/**"]
+      message: "Invalid branch name. Allowed prefixes: feature/, bugfix/, hotfix/, chore/, docs/, refactor/, release/"
+      rules:
+        - prevent_creation
+
+    - target: tag
+      matches: ["**", "!v*"]
+      message: "Manual tag creation is restricted. Use version tags only, starting with 'v' (e.g., v1.0.0)."
+      rules:
+        - prevent_creation
