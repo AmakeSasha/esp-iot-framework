@@ -73,11 +73,19 @@ else()
     message(STATUS "Kernel component 'mDNS' excluded.")
 endif()
 
+set(extra_includes "")
+foreach(lib ${requires_components})
+    idf_component_get_property(lib_includes ${lib} COMPONENT_OVERALL_INCLUDE_DIRS)
+    if(lib_includes)
+        list(APPEND extra_includes ${lib_includes})
+    endif()
+endforeach()
+
 set(COMPONENT_NAME esp-iot-framework)
 idf_component_register(
     SRCS ${code_files}
     INCLUDE_DIRS "include"
-    PRIV_INCLUDE_DIRS "src"
+    PRIV_INCLUDE_DIRS "src" ${extra_includes}
     PRIV_REQUIRES ${requires_components}
     EMBED_FILES ${embed_files}
 )
@@ -85,28 +93,11 @@ idf_component_register(
 if(TARGET __idf_esp-iot-framework)
     if(CONFIG_EIF_ENABLE_TLS)
         target_link_libraries(__idf_esp-iot-framework PRIVATE 
-            idf::mbedtls
-            idf::esp_https_server
-            idf::esp_https_ota
-        )
-        foreach(lib mbedtls esp_https_server esp_https_ota)
-            idf_component_get_property(lib_dir ${lib} COMPONENT_DIR)
-            target_include_directories(__idf_esp-iot-framework PRIVATE "${lib_dir}/include")
-        endforeach()
+            idf::mbedtls idf::esp_https_server idf::esp_https_ota)
     else()
         target_link_libraries(__idf_esp-iot-framework PRIVATE idf::esp_http_server)
-        idf_component_get_property(http_dir esp_http_server COMPONENT_DIR)
-        target_include_directories(__idf_esp-iot-framework PRIVATE "${http_dir}/include")
     endif()
-
     if(CONFIG_EIF_ENABLE_MDNS)
         target_link_libraries(__idf_esp-iot-framework PRIVATE idf::mdns)
-        idf_component_get_property(mdns_dir mdns COMPONENT_DIR)
-        target_include_directories(__idf_esp-iot-framework PRIVATE "${mdns_dir}/include")
     endif()
-
-    foreach(lib esp_wifi nvs_flash json)
-        idf_component_get_property(lib_dir ${lib} COMPONENT_DIR)
-        target_include_directories(__idf_esp-iot-framework PRIVATE "${lib_dir}/include")
-    endforeach()
 endif()
