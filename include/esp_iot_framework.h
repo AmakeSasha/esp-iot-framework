@@ -516,7 +516,7 @@ esp_err_t eif_wifi_initialize(void);
  * #include "esp_iot_framework.h"
  * 
  * esp_err_t get_handler(httpd_req_t *req) {
- *     const char *resp = "Hello from ESP IoT Framework!";
+ *     const char *resp = "Hello from esp_iot_framework!";
  *     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
  *     return ESP_OK;
  * }

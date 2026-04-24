@@ -20,13 +20,15 @@
  */
 
 #include "esp_log.h"
+#include "sdkconfig.h"
 #include "esp_ota_ops.h"
 
 #include "macros.h"
 #include "core_internal.h"
 
-#define CRITICAL_BLOCK_SIZE 16384
-#define CHECK_INTERVAL_MS 60000 
+#if CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE < (CONFIG_EIF_REBOOT_TASK_STACK_SIZE * 8)
+    #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be twice as large as EIF_REBOOT_TASK_STACK_SIZE!"
+#endif
 
 #define TAG "reboot_task"
 void system_reboot_prepare(void) {
@@ -116,7 +118,7 @@ void memory_monitor_task(void *pvParameters) {
                 CORE_LOG(E, "CRITICAL MEMORY! Initiating reboot the system...");
 
                 int result = xTaskCreate(reboot_task, "reboot_task",
-                    1024, NULL, configMAX_PRIORITIES - 1, NULL);
+                    CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
                 if (result != pdPASS) esp_restart();
 
                 vTaskDelete(NULL); 

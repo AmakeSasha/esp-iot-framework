@@ -64,7 +64,7 @@ void tls_recreate_task(void* arg) {
     CORE_LOG(I, _MSG_RESTARTING);
     
     int result = xTaskCreate(reboot_task, "reboot_task",
-        1024, NULL, configMAX_PRIORITIES - 1, NULL);
+        CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     if (result != pdPASS) {
         CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
     }

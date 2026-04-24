@@ -12,4 +12,5 @@ If you use this, copy `sdkconfig.defaults` and paste it into your project!
 See the site: https://amakesasha.sourcecraft.site/esp-iot-framework/
 
 # License
-This project is licensed under the Apache [2.0 License](./LICENSE).
+
+This project is licensed under the [Apache 2.0 License](./LICENSE), except for the contents of the [`/examples`](./examples) directory, which are dedicated to the `Public Domain` (or `CC0 1.0` licensed, at your option).

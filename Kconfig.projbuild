@@ -174,14 +174,20 @@ menu "ESP IoT Framework"
     menu "Memory Monitor Settings"
         config EIF_MEM_MONITOR_CRITICAL_SIZE
             int "The minimum allowed size of the largest block"
-            range 1024 65536
+            range 2048 65536
             default 8192
             help
                 Minimum free block size that must be available for stable operation. 
                 If the largest free block is smaller than this value, the system will reboot.
 
-                Note: Setting too low may cause missed fragmentation issues; too high may
-                lead to unnecessary reboots.
+                WARNING:  To ensure the reboot task can be created, this value 
+                MUST be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE 
+                (which is measured in 4-byte words). 
+
+                Formula: CRITICAL_SIZE >= STACK_SIZE * 4 * 2.
+
+                Note: Setting too low may cause missed fragmentation issues; too 
+                high may lead to unnecessary reboots.
 
         config EIF_MEM_MONITOR_CHECK_INTERVAL
             int "Memory check interval (ms)"
@@ -212,5 +218,21 @@ menu "ESP IoT Framework"
                 The system will only trigger a reboot if the largest free memory 
                 block remains below the critical threshold (EIF_MEM_MONITOR_CRITICAL_SIZE) 
                 for the specified number of consecutive checks.
+
+        config EIF_REBOOT_TASK_STACK_SIZE
+            int "Reboot task stack size (words - 4 bytes)"
+            range 1024 16384
+            default 1024
+            help
+                Stack size for the task that manages the system shutdown sequence.
+                
+                The task stops the Wi-Fi driver halts the HTTP server, and
+                executes the user_pre_reboot_cb' before calling esp_restart().
+                Increase this value if 'user_pre_reboot_cb' performs stack-heavy
+                operations like NVS writes or complex logging.
+
+                Note: Defined in 4-byte words. EIF_MEM_MONITOR_CRITICAL_SIZE 
+                must be at least twice this value (in bytes) to ensure the task
+                can be created in low-memory conditions.
     endmenu
 endmenu

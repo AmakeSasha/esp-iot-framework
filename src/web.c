@@ -38,7 +38,6 @@
 #else
     #define TAG "HTTP server"
 #endif
-#define SIZE_OTA_BUFFER 1024
 
 /* --- */
 
@@ -187,7 +186,7 @@ static esp_err_t req_json_get_profile_index(
     cJSON *value = cJSON_GetObjectItemCaseSensitive(
         root, _F_WIFI_PROF_IDX);
     CHECK_CONDITION_WEB(
-        !value || !cJSON_IsNumber(value) || !value->valueint,
+        !value || !cJSON_IsNumber(value) || value->valueint < 0,
         HTTPD_400, ESP_ERR_INVALID_ARG, _ERR_JSON_MISSING, _F_WIFI_PROF_IDX);
 
     uint8_t result_index = (uint8_t)value->valueint;
@@ -411,7 +410,7 @@ static esp_err_t h_wifi_check_do(httpd_req_t *req) {
         {}, GOTO_CLEANUP_ERR(), _ERR_NOT_FOUND_FIELD, _F_WIFI_PROF_IDX);
 
     if (xTaskCreate(
-        wifi_test_task, "wf_test", 4096, (void *)(uintptr_t)index, 5, NULL
+        wifi_test_task, "wf_test", 1024 * 4, (void *)(uintptr_t)index, 5, NULL
     ) != pdPASS) {
         CORE_LOG(E, _ERR_SPAWN_TASK, "wifi_test_task", esp_get_free_heap_size());
         http_status = HTTPD_500;
@@ -555,7 +554,7 @@ static esp_err_t h_sys_reboot_do(httpd_req_t *req) {
     set_cache(req, false);
 
     int result = xTaskCreate(reboot_task, "reboot_task",
-        1024, NULL, configMAX_PRIORITIES - 1, NULL);
+        CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     CHECK_CONDITION_WEB(result != pdPASS, HTTPD_500, ESP_ERR_NO_MEM,
         _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
 cleanup:
@@ -650,8 +649,9 @@ static esp_err_t h_ota_update_do(httpd_req_t *req) {
     size_t remaining = req->content_len;
     
     while (remaining > 0) {
-        int received = httpd_req_recv(req,
-            buf, (remaining < 1024) ? remaining : 1024);
+        bool flag = remaining < CONFIG_EIF_WEB_SIZE_OTA_BUFFER;
+        int received = httpd_req_recv(req, buf, 
+            flag ? remaining : CONFIG_EIF_WEB_SIZE_OTA_BUFFER);
         if (received <= 0) {
             if (received == HTTPD_SOCK_ERR_TIMEOUT) continue;
             ret = ESP_FAIL; goto cleanup;
@@ -683,7 +683,7 @@ static esp_err_t h_ota_update_do(httpd_req_t *req) {
     
     if (buf) free(buf);
     int result = xTaskCreate(reboot_task, "reboot_task",
-        1024, NULL, configMAX_PRIORITIES - 1, NULL);
+        CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     if (result != pdPASS) {
         CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
         is_ota_busy = false;

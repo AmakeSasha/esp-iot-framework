@@ -1,5 +1,6 @@
 build/
 test_project/
 sdkconfig
+dependencies.lock
 sdkconfig.old
 cmd.exe

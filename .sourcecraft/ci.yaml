@@ -1,0 +1,40 @@
+on:
+  pull_request:
+    - workflows: [test_build]
+      filter:
+        target_branches: ["main"]
+        paths: ["examples/**", "include/**", "src/**", "CMakeLists.txt", "sdkconfig.defaults"]
+  push:
+    - workflows: [test_build]
+      filter:
+        branches: ["main"]
+        tags: ["v*"]
+        paths: ["examples/**", "include/**", "src/**", "CMakeLists.txt", "sdkconfig.defaults"]
+
+workflows:
+  test_build:
+    tasks:
+      - name: test_build_v4_4_6
+        matrix:
+          TARGET: [esp32, esp32s2, esp32s3, esp32c3]
+          EXAMPLE: [hello_world, hello_world_cpp]
+        cubes:
+          - name: idf_v4_4_6
+            image: espressif/idf:release-v4.4.6
+            script:
+              - cd examples/${EXAMPLE}
+              - idf.py set-target ${TARGET}
+              - idf.py build
+
+      - name: test_build_v5_1
+        matrix:
+          TARGET: [esp32, esp32s3, esp32c3, esp32c6]
+          EXAMPLE: [hello_world, hello_world_cpp]
+        cubes:
+          - name: idf_v4_4_6
+            image: espressif/idf:release-v5.1
+            script:
+              - cd examples/${EXAMPLE}
+              - idf.py set-target ${TARGET}
+              - idf.py build
+            failure: ignore 
