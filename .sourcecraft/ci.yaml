@@ -8,8 +8,9 @@ on:
     - workflows: [test_build]
       filter:
         branches: ["main"]
+    - workflows: [test_build]
+      filter:
         tags: ["v*"]
-        paths: ["examples/**", "include/**", "src/**", "CMakeLists.txt", "sdkconfig.defaults"]
 
 workflows:
   test_build:
