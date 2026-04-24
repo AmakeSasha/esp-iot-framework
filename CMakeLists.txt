@@ -80,15 +80,17 @@ idf_component_register(
     EMBED_FILES ${embed_files}
 )
 
-if(CONFIG_EIF_ENABLE_TLS)
-    target_link_libraries(__idf_esp-iot-framework PRIVATE 
-        idf::mbedtls
-        idf::esp_https_server
-        idf::esp_https_ota
-    )
-else()
-    target_link_libraries(__idf_esp-iot-framework PRIVATE idf::esp_http_server)
-endif()
-if(CONFIG_EIF_ENABLE_MDNS)
-    target_link_libraries(__idf_esp-iot-framework PRIVATE idf::mdns)
+if(TARGET __idf_esp-iot-framework)
+    if(CONFIG_EIF_ENABLE_TLS)
+        target_link_libraries(__idf_esp-iot-framework PRIVATE 
+            idf::mbedtls
+            idf::esp_https_server
+            idf::esp_https_ota
+        )
+    else()
+        target_link_libraries(__idf_esp-iot-framework PRIVATE idf::esp_http_server)
+    endif()
+    if(CONFIG_EIF_ENABLE_MDNS)
+        target_link_libraries(__idf_esp-iot-framework PRIVATE idf::mdns)
+    endif()
 endif()
