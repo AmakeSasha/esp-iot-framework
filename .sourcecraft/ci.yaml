@@ -15,43 +15,29 @@ on:
 workflows:
   test_build:
     tasks:
-      - name: build_esp32
+      - name: build_xtensa
         cubes:
-          - name: idf
+          - name: esp32
             image: espressif/idf:release-v4.4.6
-            script:
-              - cd examples/hello_world
-              - idf.py set-target esp32
-              - idf.py build
-
-      - name: build_esp32s3
-        cubes:
-          - name: idf
+            script: ["cd examples/hello_world && idf.py set-target esp32 && idf.py build"]
+          - name: esp32s3
             image: espressif/idf:release-v4.4.6
-            script:
-              - cd examples/hello_world
-              - idf.py set-target esp32s3
-              - idf.py build
+            script: ["cd examples/hello_world && idf.py set-target esp32s3 && idf.py build"]
 
-      - name: build_esp32c3
+      - name: build_riscv
         cubes:
-          - name: idf
+          - name: esp32c3
             image: espressif/idf:release-v4.4.6
-            script:
-              - cd examples/hello_world
-              - idf.py set-target esp32c3
-              - idf.py build
-
-      - name: build_esp32c6
-        cubes:
-          - name: idf
+            script: ["cd examples/hello_world && idf.py set-target esp32c3 && idf.py build"]
+          - name: esp32c6
             image: espressif/idf:release-v5.1
-            script:
-              - cd examples/hello_world && idf.py set-target esp32c6 && idf.py build || true
+            script: ["cd examples/hello_world && idf.py set-target esp32c6 && idf.py build"]
 
-      - name: build_s3_cpp
+      - name: build_cpp_tests
         cubes:
-          - name: idf
+          - name: s3_cpp_xtensa
             image: espressif/idf:release-v4.4.6
-            script:
-              - cd examples/hello_world_cpp && idf.py set-target esp32s3 && idf.py build || true
+            script: ["cd examples/hello_world_cpp && idf.py set-target esp32s3 && idf.py build"]
+          - name: c3_cpp_riscv
+            image: espressif/idf:release-v5.1
+            script: ["cd examples/hello_world_cpp && idf.py set-target esp32c3 && idf.py build"]
