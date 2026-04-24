@@ -20,14 +20,20 @@
  */
 
 #include "cJSON.h"
+#include "esp_mac.h"
 #include "esp_log.h"
+#include "esp_flash.h"
 #include "sdkconfig.h"
 #include "esp_ota_ops.h"
+#include "esp_chip_info.h"
+#include "esp_app_format.h"
 #ifdef CONFIG_EIF_ENABLE_TLS
     #include "esp_https_server.h"
 #else
     #include "esp_http_server.h"
 #endif
+
+
 
 #include "macros.h"
 #include "core_internal.h"
@@ -51,7 +57,7 @@
 #define _ERR_NVS_SAVE_APASS  "NVS save failed in Admin Password"
 #define _ERR_ALLOCATE        "Failed to allocate %d bytes for '%s'"
 #define _ERR_BASE64_ENCODE   "Base64 encode failed! Err: %d, Len: %u"
-#define _ERR_SPAWN_TASK      "Failed to spawn [%s]. Free heap: %u bytes"
+#define _ERR_SPAWN_TASK      "Failed to spawn [%s]. Free heap: %zu bytes"
 #define _ERR_INVALID_IDX     "Invalid '%s' index: %u (allowed range: %u-%u)"
 #define _ERR_INVALID_LEN     "Invalid '%s' length: %u (allowed range: %u-%u)"
 
@@ -426,7 +432,8 @@ static esp_err_t h_wifi_check_do(httpd_req_t *req) {
     if (xTaskCreate(
         wifi_test_task, "wf_test", 1024 * 4, (void *)(uintptr_t)index, 5, NULL
     ) != pdPASS) {
-        CORE_LOG(E, _ERR_SPAWN_TASK, "wifi_test_task", esp_get_free_heap_size());
+        CORE_LOG(E, _ERR_SPAWN_TASK, "wifi_test_task", 
+            (size_t)esp_get_free_heap_size());
         http_status = HTTPD_500;
         ret = ESP_ERR_NO_MEM;
     }
@@ -492,7 +499,8 @@ cleanup:
 
         int result = xTaskCreate(tls_recreate_task, "tls_gen", 1024 * 10, NULL, 5, NULL);
         CHECK_CONDITION_WEB(result != pdPASS, HTTPD_500, ESP_ERR_NO_MEM,
-            _ERR_SPAWN_TASK, "tls_recreate_task", esp_get_free_heap_size());
+            _ERR_SPAWN_TASK, "tls_recreate_task", 
+                (size_t)esp_get_free_heap_size());
     cleanup:
         req_send_http_status(req, http_status);
         return ret;
@@ -570,7 +578,7 @@ static esp_err_t h_sys_reboot_do(httpd_req_t *req) {
     int result = xTaskCreate(reboot_task, "reboot_task",
         CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     CHECK_CONDITION_WEB(result != pdPASS, HTTPD_500, ESP_ERR_NO_MEM,
-        _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
+        _ERR_SPAWN_TASK, "reboot_task", (size_t)esp_get_free_heap_size());
 cleanup:
     req_send_http_status(req, http_status);
     return ret;
@@ -699,7 +707,8 @@ static esp_err_t h_ota_update_do(httpd_req_t *req) {
     int result = xTaskCreate(reboot_task, "reboot_task",
         CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     if (result != pdPASS) {
-        CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
+        CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", 
+            (size_t)esp_get_free_heap_size());
         is_ota_busy = false;
         ret = ESP_ERR_NO_MEM;
     }
@@ -724,8 +733,8 @@ static esp_err_t h_ota_action_do(httpd_req_t *req) {
         int result = xTaskCreate(rollback_and_reboot_task, 
             "rollback_and_reboot_task", 4096, NULL, 5, NULL);
         if (result != pdPASS) {
-            CORE_LOG(E, _ERR_SPAWN_TASK, 
-                "rollback_and_reboot_task", esp_get_free_heap_size());
+            CORE_LOG(E, _ERR_SPAWN_TASK, "rollback_and_reboot_task", 
+                (size_t)esp_get_free_heap_size());
             ret = ESP_ERR_NO_MEM;
         }
     } else {
