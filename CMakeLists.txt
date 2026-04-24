@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
- if(CONFIG_EIF_ENABLE_WEB_ADMIN_GUI)
+if(CONFIG_EIF_ENABLE_WEB_ADMIN_GUI)
     set(embed_files
         "web/api.js.gz"
         "web/LICENSE.gz"
@@ -46,6 +46,7 @@ set(requires_components
     nvs_flash
     app_update
 )
+
 set(code_files
     "src/nvs.c"
     "src/web.c"
@@ -72,6 +73,7 @@ else()
     message(STATUS "Kernel component 'mDNS' excluded.")
 endif()
 
+set(COMPONENT_NAME esp-iot-framework)
 idf_component_register(
     SRCS ${code_files}
     INCLUDE_DIRS "include"
@@ -87,10 +89,24 @@ if(TARGET __idf_esp-iot-framework)
             idf::esp_https_server
             idf::esp_https_ota
         )
+        foreach(lib mbedtls esp_https_server esp_https_ota)
+            idf_component_get_property(lib_dir ${lib} COMPONENT_DIR)
+            target_include_directories(__idf_esp-iot-framework PRIVATE "${lib_dir}/include")
+        endforeach()
     else()
         target_link_libraries(__idf_esp-iot-framework PRIVATE idf::esp_http_server)
+        idf_component_get_property(http_dir esp_http_server COMPONENT_DIR)
+        target_include_directories(__idf_esp-iot-framework PRIVATE "${http_dir}/include")
     endif()
+
     if(CONFIG_EIF_ENABLE_MDNS)
         target_link_libraries(__idf_esp-iot-framework PRIVATE idf::mdns)
+        idf_component_get_property(mdns_dir mdns COMPONENT_DIR)
+        target_include_directories(__idf_esp-iot-framework PRIVATE "${mdns_dir}/include")
     endif()
+
+    foreach(lib esp_wifi nvs_flash json)
+        idf_component_get_property(lib_dir ${lib} COMPONENT_DIR)
+        target_include_directories(__idf_esp-iot-framework PRIVATE "${lib_dir}/include")
+    endforeach()
 endif()
