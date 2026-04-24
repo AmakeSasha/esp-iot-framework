@@ -20,6 +20,7 @@
  */
 
 #include "cJSON.h"
+#include "esp_clk.h"
 #include "esp_log.h"
 #include "sdkconfig.h"
 #include "esp_ota_ops.h"
@@ -515,7 +516,7 @@ static esp_err_t h_sys_info_json(httpd_req_t *req) {
     cJSON_AddNumberToObject(root, _F_SYS_CORES,        chip.cores);
     cJSON_AddNumberToObject(root, _F_SYS_CHIP_REV,     chip.revision);
     cJSON_AddNumberToObject(root, _F_SYS_FLASH_SIZE,   flash_size / (1024 * 1024));
-    cJSON_AddNumberToObject(root, _F_SYS_CPU_FREQ,     CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ);
+    cJSON_AddNumberToObject(root, _F_SYS_CPU_FREQ,     esp_clk_cpu_freq());
     cJSON_AddStringToObject(root, _F_SYS_CHIP_MODEL,   CONFIG_IDF_TARGET);
     cJSON_AddNumberToObject(root, _F_SYS_RESET_REASON, esp_rom_get_reset_reason(0));
 

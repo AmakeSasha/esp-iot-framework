@@ -1,13 +1,5 @@
 on:
-  pull_request:
-    - workflows: [test_build]
-      filter:
-        target_branches: ["main"]
-        paths: ["examples/**", "include/**", "src/**", "CMakeLists.txt", "sdkconfig.defaults"]
   push:
-    - workflows: [test_build]
-      filter:
-        branches: ["main"]
     - workflows: [test_build]
       filter:
         tags: ["v*"]
@@ -20,6 +12,9 @@ workflows:
           - name: esp32
             image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world && idf.py set-target esp32 && idf.py build"]
+          - name: esp32s2
+            image: espressif/idf:v4.4.6
+            script: ["cd examples/hello_world && idf.py set-target esp32s2 && idf.py build"]
           - name: esp32s3
             image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world && idf.py set-target esp32s3 && idf.py build"]
