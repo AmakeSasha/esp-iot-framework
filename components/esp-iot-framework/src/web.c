@@ -20,7 +20,6 @@
  */
 
 #include "cJSON.h"
-#include "esp_clk.h"
 #include "esp_log.h"
 #include "sdkconfig.h"
 #include "esp_ota_ops.h"
@@ -95,6 +94,20 @@
 #define HTTPD_304 "304 Not Modified"
 #define HTTPD_401 "401 Unauthorized"
 #define HTTPD_409 "409 Conflict"
+
+#if defined(CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ)
+    #define EIF_CPU_FREQ_MHZ CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ
+#elif defined(CONFIG_ESP32S2_DEFAULT_CPU_FREQ_MHZ)
+    #define EIF_CPU_FREQ_MHZ CONFIG_ESP32S2_DEFAULT_CPU_FREQ_MHZ
+#elif defined(CONFIG_ESP32S3_DEFAULT_CPU_FREQ_MHZ)
+    #define EIF_CPU_FREQ_MHZ CONFIG_ESP32S3_DEFAULT_CPU_FREQ_MHZ
+#elif defined(CONFIG_ESP32C3_DEFAULT_CPU_FREQ_MHZ)
+    #define EIF_CPU_FREQ_MHZ CONFIG_ESP32C3_DEFAULT_CPU_FREQ_MHZ
+#elif defined(CONFIG_ESP32C6_DEFAULT_CPU_FREQ_MHZ)
+    #define EIF_CPU_FREQ_MHZ CONFIG_ESP32C6_DEFAULT_CPU_FREQ_MHZ
+#else
+    #define EIF_CPU_FREQ_MHZ 160
+#endif
 
 /* Send */
 
@@ -516,7 +529,7 @@ static esp_err_t h_sys_info_json(httpd_req_t *req) {
     cJSON_AddNumberToObject(root, _F_SYS_CORES,        chip.cores);
     cJSON_AddNumberToObject(root, _F_SYS_CHIP_REV,     chip.revision);
     cJSON_AddNumberToObject(root, _F_SYS_FLASH_SIZE,   flash_size / (1024 * 1024));
-    cJSON_AddNumberToObject(root, _F_SYS_CPU_FREQ,     esp_clk_cpu_freq());
+    cJSON_AddNumberToObject(root, _F_SYS_CPU_FREQ,     EIF_CPU_FREQ_MHZ);
     cJSON_AddStringToObject(root, _F_SYS_CHIP_MODEL,   CONFIG_IDF_TARGET);
     cJSON_AddNumberToObject(root, _F_SYS_RESET_REASON, esp_rom_get_reset_reason(0));
 

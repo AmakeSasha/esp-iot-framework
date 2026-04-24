@@ -150,7 +150,7 @@ void wifi_test_task(void *pvParameters) {
     const eif_t *cfg = eif_get();
     uint8_t origin_index = cfg->wifi_profile_index;
 
-    CORE_LOG(I, "Starting WiFi test for param #%zu", new_index);
+    CORE_LOG(I, "Starting WiFi test for param #%zu", (size_t)new_index);
 
     eif_wifi_handler_stop_set(true);
     CHECK_ESP_ERR_T(E, esp_wifi_disconnect(), 
@@ -161,9 +161,9 @@ void wifi_test_task(void *pvParameters) {
 
     CHECK_ESP_ERR_T(E, wifi_set_config_from_profile(new_index), 
         {}, goto cleanup, 
-        "Applying configuration for param #%zu failed", new_index);
+        "Applying configuration for param #%zu failed", (size_t)new_index);
     CHECK_ESP_ERR_T(E, esp_wifi_connect(), {}, goto cleanup, 
-        "Initiating connection to param #%zu failed", new_index);
+        "Initiating connection to param #%zu failed", (size_t)new_index);
 
     for (int i = 0; i < 30; i++) {
         vTaskDelay(pdMS_TO_TICKS(500));
