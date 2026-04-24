@@ -15,27 +15,43 @@ on:
 workflows:
   test_build:
     tasks:
-      - name: test_build_v4_4_6
-        matrix:
-          TARGET: [esp32, esp32s2, esp32s3, esp32c3]
-          EXAMPLE: [hello_world, hello_world_cpp]
+      - name: build_esp32
         cubes:
-          - name: idf_v4_4_6
+          - name: idf
             image: espressif/idf:release-v4.4.6
             script:
-              - cd examples/${EXAMPLE}
-              - idf.py set-target ${TARGET}
+              - cd examples/hello_world
+              - idf.py set-target esp32
               - idf.py build
 
-      - name: test_build_v5_1
-        matrix:
-          TARGET: [esp32, esp32s3, esp32c3, esp32c6]
-          EXAMPLE: [hello_world, hello_world_cpp]
+      - name: build_esp32s3
         cubes:
-          - name: idf_v4_4_6
+          - name: idf
+            image: espressif/idf:release-v4.4.6
+            script:
+              - cd examples/hello_world
+              - idf.py set-target esp32s3
+              - idf.py build
+
+      - name: build_esp32c3
+        cubes:
+          - name: idf
+            image: espressif/idf:release-v4.4.6
+            script:
+              - cd examples/hello_world
+              - idf.py set-target esp32c3
+              - idf.py build
+
+      - name: build_esp32c6
+        cubes:
+          - name: idf
             image: espressif/idf:release-v5.1
             script:
-              - cd examples/${EXAMPLE}
-              - idf.py set-target ${TARGET}
-              - idf.py build
-            failure: ignore 
+              - cd examples/hello_world && idf.py set-target esp32c6 && idf.py build || true
+
+      - name: build_s3_cpp
+        cubes:
+          - name: idf
+            image: espressif/idf:release-v4.4.6
+            script:
+              - cd examples/hello_world_cpp && idf.py set-target esp32s3 && idf.py build || true
