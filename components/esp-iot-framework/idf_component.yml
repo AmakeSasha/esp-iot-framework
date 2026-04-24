@@ -8,4 +8,4 @@ targets:
   - esp32c3
   - esp32c6
 dependencies:
-  idf: ">=4.4.0,<5.0.0"
+  idf: ">=4.4.0,<=5.1.2"
