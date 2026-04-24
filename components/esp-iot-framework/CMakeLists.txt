@@ -50,11 +50,9 @@ set(requires_components
 set(code_files
     "src/nvs.c"
     "src/web.c"
-    "src/macros.h"
     "src/system.c"
     "src/config.c"
     "src/network.c"
-    "src/core_internal.h"
 )
 
 if(CONFIG_EIF_ENABLE_TLS)
@@ -73,31 +71,24 @@ else()
     message(STATUS "Kernel component 'mDNS' excluded.")
 endif()
 
-set(extra_includes "")
-foreach(lib ${requires_components})
-    idf_component_get_property(lib_includes ${lib} COMPONENT_OVERALL_INCLUDE_DIRS)
-    if(lib_includes)
-        list(APPEND extra_includes ${lib_includes})
-    endif()
-endforeach()
-
 set(COMPONENT_NAME esp-iot-framework)
 idf_component_register(
     SRCS ${code_files}
     INCLUDE_DIRS "include"
-    PRIV_INCLUDE_DIRS "src" ${extra_includes}
+    PRIV_INCLUDE_DIRS "src" "private_include"
     PRIV_REQUIRES ${requires_components}
     EMBED_FILES ${embed_files}
 )
 
-if(TARGET __idf_esp-iot-framework)
+set(comp_target "__idf_${COMPONENT_NAME}")
+if(TARGET ${comp_target})
     if(CONFIG_EIF_ENABLE_TLS)
-        target_link_libraries(__idf_esp-iot-framework PRIVATE 
+        target_link_libraries(${comp_target} PRIVATE 
             idf::mbedtls idf::esp_https_server idf::esp_https_ota)
     else()
-        target_link_libraries(__idf_esp-iot-framework PRIVATE idf::esp_http_server)
+        target_link_libraries(${comp_target} PRIVATE idf::esp_http_server)
     endif()
     if(CONFIG_EIF_ENABLE_MDNS)
-        target_link_libraries(__idf_esp-iot-framework PRIVATE idf::mdns)
+        target_link_libraries(${comp_target} PRIVATE idf::mdns)
     endif()
 endif()
