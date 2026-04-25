@@ -6,46 +6,33 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  build_xtensa:
+  build_legacy:
+    name: Build on IDF v4.4.6
     runs-on: ubuntu-latest
     container: espressif/idf:v4.4.6
     steps:
-      - name: build tasks
+      - name: Build idf v4.4.6
         run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git .
+          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git . || git clone --depth 1 https://gitverse.ru{{ github.repository }}.git .
           . $IDF_PATH/export.sh
-          cd examples/hello_world && idf.py set-target esp32 && idf.py build
-          cd /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-          cd examples/hello_world && idf.py set-target esp32s2 && idf.py build
-          cd /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-          cd examples/hello_world && idf.py set-target esp32s3 && idf.py build
+          cd examples/hello_world
+          idf.py set-target esp32 && idf.py build
+          idf.py set-target esp32s2 && idf.py build
+          idf.py set-target esp32s3 && idf.py build
+          idf.py set-target esp32c3 && idf.py build
+          cd ../hello_world_cpp
+          idf.py set-target esp32s3 && idf.py build
 
-  build_riscv:
+  build_modern:
+    name: Build on IDF v5.1
     runs-on: ubuntu-latest
+    container: espressif/idf:v5.1
     steps:
-      - name: esp32c3
-        uses: docker://espressif/idf:v4.4.6
+      - name: Build idf v5.1
         run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git .
+          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git . || git clone --depth 1 https://gitverse.ru{{ github.repository }}.git .
           . $IDF_PATH/export.sh
-          cd examples/hello_world && idf.py set-target esp32c3 && idf.py build
-      - name: esp32c6
-        uses: docker://espressif/idf:v5.1
-        run: |
-          . $IDF_PATH/export.sh
-          cd examples/hello_world && idf.py set-target esp32c6 && idf.py build
-
-  build_cpp_tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: s3_cpp_xtensa
-        uses: docker://espressif/idf:v4.4.6
-        run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git .
-          . $IDF_PATH/export.sh
-          cd examples/hello_world_cpp && idf.py set-target esp32s3 && idf.py build
-      - name: c3_cpp_riscv
-        uses: docker://espressif/idf:v5.1
-        run: |
-          . $IDF_PATH/export.sh
-          cd examples/hello_world_cpp && idf.py set-target esp32c3 && idf.py build
+          cd examples/hello_world
+          idf.py set-target esp32c6 && idf.py build
+          cd ../hello_world_cpp
+          idf.py set-target esp32c3 && idf.py build
