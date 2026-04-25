@@ -1,5 +1,5 @@
 name: "esp_iot_framework"
-description: "A framework for creating IoT devices based on the ESP32"
+description: "A framework for creating reliable IoT devices based on the Espressif Systems devices"
 version: "0.1.0"
 targets:
   - esp32

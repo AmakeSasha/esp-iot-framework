@@ -1,6 +1,6 @@
 <div align="center">
     <h1>esp_iot_framework</h1>
-    <h3>A framework for creating reliable IoT devices based on the ESP32</h3>
+    <h3>A framework for creating reliable IoT devices based on the Espressif Systems devices</h3>
 </div>
 
 The project is in `v0.1.0-alpha` version
