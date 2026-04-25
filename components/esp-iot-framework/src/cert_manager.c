@@ -155,9 +155,9 @@ static esp_err_t generate_self_signed_cert(
     /* 1. Load Key */
     CHECK_MBEDTLS_ERR(
         #if MBEDTLS_VERSION_NUMBER >= 0x03000000
-            mbedtls_pk_parse_key(&pk, key, key_len, NULL, 0, NULL, NULL),
+            mbedtls_pk_parse_key(&key, key_pem, key_len, NULL, 0, NULL, NULL),
         #else
-            mbedtls_pk_parse_key(&pk, key, key_len, NULL, 0),
+            mbedtls_pk_parse_key(&key, key_pem, key_len, NULL, 0),
         #endif
         "parse_key");
 
@@ -191,7 +191,14 @@ static esp_err_t generate_self_signed_cert(
     uint8_t serial_buf[32];
     esp_fill_random(serial_buf, sizeof(serial_buf));
     mbedtls_mpi_read_binary(&serial, serial_buf, sizeof(serial_buf));
-    mbedtls_x509write_crt_set_serial_raw(&crt, &serial);
+    if MBEDTLS_VERSION_NUMBER >= 0x03000000
+        CHECK_MBEDTLS_ERR(mbedtls_x509write_crt_set_serial_raw(
+            &crt, serial_buf, sizeof(serial_buf)), "set_serial");
+    #else
+        mbedtls_mpi_read_binary(&serial, serial_buf, sizeof(serial_buf));
+        CHECK_MBEDTLS_ERR(mbedtls_x509write_crt_set_serial(
+            &crt, &serial), "set_serial");
+    #endif
 
     /* 5. Set SAN */
     unsigned char san_der[MDNS_HOSTNAME_FULL_MAX_LEN + 6 + 32];
