@@ -7,13 +7,12 @@ on:
 
 jobs:
   build_legacy:
-    name: Build on IDF v4.4.6
     runs-on: ubuntu-latest
     container: espressif/idf:v4.4.6
     steps:
-      - name: Build idf v4.4.6
+      - name: build
         run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git . || git clone --depth 1 https://gitverse.ru{{ github.repository }}.git .
+          git clone --depth 1 https://gitverse.ru/amakesasha/esp-iot-framework .
           . $IDF_PATH/export.sh
           cd examples/hello_world
           idf.py set-target esp32 && idf.py build
@@ -24,13 +23,12 @@ jobs:
           idf.py set-target esp32s3 && idf.py build
 
   build_modern:
-    name: Build on IDF v5.1
     runs-on: ubuntu-latest
     container: espressif/idf:v5.1
     steps:
-      - name: Build idf v5.1
+      - name: build
         run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} https://gitverse.ru{{ github.repository }}.git . || git clone --depth 1 https://gitverse.ru{{ github.repository }}.git .
+          git clone --depth 1 https://gitverse.ru/amakesasha/esp-iot-framework .
           . $IDF_PATH/export.sh
           cd examples/hello_world
           idf.py set-target esp32c6 && idf.py build
