@@ -3,6 +3,7 @@ name: test_build
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch: {}
 
 jobs:
   build_xtensa:
