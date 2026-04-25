@@ -19,14 +19,17 @@
  * limitations under the License.
  */
 
+#include "sdkconfig.h"
+
 #include "cJSON.h"
 #include "esp_mac.h"
 #include "esp_log.h"
 #include "esp_flash.h"
-#include "sdkconfig.h"
+#include "esp_timer.h"
 #include "esp_ota_ops.h"
 #include "esp_chip_info.h"
 #include "esp_app_format.h"
+#include "esp_idf_version.h"
 #ifdef CONFIG_EIF_ENABLE_TLS
     #include "esp_https_server.h"
 #else
@@ -432,8 +435,7 @@ static esp_err_t h_wifi_check_do(httpd_req_t *req) {
     if (xTaskCreate(
         wifi_test_task, "wf_test", 1024 * 4, (void *)(uintptr_t)index, 5, NULL
     ) != pdPASS) {
-        CORE_LOG(E, _ERR_SPAWN_TASK, "wifi_test_task", 
-            (size_t)esp_get_free_heap_size());
+        CORE_LOG(E, _ERR_SPAWN_TASK, "wifi_test_task", (size_t)esp_get_free_heap_size());
         http_status = HTTPD_500;
         ret = ESP_ERR_NO_MEM;
     }
@@ -499,8 +501,7 @@ cleanup:
 
         int result = xTaskCreate(tls_recreate_task, "tls_gen", 1024 * 10, NULL, 5, NULL);
         CHECK_CONDITION_WEB(result != pdPASS, HTTPD_500, ESP_ERR_NO_MEM,
-            _ERR_SPAWN_TASK, "tls_recreate_task", 
-                (size_t)esp_get_free_heap_size());
+            _ERR_SPAWN_TASK, "tls_recreate_task", (size_t)esp_get_free_heap_size());
     cleanup:
         req_send_http_status(req, http_status);
         return ret;
@@ -594,11 +595,19 @@ static esp_err_t h_ota_info_json(httpd_req_t *req) {
     cJSON *root = NULL;
     char *json_str = NULL;
     
-    const esp_app_desc_t *app = esp_ota_get_app_description();
+    #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+        const esp_app_desc_t *app = esp_app_get_description();
+    #else
+        const esp_app_desc_t *app = esp_ota_get_app_description();
+    #endif
     const esp_partition_t *running = esp_ota_get_running_partition();
     
     char sha_str[65] = {0}; 
-    esp_ota_get_app_elf_sha256(sha_str, sizeof(sha_str));
+    #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+        esp_app_get_elf_sha256(sha_str, sizeof(sha_str));
+    #else
+        esp_ota_get_app_elf_sha256(sha_str, sizeof(sha_str));
+    #endif
 
     root = cJSON_CreateObject();
     CHECK_CONDITION_WEB(!root, HTTPD_500, ESP_ERR_NO_MEM, _ERR_JSON_NO_MEM);
@@ -707,8 +716,7 @@ static esp_err_t h_ota_update_do(httpd_req_t *req) {
     int result = xTaskCreate(reboot_task, "reboot_task",
         CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     if (result != pdPASS) {
-        CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", 
-            (size_t)esp_get_free_heap_size());
+        CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", (size_t)esp_get_free_heap_size());
         is_ota_busy = false;
         ret = ESP_ERR_NO_MEM;
     }

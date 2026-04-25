@@ -19,13 +19,14 @@
  * limitations under the License.
  */
 
+#include "sdkconfig.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include "esp_mac.h"
 #include "esp_log.h"
 #include "esp_err.h"
 #include "esp_wifi.h"
-#include "sdkconfig.h"
 #include "esp_ota_ops.h"
 #ifdef CONFIG_EIF_ENABLE_TLS
     #include "esp_https_server.h"

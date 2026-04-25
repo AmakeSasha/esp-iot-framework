@@ -22,8 +22,9 @@
 #ifndef CORE_INTERNAL_H
 #define CORE_INTERNAL_H
 
-#include "esp_wifi.h"
 #include "sdkconfig.h"
+
+#include "esp_wifi.h"
 #ifdef CONFIG_EIF_ENABLE_MDNS
     #include "mdns.h"
 #endif

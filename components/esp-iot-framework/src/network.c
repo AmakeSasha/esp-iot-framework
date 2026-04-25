@@ -19,10 +19,11 @@
  * limitations under the License.
  */
 
+#include "sdkconfig.h"
+
 #include <string.h>
 #include "esp_log.h"
 #include "esp_wifi.h"
-#include "sdkconfig.h"
 #include "esp_system.h"
 
 #include "macros.h"

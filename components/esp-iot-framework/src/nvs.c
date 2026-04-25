@@ -19,12 +19,13 @@
  * limitations under the License.
  */
 
+#include "sdkconfig.h"
+
 #include "nvs.h"
 #include <string.h>
 #include "esp_log.h"
 #include "esp_err.h"
 #include "nvs_flash.h"
-#include "sdkconfig.h"
 
 #include "macros.h"
 #include "core_internal.h"

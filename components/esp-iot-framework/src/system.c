@@ -19,8 +19,9 @@
  * limitations under the License.
  */
 
-#include "esp_log.h"
 #include "sdkconfig.h"
+
+#include "esp_log.h"
 #include "esp_ota_ops.h"
 
 #include "macros.h"

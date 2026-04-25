@@ -22,12 +22,14 @@
 #include <stdio.h>
 #include <string.h>
 #include "esp_log.h"
+#include "esp_random.h"
 #include "mbedtls/pk.h"
+#include "mbedtls/oid.h"
+#include "mbedtls/error.h"
+#include "mbedtls/version.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
-#include "mbedtls/error.h"
 #include "mbedtls/x509_crt.h"
-#include "mbedtls/oid.h"
 
 #include "macros.h"
 #include "core_internal.h"
@@ -39,7 +41,7 @@
 #define _ERR_GEN_KEY       "Failed to generate ECC keypair"
 #define _ERR_GEN_CERT      "Failed to generate self-signed certificate"
 #define _ERR_SAN_SET       "Failed to set Subject Alternative Name (DNS: %s)"
-#define _ERR_SPAWN_TASK    "Failed to spawn [%s]. Free heap: %u bytes"
+#define _ERR_SPAWN_TASK    "Failed to spawn [%s]. Free heap: %zu bytes"
 
 #define _MSG_KEY_GEN_OK    "ECC key pair generated. Size: %zu bytes"
 #define _MSG_CERT_GEN_OK   "Certificate generated successfully for: %s"
@@ -66,7 +68,7 @@ void tls_recreate_task(void* arg) {
     int result = xTaskCreate(reboot_task, "reboot_task",
         CONFIG_EIF_REBOOT_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL);
     if (result != pdPASS) {
-        CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", esp_get_free_heap_size());
+        CORE_LOG(E, _ERR_SPAWN_TASK, "reboot_task", (size_t)esp_get_free_heap_size());
     }
 cleanup:
     vTaskDelete(NULL);
@@ -152,9 +154,12 @@ static esp_err_t generate_self_signed_cert(
 
     /* 1. Load Key */
     CHECK_MBEDTLS_ERR(
-        mbedtls_pk_parse_key(
-            &key, key_pem, key_len, NULL, 0
-        ), "parse_key");
+        #if MBEDTLS_VERSION_NUMBER >= 0x03000000
+            mbedtls_pk_parse_key(&pk, key, key_len, NULL, 0, NULL, NULL),
+        #else
+            mbedtls_pk_parse_key(&pk, key, key_len, NULL, 0),
+        #endif
+        "parse_key");
 
     /* 2. Seed DRBG */
     uint8_t seed[32];
@@ -186,7 +191,7 @@ static esp_err_t generate_self_signed_cert(
     uint8_t serial_buf[32];
     esp_fill_random(serial_buf, sizeof(serial_buf));
     mbedtls_mpi_read_binary(&serial, serial_buf, sizeof(serial_buf));
-    mbedtls_x509write_crt_set_serial(&crt, &serial);
+    mbedtls_x509write_crt_set_serial_raw(&crt, &serial);
 
     /* 5. Set SAN */
     unsigned char san_der[MDNS_HOSTNAME_FULL_MAX_LEN + 6 + 32];
