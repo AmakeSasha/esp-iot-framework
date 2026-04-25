@@ -191,7 +191,7 @@ static esp_err_t generate_self_signed_cert(
     uint8_t serial_buf[32];
     esp_fill_random(serial_buf, sizeof(serial_buf));
     mbedtls_mpi_read_binary(&serial, serial_buf, sizeof(serial_buf));
-    if MBEDTLS_VERSION_NUMBER >= 0x03000000
+    #if MBEDTLS_VERSION_NUMBER >= 0x03000000
         CHECK_MBEDTLS_ERR(mbedtls_x509write_crt_set_serial_raw(
             &crt, serial_buf, sizeof(serial_buf)), "set_serial");
     #else
