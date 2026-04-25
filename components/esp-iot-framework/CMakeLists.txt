@@ -44,6 +44,7 @@ set(requires_components
     json
     esp_wifi
     nvs_flash
+    esp_timer
     app_update
 )
 
