@@ -192,14 +192,23 @@ static inline size_t eif_strnlen(const char * const str, size_t max_allowed) {
             search_limit = max_allowed;
         }
     }
+
     /* Cleanup */
-    /* @deviation [Rule 21.18] The search limit is set to (max_allowed + 1) 
-     * where possible to allow the caller to distinguish between a string 
-     * that exactly fits the limit and one that exceeds it. Pre-check 
-     * against 'SIZE_MAX' ensures no integer wrap-around occurs. Memory 
-     * access is guaranteed to be within safe bounds as strnlen stops at the
-     * first null-terminator or the provided 'search_limit'. */
-    return strnlen(str, search_limit);
+    /* Required for the new compiler 'GCC 11+' (ESP-IDF v5+) */
+    #if defined(__GNUC__) && (__GNUC__ >= 11)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wstringop-overread"
+    #endif
+        /* @deviation [Rule 21.18] The search limit is set to (max_allowed + 1) 
+         * where possible to allow the caller to distinguish between a string 
+         * that exactly fits the limit and one that exceeds it. Pre-check 
+         * against 'SIZE_MAX' ensures no integer wrap-around occurs. Memory 
+         * access is guaranteed to be within safe bounds as strnlen stops at
+         * the first null-terminator or the provided 'search_limit'. */
+        return strnlen(str, search_limit);
+    #if defined(__GNUC__) && (__GNUC__ >= 11)
+        #pragma GCC diagnostic pop
+    #endif
 }
 /** @} */
 
