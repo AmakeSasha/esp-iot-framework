@@ -211,7 +211,8 @@ static esp_err_t eif_generate_self_signed_cert(
         }
     }
     if (ret == 0) {
-        name_len = eif_strnlen(temp_name, MDNS_HOSTNAME_FULL_MAX_LEN);
+        /* @note '- 1U' is needed for the new compiler 'GCC 11+' (ESP-IDF v5+) */
+        name_len = eif_strnlen(temp_name, MDNS_HOSTNAME_FULL_MAX_LEN - 1U);
         san_der[0] = F_ASN1_TAG_SEQUENCE;
         san_der[1] = (unsigned char)(name_len + F_SAN_TYPE_DNS_OFFSET);
         san_der[2] = F_ASN1_TAG_DNS_NAME;
