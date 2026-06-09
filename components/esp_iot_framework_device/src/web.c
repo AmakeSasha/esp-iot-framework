@@ -1148,7 +1148,7 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     esp_err_t (*real_handler)(httpd_req_t *) = (esp_err_t (*)(httpd_req_t *))orig->handler;
 
     #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
-        if ((req->uri != NULL) && (strncmp(req->uri, "/_/", 3) == 0)) {
+        if (strncmp(req->uri, "/_/", 3) == 0) {
             ret = req_check_auth_admin(req);
             if (ret != ESP_OK) {
                 EIF_LOG_W("Checker Basic Auth error: %s", esp_err_to_name(ret));
