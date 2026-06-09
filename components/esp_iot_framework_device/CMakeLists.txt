@@ -43,8 +43,10 @@ endif()
 
 set(requires_components
     json
+    esp_wifi
+    spi_flash
     esp_timer
-    app_update
+    app_update   
     esp_iot_framework_core 
 )
 
