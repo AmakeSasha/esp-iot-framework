@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="114" height="20">
+  <clipPath id="gitverse"><rect width="114" height="20" rx="5" fill="#fff"/></clipPath>
+  <g clip-path="url(#gitverse)">
+    <rect width="72" height="20" fill="#404851"/>
+    <rect x="72" width="42" height="20" fill="#F76D11"/>
+  </g>
+  <g fill="#fff" font-family="Verdana,Geneva,sans-serif" font-size="11">
+    <image x="4" y="3" width="14" height="14" href="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QBiRXhpZgAATU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAEAAAITAAMAAAABAAEAAAAAAAAAAAABAAAAAQAAAAEAAAAB/+0ALFBob3Rvc2hvcCAzLjAAOEJJTQQEAAAAAAAPHAJuAANSRkccAgAAAgAEAP/bAEMAAwICAgICAwICAgMDAwMEBgQEBAQECAYGBQYJCAoKCQgJCQoMDwwKCw4LCQkNEQ0ODxAQERAKDBITEhATDxAQEP/AAAsIACAAIAEBEQD/xAAXAAADAQAAAAAAAAAAAAAAAAAGCAkH/8QAKxAAAQMDAwIFBAMAAAAAAAAAAgEDBAUGBwgREgAhCRMiMWEUMkFRFiNy/9oACAEBAAA/AKS5TytYGFrKn5ByVccajUSnju4+6u5Ga/a22CeozJeyCKKq9LPiHO9C1e0C+M3W5XqjZMK1prdFtOTVal9OyzJbb845EhoTRoxeJ1tsgNS/rDZFRV36x3Tr4m2ec1ZULB72E7dfr0k5MYarTJzow6erW6HJfEuaGyG268TRS7Ii7knTAYoyLjO7Lpp9zYpuyt3BLpt5vWZc9amPuK1WnSgOvEYDyVtWwdBtQ4CKCiEg+ld1QLxMMszs8arUwOV0P0u3bNcZpcNpuI7JCRVXhBXTJtvupbmLadl2QF2+5emz03eHTXsRWh/GL8uSn1yAD0ipPxoEl7lNfMBFGW/NARiAQgIuOChOmnpQwHcSY3TW7VroxeL186eIOKZzbj9KWgt+S4BxBRBQxVsR2bLdU4qnfjv3RUXoCaxdibSlPxtYllQ3qfSLxyi/OajkXNGZT9MlIDQqvfy0IAEUXdU3ROp657yBc+k7xHbpuqdGpP0NQrIXHEcq1MWYxwkRiBHU4qjgoKuOjybVSFQ3QSVNlohjHWg1f9Kj1E7dtEozqJzqlPv6mnBH9kQvk1Jb/wAkzyT9dbXQMwYruaSFPoeS7TqU4thViDWY8guX5ROJbr3+Os21LWm7et+YKpMPdZNNv9uvHt7hFiQpBumvxyVoN/24KfnoR13aH6Dq7s+LMpU2PR77t9s0pFRdFfKfbXuUV/bvwVe6Em6iqquyoqoqeaVPD8xLiiurdGs+oAzVobxDCt2dEeCkqor2ecl8fJlIvugCWyb+pF9kodR8o4ihQAouHbZC5HGkQI8G16UKRgX8IUjiMZkfkjT4Rfbokseza63W5WQb/fivXLPYSIxGikpRaTD5cvpmSJEUyIkQnHVRFMhHZEERTr//2Q=="/>
+    <text x="45" y="14" text-anchor="middle">GitVerse</text>
+    <text x="92" y="14" text-anchor="middle">Mirror</text>
+  </g>
+</svg>

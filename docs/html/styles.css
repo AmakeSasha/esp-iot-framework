@@ -1,0 +1,230 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Project: esp_iot_framework
+ * Folder: docs
+ * File: additional_styles.css
+ * 
+ * Copyright 2026 AmakeSasha
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* 1. GLOBAL RESET & TYPOGRAPHY */
+* {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
+  font-size: 16px !important;
+  color: DarkSlateGray;
+}
+h1, h2, h3, h4, h5, h6, dt {
+  color: Black;
+  font-weight: bold !important;
+}
+h1 { font-size: 24px !important; }
+h2 { font-size: 22px !important; }
+h3 { font-size: 20px !important; }
+h4 { font-size: 18px !important; }
+h5 { font-size: 17px !important; }
+h6 { font-size: 16px !important; }
+dt { font-size: 14px !important; }
+
+a.el, .contents a:visited {
+  color: Blue;
+  text-decoration: none;
+}
+a.el:hover { text-decoration: underline; }
+
+/* 2. HEADER & NAVIGATION PATH */
+#titlearea {
+  border-bottom: 1px solid Black;
+  padding-bottom: 10px;
+}
+#projectname { font-size: 20px !important; }
+#projectbrief { font-size: 10px !important; }
+.navpath ul {
+  background-image: none !important;
+  background-color: White;
+  border: none;
+}
+
+/* 3. SIDEBAR (NAV-TREE) */
+#nav-tree { 
+  background-color: WhiteSmoke !important; 
+  background-image: none !important; 
+}
+#nav-tree .selected {
+  background-image: none !important;
+  background-color: Gainsboro !important;
+}
+#nav-tree .selected a {
+  color: DeepSkyBlue !important;
+  text-shadow: none !important;
+  font-weight: bold;
+}
+#nav-sync img { display: none; }
+.ui-resizable-handle.ui-resizable-e {
+  background-image: none !important;
+  background-color: LightGray !important;
+  width: 1px;
+}
+
+/* 4. ALERTS & DOCUMENTATION SECTIONS (Notes, Warnings) */
+dl.section {
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+dl.section dt {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+dl.section.warning {
+  background-color: LightYellow;
+  border-left: 8px solid Orange;
+}
+dl.section.warning dt { color: Orange; }
+dl.section.note {
+  background-color: LightCyan;
+  border-left: 8px solid RoyalBlue;
+}
+dl.section.note dt { color: RoyalBlue; }
+dd { margin: 5px 0 0 0; }
+
+/* 5. FUNCTION DOCUMENTATION (Memproto & Memdoc) */
+.memtitle { display: none !important; }
+.memproto {
+  background-color: Honeydew;
+  border: 1px solid LightSteelBlue;
+  border-radius: 12px 12px 0 0;
+  padding: 8px;
+}
+.memdoc {
+  background-color: White;
+  border: 1px solid LightSteelBlue;
+  border-top: none;
+  padding: 0.1px 15px 5px;
+  border-radius: 0 0 12px 12px;
+}
+
+/* 6. CODE SNIPPETS & FRAGMENTS */
+.paramname, code, 
+div.fragment, .textblock .fragment, .fragment {
+  background-color: GhostWhite;
+  border: 1px solid LightSteelBlue;
+  font-family: "Cascadia Code", Consolas, monospace !important;
+}
+.paramname, code {
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+div.fragment, .textblock .fragment, .fragment {
+  padding: 12px;
+  border-radius: 12px;
+  margin: 10px 0;
+}
+.fragment .line {
+  font-size: 14px;
+  line-height: 1.6;
+  color: DimGray;
+}
+
+/* 8. FOOTER STYLES */
+img.footer {
+  width: 75px;
+  height: auto;
+  opacity: 0.7;
+}
+
+/* 9. CODE STYLES*/
+a.code {
+  color: Blue !important;
+  text-decoration: none !important;
+  border: none !important;
+}
+.fragment .keyword { color: Lime !important; }
+.fragment .keywordflow { color: Orange !important; }
+.fragment .keywordtype { color: #56b6c2 !important; } 
+.fragment .preprocessor { color: Green !important; }
+.fragment .comment { color: Red !important;}
+.fragment .contents a:visited { color: Teal !important;}
+.fragment .stringliteral { color: Lime !important;}
+
+/* 8. DARK MODE */
+@media (prefers-color-scheme: dark) {
+  * { color: White !important; }
+  .memname, 
+  .memparam, 
+  .memproto td {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  body, table, div, p, dl, td,
+  #nav-tree, .navpath ul, .groupheader {
+    background-color: #121212 !important;
+  }
+  a.el, .contents a:visited { color: #61afef !important; }
+  #titlearea {
+    border-bottom: 1px solid #333333;
+    background-color: #121212 !important;
+  }
+  #nav-tree .selected {
+    background-image: none !important;
+    background-color: #2c2c2c !important;
+  }
+  #nav-tree .selected a {
+    color: #56b6c2 !important;
+    text-shadow: none !important;
+  }
+  #nav-sync img { display: none; }
+  .ui-resizable-handle.ui-resizable-e {
+    background-color: #333333 !important;
+  }
+  .paramkey, .paramname, td { background-color: #1a231a; }
+  .memproto {
+    background-color: #1a231a !important;
+    border: 1px solid #333333;
+    color: #e0e0e0 !important;
+  }
+  .memdoc {
+    background-color: #121212 !important;
+    border: 1px solid #333333;
+    border-top: none;
+    color: #d1d1d1 !important;
+  }
+  div.fragment, .textblock .fragment, .fragment {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333333 !important;
+  }
+  .fragment .line {
+    background-color: transparent !important;
+    color: #abb2bf !important;
+    border: none !important;
+    line-height: 1.6;
+  }
+  code, .paramname {
+    background-color: #2d2d2d !important;
+    color: #e5c07b !important;
+    border: 1px solid #444444 !important;
+  }
+  dl.section.warning {
+    background-color: #332100 !important;
+    border-left: 8px solid #d19a66;
+    color: #e0e0e0 !important;
+  }
+  dl.section.note {
+    background-color: #112244 !important;
+    border-left: 8px solid #61afef;
+    color: #e0e0e0 !important;
+  }
+  dl.warning dt { color: #ffa500 !important; }
+  dl.note dt { color: #61afef !important; }
+  img.footer { opacity: 0.5; }
+}

@@ -4,3 +4,4 @@ sdkconfig
 dependencies.lock
 sdkconfig.old
 cmd.exe
+esp-iot-framework-cppcheck-build-dir

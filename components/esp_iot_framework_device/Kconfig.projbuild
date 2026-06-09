@@ -1,0 +1,95 @@
+# SPDX-License-Identifier: Apache-2.0
+# Project: esp-iot-framework
+# Library: esp_iot_framework_device
+# Folder: components/esp_iot_framework_device
+# File: Kconfig.projbuild
+# 
+# Copyright 2026 AmakeSasha
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+menu "ESP IoT Framework"
+    menu "Web admin GUI"
+        config EIF_ENABLE_WEB_ADMIN_GUI
+            bool "Enable Web-based Administration Panel"
+            default y
+            help
+                Enable the integrated web interface for management.
+                Only the admin panel, not the user interface!
+
+                - Enabled: All static assets (HTML, CSS, JS) from the 'web_src' 
+                  directory are embedded directly into the firmware.
+                - Disabled: The web interface is completely excluded from the 
+                  build, providing only the JSON REST API for remote interaction.
+
+                Disabling this feature significantly reduces Flash usage and 
+                optimizes the HTTP server's memory footprint by stripping 
+                unnecessary resource-serving logic.
+
+        config EIF_WEB_CACHE_MAX_AGE
+            int "Static files cache max-age (seconds)"
+            range 0 31536000
+            default 360
+            depends on EIF_ENABLE_WEB_ADMIN_GUI
+            help
+                Sets the 'max-age' directive for the Cache-Control header.
+
+                During this period, the browser will serve files from its local 
+                cache without contacting the ESP32. This minimizes CPU and heap 
+                usage by avoiding HTTPS handshakes and data transmission.
+
+                The 'ETag' validation (If-None-Match) only occurs AFTER this 
+                timer expires or if the user performs a manual refresh. Setting 
+                this to 0 is recommended for development to ensure every change 
+                is immediately visible. For production, a higher value is 
+                preferable to reduce the load on the MCU.
+    endmenu
+
+    config EIF_ENABLE_BASIC_AUTH
+        bool "Enable Basic Auth for the core URL (/_/*)"
+        default y
+        help
+            Enables mandatory Basic Authentication for all systemic paths (/_/*).
+
+            - If enabled: All administrative API and Web GUI requests require 
+              a valid username ('admin') and password stored in NVS.
+            - If disabled: Access control is bypassed. It may be useful for local debugging, but it is not recommended.
+
+            WARNING: Disabling authentication can lead to unauthorized access 
+            and use of the admin panel and the core JSON REST API.
+
+    config EIF_WEB_SIZE_OTA_BUFFER
+        int "OTA update buffer size (bytes)"
+        range 1024 65536
+        default 4096
+        help
+            Size of the buffer used for receiving OTA firmware updates via HTTP.
+
+            Larger values improve transfer speed but consume more heap memory.
+            Smaller values reduce memory usage but may increase transfer time.
+
+            Recommended values:
+            - 4096: good balance for most use cases;
+            - 8192–16384: for fast transfers when memory is available;
+            - 1024–2048: for memory‑constrained environments.
+
+    menu "Logging Settings"
+        config EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP
+            bool "Include timestamp in HTTP response"
+            default n
+            help
+                When enabled, adds a UNIX timestamp to HTTP responses 
+                (except 204 No Content). Useful for debugging request timing and 
+                response latency. Disable in production to reduce response size.
+    endmenu
+endmenu

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <builddir>esp-iot-framework-cppcheck-build-dir</builddir>
+    <platform>Unspecified</platform>
+    <analyze-all-vs-configs>false</analyze-all-vs-configs>
+    <check-headers>true</check-headers>
+    <check-unused-templates>true</check-unused-templates>
+    <max-ctu-depth>10</max-ctu-depth>
+    <includedir>
+        <dir name="components/esp_iot_framework_core/include"/>
+        <dir name="components/esp_iot_framework_core/private_include"/>
+        <dir name="components/esp_iot_framework_device/include"/>
+        <dir name="components/esp_iot_framework_device/private_include"/>
+        <dir name="../embedded/esp_idf/components/esp_common/include/"/>
+        <dir name="../embedded/esp_idf/components/nvs_flash/include/"/>
+        <dir name="../embedded/esp_idf/components/esp_rom/include/"/>
+        <dir name="../embedded/esp_idf/components/mdns/include/"/>
+        <dir name="../embedded/esp_idf/components/esp_wifi/include/"/>
+        <dir name="../embedded/esp_idf/components/freertos/include/"/>
+        <dir name="../embedded/esp_idf/components/freertos/port/xtensa/include/"/>
+    </includedir>
+    <defines>
+        <define name="CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS=3"/>
+        <define name="MDNS_HOSTNAME_FULL_MAX_LEN=64U"/>
+        <define name="configMAX_PRIORITIES=15"/>
+        <define name="pdPASS=1"/>
+        <define name="pdFAIL=0"/>
+        <define name="HTTPD_SOCK_ERR_TIMEOUT=-1"/>
+        <define name="HTTPD_204=&quot;204 No Content&quot;"/>
+    </defines>
+    <paths>
+        <dir name="components/esp_iot_framework_core"/>
+        <dir name="components/esp_iot_framework_device"/>
+    </paths>
+    <suppressions>
+        <suppression>misra-c2012-8.2</suppression>
+        <suppression>misra-c2012-17.3</suppression>
+        <suppression fileName="*/src/network.c">misra-c2012-19.2</suppression>
+        <suppression fileName="*/src/config.c">misra-c2012-21.6</suppression>
+        <suppression fileName="*/src/nvs.c">misra-c2012-21.6</suppression>
+        <suppression fileName="*/src/web.c">misra-c2012-21.6</suppression>
+        <suppression fileName="*/src/tls_manager.c">misra-c2012-21.6</suppression>
+        <suppression fileName="*/include/esp_iot_framework_core_macros.h">misra-c2012-20.10</suppression>
+        <suppression fileName="*/private_include/device_macros.h">misra-c2012-20.7</suppression>
+        <suppression fileName="*/private_include/device_macros.h">misra-c2012-20.10</suppression>
+        <suppression>purgedConfiguration</suppression>
+        <suppression>variableScope</suppression>
+        <suppression>unusedFunction</suppression>
+    </suppressions>
+    <addons>
+        <addon>misra</addon>
+    </addons>
+    <tools>
+        <tool>clang-tidy</tool>
+    </tools>
+</project>

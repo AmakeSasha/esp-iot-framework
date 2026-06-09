@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Doxyfile 1.8.7
+# Doxyfile 1.9.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -35,6 +35,7 @@ TYPEDEF_HIDES_STRUCT   = YES
 FULL_PATH_NAMES        = YES
 INHERIT_DOCS           = YES
 SUBGROUPING            = YES
+SHOW_USED_FILES        = NO
 REPEAT_BRIEF           = NO
 #---------------------------------------------------------------------------
 # Build related configuration options
@@ -53,7 +54,6 @@ GENERATE_BUGLIST       = NO
 GENERATE_DEPRECATEDLIST= YES
 SORT_MEMBER_DOCS       = NO
 SORT_BRIEF_DOCS        = NO
-MACRO_EXPANSION        = YES
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
@@ -64,7 +64,11 @@ WARN_FORMAT            = "$file:$line: $text"
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../include ../README.md ../docs ../LICENSE
+STRIP_FROM_PATH        = ..
+INPUT                  = ../components/esp_iot_framework_core/include ../components/esp_iot_framework_device/include ../docs/doxygen_addition ../README.md
+IMAGE_PATH             = badges
+EXAMPLE_PATH           = ../examples/LICENSE_CC0_1_0 
+HTML_EXTRA_FILES       = ../LICENSE ../NOTICE ../examples/LICENSE_CC0_1_0
 INPUT_ENCODING         = UTF-8
 RECURSIVE              = YES
 FILE_PATTERNS          = *.h *.c *.md
@@ -81,7 +85,7 @@ VERBATIM_HEADERS       = YES
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_EXTRA_STYLESHEET  = doxygen-awesome.css
+HTML_EXTRA_STYLESHEET  = doxygen_addition/styles.css
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
 DISABLE_INDEX          = YES
