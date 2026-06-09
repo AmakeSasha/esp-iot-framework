@@ -22,6 +22,7 @@
 #include "sdkconfig.h"
 
 #include "esp_log.h"
+#include <inttypes.h>
 #include "esp_ota_ops.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -29,7 +30,7 @@
 #include "esp_iot_framework_core_macros.h"
 #include "core_internal.h"
 
-#define ERR_SPAWN_TASK "Failed to spawn task [%s]. Free heap: %zu bytes"
+#define ERR_SPAWN_TASK "Failed to spawn task [%s]. Free heap: %" PRIu32 " bytes"
 #define ERR_TWO_SPAWN  "Task [%s] has already been created earlier and is running"
 #define MSG_SPAWN_TASK "Spawn task [%s]"
 #define MSG_CALL_FUNC "Calling the function '%s'"
@@ -86,8 +87,7 @@ esp_err_t eif_task_common_spawn(
             p_name, u32_stack, NULL, u_prio, p_handle);
 
         if (x_res != pdPASS) {
-            EIF_LOG_E(ERR_SPAWN_TASK, p_name, 
-                (uint32_t)esp_get_free_heap_size());
+            EIF_LOG_E(ERR_SPAWN_TASK, p_name, esp_get_free_heap_size());
 
             *p_handle = NULL;
             ret = ESP_ERR_NO_MEM;
