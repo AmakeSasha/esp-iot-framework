@@ -223,7 +223,7 @@ static inline esp_err_t eif_nvs_wifi_gen_keys(
     if (ret == ESP_OK) {
         /* Allowed by the '@deviation [Rule 21.6]' definition specified
          * before this function. */
-        int res = snprintf(s_buf, WIFI_KEY_LEN, "wifi_ssid%u", (uint32_t)index);
+        int res = snprintf(s_buf, WIFI_KEY_LEN, "wifi_ssid%u", index);
         EIF_IF_OK_CHECK_CONDITION(ret,
             (res < 0) || (res >= (int)WIFI_KEY_LEN),
             ESP_ERR_INVALID_SIZE, "String formatting truncated or failed");
@@ -231,7 +231,7 @@ static inline esp_err_t eif_nvs_wifi_gen_keys(
     if (ret == ESP_OK) {
         /* Allowed by the '@deviation [Rule 21.6]' definition specified
          * before this function. */
-        int res = snprintf(p_buf, WIFI_KEY_LEN, "wifi_pass%u", (uint32_t)index);
+        int res = snprintf(p_buf, WIFI_KEY_LEN, "wifi_pass%u", index);
         EIF_IF_OK_CHECK_CONDITION(ret,
             (res < 0) || (res >= (int)WIFI_KEY_LEN),
             ESP_ERR_INVALID_SIZE, "String formatting truncated or failed");
@@ -302,13 +302,11 @@ esp_err_t eif_nvs_wifi_profile_load(
     ), NVS_ERR_INVALID_IDX, "wifi_index", index, 0U, EIF_WIFI_PROFILES_MAX_COUNT);
 
     if ((ret == ESP_OK) && (index == 0U)) {
-        size_t const s_len = eif_strnlen(EIF_WIFI_SSID_DEFAULT, 
-            EIF_WIFI_SSID_MAX_LEN - 1U);
+        size_t const s_len = eif_strnlen(EIF_WIFI_SSID_DEFAULT, EIF_WIFI_SSID_MAX_LEN);
         (void)memcpy(ssid_out, EIF_WIFI_SSID_DEFAULT, s_len);
         ssid_out[s_len] = '\0';
 
-        size_t const p_len = eif_strnlen(EIF_WIFI_PASS_DEFAULT,
-            EIF_WIFI_PASS_MAX_LEN - 1U);
+        size_t const p_len = eif_strnlen(EIF_WIFI_PASS_DEFAULT, EIF_WIFI_PASS_MAX_LEN);
         (void)memcpy(pass_out, EIF_WIFI_PASS_DEFAULT, p_len);
         pass_out[p_len] = '\0';
     } else {
