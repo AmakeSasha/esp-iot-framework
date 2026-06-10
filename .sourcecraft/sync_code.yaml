@@ -1,0 +1,17 @@
+name: Sync code
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Git Sync
+        run: |
+          git clone --mirror "https://git.sourcecraft.dev/amakesasha/esp-iot-framework.git" repo
+          cd repo
+          
+          git push "https://oauth2:${{ secrets.SYNC_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" +refs/*:refs/*
