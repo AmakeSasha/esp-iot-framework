@@ -56,11 +56,9 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="title">esp_iot_framework Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> </p><div align="center"> <h1>esp_iot_framework</h1>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> </p><div align="center"> <h1>esp_iot_framework <small>v0.2.0</small></h1>
 </div><div align="center"> <h3>A framework for creating reliable IoT devices based on the Espressif Systems devices</h3>
-</div><div align="center"> </div><p><a href="https://sourcecraft.dev/amakesasha/esp-iot-framework"><img src="origin_sourcecraft.svg" alt="" style="pointer-events: none;" class="inline" title="Origin SourceCraft"/></a> <a href="https://github.com/amakesasha/esp-iot-framework"><img src="mirror_github.svg" alt="" style="pointer-events: none;" class="inline" title="Mirror GitHub"/></a> <a href="https://gitverse.ru/amakesasha/esp-iot-framework"><img src="mirror_gitverse.svg" alt="" style="pointer-events: none;" class="inline" title="Mirror GitVerse"/></a></p>
-<p><a href="./LICENSE"><img src="license.svg" alt="" style="pointer-events: none;" class="inline" title="License"/></a> <img src="version.svg" alt="" style="pointer-events: none;" class="inline" title="Version"/> <a href="https://amakesasha.sourcecraft.site/esp-iot-framework/"><img src="documentation.svg" alt="" style="pointer-events: none;" class="inline" title="Documentation"/></a></p>
-<h1>Usage</h1>
+</div><div align="center"> </div><h1>Usage</h1>
 <p>To start using this framework, you must apply the settings from <code>sdkconfig.defaults</code> and connect it to your project. Configure your project's main <code>CMakeLists.txt</code> like this (replace <code>&lt;TEXT&gt;</code> with the desired values, without the <code>&lt;&gt;</code>s themselves): </p><div class="fragment"><div class="line">cmake_minimum_required(VERSION 3.16)</div>
 <div class="line"> </div>
 <div class="line">list(APPEND SDKCONFIG_DEFAULTS &quot;&lt;PATH_TO_FRAMEWORK&gt;/components/esp_iot_framework_device/sdkconfig.defaults&quot;)</div>
@@ -70,8 +68,21 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line"> </div>
 <div class="line">include($ENV{IDF_PATH}/tools/cmake/project.cmake)</div>
 <div class="line">project(&lt;NAME_PROJECT&gt;)</div>
-</div><!-- fragment --><h1>Documentation</h1>
-<p>See the site: <a href="https://amakesasha.sourcecraft.site/esp-iot-framework/">https://amakesasha.sourcecraft.site/esp-iot-framework/</a></p>
+</div><!-- fragment --><h1>Storage, documentation and mirrors</h1>
+<p>To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Platform   </th><th class="markdownTableHeadNone">Links    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SourceCraft</b> (main)   </td><td class="markdownTableBodyNone"><a href="https://sourcecraft.dev/amakesasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
+ <a href="https://amakesasha.sourcecraft.site/esp-iot-framework/">📄 <b>Documentation</b></a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>GitHub</b> (mirror)   </td><td class="markdownTableBodyNone"><a href="https://github.com/AmakeSasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
+ <a href="https://amakesasha.github.io/esp-iot-framework/html/index.html">📄 <b>Documentation</b></a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>GitVerse</b> (mirror)   </td><td class="markdownTableBodyNone"><a href="https://gitverse.ru/amakesasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
+ <b>There is no documentation</b>   </td></tr>
+</table>
 <h1>License</h1>
 <p>This project is licensed under the <a href="./LICENSE"><code>Apache 2.0 License</code></a>, except for the contents of the <a href="./examples"><code>/examples</code></a> directory, which are dedicated to the <code>Public Domain</code> (or <a href="./examples/LICENSE_CC0_1_0"><code>CC0 1.0</code></a> licensed, at your option). Also look at file <a href="./NOTICE"><code>NOTICE</code></a>. </p>
 </div></div><!-- PageDoc -->

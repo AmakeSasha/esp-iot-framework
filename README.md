@@ -1,15 +1,7 @@
 <div align="center">
-    <h1>esp_iot_framework</h1>
-    <h3>A framework for creating reliable IoT devices based on the Espressif Systems devices</h3>
+    <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.0</font></small></h1>
+    <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
 </div>
-
-[![Origin SourceCraft](docs/badges/origin_sourcecraft.svg)](https://sourcecraft.dev/amakesasha/esp-iot-framework)
-[![Mirror GitHub](docs/badges/mirror_github.svg)](https://github.com/amakesasha/esp-iot-framework)
-[![Mirror GitVerse](docs/badges/mirror_gitverse.svg)](https://gitverse.ru/amakesasha/esp-iot-framework)
-
-[![License](docs/badges/license.svg)](./LICENSE)
-![Version](docs/badges/version.svg)
-[![Documentation](docs/badges/documentation.svg)](https://amakesasha.sourcecraft.site/esp-iot-framework/)
 
 <h1>Usage</h1>
 
@@ -26,9 +18,15 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(<NAME_PROJECT>)
 ```
 
-<h1>Documentation</h1>
+<h1>Storage, documentation and mirrors</h1>
 
-See the site: https://amakesasha.sourcecraft.site/esp-iot-framework/
+To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.
+
+| Platform               | Links                                                                                                                                                                  |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **SourceCraft** (main) | [🔗 **Source code**](https://sourcecraft.dev/amakesasha/esp-iot-framework) <br> [📄 **Documentation**](https://amakesasha.sourcecraft.site/esp-iot-framework/)         |
+| **GitHub** (mirror)    | [🔗 **Source code**](https://github.com/AmakeSasha/esp-iot-framework) <br>      [📄 **Documentation**](https://amakesasha.github.io/esp-iot-framework/html/index.html) |
+| **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     **There is no documentation**                                                          |
 
 <h1>License</h1>
 
