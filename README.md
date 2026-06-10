@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.0</font></small></h1>
+    <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
     <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
 </div>
 
