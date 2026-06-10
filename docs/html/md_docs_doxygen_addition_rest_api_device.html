@@ -57,7 +57,7 @@ $(document).ready(function(){initNavTree('md_docs_doxygen_addition_rest_api_devi
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>The <code>esp_iot_framework_device</code> provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with <code>/_/</code> and support JSON format for requests and responses.</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<h1><a class="anchor" id="autotoc_md2"></a>
 Authentication</h1>
 <p>When Kconfig option <code>CONFIG_EIF_ENABLE_BASIC_AUTH</code> is enabled, all administrative endpoints (all endpoints listed in <code>MAP URIs</code>) require HTTP Basic Authentication.</p>
 <p>To authenticate, include the following HTTP header in each of your requests: </p><div class="fragment"><div class="line">Authorization: Basic &lt;base64_encoded_credentials&gt;</div>
@@ -68,7 +68,7 @@ Authentication</h1>
 <div class="line">Content-Length: 20</div>
 <div class="line"> </div>
 <div class="line">{&quot;profile_index&quot;: 1}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
 Map URIs</h1>
 <ul>
 <li><code>/_</code><ul>
@@ -113,7 +113,7 @@ Map URIs</h1>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 HTTP Status Codes</h1>
 <ul>
 <li><code>200 OK</code> - Successful GET request</li>
@@ -125,9 +125,9 @@ HTTP Status Codes</h1>
 <li><code>409 Conflict</code> - Resource conflict (e.g., OTA already in progress)</li>
 <li><code>500 Internal Server Error</code> - Server error</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 API Endpoints</h1>
-<h2><a class="anchor" id="autotoc_md5"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Wi-Fi Management</h2>
 <p><a class="anchor" id="h_wifi_list_json"></a></p><ul>
 <li><p class="startli">List Wi-Fi profiles </p><div class="fragment"><div class="line">GET /_/wifi/list.json</div>
@@ -226,7 +226,7 @@ Wi-Fi Management</h2>
 <hr  />
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 TLS Management</h2>
 <dl class="section note"><dt>Note</dt><dd>Only available if the Kconfig option <code>CONFIG_EIF_ENABLE_TLS</code> is enabled.</dd></dl>
 <p><a class="anchor" id="h_tls_recreate_do"></a></p><ul>
@@ -238,7 +238,7 @@ TLS Management</h2>
 <hr  />
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 System Management</h2>
 <p><a class="anchor" id="h_sys_info_json"></a></p><ul>
 <li><p class="startli">Get system information </p><div class="fragment"><div class="line">GET /_/sys/info.json</div>
@@ -294,7 +294,7 @@ System Management</h2>
 <hr  />
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 OTA Updates</h2>
 <p><a class="anchor" id="h_ota_info_json"></a></p><ul>
 <li><p class="startli">Get firmware information </p><div class="fragment"><div class="line">GET /_/ota/info.json</div>
@@ -372,7 +372,7 @@ OTA Updates</h2>
 <hr  />
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Authentication Management</h2>
 <dl class="section note"><dt>Note</dt><dd>Only available if the Kconfig option <code>CONFIG_EIF_ENABLE_BASIC_AUTH</code> is enabled.</dd></dl>
 <p><a class="anchor" id="h_apass_update_do"></a></p><ul>
@@ -387,9 +387,9 @@ Authentication Management</h2>
 <p class="startli"><b>Response</b>: <code>HTTP 204 No Content</code></p>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md22"></a>
+<h1><a class="anchor" id="autotoc_md23"></a>
 Caching</h1>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 API Responses</h2>
 <ul>
 <li>No caching for API endpoints</li>
@@ -397,7 +397,7 @@ API Responses</h2>
 <li><code>Expires</code>: <code>0</code></li>
 <li><code>Pragma</code>: <code>no-cache</code></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md24"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Static Files</h2>
 <ul>
 <li><code>Cache-Control</code>: <code>public, max-age=&lt;CONFIG_EIF_WEB_CACHE_MAX_AGE&gt;</code></li>

@@ -25,20 +25,21 @@
 var NAVTREE =
 [
   [ "esp_iot_framework", "index.html", [
+    [ "Author's notes", "md_docs_doxygen_addition_authors_notes.html", null ],
     [ "REST API Device", "md_docs_doxygen_addition_rest_api_device.html", [
-      [ "Authentication", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md1", null ],
-      [ "Map URIs", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md2", null ],
-      [ "HTTP Status Codes", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md3", null ],
-      [ "API Endpoints", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md4", [
-        [ "Wi-Fi Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md5", null ],
-        [ "TLS Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md11", null ],
-        [ "System Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md13", null ],
-        [ "OTA Updates", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md16", null ],
-        [ "Authentication Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md21", null ]
+      [ "Authentication", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md2", null ],
+      [ "Map URIs", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md3", null ],
+      [ "HTTP Status Codes", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md4", null ],
+      [ "API Endpoints", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md5", [
+        [ "Wi-Fi Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md6", null ],
+        [ "TLS Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md12", null ],
+        [ "System Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md14", null ],
+        [ "OTA Updates", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md17", null ],
+        [ "Authentication Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md22", null ]
       ] ],
-      [ "Caching", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md22", [
-        [ "API Responses", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md23", null ],
-        [ "Static Files", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md24", null ]
+      [ "Caching", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md23", [
+        [ "API Responses", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md24", null ],
+        [ "Static Files", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md25", null ]
       ] ]
     ] ],
     [ "Modules", "modules.html", "modules" ],
