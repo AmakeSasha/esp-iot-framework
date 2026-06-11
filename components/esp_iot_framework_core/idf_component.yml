@@ -1,6 +1,7 @@
 name: "esp_iot_framework_core"
 description: "A meta-framework for building reliable, node-based IoT frameworks on Espressif Systems devices"
 version: "0.2.1"
+license: "Apache-2.0"
 targets:
   - esp32
   - esp32s2

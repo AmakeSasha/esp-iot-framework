@@ -186,7 +186,7 @@ esp_err_t eif_wifi_get_test_result(
 ) {
     esp_err_t ret = ESP_OK;
 
-    EIF_LOG_D(_MSG_CALL_GETTER, __func__);
+    EIF_LOG_D(CFG_MSG_CALL_GETTER, __func__);
 
     if (index > cfg.wifi_profiles_count) {
         EIF_LOG_E("Index (%d) is too long (should be up to %d)",
@@ -410,7 +410,7 @@ esp_err_t eif_set_current_wifi_profile_index(uint8_t index) {
         ret = ESP_ERR_INVALID_ARG;
     }
     if (ret == ESP_OK) {
-        EIF_LOG_D(current_wifi_profile_index, "current_wifi_profile_index", 
+        EIF_LOG_D(CFG_MSG_REPLACED, "current_wifi_profile_index", 
             cfg.current_wifi_profile_index, index);
         cfg.current_wifi_profile_index = index;
     }

@@ -92,7 +92,7 @@ void eif_wifi_handler_stop_set(bool stop);
     esp_err_t eif_format_mdns_hostname();
 #endif
 
-/* cert_maneger.c */
+/* tls_maneger.c */
 #ifdef CONFIG_EIF_ENABLE_TLS
     esp_err_t eif_tls_create_creds_and_nvs_save(void);
 #endif
