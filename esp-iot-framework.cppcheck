@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
-    <builddir>esp-iot-framework-cppcheck-build-dir</builddir>
+    <builddir>esp_iot_framework_cppcheck_build_dir</builddir>
     <platform>Unspecified</platform>
     <analyze-all-vs-configs>false</analyze-all-vs-configs>
     <check-headers>true</check-headers>
     <check-unused-templates>true</check-unused-templates>
     <max-ctu-depth>10</max-ctu-depth>
     <includedir>
+        <dir name="build/config"/>
         <dir name="components/esp_iot_framework_core/include"/>
         <dir name="components/esp_iot_framework_core/private_include"/>
         <dir name="components/esp_iot_framework_device/include"/>
         <dir name="components/esp_iot_framework_device/private_include"/>
-        <dir name="../embedded/esp_idf/components/esp_common/include/"/>
-        <dir name="../embedded/esp_idf/components/nvs_flash/include/"/>
-        <dir name="../embedded/esp_idf/components/esp_rom/include/"/>
-        <dir name="../embedded/esp_idf/components/mdns/include/"/>
-        <dir name="../embedded/esp_idf/components/esp_wifi/include/"/>
-        <dir name="../embedded/esp_idf/components/freertos/include/"/>
-        <dir name="../embedded/esp_idf/components/freertos/port/xtensa/include/"/>
+        <dir name="/opt/esp/idf/components/esp_common/include/"/>
+        <dir name="/opt/esp/idf/components/nvs_flash/include/"/>
+        <dir name="/opt/esp/idf/components/esp_rom/include/"/>
+        <dir name="/opt/esp/idf/components/mdns/include/"/>
+        <dir name="/opt/esp/idf/components/esp_wifi/include/"/>
+        <dir name="/opt/esp/idf/components/freertos/include/"/>
+        <dir name="/opt/esp/idf/components/freertos/port/xtensa/include/"/>/>
     </includedir>
     <defines>
         <define name="CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS=3"/>

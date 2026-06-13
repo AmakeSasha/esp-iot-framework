@@ -1,0 +1,21 @@
+{
+  "name": "ESP-IDF v4.4",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "twxs.cmake"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "C_Cpp.clang_format_sortIncludes": true,
+        "editor.quickSuggestions": false,
+        "editor.suggestOnTriggerCharacters": false,
+        "editor.parameterHints.enabled": false
+      }
+    }
+  }
+}
