@@ -37,7 +37,6 @@ if(CONFIG_EIF_ENABLE_TLS)
     list(APPEND code_files "src/tls_manager.c")
     message(STATUS "EIF-CORE: component 'mbedTLS' included")
 else()
-    list(APPEND requires_components esp_http_server)
     message(STATUS "EIF-CORE: component 'mbedTLS' excluded")
 endif()
 
@@ -61,10 +60,8 @@ target_compile_options(${comp_target} PRIVATE "-fmacro-prefix-map=${CMAKE_CURREN
 
 if(TARGET ${comp_target})
     if(CONFIG_EIF_ENABLE_TLS)
-        target_link_libraries(${comp_target} PRIVATE 
-            idf::mbedtls idf::esp_https_server idf::esp_https_ota)
+        target_link_libraries(${comp_target} PRIVATE idf::mbedtls)
     else()
-        target_link_libraries(${comp_target} PRIVATE idf::esp_http_server)
     endif()
     if(CONFIG_EIF_ENABLE_MDNS)
         if(TARGET idf::espressif__mdns)
