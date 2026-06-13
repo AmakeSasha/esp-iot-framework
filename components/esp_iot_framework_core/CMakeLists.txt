@@ -79,7 +79,6 @@ if(TARGET ${comp_target})
     endif()
 endif()
 
-endif()
 get_filename_component(ABSOLUTE_WORKSPACE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../" ABSOLUTE)
 add_custom_target(cppcheck
     COMMAND python3 "${ABSOLUTE_WORKSPACE_PATH}/idf_ext/cppcheck_ext.py"
