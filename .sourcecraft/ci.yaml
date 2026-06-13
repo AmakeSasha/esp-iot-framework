@@ -65,9 +65,10 @@ workflows:
           - name: esp32c3_cpp_riscv
             image: espressif/idf:v5.5
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32c3 && idf.py build"]
-          - name: esp32h2_v5_5
+          - name: esp32c2_v5_5
             image: espressif/idf:v5.5
-            script: ["cd examples/hello_world && idf.py set-target esp32h2 && idf.py build"]
+            script: ["cd examples/hello_world && idf.py set-target esp32c2 && idf.py build"]
+ && idf.py build"
   
   push_esp_idf_to_registry:
     tasks:
