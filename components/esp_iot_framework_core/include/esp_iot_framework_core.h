@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Library: esp_iot_framework_core
- * Folder: components/esp_iot_framework_core/include
+ * Folder: ./components/esp_iot_framework_core/include
  * File: esp_iot_framework_core.h
  * 
  * Copyright 2026 AmakeSasha
@@ -26,6 +26,25 @@
 extern "C" {
 #endif
 
+/**
+ * @defgroup core_root Core
+ * @copydoc md_components_esp_iot_framework_core_README
+ * @{
+ */
+/**
+ * @defgroup core_group Core
+ * @brief The ecosystem engine. Provides framework initialization, Wi-Fi configuration, network profile management, and system lifecycle hooks.
+ */
+/**
+ * @defgroup core_ext_group Core Extension
+ * @brief Low-level API exposing NVS storage, FreeRTOS task management, IP event handlers, and internal configuration queries for creating nodes.
+ */
+/**
+ * @defgroup core_macros_group Core Macros
+ * @brief Preprocessor utilities for standardized logging, sequential error checking, and task spawning.
+ */
+/** @} */
+
 #include <stdint.h>
 #include "esp_err.h"
 #include <stdbool.h>
@@ -42,14 +61,14 @@ extern "C" {
  * #include "esp_iot_framework_core.h"
  * @endcode
  * 
- * The `Core` serves as the essential foundation of the framework. It 
+ * The `CORE` serves as the essential foundation of the framework. It 
  * handles the critical low-level tasks—memory orchestration and system 
  * synchronization—to provide a reliable base for any application.
  * 
  * This module is designed to be universal: whether you are building a simple 
- * sensor node, a complex IoT device, or a multi-functional hub, the `Core` 
+ * sensor node, a complex IoT device, or a multi-functional hub, the `CORE` 
  * remains the mandatory backbone. Even when using high-level libraries on top 
- * of it, the `Core` continues to manage the system lifecycle and does not 
+ * of it, the `CORE` continues to manage the system lifecycle and does not 
  * allow its essential functions to be overridden, ensuring consistent 
  * stability across all types of nodes.
  */
@@ -76,7 +95,7 @@ extern "C" {
  *          set via `eif_*` API with default values. 
  * 
  * @return 
- *    - `ESP_OK`:         Core initialization was successful.
+ *    - `ESP_OK`:         `CORE` initialization was successful.
  *    - `ESP_ERR_NO_MEM`: This error **cannot be returned**, because the system 
  *                        automatically restarts due to the lack of a heap, 
  *                        even when the memory scanner is running.
@@ -306,15 +325,15 @@ esp_err_t eif_set_wifi_config(
  *       (`wifi_profiles_count + 1`). If set to `0`, only the system default 
  *       profile (index 0) will be used. The default profile is hardcoded and 
  *       cannot be changed. The default value is 
- *       <code>@ref EIF_WIFI_PROFILES_DEFAULT_COUNT</code>.
+ *       <code>#EIF_WIFI_PROFILES_DEFAULT_COUNT</code>.
  * 
  * @param wifi_profiles_count Number of extra slots (0 to 
- *                            <code>@ref EIF_WIFI_PROFILES_MAX_COUNT</code>).
+ *                            <code>#EIF_WIFI_PROFILES_MAX_COUNT</code>).
  * 
  * @return 
  *    - `ESP_OK`:              Profile capacity set and state reset.
  *    - `ESP_ERR_INVALID_ARG`: `wifi_profiles_count` exceeds 
- *                             <code>@ref EIF_WIFI_PROFILES_MAX_COUNT</code>.
+ *                             <code>#EIF_WIFI_PROFILES_MAX_COUNT</code>.
  * 
  * 
  * Example of use:

@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Library: esp_iot_framework_core
- * Folder: components/esp_iot_framework_core/src
+ * Folder: ./components/esp_iot_framework_core/src
  * File: config.c
  * 
  * Copyright 2026 AmakeSasha
@@ -28,11 +28,6 @@
 #include "esp_err.h"
 #include "esp_wifi.h"
 #include "esp_ota_ops.h"
-#ifdef CONFIG_EIF_ENABLE_TLS
-    #include "esp_https_server.h"
-#else
-    #include "esp_http_server.h"
-#endif
 #ifdef CONFIG_EIF_ENABLE_MDNS
     #include "mdns.h"
 #endif

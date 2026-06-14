@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp_iot_framework
-# Folder: docs
+# Folder: ./docs
 # File: Doxyfile
 # 
 # Copyright 2026 AmakeSasha
@@ -26,6 +26,7 @@ DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "esp_iot_framework"
 PROJECT_NUMBER         = "v0.1.0-alpha"
 PROJECT_BRIEF          = "© 2026 AmakeSasha, distributed under a license Apache-2.0"
+LAYOUT_FILE            = doxygen/DoxygenLayout.xml
 OUTPUT_LANGUAGE        = English
 TAB_SIZE               = 4
 MARKDOWN_SUPPORT       = YES
@@ -65,13 +66,17 @@ WARN_FORMAT            = "$file:$line: $text"
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 STRIP_FROM_PATH        = ..
-INPUT                  = ../components/esp_iot_framework_core/include ../components/esp_iot_framework_device/include ../docs/doxygen_addition ../README.md
-EXAMPLE_PATH           = ../examples/LICENSE_CC0_1_0 
-HTML_EXTRA_FILES       = ../LICENSE ../NOTICE ../examples/LICENSE_CC0_1_0
+INPUT                  = ../components/esp_iot_framework_core/include \
+						 ../components/esp_iot_framework_core/README.md \
+						 ../components/esp_iot_framework_device/include \
+						 ../components/esp_iot_framework_device/README.md \
+						 ../components/esp_iot_framework_device/REST_API.md \
+						 ../README.md authors_notes.md html
+HTML_EXTRA_FILES       = ../LICENSE ../NOTICE
 INPUT_ENCODING         = UTF-8
 RECURSIVE              = YES
 FILE_PATTERNS          = *.h *.c *.md
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE = html/README.md
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
@@ -84,7 +89,7 @@ VERBATIM_HEADERS       = YES
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_EXTRA_STYLESHEET  = doxygen_addition/styles.css
+HTML_EXTRA_STYLESHEET  = doxygen/styles.css
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
 DISABLE_INDEX          = YES

@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Library: esp_iot_framework_core
- * Folder: components/esp_iot_framework_core/include
+ * Folder: ./components/esp_iot_framework_core/include
  * File: esp_iot_framework_core_mdns.h
  * 
  * Copyright 2026 AmakeSasha
@@ -163,7 +163,7 @@ esp_err_t eif_set_mdns(
  *          @endcode
  * 
  * @param txt_records       Array of mDNS TXT items. The length should be
- *                          <code>@ref EIF_MDNS_TXT_RECORDS_MAX_COUNT</code>.
+ *                          <code>#EIF_MDNS_TXT_RECORDS_MAX_COUNT</code>.
  * @param txt_records_count Number of elements in the array.
  * 
  * @return 

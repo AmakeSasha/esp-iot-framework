@@ -1,4 +1,4 @@
-/*SPDX-License-Identifier: CC0-1.0
+/* SPDX-License-Identifier: CC0-1.0
  * Original Author: Douglas Crockford
  * Source: https://github.com/douglascrockford/JSON-js
  * Date: 2023-05-10

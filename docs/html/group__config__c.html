@@ -55,7 +55,7 @@ $(document).ready(function(){initNavTree('group__config__c.html',''); initResiza
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Core Entry<div class="ingroups"><a class="el" href="group__core__group.html">Core</a></div></div>  </div>
+<div class="title">Core Entry<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__group.html">Core</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -93,7 +93,7 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>This function must be called before any other <code>eif_*</code> functions (like URI registration or Wi-Fi connectivity). This function is <b>mandatory</b> for the framework to work.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>Calling this function overwrites any parameters previously set via <code>eif_*</code> API with default values.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd><ul>
-<li><code>ESP_OK</code>: Core initialization was successful.</li>
+<li><code>ESP_OK</code>: <code>CORE</code> initialization was successful.</li>
 <li><code>ESP_ERR_NO_MEM</code>: This error <b>cannot be returned</b>, because the system automatically restarts due to the lack of a heap, even when the memory scanner is running.</li>
 </ul>
 </dd></dl>

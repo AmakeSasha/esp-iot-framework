@@ -55,7 +55,7 @@ $(document).ready(function(){initNavTree('group__core__ext__tasks.html',''); ini
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Task Management<div class="ingroups"><a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
+<div class="title">Task Management<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -158,7 +158,7 @@ Functions</h2></td></tr>
 <li><code>ESP_ERR_NO_MEM</code>: Memory could not be allocated due to the lack of an empty block of the required size.</li>
 </ul>
 </dd></dl>
-<p>Example of use (but it's better to use <a class="el" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf">EIF_TASK_LAUNCH</a> macro): </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
+<p>Example of use (but it's better to use <a class="el" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf" title="Spawns a system task using standardized, auto-resolved configuration macros.">EIF_TASK_LAUNCH</a> macro): </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;freertos/FreeRTOS.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;freertos/task.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_ext.h&quot;</span></div>
@@ -188,7 +188,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:88</div></div>
 <div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:221</div></div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>If double-spawn restrictions are not required (e.g., creating multiple instances of the same task), pass a pointer to a temporary standalone task handle variable instead of the main module handle.</dd></dl>
-<p>Example of use (without double-call protection, but it's better to use <a class="el" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf">EIF_TASK_LAUNCH</a> macro): </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
+<p>Example of use (without double-call protection, but it's better to use <a class="el" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf" title="Spawns a system task using standardized, auto-resolved configuration macros.">EIF_TASK_LAUNCH</a> macro): </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;freertos/FreeRTOS.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;freertos/task.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_ext.h&quot;</span></div>

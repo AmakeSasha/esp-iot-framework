@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Library: esp_iot_framework_core
- * Folder: components/esp_iot_framework_core/include
+ * Folder: ./components/esp_iot_framework_core/include
  * File: esp_iot_framework_core_ext.h
  * 
  * Copyright 2026 AmakeSasha
@@ -710,13 +710,13 @@ esp_err_t eif_nvs_value_load_malloc(
  *       overwrite it, you will get an error.
  * 
  * @param index Profile index slot. Must be from `1` to 
- *              <code>@ref EIF_WIFI_PROFILES_MAX_COUNT</code>.
+ *              <code>#EIF_WIFI_PROFILES_MAX_COUNT</code>.
  * @param ssid  Wi-Fi SSID string. Cannot be `NULL`. The length should be from
- *              <code>@ref EIF_WIFI_SSID_MIN_LEN</code> to 
- *              <code>@ref EIF_WIFI_SSID_MAX_LEN</code>.
+ *              <code>#EIF_WIFI_SSID_MIN_LEN</code> to 
+ *              <code>#EIF_WIFI_SSID_MAX_LEN</code>.
  * @param pass  Wi-Fi Password string. Cannot be `NULL`. The length should be
- *              from <code>@ref EIF_WIFI_PASS_MIN_LEN</code> to 
- *              <code>@ref EIF_WIFI_PASS_MAX_LEN</code>.
+ *              from <code>#EIF_WIFI_PASS_MIN_LEN</code> to 
+ *              <code>#EIF_WIFI_PASS_MAX_LEN</code>.
  * 
  * @return 
  *    - `ESP_OK`:               Profile validated and saved successfully.
@@ -757,18 +757,18 @@ esp_err_t eif_nvs_wifi_profile_save(
  * Valid index range: `(index >= 0) && (index <= WIFI_PROFILES_MAX_COUNT)`
  * 
  * @note Querying profile 0 directly returns system-hardcoded credentials
- *       (<code>@ref EIF_WIFI_SSID_DEFAULT</code> and 
- *       <code>@ref EIF_WIFI_PASS_DEFAULT</code>), completely bypassing 
+ *       (<code>#EIF_WIFI_SSID_DEFAULT</code> and 
+ *       <code>#EIF_WIFI_PASS_DEFAULT</code>), completely bypassing 
  *       flash memory access. Any other profile index
  *       explicitly queries the underlying NVS partition.
  * 
  * 
  * @param index    Profile index slot. Must be from `0` to 
- *                 <code>@ref EIF_WIFI_PROFILES_MAX_COUNT</code>.
+ *                 <code>#EIF_WIFI_PROFILES_MAX_COUNT</code>.
  * @param ssid_out Buffer for SSID. Cannot be `NULL`. The length should be
- *              <code>@ref EIF_WIFI_SSID_MAX_LEN</code>.
+ *              <code>#EIF_WIFI_SSID_MAX_LEN</code>.
  * @param pass_out Buffer for password. Cannot be `NULL`. The length should be
- *              <code>@ref EIF_WIFI_PASS_MAX_LEN</code>.
+ *              <code>#EIF_WIFI_PASS_MAX_LEN</code>.
  * 
  * @return 
  *    - `ESP_OK`:                Profile loaded successfully.
@@ -818,8 +818,8 @@ esp_err_t eif_nvs_wifi_profile_load(
  * generates and saves the default empty-password line (`Basic YWRtaW46`).
  * 
  * @param pass Raw password string. Cannot be `NULL`. The length should be from
- *             <code>@ref EIF_BASIC_AUTH_PASS_MIN_LEN</code>
- *             to <code>@ref EIF_BASIC_AUTH_PASS_MAX_LEN</code>.
+ *             <code>#EIF_BASIC_AUTH_PASS_MIN_LEN</code>
+ *             to <code>#EIF_BASIC_AUTH_PASS_MAX_LEN</code>.
  * 
  * @return 
  *    - `ESP_OK`:               Password successfully encoded, formatted, and
@@ -868,7 +868,7 @@ esp_err_t eif_nvs_basic_auth_line_save(const unsigned char * const pass);
  * 
  * @param buf_out Buffer for Basic Auth string (e.g., `Basic YWRtaW46cGFzcw==`). 
  *                Cannot be `NULL`. The length should be
- *                <code>@ref EIF_BASIC_AUTH_LINE_MAX_LEN</code>.
+ *                <code>#EIF_BASIC_AUTH_LINE_MAX_LEN</code>.
  * 
  * @return 
  *    - `ESP_OK`:              Credential string located and loaded successfully.
@@ -967,7 +967,7 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  *    - `ESP_ERR_NO_MEM`:        Memory could not be allocated due to the lack
  *                               of an empty block of the required size.
  * 
- * Example of use (but it's better to use @ref EIF_TASK_LAUNCH macro):
+ * Example of use (but it's better to use #EIF_TASK_LAUNCH macro):
  * @code{c}
  * #include "esp_log.h"
  * #include "freertos/FreeRTOS.h"
@@ -1002,7 +1002,7 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  *       task handle variable instead of the main module handle.
  * 
  * Example of use (without double-call protection, but it's better to use 
- * @ref EIF_TASK_LAUNCH macro):
+ * #EIF_TASK_LAUNCH macro):
  * @code{c}
  * #include "esp_log.h"
  * #include "freertos/FreeRTOS.h"

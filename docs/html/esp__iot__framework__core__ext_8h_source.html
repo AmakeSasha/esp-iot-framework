@@ -59,7 +59,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* SPDX-License-Identifier: Apache-2.0</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Project: esp-iot-framework</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Library: esp_iot_framework_core</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Folder: components/esp_iot_framework_core/include</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Folder: ./components/esp_iot_framework_core/include</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * File: esp_iot_framework_core_ext.h</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * Copyright 2026 AmakeSasha</span></div>
@@ -768,13 +768,13 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;<span class="comment"> *       overwrite it, you will get an error.</span></div>
 <div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;<span class="comment"> * @param index Profile index slot. Must be from `1` to </span></div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;<span class="comment"> *              &lt;code&gt;@ref EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;<span class="comment"> *              &lt;code&gt;#EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;<span class="comment"> * @param ssid  Wi-Fi SSID string. Cannot be `NULL`. The length should be from</span></div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;<span class="comment"> *              &lt;code&gt;@ref EIF_WIFI_SSID_MIN_LEN&lt;/code&gt; to </span></div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;<span class="comment"> *              &lt;code&gt;@ref EIF_WIFI_SSID_MAX_LEN&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;<span class="comment"> *              &lt;code&gt;#EIF_WIFI_SSID_MIN_LEN&lt;/code&gt; to </span></div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;<span class="comment"> *              &lt;code&gt;#EIF_WIFI_SSID_MAX_LEN&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;<span class="comment"> * @param pass  Wi-Fi Password string. Cannot be `NULL`. The length should be</span></div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;<span class="comment"> *              from &lt;code&gt;@ref EIF_WIFI_PASS_MIN_LEN&lt;/code&gt; to </span></div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;<span class="comment"> *              &lt;code&gt;@ref EIF_WIFI_PASS_MAX_LEN&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;<span class="comment"> *              from &lt;code&gt;#EIF_WIFI_PASS_MIN_LEN&lt;/code&gt; to </span></div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;<span class="comment"> *              &lt;code&gt;#EIF_WIFI_PASS_MAX_LEN&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;<span class="comment"> * @return </span></div>
 <div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;<span class="comment"> *    - `ESP_OK`:               Profile validated and saved successfully.</span></div>
@@ -815,18 +815,18 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;<span class="comment"> * Valid index range: `(index &gt;= 0) &amp;&amp; (index &lt;= WIFI_PROFILES_MAX_COUNT)`</span></div>
 <div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;<span class="comment"> * @note Querying profile 0 directly returns system-hardcoded credentials</span></div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;<span class="comment"> *       (&lt;code&gt;@ref EIF_WIFI_SSID_DEFAULT&lt;/code&gt; and </span></div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;<span class="comment"> *       &lt;code&gt;@ref EIF_WIFI_PASS_DEFAULT&lt;/code&gt;), completely bypassing </span></div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;<span class="comment"> *       (&lt;code&gt;#EIF_WIFI_SSID_DEFAULT&lt;/code&gt; and </span></div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;<span class="comment"> *       &lt;code&gt;#EIF_WIFI_PASS_DEFAULT&lt;/code&gt;), completely bypassing </span></div>
 <div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;<span class="comment"> *       flash memory access. Any other profile index</span></div>
 <div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;<span class="comment"> *       explicitly queries the underlying NVS partition.</span></div>
 <div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;<span class="comment"> * @param index    Profile index slot. Must be from `0` to </span></div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;<span class="comment"> *                 &lt;code&gt;@ref EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;<span class="comment"> *                 &lt;code&gt;#EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;<span class="comment"> * @param ssid_out Buffer for SSID. Cannot be `NULL`. The length should be</span></div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;<span class="comment"> *              &lt;code&gt;@ref EIF_WIFI_SSID_MAX_LEN&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;<span class="comment"> *              &lt;code&gt;#EIF_WIFI_SSID_MAX_LEN&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;<span class="comment"> * @param pass_out Buffer for password. Cannot be `NULL`. The length should be</span></div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;<span class="comment"> *              &lt;code&gt;@ref EIF_WIFI_PASS_MAX_LEN&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;<span class="comment"> *              &lt;code&gt;#EIF_WIFI_PASS_MAX_LEN&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;<span class="comment"> * @return </span></div>
 <div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;<span class="comment"> *    - `ESP_OK`:                Profile loaded successfully.</span></div>
@@ -876,8 +876,8 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;<span class="comment"> * generates and saves the default empty-password line (`Basic YWRtaW46`).</span></div>
 <div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;<span class="comment"> * @param pass Raw password string. Cannot be `NULL`. The length should be from</span></div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;<span class="comment"> *             &lt;code&gt;@ref EIF_BASIC_AUTH_PASS_MIN_LEN&lt;/code&gt;</span></div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;<span class="comment"> *             to &lt;code&gt;@ref EIF_BASIC_AUTH_PASS_MAX_LEN&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;<span class="comment"> *             &lt;code&gt;#EIF_BASIC_AUTH_PASS_MIN_LEN&lt;/code&gt;</span></div>
+<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;<span class="comment"> *             to &lt;code&gt;#EIF_BASIC_AUTH_PASS_MAX_LEN&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;<span class="comment"> * @return </span></div>
 <div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;<span class="comment"> *    - `ESP_OK`:               Password successfully encoded, formatted, and</span></div>
@@ -926,7 +926,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;<span class="comment"> * @param buf_out Buffer for Basic Auth string (e.g., `Basic YWRtaW46cGFzcw==`). </span></div>
 <div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;<span class="comment"> *                Cannot be `NULL`. The length should be</span></div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;<span class="comment"> *                &lt;code&gt;@ref EIF_BASIC_AUTH_LINE_MAX_LEN&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;<span class="comment"> *                &lt;code&gt;#EIF_BASIC_AUTH_LINE_MAX_LEN&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;<span class="comment"> * @return </span></div>
 <div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;<span class="comment"> *    - `ESP_OK`:              Credential string located and loaded successfully.</span></div>
@@ -1025,7 +1025,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;<span class="comment"> *    - `ESP_ERR_NO_MEM`:        Memory could not be allocated due to the lack</span></div>
 <div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;<span class="comment"> *                               of an empty block of the required size.</span></div>
 <div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;<span class="comment"> * </span></div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;<span class="comment"> * Example of use (but it&#39;s better to use @ref EIF_TASK_LAUNCH macro):</span></div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;<span class="comment"> * Example of use (but it&#39;s better to use #EIF_TASK_LAUNCH macro):</span></div>
 <div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;<span class="comment"> * @code{c}</span></div>
 <div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;<span class="comment"> * #include &quot;esp_log.h&quot;</span></div>
 <div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;<span class="comment"> * #include &quot;freertos/FreeRTOS.h&quot;</span></div>
@@ -1060,7 +1060,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;<span class="comment"> *       task handle variable instead of the main module handle.</span></div>
 <div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;<span class="comment"> * </span></div>
 <div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;<span class="comment"> * Example of use (without double-call protection, but it&#39;s better to use </span></div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;<span class="comment"> * @ref EIF_TASK_LAUNCH macro):</span></div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;<span class="comment"> * #EIF_TASK_LAUNCH macro):</span></div>
 <div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;<span class="comment"> * @code{c}</span></div>
 <div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;<span class="comment"> * #include &quot;esp_log.h&quot;</span></div>
 <div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;<span class="comment"> * #include &quot;freertos/FreeRTOS.h&quot;</span></div>

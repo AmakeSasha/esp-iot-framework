@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Library: esp_iot_framework_device
- * Folder: components/esp_iot_framework_device/include
+ * Folder: ./components/esp_iot_framework_device/include
  * File: esp_iot_framework_device_device.h
  * 
  * Copyright 2026 AmakeSasha
@@ -25,6 +25,22 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @defgroup device_root Node: Device
+ * @copydoc md_components_esp_iot_framework_device_README
+ * @{
+ */
+/**
+ * @defgroup device_group Device
+ * @brief Public API for application development. Provides framework initialization, Wi-Fi configuration, network profile management, and system lifecycle hooks.
+ */
+/**
+ * @defgroup device_rest_api REST API
+ * @brief Device REST API documentation.
+ * @details @copydoc md_components_esp_iot_framework_device_REST_API
+ */
+/** @} */
 
 #include <stdint.h>
 #include "esp_err.h"

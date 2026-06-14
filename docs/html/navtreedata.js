@@ -25,38 +25,14 @@
 var NAVTREE =
 [
   [ "esp_iot_framework", "index.html", [
-    [ "Author's notes", "md_docs_doxygen_addition_authors_notes.html", null ],
-    [ "REST API Device", "md_docs_doxygen_addition_rest_api_device.html", [
-      [ "Authentication", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md2", null ],
-      [ "Map URIs", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md3", null ],
-      [ "HTTP Status Codes", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md4", null ],
-      [ "API Endpoints", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md5", [
-        [ "Wi-Fi Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md6", null ],
-        [ "TLS Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md12", null ],
-        [ "System Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md14", null ],
-        [ "OTA Updates", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md17", null ],
-        [ "Authentication Management", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md22", null ]
-      ] ],
-      [ "Caching", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md23", [
-        [ "API Responses", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md24", null ],
-        [ "Static Files", "md_docs_doxygen_addition_rest_api_device.html#autotoc_md25", null ]
-      ] ]
-    ] ],
-    [ "Modules", "modules.html", "modules" ],
-    [ "Data Structures", "annotated.html", [
-      [ "Data Structures", "annotated.html", "annotated_dup" ],
-      [ "Data Structure Index", "classes.html", null ],
-      [ "Data Fields", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Variables", "functions_vars.html", null ]
-      ] ]
-    ] ]
+    [ "Framework Modules", "modules.html", "modules" ],
+    [ "Author's notes", "md_docs_authors_notes.html", null ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"group__config__c.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

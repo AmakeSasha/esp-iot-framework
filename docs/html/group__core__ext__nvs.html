@@ -53,7 +53,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <div id="doc-content">
 <div class="header">
   <div class="headertitle">
-<div class="title">Non-Volatile Storage (NVS)<div class="ingroups"><a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
+<div class="title">Non-Volatile Storage (NVS)<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -384,9 +384,9 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <dl class="section note"><dt>Note</dt><dd>Profile index <code>0</code> is system-reserved (read-only). If you try to overwrite it, you will get an error.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">index</td><td>Profile index slot. Must be from <code>1</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c">EIF_WIFI_PROFILES_MAX_COUNT</a></code>. </td></tr>
-    <tr><td class="paramname">ssid</td><td>Wi-Fi SSID string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga26a797b8507c185ac48e27d966cd5f34">EIF_WIFI_SSID_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
-    <tr><td class="paramname">pass</td><td>Wi-Fi Password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga1eb7a99abb300a875c3ef4d93039541a">EIF_WIFI_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">index</td><td>Profile index slot. Must be from <code>1</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>. </td></tr>
+    <tr><td class="paramname">ssid</td><td>Wi-Fi SSID string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga26a797b8507c185ac48e27d966cd5f34" title="Minimum SSID length without null-terminator. Example of the value: Q">EIF_WIFI_SSID_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator. Example of the value: My_Super_Long_Wifi_Network_Name">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
+    <tr><td class="paramname">pass</td><td>Wi-Fi Password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga1eb7a99abb300a875c3ef4d93039541a" title="Minimum Password length for WPA2 without null-terminator. Example of the value: 12345678">EIF_WIFI_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator. Example of the value: this_is_a_very_long_password...">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -450,12 +450,12 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 </div><div class="memdoc">
 <p>Reads SSID and password from NVS into pre-allocated buffers.</p>
 <p>Valid index range: <code>(index &gt;= 0) &amp;&amp; (index &lt;= WIFI_PROFILES_MAX_COUNT)</code></p>
-<dl class="section note"><dt>Note</dt><dd>Querying profile 0 directly returns system-hardcoded credentials (<code><a class="el" href="group__core__ext__consts.html#gacae2fbc25c60f67acb2c5b71f5ec2bf9">EIF_WIFI_SSID_DEFAULT</a></code> and <code><a class="el" href="group__core__ext__consts.html#ga7a8f6903aa1b09ab9eb66f26c1d1d33d">EIF_WIFI_PASS_DEFAULT</a></code>), completely bypassing flash memory access. Any other profile index explicitly queries the underlying NVS partition.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Querying profile 0 directly returns system-hardcoded credentials (<code><a class="el" href="group__core__ext__consts.html#gacae2fbc25c60f67acb2c5b71f5ec2bf9" title="Default SSID value.">EIF_WIFI_SSID_DEFAULT</a></code> and <code><a class="el" href="group__core__ext__consts.html#ga7a8f6903aa1b09ab9eb66f26c1d1d33d" title="Default Password value.">EIF_WIFI_PASS_DEFAULT</a></code>), completely bypassing flash memory access. Any other profile index explicitly queries the underlying NVS partition.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">index</td><td>Profile index slot. Must be from <code>0</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c">EIF_WIFI_PROFILES_MAX_COUNT</a></code>. </td></tr>
-    <tr><td class="paramname">ssid_out</td><td>Buffer for SSID. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
-    <tr><td class="paramname">pass_out</td><td>Buffer for password. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">index</td><td>Profile index slot. Must be from <code>0</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>. </td></tr>
+    <tr><td class="paramname">ssid_out</td><td>Buffer for SSID. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator. Example of the value: My_Super_Long_Wifi_Network_Name">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
+    <tr><td class="paramname">pass_out</td><td>Buffer for password. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator. Example of the value: this_is_a_very_long_password...">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -506,7 +506,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <p>If an empty password (length <code>0</code>) is provided, the function automatically generates and saves the default empty-password line (<code>Basic YWRtaW46</code>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pass</td><td>Raw password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga48c047f9ef9f6f388bba5c45c7d1268e">EIF_BASIC_AUTH_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga7aa81b184d0ca114ee98d6d1a38b481e">EIF_BASIC_AUTH_PASS_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">pass</td><td>Raw password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga48c047f9ef9f6f388bba5c45c7d1268e" title="Minimum Password length without null-terminator. Example of the value: ㅤ">EIF_BASIC_AUTH_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga7aa81b184d0ca114ee98d6d1a38b481e" title="Maximum Password length including null-terminator. Example of the value: 1234567890qwerty0qwerty0qwer...">EIF_BASIC_AUTH_PASS_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -562,7 +562,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <p>Example of output written to <code>buf_out</code>: </p><div class="fragment"><div class="line">Basic YWRtaW46bXlfcGFzcw==</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">buf_out</td><td>Buffer for Basic Auth string (e.g., <code>Basic YWRtaW46cGFzcw==</code>). Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9">EIF_BASIC_AUTH_LINE_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">buf_out</td><td>Buffer for Basic Auth string (e.g., <code>Basic YWRtaW46cGFzcw==</code>). Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9" title="Maximum Line length including null-terminator. Example of the value: Basic YWRtaW46MTIzNDU2Nzg5MHF3ZX...">EIF_BASIC_AUTH_LINE_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>

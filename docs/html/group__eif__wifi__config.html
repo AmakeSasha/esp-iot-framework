@@ -55,7 +55,7 @@ $(document).ready(function(){initNavTree('group__eif__wifi__config.html',''); in
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Wi-Fi Configuration<div class="ingroups"><a class="el" href="group__core__group.html">Core</a></div></div>  </div>
+<div class="title">Wi-Fi Configuration<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__group.html">Core</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -166,16 +166,16 @@ Functions</h2></td></tr>
 <p>Defines how many additional user-defined slots are available in NVS.</p>
 <dl class="section note"><dt>Note</dt><dd>This function must be called after <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code> but before <code><a class="el" href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350" title="Initialize Non-Volatile Storage (NVS) and framework data.">eif_nvs_initialize()</a></code>.</dd></dl>
 <p><a class="anchor" id="wifi_profiles_desc"></a><code>Profile</code> - configuration for a specific Wi-Fi network (<code>SSID</code> and <code>Password</code>). Profiles are managed in a circular (ring) list: if a connection attempt fails or if the active connection is broken, the framework automatically rotates to the next available slot. Upon reaching the end of the list, it wraps around to the first profile. This cycle continues indefinitely until a stable connection is re-established.</p>
-<dl class="section note"><dt>Note</dt><dd>The total number of managed profiles is equal to (<code>wifi_profiles_count + 1</code>). If set to <code>0</code>, only the system default profile (index 0) will be used. The default profile is hardcoded and cannot be changed. The default value is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The total number of managed profiles is equal to (<code>wifi_profiles_count + 1</code>). If set to <code>0</code>, only the system default profile (index 0) will be used. The default profile is hardcoded and cannot be changed. The default value is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wifi_profiles_count</td><td>Number of extra slots (0 to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c">EIF_WIFI_PROFILES_MAX_COUNT</a></code>).</td></tr>
+    <tr><td class="paramname">wifi_profiles_count</td><td>Number of extra slots (0 to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>).</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><ul>
 <li><code>ESP_OK</code>: Profile capacity set and state reset.</li>
-<li><code>ESP_ERR_INVALID_ARG</code>: <code>wifi_profiles_count</code> exceeds <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c">EIF_WIFI_PROFILES_MAX_COUNT</a></code>.</li>
+<li><code>ESP_ERR_INVALID_ARG</code>: <code>wifi_profiles_count</code> exceeds <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>.</li>
 </ul>
 </dd></dl>
 <p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_err.h&quot;</span></div>

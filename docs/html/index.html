@@ -56,39 +56,48 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="title">esp_iot_framework Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> </p><div align="center"> <h1>esp_iot_framework <small>v0.2.1</small></h1>
+<div class="textblock"><p><a class="anchor" id="md_docs_html_README"></a></p>
+<div align="center"> <h1>esp_iot_framework <small>v0.2.1</small></h1>
 </div><div align="center"> <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
-</div><div align="center"> </div><h1>Usage</h1>
-<p>To start using this framework, you must apply the settings from <code>sdkconfig.defaults</code> and connect it to your project. Configure your project's main <code>CMakeLists.txt</code> like this (replace <code>&lt;TEXT&gt;</code> with the desired values, without the <code>&lt;&gt;</code>s themselves): </p><div class="fragment"><div class="line">cmake_minimum_required(VERSION 3.16)</div>
-<div class="line"> </div>
-<div class="line">list(APPEND SDKCONFIG_DEFAULTS &quot;&lt;PATH_TO_FRAMEWORK&gt;/components/esp_iot_framework_device/sdkconfig.defaults&quot;)</div>
-<div class="line"># If you are using your own FILE, add this line:</div>
-<div class="line"># list(APPEND SDKCONFIG_DEFAULTS &quot;sdkconfig.defaults&quot;)</div>
-<div class="line">list(APPEND EXTRA_COMPONENT_DIRS &quot;&lt;PATH_TO_FRAMEWORK&gt;/components&quot;)</div>
-<div class="line"> </div>
-<div class="line">include($ENV{IDF_PATH}/tools/cmake/project.cmake)</div>
-<div class="line">project(&lt;NAME_PROJECT&gt;)</div>
-</div><!-- fragment --><h1>Storage, documentation and mirrors</h1>
+</div><div align="center"> </div><h1>Core Architecture Concept</h1>
+<p>The framework is built around three fundamental concepts, decoupling the infrastructure from your business logic:</p>
+<ul>
+<li><b>Core (<code><a href="group__core__root.html">esp_iot_framework_core</a></code>)</b> - The ecosystem engine. It handles connectivity, security, and device resilience. Anything built on top of <em>Core</em> inherits these critical properties for free.</li>
+</ul>
+<hr  />
+<ul>
+<li><p class="startli"><b>Nodes</b> - The abstraction of a network unit built on top of <em>Core</em>. A Node implements a specific interaction pattern with the outside world — whether it is a web interface, an industrial protocol, or a cloud bridge. It hides the complexity of network interaction and provides a clean layer for business logic development.</p>
+<p class="startli">Examples of nodes:</p><ul>
+<li><b>Device (<code><a href="group__device__root.html">esp_iot_framework_device</a></code>)</b> - A foundational network node based on Espressif chips, designed for building fully manageable end IoT products.</li>
+</ul>
+</li>
+</ul>
+<hr  />
+<ul>
+<li><b>End Devices</b> - A Node augmented with your product's business logic. Smart bulbs, relays, sensors, actuators — any target scenario boils down to implementing that single, unique logic on top of the chosen Node.</li>
+</ul>
+<h1>Storage, documentation and mirrors</h1>
 <p>To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Platform   </th><th class="markdownTableHeadNone">Links    </th></tr>
+<th class="markdownTableHeadLeft">Platform   </th><th class="markdownTableHeadLeft">Links    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><b>SourceCraft</b> (main)   </td><td class="markdownTableBodyNone"><a href="https://sourcecraft.dev/amakesasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
+<td class="markdownTableBodyLeft"><b>SourceCraft</b> (main)   </td><td class="markdownTableBodyLeft"><a href="https://sourcecraft.dev/amakesasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
  <a href="https://amakesasha.sourcecraft.site/esp-iot-framework/">📄 <b>Documentation</b></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><b>GitHub</b> (mirror)   </td><td class="markdownTableBodyNone"><a href="https://github.com/AmakeSasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
+<td class="markdownTableBodyLeft"><b>GitHub</b> (mirror)   </td><td class="markdownTableBodyLeft"><a href="https://github.com/AmakeSasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
  <a href="https://amakesasha.github.io/esp-iot-framework/html/index.html">📄 <b>Documentation</b></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><b>GitVerse</b> (mirror)   </td><td class="markdownTableBodyNone"><a href="https://gitverse.ru/amakesasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
+<td class="markdownTableBodyLeft"><b>GitVerse</b> (mirror)   </td><td class="markdownTableBodyLeft"><a href="https://gitverse.ru/amakesasha/esp-iot-framework">🔗 <b>Source code</b></a> <br  />
  <b>There is no documentation</b>   </td></tr>
 </table>
 <h1>License</h1>
-<p>This project is licensed under the <a href="./LICENSE"><code>Apache 2.0 License</code></a>, with the following exceptions:</p><ul>
-<li>Contents of the <a href="./examples"><code>/examples</code></a> directory, which are dedicated to the <code>Public Domain</code> (or licensed under <a href="./examples/LICENSE_CC0_1_0"><code>CC0 1.0</code></a>, at your option).</li>
+<p>This project is licensed under the <a href="md_docs_html_license_page.html"><code>Apache 2.0 License</code></a>, with the following exceptions:</p>
+<ul>
+<li>Contents of the <a href="index.html"><code>/examples</code></a> directory, which are dedicated to the <code>Public Domain</code> (or licensed under <a href="md_docs_html_license_cc0_page.html"><code>CC0 1.0</code></a>, at your option).</li>
 <li>Contents of the <code>firmware</code> branch (see its own <code>README</code> for details).</li>
 </ul>
-<p>Please also refer to the <a href="./NOTICE"><code>NOTICE</code></a> file. </p>
+<p>Please also refer to the <a href="md_docs_html_notice_page.html"><code>NOTICE</code></a> file. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

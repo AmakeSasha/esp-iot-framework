@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Library: esp_iot_framework_core
- * Folder: components/esp_iot_framework_core/src
+ * Folder: ./components/esp_iot_framework_core/src
  * File: tls_manager.c
  * 
  * Copyright 2026 AmakeSasha

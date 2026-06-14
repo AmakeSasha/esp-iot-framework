@@ -14,17 +14,10 @@ This software contains components from the ESP-IDF SDK and its dependencies, whi
 
 For full license information, see:
 * https://espressif.com/
+* https://github.com/espressif
 * https://github.com/espressif/esp-idf/
 
 This product also includes third-party software:
 - json2.js - Created by Douglas Crockford
   * Source: https://github.com/douglascrockford/JSON-js/
   * License: Public Domain (as stated in the source code comments)
-
-Trademarks and Logos:
-* The "SourceCraft" logo and name are trademarks of SourceCraft (https://sourcecraft.dev).
-* The "GitHub" logo and name are trademarks of GitHub, Inc. (https://github.com).
-* The "GitVerse" name are trademarks of GitVerse (https://gitverse.ru).
-* The "Doxygen" logo and name are trademarks of Dimitri van Heesch (https://www.doxygen.nl).
-
-These and all other trademarks, logos, and service marks are the property of their respective owners. Their use in this project is for informational purposes only; this project is not affiliated with, sponsored by, or endorsed by the respective trademark holders.
