@@ -57,7 +57,7 @@ $(document).ready(function(){initNavTree('md_components_esp_iot_framework_device
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><div align="center"> <h1>esp_iot_framework_device <small>v0.2.1</small></h1>
-</div><div align="center"> <h3>A framework for creating reliable IoT devices based on the Espressif Systems devices</h3>
+</div><div align="center"> <h3>A framework for creating reliable IoT devices based on the Espressif Systems chips</h3>
 </div><div align="center"> </div><div align="center"> <code>esp32</code> &bull; <code>esp32s2</code> &bull; <code>esp32s3</code> &bull; <code>esp32c2</code> &bull; <code>esp32c3</code> &bull; <code>esp32c6</code> </div><div align="center"> </div><p><code>esp_iot_framework_device</code> is a foundational network node based on Espressif chips, designed for building fully manageable end IoT products. Operating on top of <code>esp_iot_framework_core</code>, it provides an out-of-the-box HTTP/HTTPS web server with a comprehensive REST API for remote administration alongside an optional Web Admin GUI. For an in-depth look, check out the <a href="./group__device__group.html">documentation</a>.</p>
 <h2>Architecture and Under the Hood</h2>
 <p>The web server's lifecycle is tightly synchronized with network events: it spins up automatically as soon as the device acquires an IP address and gracefully stops, freeing up system resources, if the connection is lost.</p>
