@@ -235,8 +235,15 @@ static esp_err_t eif_generate_self_signed_cert(
         ), "set_extension_key");
 
     if (ret == 0) {
-        mbedtls_x509write_crt_set_subject_key_identifier(&crt);
-        mbedtls_x509write_crt_set_authority_key_identifier(&crt);
+        #if MBEDTLS_VERSION_NUMBER < 0x03000000
+            mbedtls_x509write_crt_set_subject_key_identifier(&crt);
+            mbedtls_x509write_crt_set_authority_key_identifier(&crt);
+        #else
+            #if defined(MBEDTLS_SHA1_C)
+                mbedtls_x509write_crt_set_subject_key_identifier(&crt);
+                mbedtls_x509write_crt_set_authority_key_identifier(&crt);
+            #endif
+        #endif
     }
 
     /* 7. Write PEM */

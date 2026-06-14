@@ -15,7 +15,7 @@ workflows:
               username: iam
               password: ${{ secrets.REGISTRY_PAT }}
             script: ["cd examples/hello_world && idf.py set-target esp32 && idf.py build"]
-          - name: esp32s3_cpp
+          - name: esp32s3_cpp_xtensa
             image:
               name: pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest
               username: iam
@@ -50,7 +50,7 @@ workflows:
           - name: esp32
             image: espressif/idf:v5.5
             script: ["cd examples/hello_world && idf.py set-target esp32 && idf.py build"]
-          - name: esp32s2_cpp
+          - name: esp32s2_cpp_xtensa
             image: espressif/idf:v5.5
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32s2 && idf.py build"]
           - name: esp32s3
@@ -65,10 +65,10 @@ workflows:
           - name: esp32c3_cpp_riscv
             image: espressif/idf:v5.5
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32c3 && idf.py build"]
-          - name: esp32h2_v5_5
+          - name: esp32c2
             image: espressif/idf:v5.5
-            script: ["cd examples/hello_world && idf.py set-target esp32h2 && idf.py build"]
-  
+            script: ["cd examples/hello_world && idf.py set-target esp32c2 && idf.py build"]
+
   push_esp_idf_to_registry:
     tasks:
       - name: copy_4_4
