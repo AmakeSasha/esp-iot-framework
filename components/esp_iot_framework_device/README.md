@@ -21,7 +21,7 @@
 
 <div align="center">
     <h1>esp_iot_framework_device <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
-    <h3>A framework for creating reliable IoT devices based on the Espressif Systems devices</h3>
+    <h3>A framework for creating reliable IoT devices based on the Espressif Systems chips</h3>
     <p>
         <code>esp32</code> &bull; 
         <code>esp32s2</code> &bull; 

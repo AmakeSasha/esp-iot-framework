@@ -14,4 +14,4 @@ jobs:
           git clone --mirror "https://git.sourcecraft.dev/amakesasha/esp-iot-framework.git" repo
           cd repo
           
-          git push "https://oauth2:${{ secrets.SYNC_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" +refs/*:refs/*
+          git push "https://oauth2:${{ secrets.SYNC_GITHUB_TOKEN }}@${{ secrets.SYNC_MIRROR_URL }}/${{ secrets.SYNC_REPOSITORY_URL }}.git" +refs/*:refs/*

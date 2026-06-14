@@ -1,5 +1,5 @@
 name: "esp_iot_framework_device"
-description: "A framework for creating reliable IoT devices based on the Espressif Systems devices"
+description: "A framework for creating reliable IoT devices based on the Espressif Systems chips"
 version: "0.1.1"
 dependencies:
   idf: ">=4.4.0"
