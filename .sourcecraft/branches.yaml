@@ -7,7 +7,7 @@ branch_protection:
         - prevent_deletion
 
     - target: branch
-      matches: ["**", "!feature/**", "!bugfix/**", "!hotfix/**", "!chore/**", "!docs/**", "!refactor/**", "!release/**"]
+      matches: ["**", "!firmware/**", "!feature/**", "!bugfix/**", "!hotfix/**", "!chore/**", "!docs/**", "!refactor/**", "!release/**"]
       message: "Invalid branch name. Allowed prefixes: feature/, bugfix/, hotfix/, chore/, docs/, refactor/, release/"
       rules:
         - prevent_creation
