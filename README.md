@@ -45,11 +45,11 @@ The framework is built around three fundamental concepts, decoupling the infrast
 
 To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.
 
-|Platform|Links|
-|:---|:---|
-|**SourceCraft** (main)|[🔗 **Source code**](https://sourcecraft.dev/amakesasha/esp-iot-framework) <br> [📄 **Documentation**](https://amakesasha.sourcecraft.site/esp-iot-framework/)|
-|**GitHub** (mirror)|[🔗 **Source code**](https://github.com/AmakeSasha/esp-iot-framework) <br>      [📄 **Documentation**](https://amakesasha.github.io/esp-iot-framework/html/index.html)|
-|**GitVerse** (mirror)|[🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     **There is no documentation**|
+| Platform               | Links                                                                                                                                                                  |
+|:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **SourceCraft** (main) | [🔗 **Source code**](https://sourcecraft.dev/amakesasha/esp-iot-framework) <br> [📄 **Documentation**](https://amakesasha.sourcecraft.site/esp-iot-framework/)         |
+| **GitHub** (mirror)    | [🔗 **Source code**](https://github.com/AmakeSasha/esp-iot-framework) <br>      [📄 **Documentation**](https://amakesasha.github.io/esp-iot-framework/html/index.html) |
+| **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     **There is no documentation**                                                          |
 
 <h1>License</h1>
 

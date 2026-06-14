@@ -67,11 +67,11 @@ WARN_FORMAT            = "$file:$line: $text"
 #---------------------------------------------------------------------------
 STRIP_FROM_PATH        = ..
 INPUT                  = ../components/esp_iot_framework_core/include \
-						 ../components/esp_iot_framework_core/README.md \
-						 ../components/esp_iot_framework_device/include \
-						 ../components/esp_iot_framework_device/README.md \
-						 ../components/esp_iot_framework_device/REST_API.md \
-						 ../README.md authors_notes.md html
+                         ../components/esp_iot_framework_core/README.md \
+                         ../components/esp_iot_framework_device/include \
+                         ../components/esp_iot_framework_device/README.md \
+                         ../components/esp_iot_framework_device/REST_API.md \
+                         ../README.md authors_notes.md html
 HTML_EXTRA_FILES       = ../LICENSE ../NOTICE
 INPUT_ENCODING         = UTF-8
 RECURSIVE              = YES

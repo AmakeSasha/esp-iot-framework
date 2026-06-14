@@ -66,12 +66,12 @@ Content-Length: 20
   * `/sys`
     * `/info.json` - [Get system information](#h_sys_info_json)
     * `/reboot.do` - [Reboot system](#h_sys_reboot_do)
-   	* `/ota`
+       * `/ota`
     * `/info.json` - [Get firmware information](#h_ota_info_json)
     * `/update.do` - [Upload firmware](#h_ota_update_do)
     * `/confirm.do` - [Confirm successful update](#h_ota_confirm_do)
     * `/rollback.do` - [Rollback firmware](#h_ota_rollback_do)
-   	* `/apass` - only if the Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled
+       * `/apass` - only if the Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled
     * `/update.do` - [Update administrator password](#h_apass_update_do)
 
 ## HTTP Status Codes
