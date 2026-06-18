@@ -18,8 +18,6 @@
 # limitations under the License.
 
 import os, subprocess, shutil, re
-from css_html_js_minify import html_minify, css_minify
-from jsmin import jsmin
 
 def get_dir_size(path):
     total = 0
@@ -30,7 +28,7 @@ def get_dir_size(path):
     return total
 
 def generate_md_page(docs_dir, src_path, title, name):
-    dst_path = os.path.join(docs_dir, "html", f"{name}_page.md")
+    dst_path = os.path.normpath(os.path.join(docs_dir, "html", f"{name}_page.md"))
 
     if os.path.exists(src_path):
         with open(src_path, "r", encoding="utf-8") as src:
@@ -45,8 +43,8 @@ def generate_md_page(docs_dir, src_path, title, name):
         return dst_path
     return None
 
-def generate_readme(docs_dir, src_path):
-    dst_path = os.path.join(docs_dir, "html", f"README.md")
+def generate_readme(docs_dir, src_path, filename):
+    dst_path = os.path.normpath(os.path.join(docs_dir, "html", filename))
 
     replacement_data = [
         {
@@ -79,6 +77,8 @@ def generate_readme(docs_dir, src_path):
         with open(src_path, "r", encoding="utf-8") as src:
             content = src.read()
 
+            content = re.sub(r"\(\.\./\.\./docs/invalid_link#(group__.*?\.html)\)", r"(\1)", content)
+
             for item in replacement_data:
                 content = re.sub(item["original"], item["converted"], content)
 
@@ -93,24 +93,46 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.normpath(os.path.join(script_dir, ".."))
     docs_dir = os.path.normpath(os.path.join(project_root, "docs"))
-    html_dir = os.path.join(docs_dir, "html")
+    html_dir = os.path.normpath(os.path.join(docs_dir, "html"))
+
     list_files = [
         {
             "src": "LICENSE",
             "title": "Apache 2.0 License",
             "name": "license",
+            "type": "file",
             "dst_path": ""
         },
         {
             "src": "examples/LICENSE_CC0_1_0",
             "title": "CC0 1.0 License",
             "name": "license_cc0",
+            "type": "file",
             "dst_path": ""
         },
         {
             "src": "NOTICE",
             "title": "NOTICE for Apache 2.0",
             "name": "notice",
+            "type": "file",
+            "dst_path": ""
+        },
+        {
+            "src": "README.md",
+            "name": "README.md",
+            "type": "readme",
+            "dst_path": ""
+        },
+        {
+            "src": "components/esp_iot_framework_core/README.md",
+            "name": "README_CORE.md",
+            "type": "readme",
+            "dst_path": ""
+        },
+        {
+            "src": "components/esp_iot_framework_device/README.md",
+            "name": "README_DEVICE.md",
+            "type": "readme",
             "dst_path": ""
         }
     ]
@@ -122,11 +144,14 @@ def main():
 
     print(">>> Formating files...")
     for item in list_files:
-        src_path = os.path.join(project_root, item["src"])
-        item["dst_path"] = generate_md_page(docs_dir, src_path, item["title"], item["name"])
-
-    readme_src = os.path.join(project_root, "README.md")
-    readme_dst_path = generate_readme(docs_dir, readme_src)
+        src_path = os.path.normpath(os.path.join(project_root, item["src"]))
+        
+        if item["type"] == "file":
+            item["dst_path"] = generate_md_page(
+                docs_dir, src_path, item["title"], item["name"]
+            )
+        elif item["type"] == "readme":
+            item["dst_path"] = generate_readme(docs_dir, src_path, item["name"])
 
     print(">>> Launching Doxygen...")
     process = subprocess.Popen(
@@ -143,11 +168,9 @@ def main():
             if "Unexpected html tag <font>" not in line and "Unexpected html tag </font>" not in line:
                 print(line)
 
-
     print(">>> Removing formatted files...")
     for item in list_files:
         os.remove(item["dst_path"])
-    os.remove(readme_dst_path)
 
     size = get_dir_size("html")
 

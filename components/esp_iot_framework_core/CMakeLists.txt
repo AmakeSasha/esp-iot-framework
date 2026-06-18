@@ -77,15 +77,11 @@ if(TARGET ${comp_target})
 endif()
 
 get_filename_component(ABSOLUTE_WORKSPACE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../" ABSOLUTE)
+find_package(Python3 REQUIRED)
+
 add_custom_target(cppcheck
-    COMMAND python3 "${ABSOLUTE_WORKSPACE_PATH}/tools/cppcheck_ext.py"
+    COMMAND "${Python3_EXECUTABLE}" "${ABSOLUTE_WORKSPACE_PATH}/tools/cppcheck_ext.py"
     COMMENT "Running custom cppcheck analysis..."
-    USES_TERMINAL
-    VERBATIM
-)
-add_custom_target(autoflash
-    COMMAND python3 "${ABSOLUTE_WORKSPACE_PATH}/tools/autoflash_ext.py"
-    COMMENT "Running custom autoflash update process..."
     USES_TERMINAL
     VERBATIM
 )

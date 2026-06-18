@@ -36,6 +36,18 @@ menu "ESP IoT Framework"
                 optimizes the HTTP server's memory footprint by stripping 
                 unnecessary resource-serving logic.
 
+        config EIF_ENABLE_WEB_FAVICON
+            bool "Embed Web Favicon (Logo)"
+            default y
+            depends on EIF_ENABLE_WEB_ADMIN_GUI
+            help
+                Include the official EIF branding icon in the firmware.
+
+                - Enabled: The PNG favicon is embedded into Flash memory and 
+                  served automatically on '/favicon.ico' requests.
+                - Disabled: Strips the binary image from the firmware, saving 
+                  extra Flash space and removing the favicon route handler.
+
         config EIF_WEB_CACHE_MAX_AGE
             int "Static files cache max-age (seconds)"
             range 0 31536000

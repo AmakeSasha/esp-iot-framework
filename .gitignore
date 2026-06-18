@@ -1,4 +1,5 @@
 build/
+.codeassistant/
 sdkconfig
 dependencies.lock
 sdkconfig.old

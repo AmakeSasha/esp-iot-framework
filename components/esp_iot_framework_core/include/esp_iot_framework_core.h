@@ -28,7 +28,7 @@ extern "C" {
 
 /**
  * @defgroup core_root Core
- * @copydoc md_components_esp_iot_framework_core_README
+ * @copydoc md_docs_html_README_CORE
  * @{
  */
 /**

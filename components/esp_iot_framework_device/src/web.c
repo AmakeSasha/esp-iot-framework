@@ -129,6 +129,7 @@
     #define RESP_TYPE_CSS  "text/css; charset=UTF-8"
     #define RESP_TYPE_HTML "text/html; charset=UTF-8"
     #define RESP_TYPE_TXT  "text/plain; charset=UTF-8"
+    #define RESP_TYPE_PNG  "image/png"
 
     #define ESP_WARN_CACHE_HIT 1234
     #define ETAG_VALUE "\"" __DATE__ " " __TIME__ "\""
@@ -353,7 +354,7 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
     }
 
     #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
-        EIF_DEFINE_HTTP_FILE(e401_html_gz,   RESP_TYPE_HTML, false)
+        EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
     #endif
     EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
     EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
@@ -366,6 +367,10 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
 
     EIF_DEFINE_HTTP_FILE(json2_js_gz,     RESP_TYPE_JS,   true)
     EIF_DEFINE_HTTP_FILE(api_js_gz,       RESP_TYPE_JS,   true)
+
+    #ifdef CONFIG_EIF_ENABLE_WEB_FAVICON
+        EIF_DEFINE_HTTP_FILE(logo_png_gz,     RESP_TYPE_PNG,  true)
+    #endif
 
     static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
         EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
@@ -1242,6 +1247,9 @@ esp_err_t eif_server_launch(void) {
     static const httpd_uri_t handlers[] = {
         #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
             /* ------------------------- Files ------------------------ */
+            #ifdef CONFIG_EIF_ENABLE_WEB_FAVICON
+                {"/favicon.ico",          HTTP_GET, sendf_logo_png_gz,     NULL},
+            #endif
             {"/_/files/license.txt",  HTTP_GET, sendf_LICENSE_gz,      NULL},
             {"/_/files/index.html",   HTTP_GET, sendf_index_html_gz,   NULL},
             {"/_/files/network.html", HTTP_GET, sendf_network_html_gz, NULL},

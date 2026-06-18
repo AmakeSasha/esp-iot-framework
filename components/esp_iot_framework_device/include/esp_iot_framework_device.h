@@ -28,7 +28,7 @@ extern "C" {
 
 /**
  * @defgroup device_root Node: Device
- * @copydoc md_components_esp_iot_framework_device_README
+ * @copydoc md_docs_html_README_DEVICE
  * @{
  */
 /**

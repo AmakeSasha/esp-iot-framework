@@ -26,7 +26,6 @@ DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "esp_iot_framework"
 PROJECT_NUMBER         = "v0.1.0-alpha"
 PROJECT_BRIEF          = "© 2026 AmakeSasha, distributed under a license Apache-2.0"
-LAYOUT_FILE            = doxygen/DoxygenLayout.xml
 OUTPUT_LANGUAGE        = English
 TAB_SIZE               = 4
 MARKDOWN_SUPPORT       = YES
@@ -67,12 +66,16 @@ WARN_FORMAT            = "$file:$line: $text"
 #---------------------------------------------------------------------------
 STRIP_FROM_PATH        = ..
 INPUT                  = ../components/esp_iot_framework_core/include \
-                         ../components/esp_iot_framework_core/README.md \
+                         html/README_CORE.md \
                          ../components/esp_iot_framework_device/include \
-                         ../components/esp_iot_framework_device/README.md \
+                         html/README_DEVICE.md \
                          ../components/esp_iot_framework_device/REST_API.md \
-                         ../README.md authors_notes.md html
-HTML_EXTRA_FILES       = ../LICENSE ../NOTICE
+                         html/README.md \
+                         authors_notes.md \
+                         html
+LAYOUT_FILE            = doxygen/DoxygenLayout.xml
+HTML_HEADER            = doxygen/header.html
+HTML_EXTRA_FILES       = images/logo.png ../LICENSE ../NOTICE
 INPUT_ENCODING         = UTF-8
 RECURSIVE              = YES
 FILE_PATTERNS          = *.h *.c *.md

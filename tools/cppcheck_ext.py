@@ -17,12 +17,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import subprocess
-import sys
-import os
+import subprocess, sys, os
 
-def callback_cppcheck(action=None, ctx=None, args=None):
-    print("Running `cppcheck` (MISRA C)...")
+def callback():
+    print(">>> Running `cppcheck` (MISRA C)...")
     
     cwd = os.getcwd()
     
@@ -43,24 +41,30 @@ def callback_cppcheck(action=None, ctx=None, args=None):
     ]
     
     try:
-        res = subprocess.run(command, check=True, text=True, cwd=config_dir)
+        res = subprocess.run(command, check=True, text=True, cwd=config_dir, timeout=120)
+        print(">>> `cppcheck` analysis completed successfully")
         sys.exit(res.returncode)
     except subprocess.CalledProcessError as e:
-        print(f"`cppcheck` failed with exit code: {e.returncode}")
+        print(f">>> Error: `cppcheck` failed with exit code: {e.returncode}")
+        print(f">>> Stderr: {e.stderr}")
         sys.exit(e.returncode)
     except FileNotFoundError:
-        print("Error: 'cppcheck' not found.")
+        print(">>> Error: 'cppcheck' not found. Install it via your package manager")
+        print(">>>   Ubuntu/Debian: sudo apt install cppcheck")
+        print(">>>   macOS: brew install cppcheck")
+        sys.exit(1)
+    except OSError as e:
+        print(f">>> Error: Failed to run `cppcheck`: {e.strerror}")
+        sys.exit(1)
+    except subprocess.TimeoutExpired:
+        print(">>> Error: `cppcheck` timed out (120s). Project may be too large.")
+        sys.exit(1)
+    except PermissionError:
+        print(">>> Error: No permission to execute `cppcheck` or access project files")
+        sys.exit(1)
+    except MemoryError:
+        print(">>> Error: Not enough memory to run `cppcheck`")
         sys.exit(1)
 
-def action_extensions(base_actions, project_path):
-    return {
-        "actions": {
-            "cppcheck": {
-                "callback": callback_cppcheck,
-                "help": "Run `cppcheck` MISRA C analysis using framework config",
-            }
-        }
-    }
-
 if __name__ == "__main__":
-    callback_cppcheck()
+    callback()

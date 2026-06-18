@@ -36,23 +36,23 @@
 #define MSG_CALL_FUNC "Calling the function '%s'"
 
 #define TASK_REBOOT_NAME "t_reboot"
-#define TASK_REBOOT_SIZE CONFIG_EIF_REBOOT_TASK_STACK_SIZE
-#define TASK_REBOOT_PRIORITY configMAX_PRIORITIES - 1
+#define TASK_REBOOT_SIZE (CONFIG_EIF_REBOOT_TASK_STACK_SIZE)
+#define TASK_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
 
 #define TASK_MEMORY_MONITOR_NAME "t_memory_monitor"
-#define TASK_MEMORY_MONITOR_SIZE 2048
+#define TASK_MEMORY_MONITOR_SIZE 1108
 #define TASK_MEMORY_MONITOR_PRIORITY 5
 
 #define TASK_TLS_RECREATE_NAME "t_tls_recreate"
-#define TASK_TLS_RECREATE_SIZE 10240
+#define TASK_TLS_RECREATE_SIZE 7680
 #define TASK_TLS_RECREATE_PRIORITY 5
 
 #define TASK_ROLLBACK_AND_REBOOT_NAME "t_rollback_reboot"
-#define TASK_ROLLBACK_AND_REBOOT_SIZE 4096
-#define TASK_ROLLBACK_AND_REBOOT_PRIORITY 5
+#define TASK_ROLLBACK_AND_REBOOT_SIZE (CONFIG_EIF_REBOOT_TASK_STACK_SIZE + 512)
+#define TASK_ROLLBACK_AND_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
 
 #define TASK_WIFI_TEST_NAME "t_wifi_tesr"
-#define TASK_WIFI_TEST_SIZE 4096
+#define TASK_WIFI_TEST_SIZE 2048
 #define TASK_WIFI_TEST_PRIORITY 5
 
 /* --- */
@@ -186,6 +186,7 @@ static void eif_task_tls_recreate(void* arg) {
         EIF_LOG_I("TLS credentials recreated. System will restart...");
         vTaskDelay(pdMS_TO_TICKS(500));
         EIF_LOG_I("Restarting...");
+
         (void)eif_task_reboot_launch();
     }
 
@@ -206,7 +207,7 @@ esp_err_t eif_task_tls_recreate_launch(void) {
     return ret;
 }
 
-/* ------ rollback_and_reboot ------ */
+/* ------ rollback_and_reboot ------ */ 
 static void eif_task_rollback_and_reboot(void *arg) {
     EIF_TAG_WITH_UNUSED "rollback_and_reboot";
     (void)arg;
@@ -216,6 +217,7 @@ static void eif_task_rollback_and_reboot(void *arg) {
     eif_system_reboot_prepare();
     vTaskDelay(pdMS_TO_TICKS(300));
     EIF_LOG_W("Reboot system...");
+
     esp_ota_mark_app_invalid_rollback_and_reboot();
 
     /* Cleanup */
@@ -254,7 +256,7 @@ static void eif_task_wifi_test(void *arg) {
     };
     
     vTaskDelay(pdMS_TO_TICKS(500)); 
-    EIF_LOG_I("Starting WiFi test for param #%zu", (size_t)new_index);
+    EIF_LOG_I("Starting WiFi test for param #%d", new_index);
     eif_wifi_handler_stop_set(true);
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_disconnect(), 
         "Disconnecting from current AP failed");
@@ -264,9 +266,9 @@ static void eif_task_wifi_test(void *arg) {
     }
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_wifi_set_config_from_profile(new_index), 
-        "Applying configuration for param #%zu failed", (size_t)new_index);
+        "Applying configuration for param #%d failed", new_index);
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_connect(),
-        "Initiating connection to param #%zu failed", (size_t)new_index);
+        "Initiating connection to param #%d failed", new_index);
 
     for (int i = 0; (ret == ESP_OK) && (i < 30); i++) {
         vTaskDelay(pdMS_TO_TICKS(500));
@@ -294,7 +296,7 @@ static void eif_task_wifi_test(void *arg) {
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_set_wifi_result_test(new_index, res),
         "Failed to save WiFi test result");
 
-    EIF_LOG_I("Restoring connection to param #%zu", origin_index);
+    EIF_LOG_I("Restoring connection to param #%d", origin_index);
 
     EIF_SHOW_ESP_ERR_T(ret, esp_wifi_disconnect(),
         "Disconnect request failed");
@@ -306,6 +308,7 @@ static void eif_task_wifi_test(void *arg) {
         "Reconnecting to original AP failed");
 
     (void)eif_wifi_handler_stop_set(false);
+
 
     /* Cleanup */
     x_eif_exclusive_sys_handle = NULL; 
@@ -344,7 +347,7 @@ static void eif_task_memory_monitor(void *arg) {
         CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE,
         CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
 
-    while (!critical_fragmentation) {
+    for (;;) {
         size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
         bool is_critical = largest_block < CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE;
 
@@ -358,15 +361,18 @@ static void eif_task_memory_monitor(void *arg) {
             count_critical_checks++;
 
             EIF_LOG_W(
-                "Memory pressure detected. Largest block %zu < %d bytes, %d/%d checks",
+                "Memory pressure detected. Largest block %d < %d bytes, %d/%d checks",
                 largest_block, CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE,
                 count_critical_checks, CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
 
-            if (count_critical_checks 
-                >= (uint8_t)CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS) {
+            if (count_critical_checks >= (uint8_t)CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS) {
                 EIF_LOG_E("CRITICAL MEMORY! Initiating reboot the system...");
 
-                critical_fragmentation = true;
+                x_eif_exclusive_sys_handle = NULL;
+                (void)eif_task_reboot_launch();
+                x_eif_service_task_handle = NULL;
+
+                vTaskDelete(NULL); 
             }
         } else {
             count_critical_checks = 0;
@@ -378,10 +384,7 @@ static void eif_task_memory_monitor(void *arg) {
     }
 
     /* Cleanup */
-    x_eif_exclusive_sys_handle = NULL;
-    (void)eif_task_reboot_launch();
-    x_eif_service_task_handle = NULL;
-    vTaskDelete(NULL); 
+    
 }
 
 esp_err_t eif_task_memory_monitor_launch(void) {
