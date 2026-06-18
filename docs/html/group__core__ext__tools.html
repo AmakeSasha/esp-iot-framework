@@ -181,7 +181,7 @@ Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> check_string_bounds(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> user_input) {</div>
 <div class="line">    <span class="keyword">const</span> <span class="keywordtype">size_t</span> calculated_len = <a class="code" href="group__core__ext__tools.html#ga060be4f367ecc079baa66ac26689d15f">eif_strnlen</a>(user_input, MAX_BUFFER_SIZE);</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="keywordflow">if</span> (calculated_len &gt; MAX_BUFFER_SIZE) {</div>
 <div class="line">        ESP_LOGE(TAG, <span class="stringliteral">&quot;Input string exceeds maximum allowed limit of %u.&quot;</span>, MAX_BUFFER_SIZE);</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>

@@ -116,7 +116,7 @@ Macros</h2></td></tr>
 <div class="line"><span class="comment">     * respective system parameters (NAME, SIZE, PRIORITY). This compile-time</span></div>
 <div class="line"><span class="comment">     * binding enforces architecture-level mutual exclusion and prevents runtime</span></div>
 <div class="line"><span class="comment">     * mismatch risks. The macro expansion is strictly deterministic and</span></div>
-<div class="line"><span class="comment">     * guaranteed to resolve only into valid, well-defined C identifiers. </span></div>
+<div class="line"><span class="comment">     * guaranteed to resolve only into valid, well-defined C identifiers.</span></div>
 <div class="line"><span class="comment">     */</span> \</div>
 <div class="line">    (m_ret) = <a class="code" href="group__core__ext__tasks.html#gae6a7dc06d3fc028a7d226099e562d012">eif_task_common_spawn</a>( \</div>
 <div class="line">        &amp;(m_handle), \</div>
@@ -158,7 +158,7 @@ Macros</h2></td></tr>
 <div class="line"><span class="keyword">static</span> TaskHandle_t mqtt_hdl = NULL;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> mqtt_task_worker(<span class="keywordtype">void</span> *arg) {</div>
-<div class="line">    <span class="keywordflow">while</span>(1) { </div>
+<div class="line">    <span class="keywordflow">while</span>(1) {</div>
 <div class="line">        vTaskDelay(pdMS_TO_TICKS(1000));</div>
 <div class="line">    }</div>
 <div class="line">    mqtt_hdl = NULL;</div>
@@ -171,7 +171,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Macro expands to use TASK_MQTT_NAME, TASK_MQTT_SIZE, etc.</span></div>
 <div class="line">    <a class="code" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf">EIF_TASK_LAUNCH</a>(ret, mqtt_hdl, MQTT, mqtt_task_worker);</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="keywordflow">if</span> (ret != ESP_OK) {</div>
 <div class="line">        <a class="code" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a>(<span class="stringliteral">&quot;Failed to launch MQTT task&quot;</span>);</div>
 <div class="line">    }</div>
@@ -192,7 +192,7 @@ Macros</h2></td></tr>
 <div class="line"><span class="preprocessor">#define TASK_NAME_PRIORITY 5</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> task_worker(<span class="keywordtype">void</span> *arg) {</div>
-<div class="line">    <span class="keywordflow">while</span>(1) { </div>
+<div class="line">    <span class="keywordflow">while</span>(1) {</div>
 <div class="line">        vTaskDelay(pdMS_TO_TICKS(1000));</div>
 <div class="line">    }</div>
 <div class="line">    vTaskDelete(NULL);</div>
@@ -201,10 +201,10 @@ Macros</h2></td></tr>
 <div class="line"><span class="keywordtype">void</span> start_app_tasks(<span class="keywordtype">void</span>) {</div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a> <span class="stringliteral">&quot;APP_START&quot;</span>;</div>
 <div class="line">    esp_err_t ret = ESP_OK;</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 5; i++) {</div>
 <div class="line">        TaskHandle_t hdl = NULL;</div>
-<div class="line">        </div>
+<div class="line">       </div>
 <div class="line">        <span class="comment">// Macro expands to use TASK_NAME_NAME, TASK_NAME_SIZE, etc.</span></div>
 <div class="line">        <a class="code" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf">EIF_TASK_LAUNCH</a>(ret, hdl, NAME, task_worker);</div>
 <div class="line">        <span class="keywordflow">if</span> (ret != ESP_OK) {</div>

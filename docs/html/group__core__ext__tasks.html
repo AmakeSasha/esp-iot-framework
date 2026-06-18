@@ -92,7 +92,7 @@ Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
@@ -170,7 +170,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="keyword">static</span> TaskHandle_t mqtt_hdl = NULL;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> mqtt_task_worker(<span class="keywordtype">void</span> *arg) {</div>
-<div class="line">    <span class="keywordflow">while</span>(1) { </div>
+<div class="line">    <span class="keywordflow">while</span>(1) {</div>
 <div class="line">        vTaskDelay(pdMS_TO_TICKS(1000));</div>
 <div class="line">    }</div>
 <div class="line">    mqtt_hdl = NULL;</div>
@@ -180,7 +180,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="keywordtype">void</span> start_app_tasks(<span class="keywordtype">void</span>) {</div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a> <span class="stringliteral">&quot;APP_START&quot;</span>;</div>
 <div class="line">    esp_err_t ret = ESP_OK;</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    ret = <a class="code" href="group__core__ext__tasks.html#gae6a7dc06d3fc028a7d226099e562d012">eif_task_common_spawn</a>(mqtt_hdl, mqtt_task_worker, <span class="stringliteral">&quot;mqtt_service&quot;</span>, 4096, 5);</div>
 <div class="line">    <span class="keywordflow">if</span> (ret != ESP_OK) {</div>
 <div class="line">        <a class="code" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a>(<span class="stringliteral">&quot;Failed to launch MQTT task&quot;</span>);</div>
@@ -197,7 +197,7 @@ Functions</h2></td></tr>
 <div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_macros.h&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> task_worker(<span class="keywordtype">void</span> *arg) {</div>
-<div class="line">    <span class="keywordflow">while</span>(1) { </div>
+<div class="line">    <span class="keywordflow">while</span>(1) {</div>
 <div class="line">        vTaskDelay(pdMS_TO_TICKS(1000));</div>
 <div class="line">    }</div>
 <div class="line">    vTaskDelete(NULL);</div>
@@ -206,10 +206,10 @@ Functions</h2></td></tr>
 <div class="line"><span class="keywordtype">void</span> start_app_tasks(<span class="keywordtype">void</span>) {</div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a> <span class="stringliteral">&quot;APP_START&quot;</span>;</div>
 <div class="line">    esp_err_t ret = ESP_OK;</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 5; i++) {</div>
 <div class="line">        TaskHandle_t hdl = NULL;</div>
-<div class="line">        </div>
+<div class="line">       </div>
 <div class="line">        ret = <a class="code" href="group__core__ext__tasks.html#gae6a7dc06d3fc028a7d226099e562d012">eif_task_common_spawn</a>(hdl, task_worker, <span class="stringliteral">&quot;task_worker&quot;</span>, 2048, 3);</div>
 <div class="line">        <span class="keywordflow">if</span> (ret != ESP_OK) {</div>
 <div class="line">            <a class="code" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a>(<span class="stringliteral">&quot;Failed to launch task iteration %d&quot;</span>, i);</div>

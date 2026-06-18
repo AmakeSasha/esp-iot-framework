@@ -2,15 +2,15 @@
  * Project: esp_iot_framework
  * Folder: ./docs/doxygen
  * File: styles.css
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,9 +55,9 @@ a.el:hover { text-decoration: underline; }
 }
 
 /* 3. SIDEBAR (NAV-TREE) */
-#nav-tree { 
-  background-color: WhiteSmoke !important; 
-  background-image: none !important; 
+#nav-tree {
+  background-color: WhiteSmoke !important;
+  background-image: none !important;
 }
 #nav-tree .selected {
   background-image: none !important;
@@ -114,7 +114,7 @@ dd { margin: 5px 0 0 0; }
 }
 
 /* 6. CODE SNIPPETS & FRAGMENTS */
-.paramname, code, 
+.paramname, code,
 div.fragment, .textblock .fragment, .fragment {
   background-color: GhostWhite;
   border: 1px solid LightSteelBlue;
@@ -150,7 +150,7 @@ a.code {
 }
 .fragment .keyword { color: Lime !important; }
 .fragment .keywordflow { color: Orange !important; }
-.fragment .keywordtype { color: #56b6c2 !important; } 
+.fragment .keywordtype { color: #56b6c2 !important; }
 .fragment .preprocessor { color: Green !important; }
 .fragment .comment { color: Red !important;}
 .fragment .contents a:visited { color: Teal !important;}
@@ -159,8 +159,8 @@ a.code {
 /* 8. DARK MODE */
 @media (prefers-color-scheme: dark) {
   * { color: White !important; }
-  .memname, 
-  .memparam, 
+  .memname,
+  .memparam,
   .memproto td {
     background-color: transparent !important;
     border: none !important;

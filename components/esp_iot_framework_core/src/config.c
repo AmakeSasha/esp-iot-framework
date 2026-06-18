@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/src
  * File: config.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -103,12 +103,12 @@ esp_err_t eif_core_initialize(void) {
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_task_memory_monitor_launch(),
         "Failed to launch memory monitor");
     if (ret != ESP_OK) {
-        /* @note Since this is the initial stage, no active services require 
+        /* @note Since this is the initial stage, no active services require
          * a graceful shutdown; immediate restart is justified. */
-        esp_restart(); 
+        esp_restart();
     }
 
-    if (ret == ESP_OK) { 
+    if (ret == ESP_OK) {
         EIF_LOG_I("Configuration initialized successfully");
     }
 
@@ -177,7 +177,7 @@ uint8_t eif_wifi_get_current_profile_index(void) {
 }
 
 esp_err_t eif_wifi_get_test_result(
-    uint8_t index, eif_wifi_test_result * const out_result 
+    uint8_t index, eif_wifi_test_result * const out_result
 ) {
     esp_err_t ret = ESP_OK;
 
@@ -189,7 +189,7 @@ esp_err_t eif_wifi_get_test_result(
         ret = ESP_ERR_INVALID_ARG;
     }
     if (ret == ESP_OK) {
-        (void)memcpy(out_result, &cfg.wifi_test_results[index], 
+        (void)memcpy(out_result, &cfg.wifi_test_results[index],
             sizeof(eif_wifi_test_result));
     }
 
@@ -222,7 +222,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
     EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
 
     if (wifi_profiles_count > EIF_WIFI_PROFILES_MAX_COUNT) {
-        EIF_LOG_E("wifi_profiles_count (%d) exceeds MAX (%d)", 
+        EIF_LOG_E("wifi_profiles_count (%d) exceeds MAX (%d)",
             wifi_profiles_count, EIF_WIFI_PROFILES_MAX_COUNT);
         ret = ESP_ERR_INVALID_ARG;
     }
@@ -246,12 +246,12 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 /*    mDNS Configuration    */
 /* ======================== */
 #ifdef CONFIG_EIF_ENABLE_MDNS
-    /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format 
-     * string is constant and the input 'index' is a bounded 'uint8_t' value. 
-     * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit 
-     * and explicitly checking the return value against the buffer size to 
-     * ensure the output is not truncated and a null-terminator is present. 
-     * This approach is more maintainable and less error-prone than manual 
+    /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
+     * string is constant and the input 'index' is a bounded 'uint8_t' value.
+     * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
+     * and explicitly checking the return value against the buffer size to
+     * ensure the output is not truncated and a null-terminator is present.
+     * This approach is more maintainable and less error-prone than manual
      * string manipulation. */
     esp_err_t eif_set_mdns(
         const char * const hostname, const char * const instance_name
@@ -280,7 +280,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         if (ret == ESP_OK) {
             /* Allowed by the '@deviation [Rule 21.6]' definition specified
              * before this function. */
-            int res = snprintf(cfg.mdns_hostname, 
+            int res = snprintf(cfg.mdns_hostname,
                 sizeof(cfg.mdns_hostname), "%s", hostname);
             if ((res < 0) || (res >= (int)sizeof(cfg.mdns_hostname))) {
                 ret = ESP_ERR_INVALID_SIZE;
@@ -289,7 +289,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         if (ret == ESP_OK) {
             /* Allowed by the '@deviation [Rule 21.6]' definition specified
              * before this function. */
-            int res = snprintf(cfg.mdns_instance_name, 
+            int res = snprintf(cfg.mdns_instance_name,
                 sizeof(cfg.mdns_instance_name), "%s", instance_name);
             if ((res < 0) || (res >= (int)sizeof(cfg.mdns_instance_name))) {
                 ret = ESP_ERR_INVALID_SIZE;
@@ -301,7 +301,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
     }
 
     esp_err_t eif_set_mdns_records(
-        const mdns_txt_item_t txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT], 
+        const mdns_txt_item_t txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT],
         size_t txt_records_count
     ) {
         esp_err_t ret = ESP_OK;
@@ -309,7 +309,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
 
         cfg.mdns_txt_records_count = 0U;
-        (void)memset((void *)cfg.mdns_txt_records, 0U, 
+        (void)memset((void *)cfg.mdns_txt_records, 0U,
             sizeof(cfg.mdns_txt_records));
 
         if (txt_records_count > (size_t)EIF_MDNS_TXT_RECORDS_MAX_COUNT) {
@@ -343,12 +343,12 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 
 /* Private setters */
 #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
-    /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format 
-     * string is constant and the input 'index' is a bounded 'uint8_t' value. 
-     * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit 
-     * and explicitly checking the return value against the buffer size to 
-     * ensure the output is not truncated and a null-terminator is present. 
-     * This approach is more maintainable and less error-prone than manual 
+    /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
+     * string is constant and the input 'index' is a bounded 'uint8_t' value.
+     * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
+     * and explicitly checking the return value against the buffer size to
+     * ensure the output is not truncated and a null-terminator is present.
+     * This approach is more maintainable and less error-prone than manual
      * string manipulation. */
     esp_err_t eif_format_mdns_hostname() {
         esp_err_t ret = ESP_OK;
@@ -366,7 +366,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 
             /* Allowed by the '@deviation [Rule 21.6]' definition specified
              * before this function. */
-            int res = snprintf(final_name, sizeof(final_name), 
+            int res = snprintf(final_name, sizeof(final_name),
                 "%s-%02x%02x%02x", hostname, mac[3], mac[4], mac[5]);
             if ((res < 0) || (res >= (int)sizeof(final_name))) {
                 ret = ESP_ERR_INVALID_SIZE;
@@ -374,14 +374,14 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         }
 
         if (ret == ESP_OK) {
-            (void)memcpy((void *)cfg.mdns_hostname, (const void *)final_name, 
+            (void)memcpy((void *)cfg.mdns_hostname, (const void *)final_name,
                 (size_t)MDNS_HOSTNAME_FULL_MAX_LEN);
             cfg.mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN - 1U] = '\0';
         }
-        if (ret == ESP_OK) {            
+        if (ret == ESP_OK) {           
             if (eif_strempty(cfg.mdns_instance_name)) {
                 (void)strlcpy(
-                    cfg.mdns_instance_name, 
+                    cfg.mdns_instance_name,
                     cfg.mdns_hostname,
                     sizeof(cfg.mdns_instance_name)
                 );
@@ -405,7 +405,7 @@ esp_err_t eif_set_current_wifi_profile_index(uint8_t index) {
         ret = ESP_ERR_INVALID_ARG;
     }
     if (ret == ESP_OK) {
-        EIF_LOG_D(CFG_MSG_REPLACED, "current_wifi_profile_index", 
+        EIF_LOG_D(CFG_MSG_REPLACED, "current_wifi_profile_index",
             cfg.current_wifi_profile_index, index);
         cfg.current_wifi_profile_index = index;
     }

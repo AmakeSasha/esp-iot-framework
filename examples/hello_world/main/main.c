@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: CC0-1.0
- * 
+ *
  * This example code is in the `Public Domain` (or `CC0 1.0` licensed, at your option).
  */
 
@@ -24,8 +24,9 @@ void app_main(void) {
     ESP_ERROR_CHECK(eif_nvs_initialize());
     ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, 1));
     ESP_ERROR_CHECK(eif_wifi_initialize());
-    
+
+
     while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000)); 
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

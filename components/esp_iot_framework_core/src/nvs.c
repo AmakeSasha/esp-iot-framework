@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/src
  * File: nvs.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -92,7 +92,7 @@ esp_err_t eif_nvs_value_save(
     if (ret == ESP_OK) {
         value_len = eif_strnlen(value, max_len);
     }
-    /* @note The macro includes the null-terminator, so 1 is subtracted 
+    /* @note The macro includes the null-terminator, so 1 is subtracted
      * to get the correct character count for the length check. */
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_check_range(
         value_len, min_len, max_len - 1U, it_can_be_empty
@@ -101,9 +101,9 @@ esp_err_t eif_nvs_value_save(
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
         nvs_open(NVS_STORAGE_NAME, NVS_READWRITE, &handle),
         NVS_ERR_OPEN_WRITE, key);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_set_str(handle, key, value), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_set_str(handle, key, value),
         NVS_ERR_SAVE, key);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_commit(handle), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_commit(handle),
         NVS_ERR_COMMIT, key);
 
     if (ret == ESP_OK) {
@@ -131,7 +131,7 @@ esp_err_t eif_nvs_value_load(
         NVS_ERR_OPEN_WRITE, key);
 
     size_t length = max_len;
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_get_str(handle, key, value_out, &length), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_get_str(handle, key, value_out, &length),
         NVS_ERR_LOAD, key);
     if (ret == ESP_ERR_NVS_NOT_FOUND) {
         EIF_LOG_W(NVS_ERR_MISSING, key);
@@ -168,7 +168,7 @@ esp_err_t eif_nvs_value_load_malloc(
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
         nvs_open(NVS_STORAGE_NAME, NVS_READWRITE, &handle),
         NVS_ERR_OPEN_WRITE, key);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_get_str(handle, key, NULL, &length), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_get_str(handle, key, NULL, &length),
         NVS_ERR_MISSING, key);
 
     if (ret == ESP_OK) {
@@ -179,8 +179,8 @@ esp_err_t eif_nvs_value_load_malloc(
         }
     }
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, 
-        nvs_get_str(handle, key, *value_out, &length), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        nvs_get_str(handle, key, *value_out, &length),
         NVS_ERR_LOAD, key);
     if (ret == ESP_OK) {
         *value_out_len = length;
@@ -205,12 +205,12 @@ esp_err_t eif_nvs_value_load_malloc(
 /* "wifi_ssid" (9) + max index "255" (3) + \0 (1) = 13 */
 #define WIFI_KEY_LEN (13U)
 
-/* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format 
- * string is constant and the input 'index' is a bounded 'uint8_t' value. 
- * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit 
- * and explicitly checking the return value against the buffer size to 
- * ensure the output is not truncated and a null-terminator is present. 
- * This approach is more maintainable and less error-prone than manual 
+/* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
+ * string is constant and the input 'index' is a bounded 'uint8_t' value.
+ * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
+ * and explicitly checking the return value against the buffer size to
+ * ensure the output is not truncated and a null-terminator is present.
+ * This approach is more maintainable and less error-prone than manual
  * string manipulation. */
 static inline esp_err_t eif_nvs_wifi_gen_keys(
     uint8_t index, char * const s_buf, char * const p_buf
@@ -252,14 +252,14 @@ esp_err_t eif_nvs_wifi_profile_save(
     EIF_IF_OK_CHECK_NOT_NULL(ret, ssid, ESP_ERR_INVALID_ARG);
     EIF_IF_OK_CHECK_NOT_NULL(ret, pass, ESP_ERR_INVALID_ARG);
 
-    /* @note The Wi-Fi profile with index 0 is hard-coded in the code 
-     * (read-only) and should not be overwritten or deleted.Thus, the 
+    /* @note The Wi-Fi profile with index 0 is hard-coded in the code
+     * (read-only) and should not be overwritten or deleted.Thus, the
      * valid user-accessible range starts from 1. */
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_check_range(
         index, 1U, EIF_WIFI_PROFILES_MAX_COUNT, false
     ), NVS_ERR_INVALID_IDX, "wifi_index", index, 1U, EIF_WIFI_PROFILES_MAX_COUNT);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_wifi_gen_keys(index, 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_wifi_gen_keys(index,
         ssid_key, pass_key), NVS_ERR_GEN_KEYS, index);
 
     if (ret == ESP_OK) {
@@ -267,15 +267,15 @@ esp_err_t eif_nvs_wifi_profile_save(
             && (eif_strnlen(pass, EIF_WIFI_PASS_MAX_LEN) == 0U);
     }
 
-    /* @note Constants with the '_MAX_LEN' suffix define the total buffer 
-     * size in bytes, including the null terminator ('\0'). Since 'strnlen' 
-     * (used to check for going out of range.) counts characters excluding 
-     * the terminator, a subtraction of 1 is applied to establish the maximum 
+    /* @note Constants with the '_MAX_LEN' suffix define the total buffer
+     * size in bytes, including the null terminator ('\0'). Since 'strnlen'
+     * (used to check for going out of range.) counts characters excluding
+     * the terminator, a subtraction of 1 is applied to establish the maximum
      * valid string length for range validation. */
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_save(ssid_key, 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_save(ssid_key,
         ssid, EIF_WIFI_SSID_MIN_LEN, EIF_WIFI_SSID_MAX_LEN, it_can_be_empty
     ), NVS_ERR_SAVE_F_IDX, ssid_key, index);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_save(pass_key, 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_save(pass_key,
         pass, EIF_WIFI_PASS_MIN_LEN, EIF_WIFI_PASS_MAX_LEN, it_can_be_empty
     ), NVS_ERR_SAVE_F_IDX, pass_key, index);
 
@@ -310,9 +310,9 @@ esp_err_t eif_nvs_wifi_profile_load(
         (void)memcpy(pass_out, EIF_WIFI_PASS_DEFAULT, p_len);
         pass_out[p_len] = '\0';
     } else {
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_wifi_gen_keys(index, 
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_wifi_gen_keys(index,
             ssid_key, pass_key), NVS_ERR_GEN_KEYS, index);
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_load(ssid_key, ssid_out, 
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_load(ssid_key, ssid_out,
             EIF_WIFI_SSID_MAX_LEN), NVS_ERR_LOAD_F_IDX, ssid_key, index);
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_load(pass_key, pass_out,
             EIF_WIFI_PASS_MAX_LEN), NVS_ERR_LOAD_F_IDX, pass_key, index);
@@ -328,7 +328,7 @@ esp_err_t eif_nvs_wifi_profile_load(
 
 #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
     /* Decryption:
-     * - Login:    'admin' 
+     * - Login:    'admin'
      * - Password: ''      (yes, without password) */
     #define EIF_BASIC_AUTH_LINE_DEFAULT "Basic YWRtaW46"
     #define NVS_KEY_BASIC_AUTH_LINE "web_auth_pass"
@@ -368,11 +368,11 @@ esp_err_t eif_nvs_wifi_profile_load(
         esp_err_t ret = ESP_OK;
         char line[EIF_BASIC_AUTH_LINE_MAX_LEN] = {0};
         char *b64_pass = NULL;
-        size_t pass_len = eif_strnlen((char *)pass, 
+        size_t pass_len = eif_strnlen((char *)pass,
             EIF_BASIC_AUTH_PASS_MAX_LEN - 1U);
 
         EIF_IF_OK_CHECK_NOT_NULL(ret, pass, ESP_ERR_INVALID_ARG);
-        /* @note The macro includes the null-terminator, so 1 is subtracted 
+        /* @note The macro includes the null-terminator, so 1 is subtracted
          * to get the correct character count for the length check. */
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_check_range(pass_len,
             EIF_BASIC_AUTH_PASS_MIN_LEN, EIF_BASIC_AUTH_PASS_MAX_LEN - 1U, true
@@ -391,13 +391,13 @@ esp_err_t eif_nvs_wifi_profile_load(
          * combined 'user:pass' buffer. */
         if (ret == ESP_OK) {
             /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the
-             * format string is constant and the inputs are strictly 
-             * length-validated. Buffer safety is guaranteed by passing 
+             * format string is constant and the inputs are strictly
+             * length-validated. Buffer safety is guaranteed by passing
              * 'EIF_BASIC_AUTH_LINE_MAX_LEN' as the size limit and explicitly
              * checking the return value to ensure the output is not truncated.
              * This approach prevents malformed data from being written to NVS
              * and is more maintainable than manual string concatenation. */
-            int res = snprintf(line, sizeof(line), "%s%s", 
+            int res = snprintf(line, sizeof(line), "%s%s",
                 EIF_BASIC_AUTH_LINE_DEFAULT, b64_pass);
             if ((res < 0) || (res >= (int)EIF_BASIC_AUTH_LINE_MAX_LEN)) {
                 ret = ESP_ERR_INVALID_SIZE;
@@ -453,7 +453,7 @@ esp_err_t eif_nvs_initialize(void) {
     #endif
     const eif_core_t * const cfg = eif_core_get();
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_flash_init(), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_flash_init(),
         NVS_ERR_OPEN_WRITE, "Flash Init");
     if ((ret == ESP_ERR_NVS_NO_FREE_PAGES)
         || (ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
@@ -471,12 +471,13 @@ esp_err_t eif_nvs_initialize(void) {
             }
         }
     }
-    
+
+
     if (ret == ESP_OK) {
         EIF_LOG_I("NVS Flash system is ready");
 
-        /* @note The Wi-Fi profile with index 0 is hard-coded in the code 
-         * (read-only) and should not be overwritten or deleted.Thus, the 
+        /* @note The Wi-Fi profile with index 0 is hard-coded in the code
+         * (read-only) and should not be overwritten or deleted.Thus, the
          * valid user-accessible range starts from 1. */
         for (size_t i = 1U; i <= (size_t)cfg->wifi_profiles_count; i++) {
             ret = eif_nvs_wifi_profile_load(i, wifi_ssid, wifi_pass);
@@ -485,7 +486,7 @@ esp_err_t eif_nvs_initialize(void) {
                 EIF_LOG_W(NVS_ERR_MISSING_IDX, "Wi-Fi profile", i);
                 ret = ESP_OK;
 
-                EIF_IF_OK_CHECK_ESP_ERR_T(ret, 
+                EIF_IF_OK_CHECK_ESP_ERR_T(ret,
                     eif_nvs_wifi_profile_save(i, "", ""),
                     NVS_ERR_SAVE_F_IDX, "", i);
             } else if (ret != ESP_OK) {
@@ -502,10 +503,10 @@ esp_err_t eif_nvs_initialize(void) {
         if (ret == ESP_OK) {
             ret = eif_nvs_value_load_malloc(
                 EIF_NVS_KEY_TLS_CERT, &tls_buffer_out, &tls_buffer_len);
-            
+           
             if ((ret != ESP_OK) && (ret != ESP_ERR_NVS_NOT_FOUND)) {
                 EIF_LOG_E("'TLS cert' loaded error: %s", esp_err_to_name(ret));
-            } 
+            }
             if (tls_buffer_out != NULL) {
                 vPortFree(tls_buffer_out);
                 tls_buffer_out = NULL;
@@ -515,7 +516,7 @@ esp_err_t eif_nvs_initialize(void) {
                 EIF_NVS_KEY_TLS_PRIV_KEY, &tls_buffer_out, &tls_buffer_len);
             if ((ret != ESP_OK) && (ret != ESP_ERR_NVS_NOT_FOUND)) {
                 EIF_LOG_E("'TLS key' loaded error: %s", esp_err_to_name(ret));
-            } 
+            }
             if (tls_buffer_out != NULL) {
                 vPortFree(tls_buffer_out);
                 tls_buffer_out = NULL;
@@ -525,7 +526,7 @@ esp_err_t eif_nvs_initialize(void) {
                 EIF_LOG_W(NVS_ERR_MISSING, "TLS credentials");
                 ret = ESP_OK;
 
-                EIF_IF_OK_CHECK_ESP_ERR_T(ret, 
+                EIF_IF_OK_CHECK_ESP_ERR_T(ret,
                     eif_tls_create_creds_and_nvs_save(),
                     NVS_ERR_SAVE, "TLS credentials");
             } else if (ret != ESP_OK) {

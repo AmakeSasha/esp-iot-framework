@@ -62,8 +62,8 @@ if (typeof JSON !== "object") {
   function str(key, holder) {
     var i, k, v, length, mind = gap, partial, value = holder[key];
 
-    if (value 
-      && typeof value === "object" 
+    if (value
+      && typeof value === "object"
       && typeof value.toJSON === "function"
     ) value = value.toJSON(key);
 
@@ -108,8 +108,8 @@ if (typeof JSON !== "object") {
           }
         }
 
-        v = partial.length === 0 ? "{}" : gap ? 
-          "{\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "}" : 
+        v = partial.length === 0 ? "{}" : gap ?
+          "{\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "}" :
           "{" + partial.join(",") + "}";
         gap = mind;
         return v;
@@ -133,8 +133,8 @@ if (typeof JSON !== "object") {
       }
 
       rep = replacer;
-      if (replacer 
-        && typeof replacer !== "function" 
+      if (replacer
+        && typeof replacer !== "function"
         && (typeof replacer !== "object" || typeof replacer.length !== "number")
       ) throw new Error("JSON.stringify");
 

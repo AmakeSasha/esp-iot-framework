@@ -23,11 +23,11 @@
     <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
     <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
     <p>
-        <code>esp32</code> • 
-        <code>esp32s2</code> • 
-        <code>esp32s3</code> • 
-        <code>esp32c2</code> • 
-        <code>esp32c3</code> • 
+        <code>esp32</code> •
+        <code>esp32s2</code> •
+        <code>esp32s3</code> •
+        <code>esp32c2</code> •
+        <code>esp32c3</code> •
         <code>esp32c6</code>
     </p>
 </div>
@@ -41,9 +41,9 @@ The framework is built around three fundamental concepts, decoupling the infrast
 ---
 
 * **Nodes** - The abstraction of a network unit built on top of *Core*. A Node implements a specific interaction pattern with the outside world — whether it is a web interface, an industrial protocol, or a cloud bridge. It hides the complexity of network interaction and provides a clean layer for business logic development.
-  
+ 
   Examples of nodes:
-  
+ 
   * <b>Device (<code>[esp_iot_framework_device](./components/esp_iot_framework_device/README.md)</code>)</b> - A foundational network node based on Espressif chips, designed for building fully manageable end IoT products.
 
 ---

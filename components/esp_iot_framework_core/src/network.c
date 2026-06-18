@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/src
  * File: network.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -104,8 +104,8 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
     esp_err_t ret = ESP_OK;
     char ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
     char pass[EIF_WIFI_PASS_MAX_LEN] = {0};
-    /* @deviation [Rule 19.2] The use of 'union' is mandatory here as it is 
-     * part of the 'wifi_config_t' structure defined by the ESP-IDF SDK. 
+    /* @deviation [Rule 19.2] The use of 'union' is mandatory here as it is
+     * part of the 'wifi_config_t' structure defined by the ESP-IDF SDK.
      * Manual zero-initialization via '{0}' used to ensure all union members
      * are in a safe, predictable state before accessing specific fields. */
     wifi_config_t w_cfg = {0};
@@ -127,8 +127,8 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
     if (ret == ESP_OK) {
         size_t const s_len = eif_strnlen(ssid, sizeof(w_cfg.sta.ssid) - 1U);
         (void)memcpy((void *)w_cfg.sta.ssid, (const void *)ssid, s_len);
-        w_cfg.sta.ssid[s_len] = '\0'; 
-        
+        w_cfg.sta.ssid[s_len] = '\0';
+       
         size_t const p_len = eif_strnlen(pass, sizeof(w_cfg.sta.password) - 1U);
         (void)memcpy((void *)w_cfg.sta.password, (const void *)pass, p_len);
         w_cfg.sta.password[p_len] = '\0';
@@ -164,7 +164,7 @@ static void wifi_event_handler(
 
     if (!cfg->wifi_handler_stop) {
         switch (event_id) {
-            case WIFI_EVENT_STA_START:  
+            case WIFI_EVENT_STA_START: 
                 EIF_LOG_I("Wi-Fi STA started by profile #%u",
                     cfg->current_wifi_profile_index);
                 EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_connect(),
@@ -220,7 +220,8 @@ static void ip_event_handler(
     EIF_TAG_WITH_UNUSED "IP Handler";
     (void)arg;
     (void)event_base;
-    
+
+
     esp_err_t ret = ESP_OK;
     const eif_core_t * const cfg = eif_core_get();
 
@@ -344,7 +345,7 @@ esp_err_t eif_wifi_initialize(void) {
         "Wi-Fi start failed");
 
     if (ret == ESP_OK) {
-        if (esp_wifi_set_ps(cfg->wifi_power_mode) != ESP_OK) { 
+        if (esp_wifi_set_ps(cfg->wifi_power_mode) != ESP_OK) {
             EIF_LOG_W("Could not set power mode %d", cfg->wifi_power_mode);
         } else {
             EIF_LOG_I("Power save mode set to: %d", cfg->wifi_power_mode);

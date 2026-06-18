@@ -2,15 +2,15 @@
 # Project: esp_iot_framework
 # Folder: ./tools
 # File: gen_docs.py
-# 
+#
 # Copyright 2026 AmakeSasha
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -145,7 +145,7 @@ def main():
     print(">>> Formating files...")
     for item in list_files:
         src_path = os.path.normpath(os.path.join(project_root, item["src"]))
-        
+       
         if item["type"] == "file":
             item["dst_path"] = generate_md_page(
                 docs_dir, src_path, item["title"], item["name"]
@@ -155,14 +155,15 @@ def main():
 
     print(">>> Launching Doxygen...")
     process = subprocess.Popen(
-        "doxygen doxygen/Doxyfile", 
-        shell=True, 
-        stderr=subprocess.PIPE, 
-        text=True, 
+        "doxygen doxygen/Doxyfile",
+        shell=True,
+        stderr=subprocess.PIPE,
+        text=True,
         encoding="utf-8"
     )
     _, stderr_output = process.communicate()
-    
+
+
     if stderr_output:
         for line in stderr_output.splitlines():
             if "Unexpected html tag <font>" not in line and "Unexpected html tag </font>" not in line:

@@ -3,15 +3,15 @@
   Project: esp_iot_framework
   Folder: ./components/esp_iot_framework_core
   File: README.md
-  
+ 
   Copyright 2026 AmakeSasha
-  
+ 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+ 
     http://www.apache.org/licenses/LICENSE-2.0
-  
+ 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,11 +23,11 @@
     <h1>esp_iot_framework_core <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
     <h3>A meta-framework for building reliable, node-based IoT frameworks on Espressif Systems devices</h3>
     <p>
-        <code>esp32</code> &bull; 
-        <code>esp32s2</code> &bull; 
-        <code>esp32s3</code> &bull; 
-        <code>esp32c2</code> &bull; 
-        <code>esp32c3</code> &bull; 
+        <code>esp32</code> &bull;
+        <code>esp32s2</code> &bull;
+        <code>esp32s3</code> &bull;
+        <code>esp32c2</code> &bull;
+        <code>esp32c3</code> &bull;
         <code>esp32c6</code>
     </p>
 </div>
@@ -73,11 +73,11 @@ In the destination device, you will need to specify the path to the component. Y
 * <b>(Recommended)</b> Add the following code to the root `CMakeLists.txt`:
   ```CMake
   cmake_minimum_required(VERSION 3.16)
-  
+ 
   # Necessary for correct operation
   list(APPEND SDKCONFIG_DEFAULTS "<PATH_TO_FRAMEWORK>/components/esp_iot_framework_device/sdkconfig.defaults")
   list(APPEND EXTRA_COMPONENT_DIRS "<PATH_TO_FRAMEWORK>/components")
-  
+ 
   include($ENV{IDF_PATH}/tools/cmake/project.cmake)
   project(hello_world_test)
   ```

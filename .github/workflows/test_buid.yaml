@@ -27,7 +27,7 @@ jobs:
       - name: Fetch code
         run: |
           git clone --depth 1 https://gitverse.ru/amakesasha/esp-iot-framework .
-      
+     
       - name: Build
         run: |
           . $IDF_PATH/export.sh

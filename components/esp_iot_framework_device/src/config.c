@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_device
  * Folder: ./components/esp_iot_framework_device/src
  * File: config.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -124,7 +124,7 @@ esp_err_t eif_device_initialize(void) {
         esp_err_t ret = ESP_OK;
 
         EIF_IF_OK_CHECK_NOT_NULL(ret, server_config, ESP_ERR_INVALID_ARG);
-        
+       
         if (ret == ESP_OK) {
             memcpy(&cfg.server_config, server_config, sizeof(httpd_ssl_config_t));
 
@@ -239,7 +239,7 @@ void eif_uri_handlers_count_update(void) {
             EIF_NVS_KEY_TLS_CERT, &c_buf, &c_len), "Failed loaded 'TLS cert'");
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_load_malloc(
             EIF_NVS_KEY_TLS_PRIV_KEY, &k_buf, &k_len), "Failed loaded 'TLS key'");
-         
+        
         if (ret == ESP_OK) {
             EIF_LOG_I("'TLS credentials' loaded successfully");
             EIF_LOG_I("Cert: %u, Key: %u", (unsigned int)c_len, (unsigned int)k_len);
@@ -276,7 +276,8 @@ void eif_uri_handlers_count_update(void) {
 
             EIF_LOG_I("TLS credentials successfully applied to config");
         }
-    
+
+
         /* Cleanup */
         if (ret != ESP_OK) {
             if (c_copy != NULL) {

@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/src
  * File: system.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -74,14 +74,14 @@ esp_err_t eif_task_common_spawn(
     EIF_IF_OK_CHECK_NOT_NULL(ret, p_handle, ESP_ERR_INVALID_ARG);
     EIF_IF_OK_CHECK_NOT_NULL(ret, f_worker, ESP_ERR_INVALID_ARG);
     EIF_IF_OK_CHECK_NOT_NULL(ret, p_name, ESP_ERR_INVALID_ARG);
-    
+
     if (ret == ESP_OK) {
         if (*p_handle != NULL) {
             EIF_LOG_W(ERR_TWO_SPAWN, p_name);
             ret = ESP_ERR_INVALID_STATE;
         }
     }
-    
+
     if (ret == ESP_OK) {
         const BaseType_t x_res = xTaskCreate(f_worker,
             p_name, u32_stack, NULL, u_prio, p_handle);
@@ -118,6 +118,7 @@ static void eif_system_reboot_prepare(void) {
         EIF_LOG_W("No set 'handler_system_reboot', skipping");
     }
 
+
     EIF_LOG_I("Reboot preparation complete.");
     (void)ret;
 }
@@ -140,7 +141,7 @@ static void eif_task_reboot(void *arg) {
     esp_restart();
 
     /* Cleanup */
-    x_eif_exclusive_forced_handle = NULL; 
+    x_eif_exclusive_forced_handle = NULL;
     vTaskDelete(NULL);
 }
 
@@ -153,10 +154,10 @@ esp_err_t eif_task_reboot_launch(void) {
     EIF_TASK_LAUNCH(ret, x_eif_exclusive_forced_handle,
         REBOOT, &eif_task_reboot);
     if (ret != ESP_OK) {
-        EIF_LOG_E("Reboot task failed (err: %s). Force restart...", 
+        EIF_LOG_E("Reboot task failed (err: %s). Force restart...",
             esp_err_to_name(ret));
         /* @note If the reboot task cannot be spawned, it indicates a critical
-         * system state (likely heap exhaustion). In this case, an immediate 
+         * system state (likely heap exhaustion). In this case, an immediate
          * hardware restart is the only reliable way to recover the device. */
         esp_restart();
     }
@@ -180,8 +181,9 @@ static void eif_task_tls_recreate(void* arg) {
 
     EIF_LOG_I(MSG_SPAWN_TASK, __func__);
     vTaskDelay(pdMS_TO_TICKS(500));
-    
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds_and_nvs_save(), "qwe"); 
+
+
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds_and_nvs_save(), "qwe");
     if (ret == ESP_OK) {
         EIF_LOG_I("TLS credentials recreated. System will restart...");
         vTaskDelay(pdMS_TO_TICKS(500));
@@ -191,7 +193,7 @@ static void eif_task_tls_recreate(void* arg) {
     }
 
     /* Cleanup */
-    x_eif_exclusive_sys_handle = NULL; 
+    x_eif_exclusive_sys_handle = NULL;
     vTaskDelete(NULL);
 }
 
@@ -207,7 +209,7 @@ esp_err_t eif_task_tls_recreate_launch(void) {
     return ret;
 }
 
-/* ------ rollback_and_reboot ------ */ 
+/* ------ rollback_and_reboot ------ */
 static void eif_task_rollback_and_reboot(void *arg) {
     EIF_TAG_WITH_UNUSED "rollback_and_reboot";
     (void)arg;
@@ -221,7 +223,7 @@ static void eif_task_rollback_and_reboot(void *arg) {
     esp_ota_mark_app_invalid_rollback_and_reboot();
 
     /* Cleanup */
-    x_eif_exclusive_sys_handle = NULL; 
+    x_eif_exclusive_sys_handle = NULL;
     vTaskDelete(NULL);
 }
 
@@ -250,29 +252,30 @@ static void eif_task_wifi_test(void *arg) {
     const eif_core_t * const cfg = eif_core_get();
     uint8_t origin_index = cfg->current_wifi_profile_index;
     uint8_t new_index = wifi_test_target_idx;
-    eif_wifi_test_result res = { 
+    eif_wifi_test_result res = {
         .connected = false,
         .rssi = -127
     };
-    
-    vTaskDelay(pdMS_TO_TICKS(500)); 
+
+
+    vTaskDelay(pdMS_TO_TICKS(500));
     EIF_LOG_I("Starting WiFi test for param #%d", new_index);
     eif_wifi_handler_stop_set(true);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_disconnect(), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_disconnect(),
         "Disconnecting from current AP failed");
 
     if (ret == ESP_OK) {
         vTaskDelay(pdMS_TO_TICKS(500));
     }
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_wifi_set_config_from_profile(new_index), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_wifi_set_config_from_profile(new_index),
         "Applying configuration for param #%d failed", new_index);
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_connect(),
         "Initiating connection to param #%d failed", new_index);
 
     for (int i = 0; (ret == ESP_OK) && (i < 30); i++) {
         vTaskDelay(pdMS_TO_TICKS(500));
-         
+        
         esp_netif_t *netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
         esp_err_t ip_err = esp_netif_get_ip_info(netif, &ip_info);
 
@@ -311,7 +314,7 @@ static void eif_task_wifi_test(void *arg) {
 
 
     /* Cleanup */
-    x_eif_exclusive_sys_handle = NULL; 
+    x_eif_exclusive_sys_handle = NULL;
     vTaskDelete(NULL);
 }
 
@@ -372,7 +375,7 @@ static void eif_task_memory_monitor(void *arg) {
                 (void)eif_task_reboot_launch();
                 x_eif_service_task_handle = NULL;
 
-                vTaskDelete(NULL); 
+                vTaskDelete(NULL);
             }
         } else {
             count_critical_checks = 0;
@@ -384,14 +387,16 @@ static void eif_task_memory_monitor(void *arg) {
     }
 
     /* Cleanup */
-    
+
+
 }
 
 esp_err_t eif_task_memory_monitor_launch(void) {
     esp_err_t ret = ESP_OK;
 
     EIF_LOG_D(MSG_CALL_FUNC, __func__);
-    
+
+
     EIF_TASK_LAUNCH(ret, x_eif_service_task_handle,
         MEMORY_MONITOR, &eif_task_memory_monitor);
 

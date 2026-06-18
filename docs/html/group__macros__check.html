@@ -116,7 +116,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div>
 <div class="line">    if ((m_result) == (ESP_OK)) { \</div>
 <div class="line">        if ((m_ptr) == NULL) { \</div>
-<div class="line">            <span class="comment">/* @deviation [Rule 20.10] The &#39;#&#39; stringification operator is used </span></div>
+<div class="line">            <span class="comment">/* @deviation [Rule 20.10] The &#39;#&#39; stringification operator is used</span></div>
 <div class="line"><span class="comment">             * exclusively for diagnostic logging to evaluate the parameter</span></div>
 <div class="line"><span class="comment">             * identifier. The expansion evaluates strictly to a well-formed,</span></div>
 <div class="line"><span class="comment">             * immutable string literal, completely eliminating risks of side</span></div>
@@ -145,11 +145,11 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// If any macro fails, &#39;ret&#39; changes and all subsequent macros are skipped.</span></div>
 <div class="line">    <a class="code" href="group__macros__check.html#gac63c89173a7dba6810ded46e47fc1fbd">EIF_IF_OK_CHECK_NOT_NULL</a>(ret, cfg, ESP_ERR_INVALID_ARG);</div>
-<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_set_mode(WIFI_MODE_STA), </div>
+<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_set_mode(WIFI_MODE_STA),</div>
 <div class="line">        <span class="stringliteral">&quot;Set mode failed&quot;</span>);</div>
 <div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_set_config(WIFI_IF_STA, (wifi_config_t*)cfg),</div>
 <div class="line">        <span class="stringliteral">&quot;Set config failed&quot;</span>);</div>
-<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_start(), </div>
+<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_start(),</div>
 <div class="line">        <span class="stringliteral">&quot;Start failed&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> ret;</div>
@@ -233,11 +233,11 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// If any macro fails, &#39;ret&#39; changes and all subsequent macros are skipped.</span></div>
 <div class="line">    <a class="code" href="group__macros__check.html#gac63c89173a7dba6810ded46e47fc1fbd">EIF_IF_OK_CHECK_NOT_NULL</a>(ret, cfg, ESP_ERR_INVALID_ARG);</div>
-<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_set_mode(WIFI_MODE_STA), </div>
+<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_set_mode(WIFI_MODE_STA),</div>
 <div class="line">        <span class="stringliteral">&quot;Set mode failed&quot;</span>);</div>
 <div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_set_config(WIFI_IF_STA, (wifi_config_t*)cfg),</div>
 <div class="line">        <span class="stringliteral">&quot;Set config failed&quot;</span>);</div>
-<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_start(), </div>
+<div class="line">    <a class="code" href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a>(ret, esp_wifi_start(),</div>
 <div class="line">        <span class="stringliteral">&quot;Start failed&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> ret;</div>
@@ -292,8 +292,8 @@ Macros</h2></td></tr>
 <div class="line">    if ((m_ret) == ESP_OK) { \</div>
 <div class="line">        if ((m_cond)) { \</div>
 <div class="line">            <span class="comment">/* @deviation [Rule 20.10] The &#39;##&#39; token pasting operator is</span></div>
-<div class="line"><span class="comment">             * used here to delete the comma when &#39;__VA_ARGS__&#39; is empty. </span></div>
-<div class="line"><span class="comment">             * This is a necessary compiler-specific extension for </span></div>
+<div class="line"><span class="comment">             * used here to delete the comma when &#39;__VA_ARGS__&#39; is empty.</span></div>
+<div class="line"><span class="comment">             * This is a necessary compiler-specific extension for</span></div>
 <div class="line"><span class="comment">             * variadic logging. Compilation is impossible without &#39;##&#39;. */</span> \</div>
 <div class="line">            EIF_LOG_E(m_format, ##__VA_ARGS__); \</div>
 <div class="line">            (m_ret) = (m_err); \</div>

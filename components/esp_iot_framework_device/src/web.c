@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_device
  * Folder: ./components/esp_iot_framework_device/src
  * File: web.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -159,7 +159,7 @@ static void httpd_resp_sendstatus(
         if (strcmp(status, HTTPD_204) != 0) {
             uint32_t ts = esp_log_timestamp();
             size_t idx = BUFFER_TIMESTAMP - 1U;
-            
+           
             body_buf[idx] = '\0';
 
             do {
@@ -201,10 +201,11 @@ static esp_err_t req_http_parse_json(
     if (ret == ESP_OK) {
         received = httpd_req_recv(req, buffer, req->content_len);
         EIF_IF_OK_CHECK_CONDITION(ret,
-            (received <= 0), ESP_ERR_HTTPD_INVALID_REQ, 
+            (received <= 0), ESP_ERR_HTTPD_INVALID_REQ,
             "HTTP receive failed (received: %d)", received);
     }
-    
+
+
     if (ret == ESP_OK) {
         buffer[received] = '\0';
 
@@ -238,16 +239,16 @@ static esp_err_t req_json_get_field(
         ((value == NULL) || !cJSON_IsString(value) || (value->valuestring == NULL)),
         ESP_ERR_INVALID_ARG, SERVER_ERR_JSON_MISSING, field);
 
-    /* @note The second condition is necessary to successfully pass the 
+    /* @note The second condition is necessary to successfully pass the
      * CppCheck check. */
     if ((ret == ESP_OK) && (value != NULL)) {
-        const size_t len = eif_strnlen(value->valuestring, max_limit); 
+        const size_t len = eif_strnlen(value->valuestring, max_limit);
         EIF_IF_OK_CHECK_CONDITION(ret,
             ((len < min_limit) || (len >= max_limit)), ESP_ERR_INVALID_ARG,
             SERVER_ERR_INVALID_LEN, field, len, min_limit, max_limit - 1U);
     }
 
-    /* @note The second condition is necessary to successfully pass the 
+    /* @note The second condition is necessary to successfully pass the
      * CppCheck check. */
     if ((ret == ESP_OK) && (value != NULL)) {
         (void)strncpy(out_value, value->valuestring, max_limit - 1U);
@@ -272,12 +273,12 @@ static esp_err_t req_json_get_profile_index(
         EIF_LOG_E(SERVER_ERR_JSON_MISSING, FIELD_WIFI_PROF_IDX);
     }
 
-    /* @note The second condition is necessary to successfully pass the 
+    /* @note The second condition is necessary to successfully pass the
      * CppCheck check. */
-    if ((ret == ESP_OK) && (value != NULL)) {    
-        if ((value->valueint > wifi_profiles_count) || (value->valueint > 255)) { 
+    if ((ret == ESP_OK) && (value != NULL)) {   
+        if ((value->valueint > wifi_profiles_count) || (value->valueint > 255)) {
             ret = ESP_ERR_INVALID_ARG;
-            EIF_LOG_E(SERVER_ERR_INVALID_IDX, 
+            EIF_LOG_E(SERVER_ERR_INVALID_IDX,
                 FIELD_WIFI_PROF_IDX, value->valueint, 0, wifi_profiles_count);
         } else {
             *index = (uint8_t)value->valueint;
@@ -315,7 +316,7 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
     } else {
         httpd_resp_set_hdr(req, "Cache-Control", "no-store, no-cache, must-revalidate");
         httpd_resp_set_hdr(req, "Expires", "0");
-        httpd_resp_set_hdr(req, "Connection", "close"); 
+        httpd_resp_set_hdr(req, "Connection", "close");
         httpd_resp_set_hdr(req, "Pragma", "no-cache");
     }
 
@@ -375,7 +376,7 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
     static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
         EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
         httpd_resp_set_status(req, HTTPD_404);
-        return sendf_e404_html_gz(req); 
+        return sendf_e404_html_gz(req);
     }
 #endif
 
@@ -404,18 +405,18 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
 
     if (ret == ESP_OK) {
         profiles = cJSON_CreateArray();
-        EIF_IF_OK_CHECK_CONDITION(ret, profiles == NULL, 
+        EIF_IF_OK_CHECK_CONDITION(ret, profiles == NULL,
             ESP_ERR_NO_MEM, SERVER_ERR_JSON_NO_MEM);
     }
 
     for (uint16_t idx = 0U; idx <= (uint16_t)wifi_profiles_count; idx++) {
         if (ret == ESP_OK) {
             profile = cJSON_CreateObject();
-            EIF_IF_OK_CHECK_CONDITION(ret, profile == NULL, 
+            EIF_IF_OK_CHECK_CONDITION(ret, profile == NULL,
                 ESP_ERR_NO_MEM, SERVER_ERR_JSON_NO_MEM);
 
             EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-                eif_nvs_wifi_profile_load(idx, ssid, pass), 
+                eif_nvs_wifi_profile_load(idx, ssid, pass),
                 SERVER_ERR_NVS_LOAD_PROF, idx);
 
             if (ret != ESP_OK) {
@@ -436,7 +437,7 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
 
     if (ret == ESP_OK) {
         cJSON_AddItemToObject(root, FIELD_WIFI_PROFS, profiles);
-        cJSON_AddNumberToObject(root, 
+        cJSON_AddNumberToObject(root,
             FIELD_WIFI_PROF_IDX_CUR, wifi_profiles_index);
 
         if (esp_wifi_sta_get_ap_info(&info) == ESP_OK) {
@@ -444,7 +445,7 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
         }
 
         response_str = cJSON_PrintUnformatted(root);
-        EIF_IF_OK_CHECK_CONDITION(ret, response_str == NULL, 
+        EIF_IF_OK_CHECK_CONDITION(ret, response_str == NULL,
             ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
     }
 
@@ -484,7 +485,7 @@ static esp_err_t h_wifi_update_do(httpd_req_t * const req) {
         req_http_parse_json(req, &root), SERVER_ERR_JSON_PARSE);
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-        req_json_get_profile_index(root, &index), 
+        req_json_get_profile_index(root, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_field(root,
@@ -529,7 +530,7 @@ static esp_err_t h_wifi_clear_do(httpd_req_t * const req) {
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root),
         SERVER_ERR_JSON_PARSE);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
     if (ret != ESP_OK) {
@@ -561,9 +562,9 @@ static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
 
     (void)set_cache(req, false);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root),
         SERVER_ERR_JSON_PARSE);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
     if (ret != ESP_OK) {
@@ -571,7 +572,7 @@ static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
     } else {
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_task_wifi_test_launch(index),
             SERVER_ERR_SPAWN_TASK, "wifi_test");
-        
+       
         if (ret != ESP_OK) {
             httpd_resp_sendstatus(req, HTTPD_500);
         } else {
@@ -590,7 +591,7 @@ static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
 static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
-    uint8_t index = 0; 
+    uint8_t index = 0;
     cJSON * root = NULL;
     char * out_json = NULL;
     cJSON * res_obj = NULL;
@@ -598,11 +599,12 @@ static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
 
     (void)set_cache(req, false);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root),
         SERVER_ERR_JSON_PARSE);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index), 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
-    
+
+
     if (ret != ESP_OK) {
         httpd_resp_sendstatus(req, HTTPD_400);
     } else {
@@ -621,7 +623,7 @@ static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
                 FIELD_WIFI_RSSI, test_res.rssi);
 
             out_json = cJSON_PrintUnformatted(res_obj);
-            EIF_IF_OK_CHECK_CONDITION(ret, out_json == NULL, 
+            EIF_IF_OK_CHECK_CONDITION(ret, out_json == NULL,
                 ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
         }
 
@@ -710,11 +712,11 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
             (chip.features & CHIP_FEATURE_BLE));
         cJSON_AddItemToObject(root, FIELD_SYS_FEATURES, features);
 
-        cJSON_AddNumberToObject(root, FIELD_SYS_HEAP_FREE,   
+        cJSON_AddNumberToObject(root, FIELD_SYS_HEAP_FREE,  
             esp_get_free_heap_size());
-        cJSON_AddNumberToObject(root, FIELD_SYS_HEAP_MIN,     
+        cJSON_AddNumberToObject(root, FIELD_SYS_HEAP_MIN,    
             esp_get_minimum_free_heap_size());
-        cJSON_AddNumberToObject(root, FIELD_SYS_LARG_BLOCK,   
+        cJSON_AddNumberToObject(root, FIELD_SYS_LARG_BLOCK,  
             heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
         cJSON_AddNumberToObject(root, FIELD_SYS_UPTIME,
             esp_timer_get_time() / 1000000ULL);
@@ -732,7 +734,7 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
             (double)esp_rom_get_reset_reason(0));
 
         int res = snprintf(mac_str, sizeof(mac_str),
-            "%02X:%02X:%02X:%02X:%02X:%02X", 
+            "%02X:%02X:%02X:%02X:%02X:%02X",
             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
         EIF_IF_OK_CHECK_CONDITION(ret,
             (res < 0) || (res >= (int)sizeof(mac_str)),
@@ -793,7 +795,7 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
     cJSON * root = NULL;
-    char sha_str[65] = {0}; 
+    char sha_str[65] = {0};
     char * response_str = NULL;
     const char * status_str = "unknown";
     esp_ota_img_states_t ota_state = ESP_OTA_IMG_NEW;
@@ -804,7 +806,8 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
         const esp_app_desc_t *app = esp_ota_get_app_description();
     #endif
     const esp_partition_t *running = esp_ota_get_running_partition();
-    
+
+
     (void)set_cache(req, false);
 
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -850,7 +853,7 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
         cJSON_AddStringToObject(root, FIELD_OTA_BUILD_TIME, app->time);
         cJSON_AddStringToObject(root, FIELD_OTA_IDF_VER,    app->idf_ver);
         cJSON_AddStringToObject(root, FIELD_OTA_GCC_VER,    __VERSION__);
-        cJSON_AddStringToObject(root, FIELD_OTA_TARGET,     CONFIG_IDF_TARGET); 
+        cJSON_AddStringToObject(root, FIELD_OTA_TARGET,     CONFIG_IDF_TARGET);
         cJSON_AddStringToObject(root, FIELD_OTA_PARTITION,  running->label);
         cJSON_AddStringToObject(root, FIELD_OTA_STATUS,     status_str);
 
@@ -897,16 +900,16 @@ static esp_err_t h_ota_update_do(httpd_req_t * const req) {
 
     if (ret == ESP_OK) {
         update_partition = esp_ota_get_next_update_partition(NULL);
-        EIF_IF_OK_CHECK_CONDITION(ret, update_partition == NULL, 
+        EIF_IF_OK_CHECK_CONDITION(ret, update_partition == NULL,
             ESP_FAIL, "No OTA partition");
     }
 
     if (ret == ESP_OK) {
         buf = pvPortMalloc(CONFIG_EIF_WEB_SIZE_OTA_BUFFER);
-        EIF_IF_OK_CHECK_CONDITION(ret, buf == NULL, ESP_ERR_NO_MEM, 
+        EIF_IF_OK_CHECK_CONDITION(ret, buf == NULL, ESP_ERR_NO_MEM,
             SERVER_ERR_ALLOCATE, CONFIG_EIF_WEB_SIZE_OTA_BUFFER, "ota_buffer");
     }
-        
+       
     while ((remaining > 0U) && (ret == ESP_OK)) {
         const bool flag = remaining < CONFIG_EIF_WEB_SIZE_OTA_BUFFER;
         const int chunk_size = flag ? (int)remaining : CONFIG_EIF_WEB_SIZE_OTA_BUFFER;
@@ -919,7 +922,7 @@ static esp_err_t h_ota_update_do(httpd_req_t * const req) {
         } else {
             if ((update_handle == 0) && (ret == ESP_OK)) {
                 const uint8_t magic_byte = (uint8_t)buf[0];
-                EIF_IF_OK_CHECK_CONDITION(ret, magic_byte != 0xE9U, 
+                EIF_IF_OK_CHECK_CONDITION(ret, magic_byte != 0xE9U,
                     ESP_ERR_INVALID_ARG, "Invalid magic byte");
 
                 EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_ota_begin(
@@ -930,8 +933,8 @@ static esp_err_t h_ota_update_do(httpd_req_t * const req) {
             EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_ota_write(
                 update_handle, (const void *)buf, received
             ), "Write failed");
-            
-            if (ret == ESP_OK) {  
+           
+            if (ret == ESP_OK) { 
                 remaining -= (size_t)received;
             }
         }
@@ -955,7 +958,7 @@ static esp_err_t h_ota_update_do(httpd_req_t * const req) {
     } else if (ret == ESP_ERR_INVALID_STATE) {
         httpd_resp_sendstatus(req, HTTPD_409);
     } else if (ret == ESP_ERR_INVALID_ARG) {
-        httpd_resp_sendstatus(req, HTTPD_400); 
+        httpd_resp_sendstatus(req, HTTPD_400);
     } else {
         httpd_resp_sendstatus(req, HTTPD_500);
     }
@@ -1056,35 +1059,35 @@ static const char * method_to_str(const httpd_method_t method) {
     const char *result = "";
 
     switch (method) {
-        case HTTP_GET:     
-            result = "GET";     
+        case HTTP_GET:    
+            result = "GET";    
             break;
-        case HTTP_POST:    
-            result = "POST";    
+        case HTTP_POST:   
+            result = "POST";   
             break;
-        case HTTP_PUT:     
-            result = "PUT";     
+        case HTTP_PUT:    
+            result = "PUT";    
             break;
-        case HTTP_DELETE:  
-            result = "DELETE";  
+        case HTTP_DELETE: 
+            result = "DELETE"; 
             break;
-        case HTTP_HEAD:    
-            result = "HEAD";    
+        case HTTP_HEAD:   
+            result = "HEAD";   
             break;
-        case HTTP_OPTIONS: 
-            result = "OPTIONS"; 
+        case HTTP_OPTIONS:
+            result = "OPTIONS";
             break;
-        case HTTP_PATCH:   
-            result = "PATCH";   
+        case HTTP_PATCH:  
+            result = "PATCH";  
             break;
-        case HTTP_TRACE:   
-            result = "TRACE";   
+        case HTTP_TRACE:  
+            result = "TRACE";  
             break;
-        case HTTP_CONNECT: 
-            result = "CONNECT"; 
+        case HTTP_CONNECT:
+            result = "CONNECT";
             break;
-        default:           
-            result = "UNKNOWN"; 
+        default:          
+            result = "UNKNOWN";
             break;
     }
 
@@ -1095,12 +1098,12 @@ static const char * method_to_str(const httpd_method_t method) {
     static esp_err_t req_check_auth_admin(httpd_req_t *req) {
         esp_err_t ret = ESP_OK;
 
-        /* @note +8 bytes to the buffer avoids password truncation. 
+        /* @note +8 bytes to the buffer avoids password truncation.
          * Example (imagine that 'AUTH_LINE_MAX_LEN' = 18):
          *   Header: Basic YWRtaW46MTIzc2Q=  (22 bytes)
          *   NVS:    Basic YWRtaW46MTIz      (18 bytes)
          * In this case, without +8 bytes, the data from the header
-         * will be truncated to the length of the NVS and the comparison 
+         * will be truncated to the length of the NVS and the comparison
          * will be successful. */
         char buf[EIF_BASIC_AUTH_LINE_MAX_LEN + 8U] = {0};
         char current_pw[EIF_BASIC_AUTH_LINE_MAX_LEN] = {0};
@@ -1177,7 +1180,8 @@ static esp_err_t register_uris_with_middleware(
     esp_err_t (* mw_func)(httpd_req_t *)
 ) {
     esp_err_t ret = ESP_OK;
-    
+
+
     size_t max_method_len = 0;
     size_t max_uri_len = 0;
 
@@ -1203,17 +1207,17 @@ static esp_err_t register_uris_with_middleware(
         for (size_t i = 0; i < route_count; i++) {
             if (ret == ESP_OK) {
                 httpd_uri_t route_to_reg = routes[i];
-            
-                route_to_reg.user_ctx = (void *)&routes[i]; 
+           
+                route_to_reg.user_ctx = (void *)&routes[i];
                 route_to_reg.handler = mw_func;
 
-                EIF_SHOW_ESP_ERR_T(ret, 
-                    httpd_register_uri_handler(g_server_handle, &route_to_reg), 
+                EIF_SHOW_ESP_ERR_T(ret,
+                    httpd_register_uri_handler(g_server_handle, &route_to_reg),
                     "Failed to register URI: %s", routes[i].uri);
-                
+               
                 if (ret == ESP_OK) {
-                    EIF_LOG_I("Registered: %-*s %-*s HTTP/1.1", 
-                        (int)max_method_len, method_to_str(routes[i].method), 
+                    EIF_LOG_I("Registered: %-*s %-*s HTTP/1.1",
+                        (int)max_method_len, method_to_str(routes[i].method),
                         (int)max_uri_len, routes[i].uri);
                 }
             }
@@ -1229,7 +1233,7 @@ esp_err_t eif_server_stop(void) {
         vTaskDelay(pdMS_TO_TICKS(100));
         #ifdef CONFIG_EIF_ENABLE_TLS
             httpd_ssl_stop(g_server_handle);
-        #else 
+        #else
             httpd_stop(g_server_handle);
         #endif
         g_server_handle = NULL;
@@ -1315,7 +1319,7 @@ esp_err_t eif_server_launch(void) {
     }
 
     #ifdef CONFIG_EIF_ENABLE_TLS
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_set_tls_creds_from_nvs(), 
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_set_tls_creds_from_nvs(),
             "Failed to set TLS credentials");
         httpd_ssl_config_t conf_copy = cfg->server_config;
         EIF_IF_OK_CHECK_ESP_ERR_T(ret,

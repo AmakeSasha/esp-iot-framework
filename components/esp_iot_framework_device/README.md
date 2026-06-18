@@ -3,15 +3,15 @@
   Project: esp_iot_framework
   Folder: ./components/esp_iot_framework_device
   File: README.md
-  
+ 
   Copyright 2026 AmakeSasha
-  
+ 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+ 
     http://www.apache.org/licenses/LICENSE-2.0
-  
+ 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,11 +23,11 @@
     <h1>esp_iot_framework_device <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
     <h3>A framework for creating reliable IoT devices based on the Espressif Systems chips</h3>
     <p>
-        <code>esp32</code> &bull; 
-        <code>esp32s2</code> &bull; 
-        <code>esp32s3</code> &bull; 
-        <code>esp32c2</code> &bull; 
-        <code>esp32c3</code> &bull; 
+        <code>esp32</code> &bull;
+        <code>esp32s2</code> &bull;
+        <code>esp32s3</code> &bull;
+        <code>esp32c2</code> &bull;
+        <code>esp32c3</code> &bull;
         <code>esp32c6</code>
     </p>
 </div>

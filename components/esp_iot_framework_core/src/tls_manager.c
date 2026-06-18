@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/src
  * File: tls_manager.c
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -80,7 +80,7 @@ static esp_err_t eif_generate_ecc_keypair(
     ), "pk_setup");
 
     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret, mbedtls_ecp_gen_key(
-        MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(key), 
+        MBEDTLS_ECP_DP_SECP256R1, mbedtls_pk_ec(key),
         mbedtls_ctr_drbg_random, &ctr_drbg
     ), "ecp_gen");
 
@@ -90,7 +90,8 @@ static esp_err_t eif_generate_ecc_keypair(
         *key_len = eif_strnlen((const char *)key_pem, KEY_PEM_LEN) + 1U;
         EIF_LOG_I(TLS_MSG_KEY_GEN_OK, *key_len);
     }
-    
+
+
     /* Cleanup */
     mbedtls_pk_free(&key);
     mbedtls_entropy_free(&entropy);
@@ -98,16 +99,16 @@ static esp_err_t eif_generate_ecc_keypair(
     return (ret == 0) ? ESP_OK : ESP_FAIL;
 }
 
-/* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format 
- * string is constant and the input 'index' is a bounded 'uint8_t' value. 
- * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit 
- * and explicitly checking the return value against the buffer size to 
- * ensure the output is not truncated and a null-terminator is present. 
- * This approach is more maintainable and less error-prone than manual 
+/* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
+ * string is constant and the input 'index' is a bounded 'uint8_t' value.
+ * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
+ * and explicitly checking the return value against the buffer size to
+ * ensure the output is not truncated and a null-terminator is present.
+ * This approach is more maintainable and less error-prone than manual
  * string manipulation. */
 static esp_err_t eif_generate_self_signed_cert(
-    uint8_t *key_pem, size_t key_len, 
-    uint8_t *cert_out, size_t *cert_len_out, 
+    uint8_t *key_pem, size_t key_len,
+    uint8_t *cert_out, size_t *cert_len_out,
     const char *dns_name
 ) {
     EIF_TAG_WITH_UNUSED "Cert-Gen";
@@ -125,8 +126,8 @@ static esp_err_t eif_generate_self_signed_cert(
     #define F_TIME_START "19700101000000"
     #define F_TIME_END   "21700101000000"
 
-    static const unsigned char eku_server_auth[] = { 
-        0x30, 0x14, // Sequence 
+    static const unsigned char eku_server_auth[] = {
+        0x30, 0x14, // Sequence
         0x06, 0x08, 0x2b, 0x06, 0x01, 0x05, 0x05, 0x07, 0x03, 0x01, // Server Auth
         0x06, 0x08, 0x2b, 0x06, 0x01, 0x05, 0x05, 0x07, 0x03, 0x02  // Client Auth
     };
@@ -164,7 +165,7 @@ static esp_err_t eif_generate_self_signed_cert(
     /* 2. Seed DRBG */
     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret,
         mbedtls_ctr_drbg_seed(
-            &ctr_drbg, mbedtls_entropy_func, 
+            &ctr_drbg, mbedtls_entropy_func,
             &entropy, seed, sizeof(seed)
         ), "drbg_seed");
 
@@ -186,7 +187,7 @@ static esp_err_t eif_generate_self_signed_cert(
         mbedtls_x509write_crt_set_md_alg(&crt, MBEDTLS_MD_SHA256);
 
         mbedtls_x509write_crt_set_basic_constraints(&crt, 0, -1);
-        mbedtls_x509write_crt_set_key_usage(&crt, 
+        mbedtls_x509write_crt_set_key_usage(&crt,
             MBEDTLS_X509_KU_DIGITAL_SIGNATURE | MBEDTLS_X509_KU_KEY_ENCIPHERMENT);
 
     /* 4. Random Serial */
@@ -229,7 +230,7 @@ static esp_err_t eif_generate_self_signed_cert(
     /* 6. Set Extended Key Usage (Server Auth) */
     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret,
         mbedtls_x509write_crt_set_extension(
-            &crt, MBEDTLS_OID_EXTENDED_KEY_USAGE, 
+            &crt, MBEDTLS_OID_EXTENDED_KEY_USAGE,
             MBEDTLS_OID_SIZE(MBEDTLS_OID_EXTENDED_KEY_USAGE),
             0, eku_server_auth, sizeof(eku_server_auth)
         ), "set_extension_key");
@@ -249,7 +250,7 @@ static esp_err_t eif_generate_self_signed_cert(
     /* 7. Write PEM */
     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret,
         mbedtls_x509write_crt_pem(
-            &crt, cert_out, CERT_BUF_SIZE, 
+            &crt, cert_out, CERT_BUF_SIZE,
             mbedtls_ctr_drbg_random, &ctr_drbg
         ), "write_pem");
 
@@ -280,7 +281,7 @@ static inline void if_ok_erase_it(
 }
 
 static esp_err_t eif_tls_create_creds(
-    char * * const  cert_pem, size_t * const cert_len, 
+    char * * const  cert_pem, size_t * const cert_len,
     char * * const key_pem,   size_t * const key_len
 ) {
     EIF_TAG_WITH_UNUSED "TLS manager";
@@ -299,20 +300,20 @@ static esp_err_t eif_tls_create_creds(
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_generate_ecc_keypair(
         (uint8_t *)*key_pem, key_len), TLS_ERR_GEN_KEY);
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_generate_self_signed_cert(
-        (uint8_t *)*key_pem, *key_len, 
-        (uint8_t *)*cert_pem, cert_len, 
+        (uint8_t *)*key_pem, *key_len,
+        (uint8_t *)*cert_pem, cert_len,
         cfg->mdns_hostname), TLS_ERR_GEN_CERT);
 
     /* Cleanup */
     if (ret != ESP_OK) {
         if (*cert_pem != NULL) {
             if_ok_erase_it(ESP_OK, *cert_pem, (size_t)CERT_BUF_SIZE);
-            vPortFree(*cert_pem); 
+            vPortFree(*cert_pem);
             *cert_pem = NULL;
         }
         if (*key_pem != NULL) {
             if_ok_erase_it(ESP_OK, *key_pem,  (size_t)KEY_PEM_LEN);
-            vPortFree(*key_pem); 
+            vPortFree(*key_pem);
             *key_pem = NULL;
         }
     }

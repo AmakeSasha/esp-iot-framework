@@ -85,7 +85,7 @@ typedef esp_err_t(*&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line"> </div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a>());</div>
@@ -134,7 +134,7 @@ typedef esp_err_t(*&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__core__ext__handlers.html#ga81e1bc436b3d6e4745a057e35d26d426">eif_register_handler_ip_got</a>(ip_got_hanlder));</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__core__ext__handlers_html_ga81e1bc436b3d6e4745a057e35d26d426"><div class="ttname"><a href="group__core__ext__handlers.html#ga81e1bc436b3d6e4745a057e35d26d426">eif_register_handler_ip_got</a></div><div class="ttdeci">esp_err_t eif_register_handler_ip_got(eif_handler_ip_t handler)</div><div class="ttdoc">Register a handler for the IP_EVENT_STA_GOT_IP.</div></div>
@@ -182,7 +182,7 @@ typedef esp_err_t(*&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__core__ext__handlers.html#gafb05eeff3979bcd57240256b2ebc2e7d">eif_register_handler_ip_lost</a>(ip_lost_hanlder));</div>
-<div class="line">    </div>
+<div class="line">   </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__core__ext__handlers_html_gafb05eeff3979bcd57240256b2ebc2e7d"><div class="ttname"><a href="group__core__ext__handlers.html#gafb05eeff3979bcd57240256b2ebc2e7d">eif_register_handler_ip_lost</a></div><div class="ttdeci">esp_err_t eif_register_handler_ip_lost(eif_handler_ip_t handler)</div><div class="ttdoc">Register a handler for the IP_EVENT_STA_LOST_IP.</div></div>

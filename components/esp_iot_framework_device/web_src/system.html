@@ -4,15 +4,15 @@
   Library: esp_iot_framework_device
   Folder: ./components/esp_iot_framework_device/web_src
   File: system.html
-  
+ 
   Copyright 2026 AmakeSasha
-  
+ 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+ 
       http://www.apache.org/licenses/LICENSE-2.0
-  
+ 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@
     <div class="title">🔧 System Settings</div>
     <div class="card">
       <button onclick="rebootWeb()" id="rebootBtn" style="width:100%; background:red;">🔃 FORCE SYSTEM REBOOT</button>
-    </div>  
+    </div> 
     <div class="card">
       <div class="slot" style="margin-bottom:0px;">INFO</div>
       <div class="status-bar" id="jsonOutSYS" style="text-align:left;font-size:16px;background:yellow;color:red;"></div>
@@ -133,7 +133,7 @@
     }
 
     function OTAconfBack(isSuccess) {
-      var id = isSuccess ? 'confirm' : 'rollback', 
+      var id = isSuccess ? 'confirm' : 'rollback',
           altId = isSuccess ? 'rollback' : 'confirm',
           btn = document.getElementById('btnOTA' + id),
           apiFunc = isSuccess ? API.confirmOTA : API.rollbackOTA;
@@ -157,7 +157,7 @@
       API.sendWithBtn(status, API.getInfoOTA, null, function(data) {
         status.innerHTML = '<pre style=\'margin:0;\'>' + formatJson(data) + '</pre>';
         var ok = data.ota_status && data.ota_status === "pending_verify";
-          
+         
         document.getElementById('btnOTAsend').style.display = ok ? 'none' : 'block';
         document.getElementById('rowOTAfile').style.display = ok ? 'none' : 'block';
         document.getElementById('brOTAconfBack').style.display = ok ? 'block' : 'none';
@@ -270,7 +270,7 @@
         return '<span class="json-boolean">' + match + '</span>';
       });
       res = res.replace(/<span class="json-string">("[^"]+")<\/span>\s*:/g, '<span class="json-key">$1</span>:');
-      
+     
       return res;
     }
 

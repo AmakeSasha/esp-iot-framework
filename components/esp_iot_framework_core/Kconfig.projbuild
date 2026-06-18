@@ -3,15 +3,15 @@
 # Library: esp_iot_framework_core
 # Folder: ./components/esp_iot_framework_core
 # File: Kconfig.projbuild
-# 
+#
 # Copyright 2026 AmakeSasha
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,15 +22,15 @@ menu "ESP IoT framework Core"
     config EIF_ENABLE_MDNS
         bool "Enable mDNS Support (Multicast DNS)"
         default y
-        select MDNS if EIF_ENABLE_MDNS 
+        select MDNS if EIF_ENABLE_MDNS
         help
             Enables the Multicast DNS (mDNS) responder service.
-            
-            - If enabled: The device can be accessed via both a friendly 
-              local name (e.g., http://esp-iot.local) and its IP address. 
-              This makes it easier to find the device without checking 
+           
+            - If enabled: The device can be accessed via both a friendly
+              local name (e.g., http://esp-iot.local) and its IP address.
+              This makes it easier to find the device without checking
               the router's DHCP list.
-            - If disabled: The device is accessible only via its direct 
+            - If disabled: The device is accessible only via its direct
               IP address.
 
     config EIF_ENABLE_TLS
@@ -42,24 +42,24 @@ menu "ESP IoT framework Core"
         help
             Switch the web server from insecure HTTP to encrypted HTTPS (Port 443).
 
-            - If enabled: All traffic is fully encrypted using TLS. This provides 
-              a secure communication channel, preventing "Man-in-the-Middle" 
-              (MITM) attacks and ensuring that all data remains confidential 
+            - If enabled: All traffic is fully encrypted using TLS. This provides
+              a secure communication channel, preventing "Man-in-the-Middle"
+              (MITM) attacks and ensuring that all data remains confidential
               and integral during transit.
-            - If disabled: The server operates in plain text mode. ALL DATA 
-              sent between the client and the device is visible to anyone 
-              on the same network. Using simple packet sniffers, an attacker 
+            - If disabled: The server operates in plain text mode. ALL DATA
+              sent between the client and the device is visible to anyone
+              on the same network. Using simple packet sniffers, an attacker
               can easily intercept your session and compromise the system.
 
             PERFORMANCE CONSIDERATIONS:
-            HTTPS is resource-intensive for the ESP32. Enabling this feature 
+            HTTPS is resource-intensive for the ESP32. Enabling this feature
             will result in:
             1. Increased RAM consumption (~30-50 KB for SSL buffers).
             2. Initial connection latency (1-3 seconds for the TLS handshake).
             3. Higher CPU utilization during active data transfer.
 
-            WARNING: Disabling TLS is strongly discouraged for production 
-            environments. Modern browsers will mark your admin panel as 
+            WARNING: Disabling TLS is strongly discouraged for production
+            environments. Modern browsers will mark your admin panel as
             "Not Secure" and may block access to critical web features.
 
     menu "Logging Settings"
@@ -69,7 +69,7 @@ menu "ESP IoT framework Core"
             default 3
             help
                 Global logging level for all 'esp_iot_framework' modules.
-                
+               
                 0: None
                 1: Error
                 2: Warning
@@ -80,8 +80,8 @@ menu "ESP IoT framework Core"
             bool "Show metadata in logs (file, line, func)"
             default n
             help
-                If enabled, logs will include the source file, line number, 
-                and function name. 
+                If enabled, logs will include the source file, line number,
+                and function name.
                 If enabled:
                 ```
                 I (8536) HTTPS server: src/web.c:990 (eif_server_launch) HTTP Server started.
@@ -95,9 +95,9 @@ menu "ESP IoT framework Core"
             bool "Enable memory status logging"
             default n
             help
-                If enabled, the current heap status will be printed to the 
-                console every time the monitor task performs a check 
-                (defined by 'Memory check interval'). 
+                If enabled, the current heap status will be printed to the
+                console every time the monitor task performs a check
+                (defined by 'Memory check interval').
     endmenu
 
     menu "Memory Monitor Settings"
@@ -106,16 +106,16 @@ menu "ESP IoT framework Core"
             range 12288 65536
             default 12288
             help
-                Minimum free block size that must be available for stable operation. 
+                Minimum free block size that must be available for stable operation.
                 If the largest free block is smaller than this value, the system will reboot.
 
-                WARNING: To ensure the reboot task can be created, this value 
-                MUST be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE 
-                (which is measured in 4-byte words). 
+                WARNING: To ensure the reboot task can be created, this value
+                MUST be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE
+                (which is measured in 4-byte words).
 
                 Formula: CRITICAL_SIZE >= STACK_SIZE * 4 * 2.
 
-                Note: Setting too low may cause missed fragmentation issues; too 
+                Note: Setting too low may cause missed fragmentation issues; too
                 high may lead to unnecessary reboots.
 
         config EIF_MEM_MONITOR_CHECK_INTERVAL
@@ -125,7 +125,7 @@ menu "ESP IoT framework Core"
             help
                 How often to check memory fragmentation (in milliseconds).
 
-                This parameter defines the time interval between consecutive memory fragmentation 
+                This parameter defines the time interval between consecutive memory fragmentation
                 checks performed by the memory monitor task.
 
                 The actual time to reboot = CHECK_INTERVAL × NUMBER_CHECKS.
@@ -139,12 +139,12 @@ menu "ESP IoT framework Core"
             range 2 60
             default 3
             help
-                Number of consecutive memory fragmentation checks that must detect 
+                Number of consecutive memory fragmentation checks that must detect
                 a critical condition before the system initiates a safe reboot.
 
                 This parameter prevents false reboots due to temporary memory spikes.
-                The system will only trigger a reboot if the largest free memory 
-                block remains below the critical threshold (EIF_MEM_MONITOR_CRITICAL_SIZE) 
+                The system will only trigger a reboot if the largest free memory
+                block remains below the critical threshold (EIF_MEM_MONITOR_CRITICAL_SIZE)
                 for the specified number of consecutive checks.
 
         config EIF_REBOOT_TASK_STACK_SIZE
@@ -153,13 +153,13 @@ menu "ESP IoT framework Core"
             default 1536
             help
                 Stack size for the task that manages the system shutdown sequence.
-                
+               
                 The task stops the Wi-Fi driver halts the HTTP server, and
                 executes the user_pre_reboot_cb' before calling esp_restart().
                 Increase this value if 'user_pre_reboot_cb' performs stack-heavy
                 operations like NVS writes or complex logging.
 
-                Note: Defined in 4-byte words. EIF_MEM_MONITOR_CRITICAL_SIZE 
+                Note: Defined in 4-byte words. EIF_MEM_MONITOR_CRITICAL_SIZE
                 must be at least twice this value (in bytes) to ensure the task
                 can be created in low-memory conditions.
     endmenu

@@ -3,15 +3,15 @@
 # Library: esp_iot_framework_device
 # Folder: ./components/esp_iot_framework_device
 # File: Kconfig.projbuild
-# 
+#
 # Copyright 2026 AmakeSasha
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,13 +27,13 @@ menu "ESP IoT Framework"
                 Enable the integrated web interface for management.
                 Only the admin panel, not the user interface!
 
-                - Enabled: All static assets (HTML, CSS, JS) from the 'web_src' 
+                - Enabled: All static assets (HTML, CSS, JS) from the 'web_src'
                   directory are embedded directly into the firmware.
-                - Disabled: The web interface is completely excluded from the 
+                - Disabled: The web interface is completely excluded from the
                   build, providing only the JSON REST API for remote interaction.
 
-                Disabling this feature significantly reduces Flash usage and 
-                optimizes the HTTP server's memory footprint by stripping 
+                Disabling this feature significantly reduces Flash usage and
+                optimizes the HTTP server's memory footprint by stripping
                 unnecessary resource-serving logic.
 
         config EIF_ENABLE_WEB_FAVICON
@@ -43,9 +43,9 @@ menu "ESP IoT Framework"
             help
                 Include the official EIF branding icon in the firmware.
 
-                - Enabled: The PNG favicon is embedded into Flash memory and 
+                - Enabled: The PNG favicon is embedded into Flash memory and
                   served automatically on '/favicon.ico' requests.
-                - Disabled: Strips the binary image from the firmware, saving 
+                - Disabled: Strips the binary image from the firmware, saving
                   extra Flash space and removing the favicon route handler.
 
         config EIF_WEB_CACHE_MAX_AGE
@@ -56,14 +56,14 @@ menu "ESP IoT Framework"
             help
                 Sets the 'max-age' directive for the Cache-Control header.
 
-                During this period, the browser will serve files from its local 
-                cache without contacting the ESP32. This minimizes CPU and heap 
+                During this period, the browser will serve files from its local
+                cache without contacting the ESP32. This minimizes CPU and heap
                 usage by avoiding HTTPS handshakes and data transmission.
 
-                The 'ETag' validation (If-None-Match) only occurs AFTER this 
-                timer expires or if the user performs a manual refresh. Setting 
-                this to 0 is recommended for development to ensure every change 
-                is immediately visible. For production, a higher value is 
+                The 'ETag' validation (If-None-Match) only occurs AFTER this
+                timer expires or if the user performs a manual refresh. Setting
+                this to 0 is recommended for development to ensure every change
+                is immediately visible. For production, a higher value is
                 preferable to reduce the load on the MCU.
     endmenu
 
@@ -73,11 +73,11 @@ menu "ESP IoT Framework"
         help
             Enables mandatory Basic Authentication for all systemic paths (/_/*).
 
-            - If enabled: All administrative API and Web GUI requests require 
+            - If enabled: All administrative API and Web GUI requests require
               a valid username ('admin') and password stored in NVS.
             - If disabled: Access control is bypassed. It may be useful for local debugging, but it is not recommended.
 
-            WARNING: Disabling authentication can lead to unauthorized access 
+            WARNING: Disabling authentication can lead to unauthorized access
             and use of the admin panel and the core JSON REST API.
 
     config EIF_WEB_SIZE_OTA_BUFFER
@@ -100,8 +100,8 @@ menu "ESP IoT Framework"
             bool "Include timestamp in HTTP response"
             default n
             help
-                When enabled, adds a UNIX timestamp to HTTP responses 
-                (except 204 No Content). Useful for debugging request timing and 
+                When enabled, adds a UNIX timestamp to HTTP responses
+                (except 204 No Content). Useful for debugging request timing and
                 response latency. Disable in production to reduce response size.
     endmenu
 endmenu

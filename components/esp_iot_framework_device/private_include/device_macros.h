@@ -3,15 +3,15 @@
  * Library: esp_iot_framework_device
  * Folder: ./components/esp_iot_framework_device/private_include
  * File: device_macros.h
- * 
+ *
  * Copyright 2026 AmakeSasha
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,20 +28,20 @@
 /* Other */
 
 /* @deviation [Rule 20.10] The '#' operator is utilized within a dual-stage macro
- * expansion pattern to enforce strict compile-time transformation of macro data 
- * into string literals instead of their raw identifier names. Manual replication 
- * of these literal values across the subsystem introduces a critical risk of human error 
- * (e.g., mismatching configuration constants), leading to out-of-bounds evaluation. 
- * The macro expansion is strictly deterministic and guaranteed to produce only valid, 
- * well-defined C string literals, eliminating any risk of syntactic corruption or 
+ * expansion pattern to enforce strict compile-time transformation of macro data
+ * into string literals instead of their raw identifier names. Manual replication
+ * of these literal values across the subsystem introduces a critical risk of human error
+ * (e.g., mismatching configuration constants), leading to out-of-bounds evaluation.
+ * The macro expansion is strictly deterministic and guaranteed to produce only valid,
+ * well-defined C string literals, eliminating any risk of syntactic corruption or
  * undefined preprocessor evaluation order.
  */
 #define EIF_STR_HELPER(x) #x
 #define EIF_STR(x) EIF_STR_HELPER(x)
 
 #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-    /* @deviation [Rule 20.7] Macro parameters inside 'EIF_DEFINE_HTTP_FILE' 
-     * are intentionally utilized without enclosing parentheses where they are 
+    /* @deviation [Rule 20.7] Macro parameters inside 'EIF_DEFINE_HTTP_FILE'
+     * are intentionally utilized without enclosing parentheses where they are
      * bound to the preprocessor stringification '#' and token-pasting '##'
      * operators. Manual encapsulation of these parameters within parentheses in
      * such contexts violates C standard syntactic rules, resulting in an

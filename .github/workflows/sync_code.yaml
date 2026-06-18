@@ -13,5 +13,5 @@ jobs:
         run: |
           git clone --single-branch --branch main "https://git.sourcecraft.dev/amakesasha/esp-iot-framework.git" repo
           cd repo
-          
+         
           git push "https://oauth2:${{ secrets.SYNC_GITHUB_TOKEN }}@${{ secrets.SYNC_MIRROR_URL }}/${{ secrets.SYNC_REPOSITORY_URL }}.git" main:main --force
