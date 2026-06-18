@@ -44,9 +44,9 @@
 * Periodically checks heap fragmentation and triggers a preventive auto-reboot if memory degradation hits a critical threshold.
 
 For an in-depth look, check out the documentation for each section:
-* [Public Core](../../docs/invalid_link#group__core__group.html)
-* [Core Extensions](../../docs/invalid_link#group__core__ext__group.html)
-* [Core Macros](../../docs/invalid_link#group__core__macros__group.html)
+* [Public Core](../../docs/invalid_link.md#group__core__group.html)
+* [Core Extensions](../../docs/invalid_link.md#group__core__ext__group.html)
+* [Core Macros](../../docs/invalid_link.md#group__core__macros__group.html)
 
 <h1>Usage for creating nodes</h1>
 

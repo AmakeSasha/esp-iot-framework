@@ -32,7 +32,7 @@
     </p>
 </div>
 
-`esp_iot_framework_device` is a foundational network node based on Espressif chips, designed for building fully manageable end IoT products. Operating on top of `esp_iot_framework_core`, it provides an out-of-the-box HTTP/HTTPS web server with a comprehensive REST API for remote administration alongside an optional Web Admin GUI. For an in-depth look, check out the [documentation](../../docs/invalid_link#group__device__group.html).
+`esp_iot_framework_device` is a foundational network node based on Espressif chips, designed for building fully manageable end IoT products. Operating on top of `esp_iot_framework_core`, it provides an out-of-the-box HTTP/HTTPS web server with a comprehensive REST API for remote administration alongside an optional Web Admin GUI. For an in-depth look, check out the [documentation](../../docs/invalid_link.md#group__device__group.html).
 
 <h2>Architecture and Under the Hood</h2>
 
@@ -49,7 +49,7 @@ The built-in API equips your end device with a scalable suite of management capa
 * **OTA Firmware Management** — Read running software metadata (such as project name, version, compile date, and ESP-IDF version), upload new binaries, and handle update confirmations or automatic rollbacks.
 * **Security Control** — Modify the administrator password on the fly and trigger on-device regeneration of cryptographic TLS keys and certificates.
 
-For an in-depth look, check out the [API documentation](../../docs/invalid_link#group__device__rest__api.html).
+For an in-depth look, check out the [API documentation](../../docs/invalid_link.md#group__device__rest__api.html).
 
 <h2>Web Admin GUI</h2>
 
