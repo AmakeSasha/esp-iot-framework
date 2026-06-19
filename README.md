@@ -58,6 +58,7 @@ To protect against network restrictions, blockages, and infrastructure failures,
 |:---------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **SourceCraft** (main) | [🔗 **Source code**](https://sourcecraft.dev/amakesasha/esp-iot-framework) <br> [📄 **Documentation**](https://amakesasha.sourcecraft.site/esp-iot-framework/)             |
 | **GitHub** (mirror)    | [🔗 **Source code**](https://github.com/AmakeSasha/esp-iot-framework) <br>      [📄 **Documentation**](https://amakesasha.github.io/esp-iot-framework/html/index.html)     |
+| **GitCore** (mirror)   | [🔗 **Source code**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) <br>   📄 **Without documentation**                                                              |
 | **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     [📄 **Documentation**](https://amakesasha.gitverse.site/esp-iot-framework/html/index.html) |
 
 <h1>License</h1>
