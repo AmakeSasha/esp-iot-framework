@@ -65,6 +65,5 @@ To protect against network restrictions, blockages, and infrastructure failures,
 This project is licensed under the [`Apache 2.0 License`](./LICENSE), with the following exceptions:
 
 * Contents of the [`/examples`](./examples) directory, which are dedicated to the `Public Domain` (or licensed under [`CC0 1.0`](./examples/LICENSE_CC0_1_0), at your option).
-* Contents of the `firmware` branch (see its own `README` for details).
 
 Please also refer to the [`NOTICE`](./NOTICE) file.
