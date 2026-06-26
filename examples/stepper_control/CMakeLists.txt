@@ -4,4 +4,4 @@ list(APPEND SDKCONFIG_DEFAULTS "../../components/esp_iot_framework_device/sdkcon
 list(APPEND EXTRA_COMPONENT_DIRS "../../components")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(example_hello_world_cpp)
+project(example_stepper_control)

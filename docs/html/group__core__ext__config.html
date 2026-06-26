@@ -1,4 +1,20 @@
 <!-- HTML header for doxygen 1.9.1-->
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Project: esp_iot_framework
+  Folder: ./docs/doxygen
+  File: header.html
+  Copyright 2026 AmakeSasha
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -87,8 +103,8 @@ Functions</h2></td></tr>
 <p>This module aggregates all functions used to query current operational flags, device parameters, and active configuration blocks.</p>
 <dl class="section note"><dt>Note</dt><dd>Before calling any function in this group, <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code> must be executed exactly once.<br  />
 <br  />
- Examples: <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_err.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core.h&quot;</span></div>
+ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
@@ -114,8 +130,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the number of <a class="el" href="group__eif__wifi__config.html#wifi_profiles_desc">Wi-Fi profiles</a> stored in the system. It is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>.</p>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_code_ext.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_ext.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#define TAG &quot;WIFI_CFG&quot;</span></div>
 <div class="line"> </div>
@@ -145,8 +161,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the zero-based index of the active <a class="el" href="group__eif__wifi__config.html#wifi_profiles_desc">Wi-Fi profile</a> currently in use.</p>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_code_ext.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_ext.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#define TAG &quot;WIFI_CFG&quot;</span></div>
 <div class="line"> </div>
@@ -199,9 +215,9 @@ Functions</h2></td></tr>
 <li><code>ESP_ERR_INVALID_SIZE</code>: The <code>index</code> is out of the possible range.</li>
 </ul>
 </dd></dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_err.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_wifi.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_ext.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#define TAG &quot;APP_WIFI&quot;</span></div>
 <div class="line"> </div>

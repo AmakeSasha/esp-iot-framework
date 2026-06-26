@@ -98,6 +98,27 @@ menu "ESP IoT framework Core"
                 If enabled, the current heap status will be printed to the
                 console every time the monitor task performs a check
                 (defined by 'Memory check interval').
+
+        config EIF_LOG_ENABLE_REMOTE_DEBUG
+            bool "Enable remote diagnostic logging engine"
+            default n
+            help
+                If enabled, Core will intercept all system and business logs 
+                into an internal ring buffer. 
+                Any Node type (Device, Gateway, Hub, etc.) can then fetch 
+                this data via Core API and expose it to the outside world 
+                using its own communication protocol (HTTP, MQTT, BLE) 
+                for remote diagnostics without a physical UART connection.
+
+        config EIF_LOG_REMOTE_BUFFER_SIZE
+            int "Remote log ring buffer size (bytes)"
+            depends on EIF_LOG_ENABLE_REMOTE_DEBUG
+            range 1024 16384
+            default 4096
+            help
+                Size of the internal FreeRTOS ring buffer in RAM.
+                4096 bytes can store around 50-70 log lines.
+                Higher values consume more heap memory.
     endmenu
 
     menu "Memory Monitor Settings"

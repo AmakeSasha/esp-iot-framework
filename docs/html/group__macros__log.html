@@ -1,4 +1,20 @@
 <!-- HTML header for doxygen 1.9.1-->
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Project: esp_iot_framework
+  Folder: ./docs/doxygen
+  File: header.html
+  Copyright 2026 AmakeSasha
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -106,8 +122,8 @@ Macros</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_macros.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_macros.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> check_system_health(<span class="keywordtype">float</span> voltage, <span class="keywordtype">bool</span> is_connected) {</div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a> <span class="stringliteral">&quot;HEALTH&quot;</span>; <span class="comment">// Required for EIF_LOG_x</span></div>
@@ -158,8 +174,8 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>This macro declares a string named <code>TAG</code>. It automatically adds an unused attribute (<code>[[maybe_unused]]</code> for C++, <code>__attribute__((unused))</code> for C or nothing if the compiler does not support it) to suppress compiler warnings and satisfy MISRA C requirements when all logging macros in the scope are stripped out by the preprocessor.</p>
 <dl class="section note"><dt>Note</dt><dd>This macro is intended for use inside functions (within local scopes). It allows defining a local logging context within a specific scope, fully complying with the MISRA C rule that strictly forbids the use of <code>#undef</code>.</dd></dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_macros.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_macros.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> process_sensor_event(<span class="keywordtype">void</span>) {</div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a> <span class="stringliteral">&quot;SHT3X_DRV&quot;</span>;</div>
@@ -219,9 +235,9 @@ Macros</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_system.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_macros.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_system.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_macros.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#define TAG &quot;SYS_MON&quot;</span></div>
 <div class="line"> </div>
@@ -297,10 +313,10 @@ Macros</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_log.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_wifi.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;nvs_flash.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_macros.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_wifi.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;nvs_flash.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_macros.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> system_reboot_prepare(<span class="keywordtype">void</span>) {</div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a> <span class="stringliteral">&quot;REBOOT&quot;</span>;</div>
@@ -313,7 +329,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    esp_restart();</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__log_html_ga54f4350b639170b9abdcdf9144c77b18"><div class="ttname"><a href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">EIF_SHOW_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Unconditionally executes an expression and logs warning details on failure.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:286</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga54f4350b639170b9abdcdf9144c77b18"><div class="ttname"><a href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">EIF_SHOW_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Unconditionally executes an expression and logs warning details on failure.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:287</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

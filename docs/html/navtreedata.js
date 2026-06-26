@@ -32,7 +32,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"group__config__c.html"
+"group___ofher.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

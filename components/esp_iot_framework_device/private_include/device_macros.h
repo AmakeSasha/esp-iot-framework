@@ -23,7 +23,7 @@
 #define DEVICE_MACROS_H
 
 #include "sdkconfig.h"
-#include "esp_iot_framework_core_macros.h"
+#include <esp_iot_framework_core_macros.h>
 
 /* Other */
 

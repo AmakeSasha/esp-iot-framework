@@ -21,15 +21,15 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "esp_log.h"
-#include "esp_random.h"
-#include "mbedtls/pk.h"
-#include "mbedtls/oid.h"
-#include "mbedtls/error.h"
-#include "mbedtls/version.h"
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/x509_crt.h"
+#include <esp_log.h>
+#include <esp_random.h>
+#include <mbedtls/pk.h>
+#include <mbedtls/oid.h>
+#include <mbedtls/error.h>
+#include <mbedtls/version.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/x509_crt.h>
 
 #include "esp_iot_framework_core_macros.h"
 #include "core_internal.h"

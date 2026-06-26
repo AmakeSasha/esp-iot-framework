@@ -21,11 +21,15 @@
 
 #include "sdkconfig.h"
 
-#include "esp_log.h"
+#include <string.h>
+#include <esp_log.h>
 #include <inttypes.h>
-#include "esp_ota_ops.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include <esp_ota_ops.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+    #include <freertos/ringbuf.h>
+#endif
 
 #include "esp_iot_framework_core_macros.h"
 #include "core_internal.h"
@@ -40,7 +44,11 @@
 #define TASK_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
 
 #define TASK_MEMORY_MONITOR_NAME "t_memory_monitor"
-#define TASK_MEMORY_MONITOR_SIZE 1108
+#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+#define TASK_MEMORY_MONITOR_SIZE 1280
+#else
+    #define TASK_MEMORY_MONITOR_SIZE 1108
+#endif
 #define TASK_MEMORY_MONITOR_PRIORITY 5
 
 #define TASK_TLS_RECREATE_NAME "t_tls_recreate"
@@ -59,6 +67,83 @@
 #if CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE < (CONFIG_EIF_REBOOT_TASK_STACK_SIZE * 8)
     #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be twice as large as EIF_REBOOT_TASK_STACK_SIZE!"
 #endif
+
+/* Logging */
+#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+    static RingbufHandle_t core_log_buf = NULL;
+
+    static int core_global_log_vprintf(const char *fmt, va_list l) {
+        if (core_log_buf != NULL) {
+            char line_buf[128] = {0}; 
+            va_list args = {0};
+
+            va_copy(args, l);
+            int len = vsnprintf(line_buf, sizeof(line_buf), fmt, args);
+            va_end(args);
+            
+            if (len > 0) {
+                if ((size_t)len >= sizeof(line_buf)) {
+                    len = sizeof(line_buf) - 1;
+                }
+
+                if (xRingbufferSend(core_log_buf, line_buf, len, 0) == pdFALSE) {
+                    int attempts = 4; 
+
+                    while (attempts-- > 0 && xRingbufferSend(
+                        core_log_buf, line_buf, len, 0
+                    ) == pdFALSE) {
+                        size_t dummy_size = 0;
+                        char *dummy_ptr = (char *)xRingbufferReceiveUpTo(
+                            core_log_buf, &dummy_size, 0, len
+                        );
+
+                        if (dummy_ptr != NULL) {
+                            vRingbufferReturnItem(
+                                core_log_buf, (void *)dummy_ptr
+                            );
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return vprintf(fmt, l);
+    }
+
+    void eif_core_log_init(void) {
+        core_log_buf = xRingbufferCreate(
+            CONFIG_EIF_LOG_REMOTE_BUFFER_SIZE, RINGBUF_TYPE_BYTEBUF
+        );
+        if (core_log_buf != NULL) {
+            esp_log_set_vprintf(core_global_log_vprintf);
+        }
+    }
+
+    size_t eif_core_log_pop_chunk(char *dest_buf, size_t max_size) {
+        if (core_log_buf == NULL || dest_buf == NULL || max_size == 0) {
+            return 0;
+        }
+
+        size_t item_size = 0;
+        char *raw_chunk = (char *)xRingbufferReceiveUpTo(core_log_buf, &item_size, 0, max_size);
+
+        if (raw_chunk != NULL && item_size > 0) {
+            memcpy(dest_buf, raw_chunk, item_size);
+
+            vRingbufferReturnItem(core_log_buf, (void *)raw_chunk);
+
+            return item_size;
+        }
+
+        return 0;
+    }
+#endif
+
+
+
+/* Tasks */
 
 esp_err_t eif_task_common_spawn(
     TaskHandle_t * const p_handle, const TaskFunction_t f_worker,
@@ -172,42 +257,43 @@ esp_err_t eif_task_reboot_launch(void) {
 /* ======================= EXCLUSIVE SYS TASKS ======================= */
 static TaskHandle_t x_eif_exclusive_sys_handle = NULL;
 
-/* ------ tls_recreate ------ */
-static void eif_task_tls_recreate(void* arg) {
-    EIF_TAG_WITH_UNUSED "tls_recreate";
-    (void)arg;
+#ifdef CONFIG_EIF_ENABLE_TLS
+    /* ------ tls_recreate ------ */
+    static void eif_task_tls_recreate(void* arg) {
+        EIF_TAG_WITH_UNUSED "tls_recreate";
+        (void)arg;
 
-    esp_err_t ret = ESP_OK;
+        esp_err_t ret = ESP_OK;
 
-    EIF_LOG_I(MSG_SPAWN_TASK, __func__);
-    vTaskDelay(pdMS_TO_TICKS(500));
-
-
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds_and_nvs_save(), "qwe");
-    if (ret == ESP_OK) {
-        EIF_LOG_I("TLS credentials recreated. System will restart...");
+        EIF_LOG_I(MSG_SPAWN_TASK, __func__);
         vTaskDelay(pdMS_TO_TICKS(500));
-        EIF_LOG_I("Restarting...");
 
-        (void)eif_task_reboot_launch();
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds_and_nvs_save(), "qwe");
+        if (ret == ESP_OK) {
+            EIF_LOG_I("TLS credentials recreated. System will restart...");
+            vTaskDelay(pdMS_TO_TICKS(500));
+            EIF_LOG_I("Restarting...");
+
+            (void)eif_task_reboot_launch();
+        }
+
+        /* Cleanup */
+        x_eif_exclusive_sys_handle = NULL;
+        vTaskDelete(NULL);
     }
 
-    /* Cleanup */
-    x_eif_exclusive_sys_handle = NULL;
-    vTaskDelete(NULL);
-}
+    esp_err_t eif_task_tls_recreate_launch(void) {
+        esp_err_t ret = ESP_OK;
 
-esp_err_t eif_task_tls_recreate_launch(void) {
-    esp_err_t ret = ESP_OK;
+        EIF_LOG_D(MSG_CALL_FUNC, __func__);
 
-    EIF_LOG_D(MSG_CALL_FUNC, __func__);
+        EIF_TASK_LAUNCH(ret, x_eif_exclusive_sys_handle,
+            TLS_RECREATE, &eif_task_tls_recreate);
 
-    EIF_TASK_LAUNCH(ret, x_eif_exclusive_sys_handle,
-        TLS_RECREATE, &eif_task_tls_recreate);
-
-    /* Cleanup */
-    return ret;
-}
+        /* Cleanup */
+        return ret;
+    }
+#endif
 
 /* ------ rollback_and_reboot ------ */
 static void eif_task_rollback_and_reboot(void *arg) {
@@ -311,7 +397,7 @@ static void eif_task_wifi_test(void *arg) {
         "Reconnecting to original AP failed");
 
     (void)eif_wifi_handler_stop_set(false);
-
+    (void)(ret);
 
     /* Cleanup */
     x_eif_exclusive_sys_handle = NULL;

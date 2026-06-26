@@ -21,26 +21,26 @@
 
 #include "sdkconfig.h"
 
-#include "cJSON.h"
-#include "esp_mac.h"
-#include "esp_log.h"
-#include "esp_flash.h"
-#include "esp_timer.h"
-#include "esp_ota_ops.h"
-#include "esp_chip_info.h"
-#include "esp_app_format.h"
-#include "esp_idf_version.h"
+#include <cJSON.h>
+#include <esp_mac.h>
+#include <esp_log.h>
+#include <esp_flash.h>
+#include <esp_timer.h>
+#include <esp_ota_ops.h>
+#include <esp_chip_info.h>
+#include <esp_app_format.h>
+#include <esp_idf_version.h>
 #ifdef CONFIG_EIF_ENABLE_TLS
-    #include "esp_https_server.h"
+    #include <esp_https_server.h>
 #else
-    #include "esp_http_server.h"
+    #include <esp_http_server.h>
 #endif
 
 #include "device_macros.h"
 #include "device_internal.h"
-#include "esp_iot_framework_device.h"
-#include "esp_iot_framework_core_ext.h"
-#include "esp_iot_framework_core_macros.h"
+#include <esp_iot_framework_device.h>
+#include <esp_iot_framework_core_ext.h>
+#include <esp_iot_framework_core_macros.h>
 
 #ifdef CONFIG_EIF_ENABLE_TLS
     #define TAG "HTTPS server"
@@ -134,12 +134,16 @@
     #define ESP_WARN_CACHE_HIT 1234
     #define ETAG_VALUE "\"" __DATE__ " " __TIME__ "\""
 #endif
+#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+    #define RESP_TYPE_TEXT "text/plain; charset=UTF-8"
+#endif
 
 #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
     #define HTTP_BASIC_AUTH_REALM "Basic realm=\"web_basic_auth\""
 #endif
 #define HTTP_METHOD_MAX_LEN 8
 #define HTTP_URI_MAX_LEN 16 * 1024
+#define HTTP_LOGS_CHUNK_SIZE 512
 
 #define HDR_CACHE_CONTROL_VALUE "public, max-age=" EIF_STR(CONFIG_EIF_WEB_CACHE_MAX_AGE)
 
@@ -787,6 +791,35 @@ static esp_err_t h_sys_reboot_do(httpd_req_t * const req) {
     return ret;
 }
 
+#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+    static esp_err_t h_sys_logs_txt(httpd_req_t *req) {
+        esp_err_t ret = ESP_OK;
+        char tx_buffer[HTTP_LOGS_CHUNK_SIZE] = {0};
+        
+        (void)httpd_resp_set_type(req, "text/plain; charset=utf-8");
+
+        size_t bytes_read = eif_core_log_pop_chunk(tx_buffer, HTTP_LOGS_CHUNK_SIZE);
+
+        while (bytes_read > 0U) {
+            EIF_IF_OK_CHECK_ESP_ERR_T(ret, httpd_resp_send_chunk(
+                req, tx_buffer, bytes_read
+            ), "Failed to send log chunk of %u bytes", HTTP_LOGS_CHUNK_SIZE);
+                
+            if (ret != ESP_OK) {
+                break;
+            }
+
+            bytes_read = eif_core_log_pop_chunk(tx_buffer, HTTP_LOGS_CHUNK_SIZE);
+        }
+
+        if (ret == ESP_OK) {
+            (void)httpd_resp_send_chunk(req, NULL, 0U);
+        }
+
+        return ret;
+    }
+#endif
+
 
 
 /* OTA */
@@ -1286,6 +1319,9 @@ esp_err_t eif_server_launch(void) {
         {"/_/sys/info.json", HTTP_GET,  h_sys_info_json, NULL},
         /* Reboot system (ESP) */
         {"/_/sys/reboot.do", HTTP_POST, h_sys_reboot_do, NULL},
+        #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+            {"/_/sys/logs.txt", HTTP_GET, h_sys_logs_txt, NULL},
+        #endif
 
         /* ----------------------- OTA API ----------------------- */
         /* Getting information about the current firmware */

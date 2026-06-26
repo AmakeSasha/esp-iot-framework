@@ -23,13 +23,13 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "esp_mac.h"
-#include "esp_log.h"
-#include "esp_err.h"
-#include "esp_wifi.h"
-#include "esp_ota_ops.h"
+#include <esp_mac.h>
+#include <esp_log.h>
+#include <esp_err.h>
+#include <esp_wifi.h>
+#include <esp_ota_ops.h>
 #ifdef CONFIG_EIF_ENABLE_MDNS
-    #include "mdns.h"
+    #include <mdns.h>
 #endif
 
 #include "esp_iot_framework_core_macros.h"
@@ -59,6 +59,8 @@ esp_err_t eif_core_initialize(void) {
 
     EIF_LOG_D(MSG_CALL_SETTER, __func__);
 
+    eif_core_log_init();
+    
     const esp_partition_t *running = esp_ota_get_running_partition();
     if (running != NULL) {
         esp_ota_img_states_t state = ESP_OTA_IMG_UNDEFINED;

@@ -25,9 +25,9 @@
 #include "sdkconfig.h"
 
 #include <string.h>
-#include "esp_wifi.h"
+#include <esp_wifi.h>
 #ifdef CONFIG_EIF_ENABLE_MDNS
-    #include "mdns.h"
+    #include <mdns.h>
 #endif
 
 #include "esp_iot_framework_core.h"
@@ -104,6 +104,7 @@ esp_err_t eif_wifi_deinitialize(void);
 
 /* system.c */
 
+void eif_core_log_init(void);
 esp_err_t eif_task_reboot_launch(void);
 esp_err_t eif_task_memory_monitor_launch(void);
 esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);

@@ -22,11 +22,11 @@
 #include "sdkconfig.h"
 
 #include <string.h>
-#include "esp_log.h"
-#include "esp_wifi.h"
-#include "esp_system.h"
+#include <esp_log.h>
+#include <esp_wifi.h>
+#include <esp_system.h>
 #ifdef CONFIG_EIF_ENABLE_MDNS
-    #include "mdns.h"
+    #include <mdns.h>
 #endif
 
 #include "esp_iot_framework_core_macros.h"

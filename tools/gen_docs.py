@@ -56,10 +56,6 @@ def generate_readme(docs_dir, src_path, filename):
             "converted": "(group__device__root.html)"
         },
         {
-            "original": r"\(./examples/LICENSE_CC0_1_0\)",
-            "converted": "(md_docs_html_license_cc0_page.html)"
-        },
-        {
             "original": r"\(./examples\)",
             "converted": "(index.html)"
         },
@@ -100,13 +96,6 @@ def main():
             "src": "LICENSE",
             "title": "Apache 2.0 License",
             "name": "license",
-            "type": "file",
-            "dst_path": ""
-        },
-        {
-            "src": "examples/LICENSE_CC0_1_0",
-            "title": "CC0 1.0 License",
-            "name": "license_cc0",
             "type": "file",
             "dst_path": ""
         },

@@ -1,4 +1,20 @@
 <!-- HTML header for doxygen 1.9.1-->
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Project: esp_iot_framework
+  Folder: ./docs/doxygen
+  File: header.html
+  Copyright 2026 AmakeSasha
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -6,7 +22,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
-<title>esp_iot_framework: Author&#39;s notes</title>
+<title>esp_iot_framework: authors_notes</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -55,19 +71,24 @@ $(document).ready(function(){initNavTree('md_docs_authors_notes.html',''); initR
 <div id="doc-content">
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Author's notes </div>  </div>
+<div class="title">authors_notes </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Here are the answers that I considered important, at least for me. I think it will be useful for me to read this in the future.</p>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md23"></a>
+Author's notes</h1>
+<p>Here are the answers that I considered important, at least for me. I think it will be useful for me to read this in the future.</p>
 <ul>
-<li><p class="startli"><b>Where did the name of this project come from?</b></p>
-<p class="startli">I just didn't want to waste time overthinking an overly fancy or complicated name. <code>ESP IoT Framework</code> describes exactly what this project is and does, so I went with it. It is straightforward, clean, and tells you its purpose right away.</p>
+<li><p class="startli"><b>Has the project been officially audited, certified, or checked for MISRA C compliance?</b></p>
+<p class="startli">No official audit or commercial certification has been conducted (I don't have the budget for this). However, the code is checked through the <code>cppcheck</code> static analyzer. This reduces risks, eliminates known patterns of undefined behavior, and improves overall code reliability, although it does not replace a full-fledged industrial certification.</p>
+</li>
+<li><p class="startli"><b>Is the framework guaranteed to have no bugs, error, failure or vulnerabilities in the project?</b></p>
+<p class="startli">As an industry rule, no software is entirely immune to bugs or edge-case errors, especially during periods of active development. Therefore, users are strongly advised to thoroughly test the framework in their specific hardware environment before use.</p>
 </li>
 <li><p class="startli"><b>What is the purpose of this project? What is its future?</b></p>
 <p class="startli">This project is being created as the main (perhaps the only) part of my portfolio. I develop it when I feel like it. Since I really liked this project myself, I will continue to develop it in the future.</p>
 </li>
-<li><p class="startli"><b>Has the project been officially audited, certified, or checked for MISRA C compliance?</b></p>
-<p class="startli">No official audit or commercial certification has been conducted (I don't have the budget for this). However, the code is checked through the <code>cppcheck</code> static analyzer, which ensures that there are no known patterns of undefined behavior in the code.</p>
+<li><p class="startli"><b>Where did the name of this project come from?</b></p>
+<p class="startli">I just didn't want to waste time overthinking an overly fancy or complicated name. <code>ESP IoT Framework</code> describes exactly what this project is and does, so I went with it. It is straightforward, clean, and tells you its purpose right away.</p>
 </li>
 <li><p class="startli"><b>Why do all functions, constants, and macros start with <code>eif_</code>? What does <code>eif</code> mean?</b></p>
 <p class="startli">I did this on purpose, following the exact same pattern as ESP-IDF where everything starts with <code>esp_</code>. It completely rules out naming conflicts so your code and third-party libraries won't accidentally clash.</p>

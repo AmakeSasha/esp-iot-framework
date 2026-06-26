@@ -21,11 +21,11 @@
 
 #include "sdkconfig.h"
 
-#include "nvs.h"
+#include <nvs.h>
 #include <string.h>
-#include "esp_log.h"
-#include "esp_err.h"
-#include "nvs_flash.h"
+#include <esp_log.h>
+#include <esp_err.h>
+#include <nvs_flash.h>
 
 #include "core_internal.h"
 #include "esp_iot_framework_core.h"

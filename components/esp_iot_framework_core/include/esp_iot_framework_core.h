@@ -22,8 +22,15 @@
 #ifndef ESP_IOT_FRAMEWORK_CORE_H
 #define ESP_IOT_FRAMEWORK_CORE_H
 
+#include "sdkconfig.h"
+
+#include <stdint.h>
+#include <esp_err.h>
+#include <stdbool.h>
+#include <esp_wifi.h>
+
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
 
 /**
@@ -45,12 +52,6 @@ extern "C" {
  */
 /** @} */
 
-#include <stdint.h>
-#include "esp_err.h"
-#include <stdbool.h>
-#include "esp_wifi.h"
-#include "sdkconfig.h"
-
 /**
  * @addtogroup core_group Core
  * @{
@@ -58,7 +59,7 @@ extern "C" {
  * @details @note This group of modules is available when you include this line
  * at the beginning of the file.:
  * @code{c}
- * #include "esp_iot_framework_core.h"
+ * #include <esp_iot_framework_core.h>
  * @endcode
  *
  * The `CORE` serves as the essential foundation of the framework. It
@@ -102,8 +103,8 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -141,8 +142,8 @@ esp_err_t eif_core_initialize(void);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -198,8 +199,8 @@ typedef esp_err_t (*eif_handler_system_t)(void);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
  *
  * esp_err_t my_reboot_logic(void) {
  *     // Emergency state save or hardware shutdown
@@ -279,9 +280,9 @@ esp_err_t eif_register_handler_system_reboot(eif_handler_system_t handler);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_wifi.h"
- * #include "esp_iot_framework_core.h"
+ * #include <esp_err.h>
+ * #include <esp_wifi.h>
+ * #include <esp_iot_framework_core.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -338,8 +339,8 @@ esp_err_t eif_set_wifi_config(
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -375,8 +376,8 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -395,6 +396,6 @@ esp_err_t eif_wifi_initialize(void);
 /** @} */
 
 #ifdef __cplusplus
-}
+    }
 #endif
 #endif

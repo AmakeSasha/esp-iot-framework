@@ -58,13 +58,11 @@ To protect against network restrictions, blockages, and infrastructure failures,
 |:---------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **SourceCraft** (main) | [🔗 **Source code**](https://sourcecraft.dev/amakesasha/esp-iot-framework) <br> [📄 **Documentation**](https://amakesasha.sourcecraft.site/esp-iot-framework/)             |
 | **GitHub** (mirror)    | [🔗 **Source code**](https://github.com/AmakeSasha/esp-iot-framework) <br>      [📄 **Documentation**](https://amakesasha.github.io/esp-iot-framework/html/index.html)     |
-| **GitCore** (mirror)   | [🔗 **Source code**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) <br>   📄 **Without documentation**                                                              |
+| **GitCore** (mirror)   | [🔗 **Source code**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) <br>      **Without documentation**                                                              |
 | **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     [📄 **Documentation**](https://amakesasha.gitverse.site/esp-iot-framework/html/index.html) |
 
 <h1>License</h1>
 
-This project is licensed under the [`Apache 2.0 License`](./LICENSE), with the following exceptions:
-
-* Contents of the [`/examples`](./examples) directory, which are dedicated to the `Public Domain` (or licensed under [`CC0 1.0`](./examples/LICENSE_CC0_1_0), at your option).
+This project is licensed under the [`Apache 2.0 License`](./LICENSE).
 
 Please also refer to the [`NOTICE`](./NOTICE) file.

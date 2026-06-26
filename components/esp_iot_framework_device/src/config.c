@@ -21,24 +21,24 @@
 
 #include "sdkconfig.h"
 
-#include "cJSON.h"
+#include <cJSON.h>
 #include <string.h>
 #include <stdlib.h>
-#include "esp_mac.h"
-#include "esp_log.h"
-#include "esp_err.h"
-#include "esp_wifi.h"
-#include "esp_ota_ops.h"
-#include "freertos/FreeRTOS.h"
+#include <esp_mac.h>
+#include <esp_log.h>
+#include <esp_err.h>
+#include <esp_wifi.h>
+#include <esp_ota_ops.h>
+#include <freertos/FreeRTOS.h>
 #ifdef CONFIG_EIF_ENABLE_TLS
-    #include "esp_https_server.h"
+    #include <esp_https_server.h>
 #else
-    #include "esp_http_server.h"
+    #include <esp_http_server.h>
 #endif
 
 #include "device_internal.h"
-#include "esp_iot_framework_core_ext.h"
-#include "esp_iot_framework_core_macros.h"
+#include <esp_iot_framework_core_ext.h>
+#include <esp_iot_framework_core_macros.h>
 
 #define TAG "Device config"
 

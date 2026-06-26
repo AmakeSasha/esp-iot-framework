@@ -1,4 +1,20 @@
 <!-- HTML header for doxygen 1.9.1-->
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Project: esp_iot_framework
+  Folder: ./docs/doxygen
+  File: header.html
+  Copyright 2026 AmakeSasha
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -82,16 +98,16 @@ Functions</h2></td></tr>
 <tr class="separator:gaebd461482bdf91710b7b63c3613bdbd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<dl class="section note"><dt>Note</dt><dd>This module is available when Kconfig option <code>CONFIG_EIF_ENABLE_MDNS</code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_mdns.h&quot;</span></div>
+<dl class="section note"><dt>Note</dt><dd>This module is available when Kconfig option <code>CONFIG_EIF_ENABLE_MDNS</code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
 </div><!-- fragment --></dd></dl>
 <p>This module allows you to configure mDNS. mDNS enables the device to be discovered via a human-readable name (e.g., <code>my-device.local</code>) instead of an IP address.</p>
 <p>The framework automatically appends a unique identifier based on the MAC address to prevent network collisions (e.g., common hostname set: <code>esp32.local</code>, the framework turns this into <code>esp32-1a2b3c.local</code> on a device with MAC <code>XX:XX:XX:1A:2B:3C</code>).</p>
 <dl class="section note"><dt>Note</dt><dd>In case the mDNS hostname is not set, <code>device</code> will be used as the common hostname. To disable mDNS, turn off Kconfig option <code>CONFIG_EIF_ENABLE_MDNS</code>.</dd></dl>
-<p>If you frequently need to enable and disable mDNS during development, you can use the following construct: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;mdns.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_err.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core.h&quot;</span></div>
+<p>If you frequently need to enable and disable mDNS during development, you can use the following construct: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;mdns.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#ifdef CONFIG_EIF_ENABLE_MDNS</span></div>
-<div class="line"><span class="preprocessor">    #include &quot;esp_iot_framework_core_mdns.h&quot;</span></div>
+<div class="line"><span class="preprocessor">    #include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Not necessary, but nice :)</span></div>
@@ -160,9 +176,9 @@ Functions</h2></td></tr>
 <li><code>ESP_ERR_INVALID_SIZE</code>: The length of the <code>hostname</code> or <code>instance_name</code> is outside the acceptable range.</li>
 </ul>
 </dd></dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;esp_err.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_mdns.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
@@ -217,10 +233,10 @@ Functions</h2></td></tr>
 <li><code>ESP_ERR_INVALID_SIZE</code>: The <code>txt_records</code> length is less than <code>txt_records_count</code>.</li>
 </ul>
 </dd></dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;mdns.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_err.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;esp_iot_framework_core_mdns.h&quot;</span></div>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;mdns.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keyword">const</span> mdns_txt_item_t my_txt_records[] = {</div>
 <div class="line">    {<span class="stringliteral">&quot;friendly_name&quot;</span>, <span class="stringliteral">&quot;Kitchen Main Light&quot;</span>},</div>

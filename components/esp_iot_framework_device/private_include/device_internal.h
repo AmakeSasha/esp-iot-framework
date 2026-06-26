@@ -22,12 +22,12 @@
 #ifndef DEVICE_INTERNAL_H
 #define DEVICE_INTERNAL_H
 
-#include "sdkconfig.h"
+#include <sdkconfig.h>
 
 #ifdef CONFIG_EIF_ENABLE_TLS
-    #include "esp_https_server.h"
+    #include <esp_https_server.h>
 #else
-    #include "esp_http_server.h"
+    #include <esp_http_server.h>
 #endif
 
 #include "esp_iot_framework_device.h"
@@ -43,6 +43,9 @@ enum {
         + 1
     #endif
     #ifdef CONFIG_EIF_ENABLE_TLS
+        + 1
+    #endif
+    #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
         + 1
     #endif
 };

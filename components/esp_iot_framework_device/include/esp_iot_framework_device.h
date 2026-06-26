@@ -22,8 +22,22 @@
 #ifndef ESP_IOT_FRAMEWORK_DEVICE_H
 #define ESP_IOT_FRAMEWORK_DEVICE_H
 
+#include "sdkconfig.h"
+
+#include <stdint.h>
+#include <esp_err.h>
+#include <stdbool.h>
+#include <esp_wifi.h>
+
+#if defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
+    #include <esp_https_server.h>
+#endif
+#if !defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
+    #include <esp_http_server.h>
+#endif
+
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
 
 /**
@@ -42,19 +56,6 @@ extern "C" {
  */
 /** @} */
 
-#include <stdint.h>
-#include "esp_err.h"
-#include <stdbool.h>
-#include "esp_wifi.h"
-#include "sdkconfig.h"
-
-#if defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
-    #include "esp_https_server.h"
-#endif
-#if !defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
-    #include "esp_http_server.h"
-#endif
-
 /**
  * @addtogroup device_group Device
  * @{
@@ -62,7 +63,7 @@ extern "C" {
  * @details @note This group of modules is available when you include this line
  * at the beginning of the file.:
  * @code{c}
- * #include "esp_iot_framework_device.h"
+ * #include <esp_iot_framework_device.h>
  * @endcode
  */
 
@@ -91,9 +92,9 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
- * #include "esp_iot_framework_device.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
+ * #include <esp_iot_framework_device.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -126,10 +127,10 @@ esp_err_t eif_device_initialize(void);
  * If you frequently intersect between HTTP and HTTPS during development and need
  * custom server settings, you can use the following construct:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_https_server.h"
- * #include "esp_iot_framework_core.h"
- * #include "esp_iot_framework_device.h"
+ * #include <esp_err.h>
+ * #include <esp_https_server.h>
+ * #include <esp_iot_framework_core.h>
+ * #include <esp_iot_framework_device.h>
  *
  * void app_main(void) {
  *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -207,10 +208,10 @@ esp_err_t eif_device_initialize(void);
      *
      * Example of use:
      * @code{c}
-     * #include "esp_err.h"
-     * #include "esp_https_server.h"
-     * #include "esp_iot_framework_core.h"
-     * #include "esp_iot_framework_device.h"
+     * #include <esp_err.h>
+     * #include <esp_https_server.h>
+     * #include <esp_iot_framework_core.h>
+     * #include <esp_iot_framework_device.h>
      *
      * void app_main(void) {
      *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -261,10 +262,10 @@ esp_err_t eif_device_initialize(void);
      *
      * Example of use:
      * @code{c}
-     * #include "esp_err.h"
-     * #include "esp_http_server.h"
-     * #include "esp_iot_framework_core.h"
-     * #include "esp_iot_framework_device.h"
+     * #include <esp_err.h>
+     * #include <esp_http_server.h>
+     * #include <esp_iot_framework_core.h>
+     * #include <esp_iot_framework_device.h>
      *
      * void app_main(void) {
      *     ESP_ERROR_CHECK(eif_core_initialize());
@@ -324,11 +325,11 @@ esp_err_t eif_device_initialize(void);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_log.h"
- * #include "esp_http_server.h"
- * #include "esp_iot_framework_core.h"
- * #include "esp_iot_framework_device.h"
+ * #include <esp_err.h>
+ * #include <esp_log.h>
+ * #include <esp_http_server.h>
+ * #include <esp_iot_framework_core.h>
+ * #include <esp_iot_framework_device.h>
  *
  * esp_err_t get_handler(httpd_req_t *req) {
  *     const char *resp = "Hello from esp_iot_framework_device!";
@@ -365,6 +366,6 @@ esp_err_t eif_set_uri_handlers(
 /** @} */
 
 #ifdef __cplusplus
-}
+    }
 #endif
 #endif

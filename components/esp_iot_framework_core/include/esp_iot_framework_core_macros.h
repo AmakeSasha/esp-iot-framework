@@ -22,13 +22,13 @@
 #ifndef ESP_IOT_FRAMEWORK_CORE_MACROS_H
 #define ESP_IOT_FRAMEWORK_CORE_MACROS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "sdkconfig.h"
 #if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
-    #include "mbedtls/error.h"
+    #include <mbedtls/error.h>
+#endif
+
+#ifdef __cplusplus
+    extern "C" {
 #endif
 
 /**
@@ -38,7 +38,7 @@ extern "C" {
  * @details @note This group of modules is available when you include this line
  * at the beginning of the file.:
  * @code{c}
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_iot_framework_core_macros.h>
  * @endcode
  *
  * This file contains core macros used throughout the framework. They enforce
@@ -70,8 +70,8 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * void process_sensor_event(void) {
  *     EIF_TAG_WITH_UNUSED "SHT3X_DRV";
@@ -118,9 +118,9 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_system.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_system.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * #define TAG "SYS_MON"
  *
@@ -193,8 +193,8 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * void check_system_health(float voltage, bool is_connected) {
  *     EIF_TAG_WITH_UNUSED "HEALTH"; // Required for EIF_LOG_x
@@ -265,10 +265,10 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_wifi.h"
- * #include "nvs_flash.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_wifi.h>
+ * #include <nvs_flash.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * void system_reboot_prepare(void) {
  *     EIF_TAG_WITH_UNUSED "REBOOT";
@@ -283,7 +283,8 @@ extern "C" {
  * }
  * @endcode
  */
-#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format, ...) \
+#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+    #define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format, ...) \
 do { \
     (m_result) = (m_expr); \
     if ((m_result) != (ESP_OK)) { \
@@ -298,6 +299,12 @@ do { \
             , ##__VA_ARGS__); \
     } \
 } while (false)
+#else
+    #define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format, ...) \
+do { \
+    (m_result) = (m_expr); \
+} while (false)
+#endif
 /** @} */
 
 /**
@@ -330,9 +337,9 @@ do { \
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_wifi.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_wifi.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * esp_err_t wifi_quick_init(const wifi_config_t *cfg) {
  *     EIF_TAG_WITH_UNUSED "WIFI_INIT";
@@ -351,7 +358,8 @@ do { \
  * }
  * @endcode
  */
-#define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error) \
+#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+    #define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error) \
 do { \
     if ((m_result) == (ESP_OK)) { \
         if ((m_ptr) == NULL) { \
@@ -365,6 +373,16 @@ do { \
         } \
     } \
 } while(false)
+#else
+    #define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error) \
+do { \
+    if ((m_result) == (ESP_OK)) { \
+        if ((m_ptr) == NULL) { \
+            (m_result) = (m_error); \
+        } \
+    } \
+} while(false)
+#endif
 
 /**
  * @brief Executes and validates an ESP-IDF expression sequentially.
@@ -385,9 +403,9 @@ do { \
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_wifi.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_wifi.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * esp_err_t wifi_quick_init(const wifi_config_t *cfg) {
  *     EIF_TAG_WITH_UNUSED "WIFI_INIT";
@@ -406,7 +424,8 @@ do { \
  * }
  * @endcode
  */
-#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format, ...) \
+#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+    #define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format, ...) \
 do { \
     if ((m_result) == (ESP_OK)) { \
         (m_result) = (m_expr); \
@@ -423,6 +442,14 @@ do { \
         } \
     } \
 } while(false)
+#else
+    #define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format, ...) \
+do { \
+    if ((m_result) == (ESP_OK)) { \
+        (m_result) = (m_expr); \
+    } \
+} while(false)
+#endif
 
 /**
  * @brief Checks a condition and sets an error status if the condition is true, only when the current status is OK.
@@ -450,8 +477,8 @@ do { \
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * esp_err_t process_data(const char* data, size_t length) {
  *     EIF_TAG_WITH_UNUSED "PROCESS_DATA";
@@ -475,7 +502,8 @@ do { \
  * }
  * @endcode
  */
-#define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
+#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+    #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
 do { \
     if ((m_ret) == ESP_OK) { \
         if ((m_cond)) { \
@@ -488,9 +516,18 @@ do { \
         } \
     } \
 } while(false)
+#else
+    #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
+do { \
+    if ((m_ret) == ESP_OK) { \
+        if ((m_cond)) { \
+            (m_ret) = (m_err); \
+        } \
+    } \
+} while(false)
+#endif
 
 #if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
-    #include "mbedtls/error.h"
     /**
      * @brief Executes and validates an MbedTLS expression sequentially.
      *
@@ -518,9 +555,9 @@ do { \
      *
      * Example of use:
      * @code{c}
-     * #include "esp_log.h"
-     * #include "mbedtls/ssl.h"
-     * #include "esp_iot_framework_core_macros.h"
+     * #include <esp_log.h>
+     * #include <mbedtls/ssl.h>
+     * #include <esp_iot_framework_core_macros.h>
      *
      * int open_secure_socket(mbedtls_ssl_context *ssl) {
      *     EIF_TAG_WITH_UNUSED "TLS_WRAP";
@@ -590,11 +627,11 @@ do { \
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "freertos/FreeRTOS.h"
- * #include "freertos/task.h"
- * #include "esp_iot_framework_core_ext.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <freertos/FreeRTOS.h>
+ * #include <freertos/task.h>
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * // Definitions needed for the 'MQTT' alias
  * #define TASK_MQTT_NAME     "mqtt_service"
@@ -631,11 +668,11 @@ do { \
  *
  * Example of use (without double-call protection):
  * @code{c}
- * #include "esp_log.h"
- * #include "freertos/FreeRTOS.h"
- * #include "freertos/task.h"
- * #include "esp_iot_framework_core_ext.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <freertos/FreeRTOS.h>
+ * #include <freertos/task.h>
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * // Definitions needed for the 'NAME' alias
  * #define TASK_NAME_NAME     "mqtt_service"
@@ -687,7 +724,7 @@ do { \
 /** @} */
 
 #ifdef __cplusplus
-}
+    }
 #endif
 
 #endif

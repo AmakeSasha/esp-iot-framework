@@ -1,18 +1,43 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Project: esp_iot_framework
+  Folder: ./docs
+  File: authors_notes.md
+
+  Copyright 2026 AmakeSasha
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
 # Author's notes
 
 Here are the answers that I considered important, at least for me. I think it will be useful for me to read this in the future.
 
-* **Where did the name of this project come from?**
+* **Has the project been officially audited, certified, or checked for MISRA C compliance?**
 
-  I just didn't want to waste time overthinking an overly fancy or complicated name. `ESP IoT Framework` describes exactly what this project is and does, so I went with it. It is straightforward, clean, and tells you its purpose right away.
+  No official audit or commercial certification has been conducted (I don't have the budget for this). However, the code is checked through the `cppcheck` static analyzer. This reduces risks, eliminates known patterns of undefined behavior, and improves overall code reliability, although it does not replace a full-fledged industrial certification.
+
+* **Is the framework guaranteed to have no bugs, error, failure or vulnerabilities in the project?**
+  
+  As an industry rule, no software is entirely immune to bugs or edge-case errors, especially during periods of active development. Therefore, users are strongly advised to thoroughly test the framework in their specific hardware environment before use.
 
 * **What is the purpose of this project? What is its future?**
  
   This project is being created as the main (perhaps the only) part of my portfolio. I develop it when I feel like it. Since I really liked this project myself, I will continue to develop it in the future.
 
-* **Has the project been officially audited, certified, or checked for MISRA C compliance?**
+* **Where did the name of this project come from?**
 
-  No official audit or commercial certification has been conducted (I don't have the budget for this). However, the code is checked through the `cppcheck` static analyzer, which ensures that there are no known patterns of undefined behavior in the code.
+  I just didn't want to waste time overthinking an overly fancy or complicated name. `ESP IoT Framework` describes exactly what this project is and does, so I went with it. It is straightforward, clean, and tells you its purpose right away.
 
 * **Why do all functions, constants, and macros start with `eif_`? What does `eif` mean?**
 

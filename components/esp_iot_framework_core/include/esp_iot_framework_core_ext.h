@@ -22,11 +22,11 @@
 #ifndef ESP_IOT_FRAMEWORK_CORE_EXT_H
 #define ESP_IOT_FRAMEWORK_CORE_EXT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <esp_err.h>
 
-#include "esp_err.h"
+#ifdef __cplusplus
+    extern "C" {
+#endif
 
 /**
  * @addtogroup core_ext_group Core Extension
@@ -35,7 +35,7 @@ extern "C" {
  * @details @note This group of modules is available when you include this line
  * at the beginning of the file.:
  * @code{c}
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_iot_framework_core_ext.h>
  * @endcode
  *
  * This API provides direct access to the CORE internal subsystems. It
@@ -130,8 +130,8 @@ extern "C" {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_code_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "STR_UTIL"
  *
@@ -166,8 +166,8 @@ static inline bool eif_strempty(const char * const str) {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_code_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "STR_UTIL"
  * #define MAX_BUFFER_SIZE 64U
@@ -227,8 +227,8 @@ static inline size_t eif_strnlen(const char * const str, size_t max_allowed) {
  *       must be executed exactly once.<br><br>
  *       Examples:
  *       @code{c}
- *       #include "esp_err.h"
- *       #include "esp_iot_framework_core.h"
+ *       #include <esp_err.h>
+ *       #include <esp_iot_framework_core.h>
  *      
  *       void app_main(void) {
  *           ESP_ERROR_CHECK(eif_core_initialize());
@@ -271,8 +271,8 @@ typedef struct {
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_code_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "WIFI_CFG"
  *
@@ -294,8 +294,8 @@ uint8_t eif_wifi_get_profiles_count(void);
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_iot_framework_code_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "WIFI_CFG"
  *
@@ -327,9 +327,9 @@ uint8_t eif_wifi_get_current_profile_index(void);
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_wifi.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "APP_WIFI"
  *
@@ -370,8 +370,8 @@ esp_err_t eif_wifi_get_test_result(
  *       to `eif_wifi_initialize()`.<br><br>
  *       Examples:
  *       @code{c}
- *       #include "esp_err.h"
- *       #include "esp_iot_framework_core.h"
+ *       #include <esp_err.h>
+ *       #include <esp_iot_framework_core.h>
  *      
  *       void app_main(void) {
  *           ESP_ERROR_CHECK(eif_core_initialize());
@@ -415,9 +415,9 @@ typedef esp_err_t (*eif_handler_ip_t)(void);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * esp_err_t ip_got_hanlder(void) {
  *     // Initialize HTTP server or cloud telemetry tasks safely here
@@ -458,9 +458,9 @@ esp_err_t eif_register_handler_ip_got(eif_handler_ip_t handler);
  *
  * Example of use:
  * @code{c}
- * #include "esp_err.h"
- * #include "esp_iot_framework_core.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * esp_err_t ip_lost_hanlder(void) {
  *     // Gracefully put cloud communication tasks to sleep
@@ -496,9 +496,9 @@ esp_err_t eif_register_handler_ip_lost(eif_handler_ip_t handler);
  *       and `eif_nvs_initialize()` must be executed exactly once.<br><br>
  *       Examples:
  *       @code{c}
- *       #include "esp_err.h"
- *       #include "esp_iot_framework_core.h"
- *       #include "esp_iot_framework_core_ext.h"
+ *       #include <esp_err.h>
+ *       #include <esp_iot_framework_core.h>
+ *       #include <esp_iot_framework_core_ext.h>
  *      
  *       void app_main(void) {
  *           ESP_ERROR_CHECK(eif_core_initialize());
@@ -543,9 +543,9 @@ esp_err_t eif_register_handler_ip_lost(eif_handler_ip_t handler);
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "CONFIG"
  *
@@ -595,9 +595,9 @@ esp_err_t eif_nvs_value_save(
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "CONFIG"
  *
@@ -656,9 +656,9 @@ esp_err_t eif_nvs_value_load(
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "CONFIG"
  *
@@ -727,9 +727,9 @@ esp_err_t eif_nvs_value_load_malloc(
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "WIFI_CONFIG"
  *
@@ -780,9 +780,9 @@ esp_err_t eif_nvs_wifi_profile_save(
  *
  * Example of use:
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
  *
  * #define TAG "WIFI_CFG"
  *
@@ -832,10 +832,10 @@ esp_err_t eif_nvs_wifi_profile_load(
  *    - `ESP_ERR_NVS_*`:        System errors propagated from `eif_nvs_value_save()`.
  *
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * #define TAG "AUTH_CFG"
  *
@@ -877,10 +877,10 @@ esp_err_t eif_nvs_basic_auth_line_save(const unsigned char * const pass);
  *                             `eif_nvs_value_load()`.
  *
  * @code{c}
- * #include "esp_log.h"
- * #include "esp_err.h"
- * #include "esp_iot_framework_core_ext.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <esp_err.h>
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * #define TAG "AUTH_RUN"
  *
@@ -925,8 +925,8 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  *       must be executed exactly once.<br><br>
  *       Examples:
  *       @code{c}
- *       #include "esp_err.h"
- *       #include "esp_iot_framework_core.h"
+ *       #include <esp_err.h>
+ *       #include <esp_iot_framework_core.h>
  *      
  *       void app_main(void) {
  *           ESP_ERROR_CHECK(eif_core_initialize());
@@ -969,11 +969,11 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  *
  * Example of use (but it's better to use #EIF_TASK_LAUNCH macro):
  * @code{c}
- * #include "esp_log.h"
- * #include "freertos/FreeRTOS.h"
- * #include "freertos/task.h"
- * #include "esp_iot_framework_core_ext.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <freertos/FreeRTOS.h>
+ * #include <freertos/task.h>
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * // Double-call protection
  * static TaskHandle_t mqtt_hdl = NULL;
@@ -1004,11 +1004,11 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  * Example of use (without double-call protection, but it's better to use
  * #EIF_TASK_LAUNCH macro):
  * @code{c}
- * #include "esp_log.h"
- * #include "freertos/FreeRTOS.h"
- * #include "freertos/task.h"
- * #include "esp_iot_framework_core_ext.h"
- * #include "esp_iot_framework_core_macros.h"
+ * #include <esp_log.h>
+ * #include <freertos/FreeRTOS.h>
+ * #include <freertos/task.h>
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_iot_framework_core_macros.h>
  *
  * void task_worker(void *arg) {
  *     while(1) {
@@ -1076,7 +1076,9 @@ esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);
 #if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
     /**
      * @brief Spawns an asynchronous task to regenerate TLS credentials.
-     *
+     * 
+     * @note Must enable the `CONFIG_EIF_ENABLE_TLS` flag in `Kconfig` to use
+     * 
      * Spawns an asynchronous task to regenerate TLS credentials.
      *
      * @return
@@ -1109,9 +1111,33 @@ esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);
 esp_err_t eif_task_rollback_and_reboot_launch(void);
 
 /** @} */
+
+/**
+ * @defgroup Ofher Other
+ * @brief Anything that does not belong to a specific section or is not 
+ *        part of a group large enough for a separate module.
+ * @{
+ */
+#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+    /*
+     * @brief Thread-safe extraction of diagnostic logs from the core ring buffer.
+     *
+     * This function retrieves accumulated logs from the internal ring buffer, 
+     * copies them into the provided destination buffer, and releases the
+     * consumed memory within the ring.
+     *
+     * @param dest_buf  Pointer to the destination buffer where logs will be copied.
+     * @param max_size  Maximum capacity of the destination buffer in bytes.
+     *
+     * @return size_t The number of bytes actually copied into dest_buf. 
+     *                Returns 0 if the log buffer is empty.
+     */
+    size_t eif_core_log_pop_chunk(char *dest_buf, size_t max_size);
+#endif
+/** @} */
 /** @} */
 
 #ifdef __cplusplus
-}
+    }
 #endif
 #endif
