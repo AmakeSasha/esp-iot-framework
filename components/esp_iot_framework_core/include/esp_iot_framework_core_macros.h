@@ -84,7 +84,7 @@
  */
 #if defined(__cplusplus)
     #define EIF_TAG_WITH_UNUSED static const char* const TAG [[maybe_unused]] =
-#elif defined(__GNUC__) || defined(__clang__) || defined(DOXYGEN)
+#elif (defined(__GNUC__) || defined(__clang__) || defined(DOXYGEN))
     #define EIF_TAG_WITH_UNUSED static const char* const TAG __attribute__((unused)) =
 #else
     #define EIF_TAG_WITH_UNUSED static const char* const TAG =
@@ -145,11 +145,11 @@
  * enforced at compile-time via the underlying
  * '__attribute__((format(printf, ...)))' integrated into the ESP-IDF logging
  * subsystem, supplemented by peer code reviews. */
-#if defined(CONFIG_EIF_LOG_SHOW_METADATA) || defined(DOXYGEN)
+#if (defined(CONFIG_EIF_LOG_SHOW_METADATA) || defined(DOXYGEN))
     /* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, "%s:%d (%s) " m_format, __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 #endif
-#if !defined(CONFIG_EIF_LOG_SHOW_METADATA) && !defined(DOXYGEN)
+#if (!defined(CONFIG_EIF_LOG_SHOW_METADATA) && !defined(DOXYGEN))
     /* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, m_format, ##__VA_ARGS__)
 #endif
@@ -217,25 +217,25 @@
  * printf compiler attributes, completely eliminating runtime type mismatch
  * risks. */
 /** @brief Logs an error message using the ESP_LOGE severity. */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_E)
+#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_E || defined(DOXYGEN))
     #define EIF_LOG_E(...) EIF_PRINT(ESP_LOGE, __VA_ARGS__)
 #else
     #define EIF_LOG_E(...) ((void)0U)
 #endif
 /** @brief Logs a warning message using the ESP_LOGW severity. */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_W)
+#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_W || defined(DOXYGEN))
     #define EIF_LOG_W(...) EIF_PRINT(ESP_LOGW, __VA_ARGS__)
 #else
     #define EIF_LOG_W(...) ((void)0U)
 #endif
 /** @brief Logs an informational message using the ESP_LOGI severity. */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_I)
+#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_I || defined(DOXYGEN))
     #define EIF_LOG_I(...) EIF_PRINT(ESP_LOGI, __VA_ARGS__)
 #else
     #define EIF_LOG_I(...) ((void)0U)
 #endif
 /** @brief Logs a debug message using the ESP_LOGD severity. */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D)
+#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D || defined(DOXYGEN))
     #define EIF_LOG_D(...) EIF_PRINT(ESP_LOGD, __VA_ARGS__)
 #else
     #define EIF_LOG_D(...) ((void)0U)
@@ -283,7 +283,7 @@
  * }
  * @endcode
  */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
     #define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format, ...) \
 do { \
     (m_result) = (m_expr); \
@@ -358,7 +358,7 @@ do { \
  * }
  * @endcode
  */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
     #define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error) \
 do { \
     if ((m_result) == (ESP_OK)) { \
@@ -424,7 +424,7 @@ do { \
  * }
  * @endcode
  */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
     #define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format, ...) \
 do { \
     if ((m_result) == (ESP_OK)) { \
@@ -502,7 +502,7 @@ do { \
  * }
  * @endcode
  */
-#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E)
+#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
     #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
 do { \
     if ((m_ret) == ESP_OK) { \

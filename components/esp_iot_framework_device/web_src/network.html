@@ -4,15 +4,15 @@
   Library: esp_iot_framework_device
   Folder: ./components/esp_iot_framework_device/web_src
   File: network.html
- 
+  
   Copyright 2026 AmakeSasha
- 
+  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+  
       http://www.apache.org/licenses/LICENSE-2.0
- 
+  
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -293,6 +293,9 @@
           var slotEl = document.getElementById('slotTitle' + cfg.current_profile_index);
           slotEl.innerHTML = slotEl.innerHTML + ' (<span style="color:red; font-weight:bold;">USED NOW</span>)';
 
+          if (cfg.used_tls) {
+            document.getElementById("tldWindow").style.display = 'block'; 
+          }
           if (cfg.rssi_now_profile) updateStatusTestButton(cfg.current_profile_index, true, { rssi: cfg.rssi_now_profile });
         } catch (e) {
           if (window.console) console.error("Initialization error:", e);
@@ -301,7 +304,7 @@
     };
   </script>
   <br>
-  <div class="window">
+  <div id="tldWindow" style="display: none;" class="window">
     <div class="title">🔒 TLS Settings</div>
     <div class="card">
       <button onclick="updateCert()" id="btnUpdateCert" data-state="error" style="width:100%">🔃 RECREATE TLS SYSTEM</button>

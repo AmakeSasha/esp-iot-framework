@@ -1118,7 +1118,7 @@ esp_err_t eif_task_rollback_and_reboot_launch(void);
  *        part of a group large enough for a separate module.
  * @{
  */
-#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+#if (defined(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG) || defined(DOXYGEN))
     /*
      * @brief Thread-safe extraction of diagnostic logs from the core ring buffer.
      *

@@ -10,6 +10,10 @@
     #include <driver/timer.h>
 #endif
 
+#define STEP_PIN    13
+#define SLEEP_PIN   14
+#define DIR_PIN     27
+
 #define STEP_MASK   (1ULL << STEP_PIN)
 #define SLEEP_MASK  (1ULL << SLEEP_PIN)
 #define DIR_MASK    (1ULL << DIR_PIN)
@@ -21,11 +25,61 @@
     #define TIMER_0       0
 #endif
 
-volatile motor_state_t g_motor_state = {
-    .current_dir = STOP,
+typedef struct {
+    /* What is the stepper doing right now: STOP, UP, DOWN */
+    stepper_dir_t current_dir;
+    /* Power state on the driver (SLEEP_PIN) */
+    bool is_powered;
+    /* The number of steps taken since the start */
+    uint32_t step_counter;
+    /* The number of steps left to complete the move (0 for infinite) */
+    uint32_t steps_to_move;
+} stepper_state_t;
+
+static volatile stepper_state_t g_stepper_state = {
+    .current_dir = STEPPER_STOP,
     .is_powered = false,
-    .step_counter = 0
+    .step_counter = 0,
+    .steps_to_move = 0
 };
+
+char* stepper_dir_to_str(stepper_dir_t dir) {
+    switch (dir) {
+        case STEPPER_STOP: return "STOP";
+        case STEPPER_UP:   return "UP";
+        case STEPPER_DOWN: return "DOWN";
+    }
+    return "UNKNOWN";
+}
+
+/* Setters */
+void stepper_set_dir(stepper_dir_t dir) {
+    g_stepper_state.current_dir = dir;
+}
+
+void stepper_set_power(bool power) {
+    g_stepper_state.is_powered = power;
+}
+
+void stepper_set_steps_to_move(uint32_t steps) {
+    g_stepper_state.steps_to_move = steps;
+}
+
+/* Getters */
+stepper_dir_t stepper_get_dir(void) {
+    return g_stepper_state.current_dir;
+}
+bool stepper_get_power(void) {
+    return g_stepper_state.is_powered;
+}
+uint32_t stepper_get_step_counter(void) {
+    return g_stepper_state.step_counter;
+}
+uint32_t stepper_get_steps_to_move(void) {
+    return g_stepper_state.steps_to_move;
+}
+
+/* --- */
 
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
     static IRAM_ATTR bool stepper_timer_isr(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx) {
@@ -36,7 +90,7 @@ volatile motor_state_t g_motor_state = {
 #endif
    static bool toggle = false;
 
-    if (g_motor_state.is_powered) {
+    if (g_stepper_state.is_powered) {
         REG_WRITE(GPIO_OUT_W1TS_REG, SLEEP_MASK);
     } else {
         REG_WRITE(GPIO_OUT_W1TC_REG, SLEEP_MASK);
@@ -52,9 +106,9 @@ volatile motor_state_t g_motor_state = {
         #endif
     }
 
-    motor_dir_t dir = g_motor_state.current_dir; 
+    stepper_dir_t dir = g_stepper_state.current_dir; 
 
-    if (dir == STOP) {
+    if (dir == STEPPER_STOP) {
         if (toggle) {
             REG_WRITE(GPIO_OUT_W1TC_REG, STEP_MASK);
             toggle = false;
@@ -66,7 +120,7 @@ volatile motor_state_t g_motor_state = {
         #endif
     }
 
-    if (dir == UP) {
+    if (dir == STEPPER_UP) {
         REG_WRITE(GPIO_OUT_W1TS_REG, DIR_MASK);
     } else {
         REG_WRITE(GPIO_OUT_W1TC_REG, DIR_MASK);
@@ -79,7 +133,14 @@ volatile motor_state_t g_motor_state = {
         REG_WRITE(GPIO_OUT_W1TC_REG, STEP_MASK);
         toggle = false;
 
-        g_motor_state.step_counter++; 
+        g_stepper_state.step_counter++;
+
+        if (g_stepper_state.steps_to_move > 0) {
+            g_stepper_state.steps_to_move--;
+            if (g_stepper_state.steps_to_move == 0) {
+                g_stepper_state.current_dir = STEPPER_STOP;
+            }
+        }
     }
 
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -99,8 +160,8 @@ void stepper_init(void) {
     };
     gpio_config(&io_conf);
 
-    g_motor_state.current_dir = STOP;
-    g_motor_state.is_powered = false;
+    g_stepper_state.current_dir = STEPPER_STOP;
+    g_stepper_state.is_powered = false;
     REG_WRITE(GPIO_OUT_W1TC_REG, STEP_MASK | DIR_MASK | SLEEP_MASK);
 
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)

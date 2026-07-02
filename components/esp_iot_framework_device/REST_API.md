@@ -48,13 +48,19 @@ Content-Length: 20
 
 * `/_`
   * `/files` - only if the Kconfig option `CONFIG_EIF_ENABLE_WEB_ADMIN_GUI` is enabled
-    * `/index.html` - Main interface container
-    * `/network.html` - Network management page
-    * `/system.html` - System management page
-    * `/style.css` - Stylesheet
+    * `/favicon.ico` - Project logo
+    
+      Only if the Kconfig option `CONFIG_EIF_ENABLE_WEB_FAVICON` is enabled
+    * `/logs.html` - The page for viewing logs from the device
+
+      Only if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled
     * `/api.js` - JavaScript API library
     * `/json2.js` - JSON utility library
+    * `/style.css` - Stylesheet
     * `/license.txt` - License information
+    * `/index.html` - Main interface container
+    * `/system.html` - System management page
+    * `/network.html` - Network management page
   * `/wifi`
     * `/list.json` - [List Wi-Fi profiles](#h_wifi_list_json)
     * `/update.do` - [Update Wi-Fi profile](#h_wifi_update_do)
@@ -64,14 +70,17 @@ Content-Length: 20
   * `/tls` - only if the Kconfig option `CONFIG_EIF_ENABLE_TLS` is enabled
     * `/recreate.do` - [Regenerate TLS keys and certificate](#h_tls_recreate_do)
   * `/sys`
+    * `/logs.txt` - [Get logs from the device](#h_sys_logs_txt)
+
+      Only if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled
     * `/info.json` - [Get system information](#h_sys_info_json)
     * `/reboot.do` - [Reboot system](#h_sys_reboot_do)
-       * `/ota`
+  * `/ota`
     * `/info.json` - [Get firmware information](#h_ota_info_json)
     * `/update.do` - [Upload firmware](#h_ota_update_do)
     * `/confirm.do` - [Confirm successful update](#h_ota_confirm_do)
     * `/rollback.do` - [Rollback firmware](#h_ota_rollback_do)
-       * `/apass` - only if the Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled
+  * `/apass` - only if the Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled
     * `/update.do` - [Update administrator password](#h_apass_update_do)
 
 ## HTTP Status Codes
@@ -103,6 +112,7 @@ Content-Length: 20
   ```json
   {
     "current_profile_index": 0,
+    "used_tls": true,
     "rssi_now_profile": -65,
     "profiles": [
       {
@@ -120,6 +130,7 @@ Content-Length: 20
   ```
   **Fields**:
   - `current_profile_index`: Currently active profile (`0` - `X`, is set using `eif_set_wifi_profiles_count()`, otherwise it is <code>#EIF_WIFI_PROFILES_DEFAULT_COUNT</code>)
+  - `used_tls` - `true` if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled
   - `rssi_now_profile`: RSSI of current connection in dBm
   - `profiles`: Array of Wi-Fi profiles
     - `ssid`: Network SSID (empty if not configured)
@@ -266,6 +277,31 @@ Content-Length: 20
 
 ### System Management
 
+<a id="h_sys_logs_txt"></a>
+* Get logs from the device
+  ```
+  GET /_/sys/logs.txt
+  ```
+
+  <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
+    <strong>Note</strong><br>
+    Only available if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled.
+  </div>
+
+  Streams the system log buffer in plain text using HTTP chunked transfer encoding.
+
+  **Request body**: `No body`
+
+  **Response body**: `Plain text (Log lines separated by \n)`
+
+  **HTTP Headers**:
+  - `Content-Type`: `text/plain`
+  - `Transfer-Encoding`: `chunked`
+
+  **Response behavior**: The device pops logs out of the internal cyclic buffer in chunks of `HTTP_LOGS_CHUNK_SIZE` bytes. Chunks are continuously sent to the client until the log buffer is completely empty. If a network write failure occurs mid-stream, transmission aborts immediately to protect system resources.
+
+---
+
 <a id="h_sys_info_json"></a>
 * Get system information
   ```text
@@ -279,11 +315,6 @@ Content-Length: 20
   **Response body**:
   ```json
   {
-    "features": {
-      "has_wifi": true,
-      "has_bluetooth": true,
-      "has_ble": true
-    },
     "heap_free": 123456,
     "heap_min": 120000,
     "largest_block": 80000,
@@ -294,15 +325,15 @@ Content-Length: 20
     "cpu_freq": 240,
     "chip_model": "ESP32",
     "reset_reason": 1,
-    "features": "WBL",
+    "features": {
+      "has_wifi": true,
+      "has_bluetooth": true,
+      "has_ble": true
+    },
     "mac": "AA:BB:CC:DD:EE:FF"
   }
   ```
   **Fields**:
-  - `features`: Object containing supported hardware features
-    - `has_wifi`: `true` if Wi-Fi (802.11 b/g/n) is supported
-    - `has_bluetooth`: `true` if Bluetooth Classic is supported
-    - `has_ble`: `true` if Bluetooth Low Energy (BLE) is supported
   - `heap_free`: Current free heap in bytes
   - `heap_min`: Minimum free heap since boot
   - `largest_block`: Largest contiguous free memory block in heap
@@ -313,6 +344,10 @@ Content-Length: 20
   - `cpu_freq`: CPU frequency in MHz
   - `chip_model`: ESP chip model
   - `reset_reason`: Last reset reason code
+  - `features`: Object containing supported hardware features
+    - `has_wifi`: `true` if Wi-Fi (802.11 b/g/n) is supported
+    - `has_bluetooth`: `true` if Bluetooth Classic is supported
+    - `has_ble`: `true` if Bluetooth Low Energy (BLE) is supported
   - `mac`: Device MAC address
 
 ---

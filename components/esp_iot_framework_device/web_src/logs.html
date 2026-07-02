@@ -1,0 +1,187 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Project: esp-iot-framework
+  Library: esp_iot_framework_device
+  Folder: ./components/esp_iot_framework_device/web_src
+  File: logs.html
+ 
+  Copyright 2026 AmakeSasha
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Logs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="referrer" content="no-referrer">
+  <script type="text/javascript" src="/_/files/api.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000000;
+    }
+    body {
+      color: #FFFFFF;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    .log-table {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+    }
+    .toolbar-cell {
+      padding: 15px 15px 10px 15px;
+      height: 25px;
+    }
+    .monitor-cell {
+      padding: 0 15px 15px 15px;
+      height: 100%;
+    }
+    .btn-control {
+      color: #FFFFFF;
+      border: 1px solid #555555;
+      padding: 4px 12px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    .btn-green { background-color: #00AA00; }
+    .btn-grey { background-color: #555555; }
+    #log-monitor {
+      border: 2px solid #222222;
+      padding: 10px;
+      overflow-y: scroll;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+    }
+    .log-I { color: #00FF00; }
+    .log-D { color: #00DFFF; }
+    .log-W { color: #FFCC00; }
+    .log-E { color: #FF3333; }
+    .log-U { color: #AAAAAA; }
+  </style>
+</head>
+<body>
+  <table class="log-table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="toolbar-cell">
+        <div class="toolbar">
+          <button id="stream-toggle" class="btn-control btn-green" onclick="toggleStream()">Request logs: STREAM</button>
+          <button id="scroll-toggle" class="btn-control btn-green" onclick="toggleAutoscroll()">Auto Scroll: ON</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="monitor-cell">
+        <div id="log-monitor"></div>
+      </td>
+    </tr>
+  </table>
+
+  <script language="JavaScript">
+    var monitor = document.getElementById("log-monitor");
+    var btnStream = document.getElementById("stream-toggle");
+    var btnScroll = document.getElementById("scroll-toggle");
+    var streamEnabled = true;
+    var autoScrollEnabled = true;
+
+    function toggleStream() {
+      streamEnabled = !streamEnabled;
+      if (streamEnabled) {
+        btnStream.innerHTML = "Request logs: STREAM";
+        btnStream.className = "btn-control btn-green";
+        pollLogChunk();
+      } else {
+        btnStream.innerHTML = "Request logs: PAUSE";
+        btnStream.className = "btn-control btn-grey";
+      }
+    }
+
+    function toggleAutoscroll() {
+      autoScrollEnabled = !autoScrollEnabled;
+      if (autoScrollEnabled) {
+        btnScroll.innerHTML = "Auto Scroll: ON";
+        btnScroll.className = "btn-control btn-green";
+        monitor.scrollTop = monitor.scrollHeight;
+      } else {
+        btnScroll.innerHTML = "Auto Scroll: OFF";
+        btnScroll.className = "btn-control btn-grey";
+      }
+    }
+
+    function processAndAppendLogs(rawText) {
+      if (!rawText) return;
+      var ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
+      var cleanText = rawText.replace(ansiRegex, '');
+      var trimRegex = /^\s+|\s+\$/g;
+      var lines = cleanText.split('\n');
+      var fragment = document.createDocumentFragment();
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var trimmed = line.replace(trimRegex, '');
+        if (trimmed.length === 0) continue;
+
+        var className = "log-U";
+        var firstChar = trimmed.charAt(0);
+        if (firstChar === 'I') className = "log-I";
+        else if (firstChar === 'D') className = "log-D";
+        else if (firstChar === 'W') className = "log-W";
+        else if (firstChar === 'E') className = "log-E";
+
+        var span = document.createElement("span");
+        span.className = className;
+        if (typeof span.innerText !== "undefined") {
+          span.innerText = line;
+        } else {
+          span.textContent = line;
+        }
+        fragment.appendChild(span);
+        fragment.appendChild(document.createElement("br"));
+      }
+      monitor.appendChild(fragment);
+    }
+
+    function pollLogChunk() {
+      if (!streamEnabled) return;
+
+      window.API._sendRaw("GET", "/_/sys/logs.txt", null, null, function(err, responseText) {
+        if (!err && responseText) {
+          processAndAppendLogs(responseText);
+          if (autoScrollEnabled) {
+            monitor.scrollTop = monitor.scrollHeight;
+          }
+        }
+        setTimeout(pollLogChunk, 1000);
+      });
+    }
+
+    window.onload = function() {
+      pollLogChunk();
+    };
+  </script>
+</body>
+</html>

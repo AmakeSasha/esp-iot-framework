@@ -99,13 +99,6 @@ static esp_err_t eif_generate_ecc_keypair(
     return (ret == 0) ? ESP_OK : ESP_FAIL;
 }
 
-/* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
- * string is constant and the input 'index' is a bounded 'uint8_t' value.
- * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
- * and explicitly checking the return value against the buffer size to
- * ensure the output is not truncated and a null-terminator is present.
- * This approach is more maintainable and less error-prone than manual
- * string manipulation. */
 static esp_err_t eif_generate_self_signed_cert(
     uint8_t *key_pem, size_t key_len,
     uint8_t *cert_out, size_t *cert_len_out,
@@ -133,15 +126,15 @@ static esp_err_t eif_generate_self_signed_cert(
     };
 
     int ret = 0;
+    size_t name_len = 0;
+    mbedtls_mpi serial = {0};
     mbedtls_pk_context key = {0};
     mbedtls_x509write_cert crt = {0};
     mbedtls_entropy_context entropy = {0};
-    mbedtls_ctr_drbg_context ctr_drbg = {0};
-    mbedtls_mpi serial = {0};
-    size_t name_len = 0;
-    uint8_t seed[F_RANDOM_SEED_SIZE] = {0};
-    uint8_t serial_buf[F_SERIAL_NUM_SIZE] = {0};
     char subject[F_SUBJECT_BUF_SIZE] = {0};
+    uint8_t seed[F_RANDOM_SEED_SIZE] = {0};
+    mbedtls_ctr_drbg_context ctr_drbg = {0};
+    uint8_t serial_buf[F_SERIAL_NUM_SIZE] = {0};
     char temp_name[MDNS_HOSTNAME_FULL_MAX_LEN] = {0};
     unsigned char san_der[MDNS_HOSTNAME_FULL_MAX_LEN + F_SAN_EXTRA_SPACE] = {0};
 
@@ -173,9 +166,16 @@ static esp_err_t eif_generate_self_signed_cert(
     if (ret == 0) {
         mbedtls_x509write_crt_set_subject_key(&crt, &key);
         mbedtls_x509write_crt_set_issuer_key(&crt, &key);
-        int res = snprintf(subject, sizeof(subject), "CN=%s", dns_name);
-        if ((res < 0) || (res >= (int)sizeof(subject))) {
+
+        size_t dns_len = eif_strnlen(dns_name, sizeof(subject));
+        size_t total_len = dns_len + 4U;
+
+        if (total_len > sizeof(subject)) {
             ret = 1;
+        } else {
+            (void)memcpy(subject, "CN=", 3U);
+            (void)memcpy(&subject[3U], dns_name, dns_len);
+            subject[total_len - 1U] = '\0';
         }
     }
     if (ret == 0) {
@@ -204,11 +204,14 @@ static esp_err_t eif_generate_self_signed_cert(
 
     /* 5. Set SAN */
     if (ret == 0) {
-        /* Allowed by the '@deviation [Rule 21.6]' definition specified
-         * before this function. */
-        int res = snprintf(temp_name, sizeof(temp_name), "%s.local", dns_name);
-        if ((res < 0) || (res >= (int)sizeof(temp_name))) {
+        size_t dns_len = eif_strnlen(dns_name, sizeof(temp_name));
+        size_t total_len = dns_len + 7U;
+
+        if (total_len > sizeof(temp_name)) {
             ret = 1;
+        } else {
+            (void)memcpy(temp_name, dns_name, dns_len);
+            (void)memcpy(&temp_name[dns_len], ".local", 7U);
         }
     }
     if (ret == 0) {

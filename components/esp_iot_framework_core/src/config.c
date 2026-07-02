@@ -21,7 +21,6 @@
 
 #include "sdkconfig.h"
 
-#include <string.h>
 #include <stdlib.h>
 #include <esp_mac.h>
 #include <esp_log.h>
@@ -59,7 +58,9 @@ esp_err_t eif_core_initialize(void) {
 
     EIF_LOG_D(MSG_CALL_SETTER, __func__);
 
-    eif_core_log_init();
+    #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+        eif_core_log_init();
+    #endif
     
     const esp_partition_t *running = esp_ota_get_running_partition();
     if (running != NULL) {
@@ -248,13 +249,6 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 /*    mDNS Configuration    */
 /* ======================== */
 #ifdef CONFIG_EIF_ENABLE_MDNS
-    /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
-     * string is constant and the input 'index' is a bounded 'uint8_t' value.
-     * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
-     * and explicitly checking the return value against the buffer size to
-     * ensure the output is not truncated and a null-terminator is present.
-     * This approach is more maintainable and less error-prone than manual
-     * string manipulation. */
     esp_err_t eif_set_mdns(
         const char * const hostname, const char * const instance_name
     ) {
@@ -280,22 +274,12 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         }
 
         if (ret == ESP_OK) {
-            /* Allowed by the '@deviation [Rule 21.6]' definition specified
-             * before this function. */
-            int res = snprintf(cfg.mdns_hostname,
-                sizeof(cfg.mdns_hostname), "%s", hostname);
-            if ((res < 0) || (res >= (int)sizeof(cfg.mdns_hostname))) {
-                ret = ESP_ERR_INVALID_SIZE;
-            }
+            (void)memcpy(cfg.mdns_hostname, hostname, hostname_len);
+            cfg.mdns_hostname[hostname_len] = '\0';
         }
         if (ret == ESP_OK) {
-            /* Allowed by the '@deviation [Rule 21.6]' definition specified
-             * before this function. */
-            int res = snprintf(cfg.mdns_instance_name,
-                sizeof(cfg.mdns_instance_name), "%s", instance_name);
-            if ((res < 0) || (res >= (int)sizeof(cfg.mdns_instance_name))) {
-                ret = ESP_ERR_INVALID_SIZE;
-            }
+            (void)memcpy(cfg.mdns_instance_name, instance_name, instance_len);
+            cfg.mdns_instance_name[instance_len] = '\0';
         }
 
         /* Cleanup */
@@ -345,18 +329,13 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 
 /* Private setters */
 #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
-    /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
-     * string is constant and the input 'index' is a bounded 'uint8_t' value.
-     * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
-     * and explicitly checking the return value against the buffer size to
-     * ensure the output is not truncated and a null-terminator is present.
-     * This approach is more maintainable and less error-prone than manual
-     * string manipulation. */
     esp_err_t eif_format_mdns_hostname() {
         esp_err_t ret = ESP_OK;
+
         uint8_t mac[6] = {0};
-        char final_name[MDNS_HOSTNAME_FULL_MAX_LEN] = {0};
         const char * hostname = cfg.mdns_hostname;
+        const char hex_chars[] = "0123456789abcdef";
+        char final_name[MDNS_HOSTNAME_FULL_MAX_LEN] = {0};
 
         EIF_LOG_D(CFG_MSG_CALL_UPDATER, __func__);
 
@@ -366,12 +345,28 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
                 hostname = "device";
             }
 
-            /* Allowed by the '@deviation [Rule 21.6]' definition specified
-             * before this function. */
-            int res = snprintf(final_name, sizeof(final_name),
-                "%s-%02x%02x%02x", hostname, mac[3], mac[4], mac[5]);
-            if ((res < 0) || (res >= (int)sizeof(final_name))) {
+            size_t base_len = eif_strnlen(hostname, MDNS_HOSTNAME_FULL_MAX_LEN);
+            size_t total_len = base_len + 7U;
+
+            if (total_len >= (size_t)MDNS_HOSTNAME_FULL_MAX_LEN) {
                 ret = ESP_ERR_INVALID_SIZE;
+            } else {
+                (void)memcpy(final_name, hostname, base_len);
+
+                size_t pos = base_len;
+                final_name[pos] = '-';
+                pos++;
+
+                for (size_t i = 3U; i < 6U; i++) {
+                    size_t hi = ((size_t)mac[i] >> 4U) & 0x0FU;
+                    size_t lo = (size_t)mac[i] & 0x0FU;
+
+                    final_name[pos] = hex_chars[hi];
+                    pos++;
+                    final_name[pos] = hex_chars[lo];
+                    pos++;
+                }
+                final_name[pos] = '\0';
             }
         }
 
@@ -379,21 +374,20 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
             (void)memcpy((void *)cfg.mdns_hostname, (const void *)final_name,
                 (size_t)MDNS_HOSTNAME_FULL_MAX_LEN);
             cfg.mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN - 1U] = '\0';
-        }
-        if (ret == ESP_OK) {           
+
             if (eif_strempty(cfg.mdns_instance_name)) {
-                (void)strlcpy(
-                    cfg.mdns_instance_name,
-                    cfg.mdns_hostname,
+                (void)memcpy(
+                    (void *)cfg.mdns_instance_name, 
+                    (const void *)cfg.mdns_hostname,
                     sizeof(cfg.mdns_instance_name)
                 );
+                cfg.mdns_instance_name[sizeof(cfg.mdns_instance_name) - 1U]='\0';
             }
 
             EIF_LOG_I("Full mDNS hostname: %s", cfg.mdns_hostname);
             EIF_LOG_I("mDNS instance name: %s", cfg.mdns_instance_name);
         }
 
-        /* Cleanup */
         return ret;
     }
 #endif

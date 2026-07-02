@@ -18,10 +18,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<html lang="en">
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+<meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
 <title>esp_iot_framework: components/esp_iot_framework_core/include/esp_iot_framework_core_macros.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
@@ -160,7 +162,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">    #define EIF_TAG_WITH_UNUSED static const char* const TAG [[maybe_unused]] =</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#elif defined(__GNUC__) || defined(__clang__) || defined(DOXYGEN)</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#elif (defined(__GNUC__) || defined(__clang__) || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">   88</a></span>&#160;<span class="preprocessor">    #define EIF_TAG_WITH_UNUSED static const char* const TAG __attribute__((unused)) =</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">    #define EIF_TAG_WITH_UNUSED static const char* const TAG =</span></div>
@@ -221,11 +223,11 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="comment"> * enforced at compile-time via the underlying</span></div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="comment"> * &#39;__attribute__((format(printf, ...)))&#39; integrated into the ESP-IDF logging</span></div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="comment"> * subsystem, supplemented by peer code reviews. */</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="preprocessor">#if defined(CONFIG_EIF_LOG_SHOW_METADATA) || defined(DOXYGEN)</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="preprocessor">#if (defined(CONFIG_EIF_LOG_SHOW_METADATA) || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="comment">/* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */</span></div>
 <div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="group__macros__log.html#ga5b15122d0bf92c296d14625e137d199c">  150</a></span>&#160;<span class="preprocessor">    #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, &quot;%s:%d (%s) &quot;</span> m_format, __FILE__, __LINE__, __func__, ##__VA_ARGS__)</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#if !defined(CONFIG_EIF_LOG_SHOW_METADATA) &amp;&amp; !defined(DOXYGEN)</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#if (!defined(CONFIG_EIF_LOG_SHOW_METADATA) &amp;&amp; !defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="comment">/* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */</span></div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">    #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, m_format, ##__VA_ARGS__)</span></div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">#endif</span></div>
@@ -293,25 +295,25 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment"> * printf compiler attributes, completely eliminating runtime type mismatch</span></div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment"> * risks. */</span><span class="comment"></span></div>
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="comment">/** @brief Logs an error message using the ESP_LOGE severity. */</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_E)</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_E || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00221"></a><span class="lineno"><a class="line" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">  221</a></span>&#160;<span class="preprocessor">    #define EIF_LOG_E(...) EIF_PRINT(ESP_LOGE, __VA_ARGS__)</span></div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="preprocessor">    #define EIF_LOG_E(...) ((void)0U)</span></div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="preprocessor">#endif</span><span class="comment"></span></div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment">/** @brief Logs a warning message using the ESP_LOGW severity. */</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_W)</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_W || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="group__macros__log.html#ga303a7bc42f0b2f9f7f4aae320df28faf">  227</a></span>&#160;<span class="preprocessor">    #define EIF_LOG_W(...) EIF_PRINT(ESP_LOGW, __VA_ARGS__)</span></div>
 <div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor">    #define EIF_LOG_W(...) ((void)0U)</span></div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="preprocessor">#endif</span><span class="comment"></span></div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment">/** @brief Logs an informational message using the ESP_LOGI severity. */</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_I)</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_I || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="group__macros__log.html#ga33642c84ee1bcb3c74be76f8fd57e8e4">  233</a></span>&#160;<span class="preprocessor">    #define EIF_LOG_I(...) EIF_PRINT(ESP_LOGI, __VA_ARGS__)</span></div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">    #define EIF_LOG_I(...) ((void)0U)</span></div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">#endif</span><span class="comment"></span></div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment">/** @brief Logs a debug message using the ESP_LOGD severity. */</span></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_D)</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt;= EIF_LOG_LEVEL_D || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">  239</a></span>&#160;<span class="preprocessor">    #define EIF_LOG_D(...) EIF_PRINT(ESP_LOGD, __VA_ARGS__)</span></div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">    #define EIF_LOG_D(...) ((void)0U)</span></div>
@@ -359,7 +361,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment"> * }</span></div>
 <div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="comment"> * @endcode</span></div>
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E)</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">  287</a></span>&#160;<span class="preprocessor">    #define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format, ...) \</span></div>
 <div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="preprocessor">do { \</span></div>
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="preprocessor">    (m_result) = (m_expr); \</span></div>
@@ -434,7 +436,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00358"></a><span class="lineno"><a class="line" href="group__macros__check.html#gac63c89173a7dba6810ded46e47fc1fbd">  358</a></span>&#160;<span class="comment"> * }</span></div>
 <div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="comment"> * @endcode</span></div>
 <div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E)</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="preprocessor">    #define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error) \</span></div>
 <div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="preprocessor">do { \</span></div>
 <div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="preprocessor">    if ((m_result) == (ESP_OK)) { \</span></div>
@@ -500,7 +502,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="comment"> * }</span></div>
 <div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="comment"> * @endcode</span></div>
 <div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E)</span></div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="preprocessor">    #define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format, ...) \</span></div>
 <div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">do { \</span></div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor">    if ((m_result) == (ESP_OK)) { \</span></div>
@@ -578,7 +580,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__macros_8h_s
 <div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;<span class="comment"> * }</span></div>
 <div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="comment"> * @endcode</span></div>
 <div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="preprocessor">#if (defined(DOXYGEN) || CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E)</span></div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="preprocessor">#if (CONFIG_EIF_LOG_LEVEL &gt; EIF_LOG_LEVEL_E || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;<span class="preprocessor">    #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \</span></div>
 <div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="preprocessor">do { \</span></div>
 <div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="preprocessor">    if ((m_ret) == ESP_OK) { \</span></div>

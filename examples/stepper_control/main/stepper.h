@@ -8,26 +8,22 @@
     extern "C" {
 #endif
 
-#define STEP_PIN    13
-#define SLEEP_PIN   14
-#define DIR_PIN     27
-
 typedef enum {
-    STOP = 0,
-    UP,
-    DOWN
-} motor_dir_t;
+    STEPPER_STOP = 0,
+    STEPPER_UP,
+    STEPPER_DOWN
+} stepper_dir_t;
 
-typedef struct {
-    /* What is the motor doing right now: STOP, UP, DOWN */
-    motor_dir_t current_dir;
-    /* Power state on the driver (SLEEP_PIN) */
-    bool is_powered;
-    /* The number of steps taken since the start */
-    uint32_t step_counter;
-} motor_state_t;
+char* stepper_dir_to_str(stepper_dir_t dir);
 
-extern volatile motor_state_t g_motor_state;
+void stepper_set_dir(stepper_dir_t dir);
+void stepper_set_power(bool power);
+void stepper_set_steps_to_move(uint32_t steps);
+
+stepper_dir_t stepper_get_dir(void);
+bool stepper_get_power(void);
+uint32_t stepper_get_steps_to_move(void);
+uint32_t stepper_get_steps_counter(void);
 
 void stepper_init(void);
 
@@ -35,4 +31,4 @@ void stepper_init(void);
     }
 #endif
 
-#endif // STEPPER_H
+#endif

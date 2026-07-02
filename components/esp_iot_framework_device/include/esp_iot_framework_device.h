@@ -29,10 +29,10 @@
 #include <stdbool.h>
 #include <esp_wifi.h>
 
-#if defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
+#if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
     #include <esp_https_server.h>
 #endif
-#if !defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
+#if (!defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
     #include <esp_http_server.h>
 #endif
 
@@ -174,7 +174,7 @@ esp_err_t eif_device_initialize(void);
  * @{
  */
 
-#if defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
+#if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
     /**
      * @brief Tune the HTTPS server settings.
      *
@@ -235,7 +235,7 @@ esp_err_t eif_device_initialize(void);
         const httpd_ssl_config_t * const server_config
     );
 #endif
-#if !defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN)
+#if (!defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
     /**
      * @brief Tune the HTTP server settings.
      *

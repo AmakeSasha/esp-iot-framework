@@ -61,6 +61,14 @@ To protect against network restrictions, blockages, and infrastructure failures,
 | **GitCore** (mirror)   | [🔗 **Source code**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) <br>      **Without documentation**                                                              |
 | **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     [📄 **Documentation**](https://amakesasha.gitverse.site/esp-iot-framework/html/index.html) |
 
+<h1>Third-Party Components</h1>
+
+This framework bundles the following third-party components inside the `components/` directory:
+
+* [jsmn](https://github.com/espressif/idf-extra-components/tree/master/jsmn) - JSMN: minimalistic JSON parser in C (MIT license)
+* [json_generator](https://github.com/espressif/json_generator) - A simple JSON (JavasScript Object Notation) generator with flushing capability (Apache 2.0 license)
+
+
 <h1>License</h1>
 
 This project is licensed under the [`Apache 2.0 License`](./LICENSE).

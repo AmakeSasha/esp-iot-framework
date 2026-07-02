@@ -273,9 +273,9 @@ static TaskHandle_t x_eif_exclusive_sys_handle = NULL;
             EIF_LOG_I("TLS credentials recreated. System will restart...");
             vTaskDelay(pdMS_TO_TICKS(500));
             EIF_LOG_I("Restarting...");
-
-            (void)eif_task_reboot_launch();
         }
+
+        (void)eif_task_reboot_launch();
 
         /* Cleanup */
         x_eif_exclusive_sys_handle = NULL;

@@ -21,3 +21,11 @@ This product also includes third-party software:
 - json2.js - Created by Douglas Crockford
   * Source: https://github.com/douglascrockford/JSON-js/
   * License: Public Domain (as stated in the source code comments)
+
+- jsmn - Created by Serge Zaitsev
+  * Source: https://github.com/espressif/idf-extra-components/tree/master/jsmn
+  * License: MIT License (Copyright (c) 2010 Serge Zaitsev)
+
+- json_generator - Created by Piyush Shah
+  * Source: https://github.com/espressif/json_generator
+  * License: Apache License 2.0 (Copyright 2020 Piyush Shah)

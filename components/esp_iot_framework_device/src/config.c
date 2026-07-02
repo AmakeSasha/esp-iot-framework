@@ -21,7 +21,6 @@
 
 #include "sdkconfig.h"
 
-#include <cJSON.h>
 #include <string.h>
 #include <stdlib.h>
 #include <esp_mac.h>
@@ -58,7 +57,6 @@ static eif_device_t cfg = {0};
 /* ===================== */
 esp_err_t eif_device_initialize(void) {
     esp_err_t ret = ESP_OK;
-    cJSON_Hooks hooks = {0};
 
     EIF_LOG_D(MSG_CALL_SETTER, __func__);
 
@@ -66,10 +64,6 @@ esp_err_t eif_device_initialize(void) {
         "Failed to register event handler for `IP_EVENT_STA_GOT_IP`");
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_register_handler_ip_lost(eif_server_stop),
         "Failed to register event handler for `IP_EVENT_STA_LOST_IP`");
-
-    hooks.malloc_fn = pvPortMalloc;
-    hooks.free_fn = vPortFree;
-    cJSON_InitHooks(&hooks);
 
     #ifdef CONFIG_EIF_ENABLE_TLS
         httpd_ssl_config_t config = HTTPD_SSL_CONFIG_DEFAULT();

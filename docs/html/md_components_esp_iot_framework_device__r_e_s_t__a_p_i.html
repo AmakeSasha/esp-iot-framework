@@ -18,10 +18,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<html lang="en">
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+<meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
 <title>esp_iot_framework: REST_API</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
@@ -91,13 +93,19 @@ Map URIs</h2>
 <ul>
 <li><code>/_</code><ul>
 <li><code>/files</code> - only if the Kconfig option <code>CONFIG_EIF_ENABLE_WEB_ADMIN_GUI</code> is enabled<ul>
-<li><code>/index.html</code> - Main interface container</li>
-<li><code>/network.html</code> - Network management page</li>
-<li><code>/system.html</code> - System management page</li>
-<li><code>/style.css</code> - Stylesheet</li>
+<li><p class="startli"><code>/favicon.ico</code> - Project logo</p>
+<p class="startli">Only if the Kconfig option <code>CONFIG_EIF_ENABLE_WEB_FAVICON</code> is enabled</p>
+</li>
+<li><p class="startli"><code>/logs.html</code> - The page for viewing logs from the device</p>
+<p class="startli">Only if the Kconfig option <code>CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</code> is enabled</p>
+</li>
 <li><code>/api.js</code> - JavaScript API library</li>
 <li><code>/json2.js</code> - JSON utility library</li>
+<li><code>/style.css</code> - Stylesheet</li>
 <li><code>/license.txt</code> - License information</li>
+<li><code>/index.html</code> - Main interface container</li>
+<li><code>/system.html</code> - System management page</li>
+<li><code>/network.html</code> - Network management page</li>
 </ul>
 </li>
 <li><code>/wifi</code><ul>
@@ -113,18 +121,21 @@ Map URIs</h2>
 </ul>
 </li>
 <li><code>/sys</code><ul>
+<li><p class="startli"><code>/logs.txt</code> - <a href="#h_sys_logs_txt">Get logs from the device</a></p>
+<p class="startli">Only if the Kconfig option <code>CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</code> is enabled</p>
+</li>
 <li><code>/info.json</code> - <a href="#h_sys_info_json">Get system information</a></li>
-<li><code>/reboot.do</code> - <a href="#h_sys_reboot_do">Reboot system</a><ul>
-<li><code>/ota</code></li>
+<li><code>/reboot.do</code> - <a href="#h_sys_reboot_do">Reboot system</a></li>
 </ul>
 </li>
+<li><code>/ota</code><ul>
 <li><code>/info.json</code> - <a href="#h_ota_info_json">Get firmware information</a></li>
 <li><code>/update.do</code> - <a href="#h_ota_update_do">Upload firmware</a></li>
 <li><code>/confirm.do</code> - <a href="#h_ota_confirm_do">Confirm successful update</a></li>
-<li><code>/rollback.do</code> - <a href="#h_ota_rollback_do">Rollback firmware</a><ul>
-<li><code>/apass</code> - only if the Kconfig option <code>CONFIG_EIF_ENABLE_BASIC_AUTH</code> is enabled</li>
+<li><code>/rollback.do</code> - <a href="#h_ota_rollback_do">Rollback firmware</a></li>
 </ul>
 </li>
+<li><code>/apass</code> - only if the Kconfig option <code>CONFIG_EIF_ENABLE_BASIC_AUTH</code> is enabled<ul>
 <li><code>/update.do</code> - <a href="#h_apass_update_do">Update administrator password</a></li>
 </ul>
 </li>
@@ -153,6 +164,7 @@ Wi-Fi Management</h3>
 <p class="startli"><b>Request body</b>: <code>No body</code></p>
 <p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  &quot;current_profile_index&quot;: 0,</div>
+<div class="line">  &quot;used_tls&quot;: true,</div>
 <div class="line">  &quot;rssi_now_profile&quot;: -65,</div>
 <div class="line">  &quot;profiles&quot;: [</div>
 <div class="line">    {</div>
@@ -169,6 +181,7 @@ Wi-Fi Management</h3>
 <div class="line">}</div>
 </div><!-- fragment --><p> <b>Fields</b>:</p><ul>
 <li><code>current_profile_index</code>: Currently active profile (<code>0</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>)</li>
+<li><code>used_tls</code> - <code>true</code> if the Kconfig option <code>CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</code> is enabled</li>
 <li><code>rssi_now_profile</code>: RSSI of current connection in dBm</li>
 <li><code>profiles</code>: Array of Wi-Fi profiles<ul>
 <li><code>ssid</code>: Network SSID (empty if not configured)</li>
@@ -259,16 +272,25 @@ TLS Management</h3>
 <hr  />
 <h3><a class="anchor" id="autotoc_md12"></a>
 System Management</h3>
+<p><a class="anchor" id="h_sys_logs_txt"></a></p><ul>
+<li><p class="startli">Get logs from the device </p><div class="fragment"><div class="line">GET /_/sys/logs.txt</div>
+</div><!-- fragment --><div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
+ Only available if the Kconfig option <code>CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</code> is enabled. </div><p class="startli">Streams the system log buffer in plain text using HTTP chunked transfer encoding.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response body</b>: <code>Plain text (Log lines separated by \n)</code></p>
+<p class="startli"><b>HTTP Headers</b>:</p><ul>
+<li><code>Content-Type</code>: <code>text/plain</code></li>
+<li><code>Transfer-Encoding</code>: <code>chunked</code></li>
+</ul>
+<p class="startli"><b>Response behavior</b>: The device pops logs out of the internal cyclic buffer in chunks of <code>HTTP_LOGS_CHUNK_SIZE</code> bytes. Chunks are continuously sent to the client until the log buffer is completely empty. If a network write failure occurs mid-stream, transmission aborts immediately to protect system resources.</p>
+</li>
+</ul>
+<hr  />
 <p><a class="anchor" id="h_sys_info_json"></a></p><ul>
 <li><p class="startli">Get system information </p><div class="fragment"><div class="line">GET /_/sys/info.json</div>
 </div><!-- fragment --><p class="startli">Returns detailed system information.</p>
 <p class="startli"><b>Request body</b>: <code>No body</code></p>
 <p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
-<div class="line">  &quot;features&quot;: {</div>
-<div class="line">    &quot;has_wifi&quot;: true,</div>
-<div class="line">    &quot;has_bluetooth&quot;: true,</div>
-<div class="line">    &quot;has_ble&quot;: true</div>
-<div class="line">  },</div>
 <div class="line">  &quot;heap_free&quot;: 123456,</div>
 <div class="line">  &quot;heap_min&quot;: 120000,</div>
 <div class="line">  &quot;largest_block&quot;: 80000,</div>
@@ -279,16 +301,14 @@ System Management</h3>
 <div class="line">  &quot;cpu_freq&quot;: 240,</div>
 <div class="line">  &quot;chip_model&quot;: &quot;ESP32&quot;,</div>
 <div class="line">  &quot;reset_reason&quot;: 1,</div>
-<div class="line">  &quot;features&quot;: &quot;WBL&quot;,</div>
+<div class="line">  &quot;features&quot;: {</div>
+<div class="line">    &quot;has_wifi&quot;: true,</div>
+<div class="line">    &quot;has_bluetooth&quot;: true,</div>
+<div class="line">    &quot;has_ble&quot;: true</div>
+<div class="line">  },</div>
 <div class="line">  &quot;mac&quot;: &quot;AA:BB:CC:DD:EE:FF&quot;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p> <b>Fields</b>:</p><ul>
-<li><code>features</code>: Object containing supported hardware features<ul>
-<li><code>has_wifi</code>: <code>true</code> if Wi-Fi (802.11 b/g/n) is supported</li>
-<li><code>has_bluetooth</code>: <code>true</code> if Bluetooth Classic is supported</li>
-<li><code>has_ble</code>: <code>true</code> if Bluetooth Low Energy (BLE) is supported</li>
-</ul>
-</li>
 <li><code>heap_free</code>: Current free heap in bytes</li>
 <li><code>heap_min</code>: Minimum free heap since boot</li>
 <li><code>largest_block</code>: Largest contiguous free memory block in heap</li>
@@ -299,6 +319,12 @@ System Management</h3>
 <li><code>cpu_freq</code>: CPU frequency in MHz</li>
 <li><code>chip_model</code>: ESP chip model</li>
 <li><code>reset_reason</code>: Last reset reason code</li>
+<li><code>features</code>: Object containing supported hardware features<ul>
+<li><code>has_wifi</code>: <code>true</code> if Wi-Fi (802.11 b/g/n) is supported</li>
+<li><code>has_bluetooth</code>: <code>true</code> if Bluetooth Classic is supported</li>
+<li><code>has_ble</code>: <code>true</code> if Bluetooth Low Energy (BLE) is supported</li>
+</ul>
+</li>
 <li><code>mac</code>: Device MAC address</li>
 </ul>
 </li>
@@ -313,7 +339,7 @@ System Management</h3>
  The device will reboot immediately after this request. All active connections will be closed. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md15"></a>
+<h3><a class="anchor" id="autotoc_md16"></a>
 OTA Updates</h3>
 <p><a class="anchor" id="h_ota_info_json"></a></p><ul>
 <li><p class="startli">Get firmware information </p><div class="fragment"><div class="line">GET /_/ota/info.json</div>
@@ -392,7 +418,7 @@ OTA Updates</h3>
  The device will automatically restart immediately after the rollback is initiated. This process usually takes less than 5 seconds. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md20"></a>
+<h3><a class="anchor" id="autotoc_md21"></a>
 Authentication Management</h3>
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
  Only available if the Kconfig option <code>CONFIG_EIF_ENABLE_BASIC_AUTH</code> is enabled. </div><p><a class="anchor" id="h_apass_update_do"></a></p><ul>

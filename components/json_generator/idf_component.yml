@@ -1,0 +1,4 @@
+name: "json_generator"
+description: "A simple JSON (JavasScript Object Notation) generator with flushing capability"
+version: "1.2.0"
+url: "https://github.com/espressif/json_generator"

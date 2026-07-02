@@ -12,6 +12,8 @@
         <dir name="components/esp_iot_framework_core/private_include"/>
         <dir name="components/esp_iot_framework_device/include"/>
         <dir name="components/esp_iot_framework_device/private_include"/>
+        <dir name="components/jsmn/include"/>
+        <dir name="components/json_generator/include"/>
 
         <dir name="/opt/esp/idf/components/esp_common/include/"/>
         <dir name="/opt/esp/idf/components/nvs_flash/include/"/>
@@ -45,11 +47,8 @@
     <suppressions>
         <suppression>misra-c2012-8.2</suppression>
         <suppression>misra-c2012-17.3</suppression>
+        
         <suppression fileName="*/src/network.c">misra-c2012-19.2</suppression>
-        <suppression fileName="*/src/config.c">misra-c2012-21.6</suppression>
-        <suppression fileName="*/src/nvs.c">misra-c2012-21.6</suppression>
-        <suppression fileName="*/src/web.c">misra-c2012-21.6</suppression>
-        <suppression fileName="*/src/tls_manager.c">misra-c2012-21.6</suppression>
         <suppression fileName="*/include/esp_iot_framework_core_macros.h">misra-c2012-20.10</suppression>
         <suppression fileName="*/private_include/device_macros.h">misra-c2012-20.7</suppression>
         <suppression fileName="*/private_include/device_macros.h">misra-c2012-20.10</suppression>
@@ -60,6 +59,8 @@
         <suppression fileName="*esp_idf*">*</suppression>
         <suppression fileName="*freertos*">*</suppression>
         <suppression fileName="*/opt/esp*">*</suppression>
+        <suppression fileName="*jsmn*">*</suppression>
+        <suppression fileName="*json_generator*">*</suppression>
     </suppressions>
     <addons>
         <addon>misra</addon>

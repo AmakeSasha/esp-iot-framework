@@ -22,7 +22,6 @@
 #include "sdkconfig.h"
 
 #include <nvs.h>
-#include <string.h>
 #include <esp_log.h>
 #include <esp_err.h>
 #include <nvs_flash.h>
@@ -202,39 +201,38 @@ esp_err_t eif_nvs_value_load_malloc(
 }
 
 /* --- */
-/* "wifi_ssid" (9) + max index "255" (3) + \0 (1) = 13 */
-#define WIFI_KEY_LEN (13U)
+/* "wifi_ssid" (9) + max index "FF" (2) + \0 (1) = 12 */
+#define WIFI_KEY_LEN (12U)
 
-/* @deviation [Rule 21.6] The use of 'snprintf' is justified as the format
- * string is constant and the input 'index' is a bounded 'uint8_t' value.
- * Buffer safety is guaranteed by passing 'WIFI_KEY_LEN' as the size limit
- * and explicitly checking the return value against the buffer size to
- * ensure the output is not truncated and a null-terminator is present.
- * This approach is more maintainable and less error-prone than manual
- * string manipulation. */
 static inline esp_err_t eif_nvs_wifi_gen_keys(
     uint8_t index, char * const s_buf, char * const p_buf
 ) {
     esp_err_t ret = ESP_OK;
 
+    const char hex_chars[] = "0123456789ABCDEF";
+
     EIF_IF_OK_CHECK_NOT_NULL(ret, s_buf, ESP_ERR_INVALID_ARG);
     EIF_IF_OK_CHECK_NOT_NULL(ret, p_buf, ESP_ERR_INVALID_ARG);
 
     if (ret == ESP_OK) {
-        /* Allowed by the '@deviation [Rule 21.6]' definition specified
-         * before this function. */
-        int res = snprintf(s_buf, WIFI_KEY_LEN, "wifi_ssid%u", index);
-        EIF_IF_OK_CHECK_CONDITION(ret,
-            (res < 0) || (res >= (int)WIFI_KEY_LEN),
-            ESP_ERR_INVALID_SIZE, "String formatting truncated or failed");
+        (void)memcpy(s_buf, "wifi_ssid", 9U);
+
+        size_t high_nibble = ((size_t)index >> 4U) & 0x0FU;
+        size_t low_nibble = (size_t)index & 0x0FU;
+
+        s_buf[9]  = hex_chars[high_nibble];
+        s_buf[10] = hex_chars[low_nibble];
+        s_buf[11] = '\0';
     }
     if (ret == ESP_OK) {
-        /* Allowed by the '@deviation [Rule 21.6]' definition specified
-         * before this function. */
-        int res = snprintf(p_buf, WIFI_KEY_LEN, "wifi_pass%u", index);
-        EIF_IF_OK_CHECK_CONDITION(ret,
-            (res < 0) || (res >= (int)WIFI_KEY_LEN),
-            ESP_ERR_INVALID_SIZE, "String formatting truncated or failed");
+        (void)memcpy(p_buf, "wifi_pass", 9U);
+
+        size_t high_nibble = ((size_t)index >> 4U) & 0x0FU;
+        size_t low_nibble = (size_t)index & 0x0FU;
+
+        p_buf[9]  = hex_chars[high_nibble];
+        p_buf[10] = hex_chars[low_nibble];
+        p_buf[11] = '\0';
     }
 
     /* Cleanup */
@@ -499,6 +497,24 @@ esp_err_t eif_nvs_initialize(void) {
         }
     }
 
+    #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
+        if (ret == ESP_OK) {
+            ret = eif_nvs_basic_auth_line_load(basic_auth_buffer);
+
+            if (ret == ESP_ERR_NVS_NOT_FOUND) {
+                EIF_LOG_W(NVS_ERR_MISSING, "Basic Auth credentials");
+                ret = ESP_OK;
+
+                EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+                    eif_nvs_basic_auth_line_save((const unsigned char *)""),
+                    NVS_ERR_SAVE, "Basic Auth credentials");
+            } else if (ret != ESP_OK) {
+                EIF_LOG_E("Loading 'Basic Auth credentials' failed, err: %s",
+                    esp_err_to_name(ret));
+            } else { ; }
+        }
+    #endif
+
     #ifdef CONFIG_EIF_ENABLE_TLS
         if (ret == ESP_OK) {
             ret = eif_nvs_value_load_malloc(
@@ -524,31 +540,27 @@ esp_err_t eif_nvs_initialize(void) {
 
             if (ret == ESP_ERR_NVS_NOT_FOUND) {
                 EIF_LOG_W(NVS_ERR_MISSING, "TLS credentials");
-                ret = ESP_OK;
 
-                EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-                    eif_tls_create_creds_and_nvs_save(),
-                    NVS_ERR_SAVE, "TLS credentials");
+                /* @note Running a task instead of calling a function directly
+                 * reduces the amount of stack required in the main thread. This
+                 * decision is justified because the absence of TLS credentials
+                 * is possible only when the device is first started. */
+                EIF_SHOW_ESP_ERR_T(ret, eif_task_tls_recreate_launch(),
+                    "Failed to spawn [tls_recreate]");
+
+                if (ret == ESP_OK) {
+                    /* @note Since the 'eif_task_reboot_launch' task forces a
+                     * reboot of the device at the end of its operation, this
+                     * cycle is safe for the system and does not cause a hang.
+                     * But if the task is started unsuccessfully, this cycle
+                     * will cause the system to freeze, meaning that it starts
+                     * only on successful startup 'eif_task_reboot_launch' */
+                    for (;;) {
+                        vTaskDelay(portMAX_DELAY); 
+                    }
+                }
             } else if (ret != ESP_OK) {
                 EIF_LOG_E("Loading 'TLS credentials' failed");
-            } else { ; }
-        }
-    #endif
-
-    #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
-        if (ret == ESP_OK) {
-            ret = eif_nvs_basic_auth_line_load(basic_auth_buffer);
-
-            if (ret == ESP_ERR_NVS_NOT_FOUND) {
-                EIF_LOG_W(NVS_ERR_MISSING, "Basic Auth credentials");
-                ret = ESP_OK;
-
-                EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-                    eif_nvs_basic_auth_line_save((const unsigned char *)""),
-                    NVS_ERR_SAVE, "Basic Auth credentials");
-            } else if (ret != ESP_OK) {
-                EIF_LOG_E("Loading 'Basic Auth credentials' failed, err: %s",
-                    esp_err_to_name(ret));
             } else { ; }
         }
     #endif

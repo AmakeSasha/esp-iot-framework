@@ -32,15 +32,12 @@ if(CONFIG_EIF_ENABLE_WEB_ADMIN_GUI)
     message(STATUS "EIF-DEVICE: component 'Web GUI' included")
     if(CONFIG_EIF_ENABLE_BASIC_AUTH)
         list(APPEND embed_files "web/e401.html.gz")
-        message(STATUS "EIF-DEVICE: file 'e401.html' included")
-    else()
-        message(STATUS "EIF-DEVICE: file 'e401.html' excluded")
     endif()
     if(CONFIG_EIF_ENABLE_WEB_FAVICON)
         list(APPEND embed_files "web/logo.png.gz")
-        message(STATUS "EIF-DEVICE: file 'logo.png' included")
-    else()
-        message(STATUS "EIF-DEVICE: file 'logo.png' excluded")
+    endif()
+    if(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG)
+        list(APPEND embed_files "web/logs.html.gz")
     endif()
 else()
     set(embed_files "")
@@ -48,11 +45,12 @@ else()
 endif()
 
 set(requires_components
-    json
+    jsmn
     esp_wifi
     spi_flash
     esp_timer
-    app_update  
+    app_update
+    json_generator
     esp_iot_framework_core
 )
 

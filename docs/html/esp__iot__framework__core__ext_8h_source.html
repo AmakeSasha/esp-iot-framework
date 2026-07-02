@@ -18,10 +18,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<html lang="en">
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+<meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
 <title>esp_iot_framework: components/esp_iot_framework_core/include/esp_iot_framework_core_ext.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
@@ -1194,7 +1196,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;<span class="comment"> *        part of a group large enough for a separate module.</span></div>
 <div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;<span class="comment"> * @{</span></div>
 <div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="preprocessor">#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</span></div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="preprocessor">#if (defined(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG) || defined(DOXYGEN))</span></div>
 <div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;    <span class="comment">/*</span></div>
 <div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;<span class="comment">     * @brief Thread-safe extraction of diagnostic logs from the core ring buffer.</span></div>
 <div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="comment">     *</span></div>

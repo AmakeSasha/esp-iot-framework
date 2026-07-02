@@ -21,13 +21,16 @@
 
 #include "sdkconfig.h"
 
-#include <cJSON.h>
+#define JSMN_STATIC
+#include <jsmn.h>
+#include <stdlib.h>
 #include <esp_mac.h>
 #include <esp_log.h>
 #include <esp_flash.h>
 #include <esp_timer.h>
 #include <esp_ota_ops.h>
 #include <esp_chip_info.h>
+#include <json_generator.h>
 #include <esp_app_format.h>
 #include <esp_idf_version.h>
 #ifdef CONFIG_EIF_ENABLE_TLS
@@ -51,7 +54,6 @@
 
 /* --- */
 
-#define SERVER_ERR_JSON_NO_MEM     "Failed to create JSON root"
 #define SERVER_ERR_JSON_PARSE      "JSON parsing failed"
 #define SERVER_ERR_JSON_SER        "JSON serialization failed"
 #define SERVER_ERR_JSON_MISSING    "Field `%s` is missing or invalid"
@@ -63,45 +65,8 @@
 #define SERVER_ERR_SPAWN_TASK      "Failed to spawn [%s]"
 #define SERVER_ERR_INVALID_IDX     "Invalid '%s' index: %u (allowed range: %u-%u)"
 #define SERVER_ERR_INVALID_LEN     "Invalid '%s' length: %u (allowed range: %u-%u)"
-#define SERVER_ERR_STR_FORMAT      "String formatting truncated or failed"
 
 #define FIELD_WIFI_PROF_IDX     "profile_index"
-#define FIELD_WIFI_PROF_IDX_CUR "current_profile_index"
-#define FIELD_WIFI_SSID         "ssid"
-#define FIELD_WIFI_PASS         "password"
-#define FIELD_WIFI_RSSI         "rssi"
-#define FIELD_WIFI_RSSI_PROF    "rssi_now_profile"
-#define FIELD_WIFI_PROFS        "profiles"
-#define FIELD_WIFI_RESULT       "result"
-
-#define FIELD_APASS_PASS        "password"
-
-#define FIELD_OTA_PROJECT       "project"
-#define FIELD_OTA_VER           "version"
-#define FIELD_OTA_BUILD_ID      "build_id"
-#define FIELD_OTA_BUILD_DATE    "build_date"
-#define FIELD_OTA_BUILD_TIME    "build_time"
-#define FIELD_OTA_IDF_VER       "idf_version"
-#define FIELD_OTA_GCC_VER       "compiler"
-#define FIELD_OTA_TARGET        "target"
-#define FIELD_OTA_PARTITION     "partition"
-#define FIELD_OTA_STATUS        "ota_status"
-
-#define FIELD_SYS_FEATURES      "features"
-#define FIELD_SYS_FEATURES_WIFI "has_wifi"
-#define FIELD_SYS_FEATURES_BT   "has_bluetooth"
-#define FIELD_SYS_FEATURES_BLE  "has_ble"
-#define FIELD_SYS_HEAP_FREE     "heap_free"
-#define FIELD_SYS_HEAP_MIN      "heap_min"
-#define FIELD_SYS_LARG_BLOCK    "largest_block"
-#define FIELD_SYS_UPTIME        "uptime"
-#define FIELD_SYS_CPU_FREQ      "cpu_freq"
-#define FIELD_SYS_CORES         "cores"
-#define FIELD_SYS_CHIP_MODEL    "chip_model"
-#define FIELD_SYS_CHIP_REV      "chip_rev"
-#define FIELD_SYS_FLASH_SIZE    "flash_size"
-#define FIELD_SYS_RESET_REASON  "reset_reason"
-#define FIELD_SYS_MAC           "mac"
 
 #define HTTPD_202 "202 Accepted"
 #define HTTPD_304 "304 Not Modified"
@@ -141,11 +106,16 @@
 #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
     #define HTTP_BASIC_AUTH_REALM "Basic realm=\"web_basic_auth\""
 #endif
+#define SERVER_JSON_OUT_BUF_SIZE 1024
+#define SERVER_JSON_IN_BUF_SIZE 256
+#define SERVER_JSON_MAX_TOKENS 16U
+
 #define HTTP_METHOD_MAX_LEN 8
 #define HTTP_URI_MAX_LEN 16 * 1024
 #define HTTP_LOGS_CHUNK_SIZE 512
 
 #define HDR_CACHE_CONTROL_VALUE "public, max-age=" EIF_STR(CONFIG_EIF_WEB_CACHE_MAX_AGE)
+
 
 /* Send */
 
@@ -157,7 +127,7 @@ static void httpd_resp_sendstatus(
     #ifdef CONFIG_EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP
         char body_buf[BUFFER_TIMESTAMP] = {0};
     #endif
-    const char * p_body = "0";
+    const char * p_body = "";
 
     #ifdef CONFIG_EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP
         if (strcmp(status, HTTPD_204) != 0) {
@@ -185,113 +155,186 @@ static void httpd_resp_sendstatus(
 
 /* JSON */
 
+/**
+ * @brief Static buffer for HTTP server JSON response serialization.
+ * 
+ * File-scope static allocation limits visibility to this module and protects
+ * the FreeRTOS task stack from overhead. Zero dynamic allocation ensures
+ * runtime determinism and prevents heap fragmentation on the
+ * resource-constrained MCU.
+ * 
+ * Reusing a single shared buffers minimizes the total RAM footprint across
+ * internal serialization routines. Thread safety is guaranteed by design
+ * because the underlying ESP-IDF HTTP server executes sequentially within a
+ * single FreeRTOS task, eliminating concurrent access. The fixed capacity is
+ * sufficient for the framework's internal JSON payloads.
+ */
+static char g_server_json_buffer[SERVER_JSON_OUT_BUF_SIZE] = {0};
+
+typedef struct {
+    char buffer[SERVER_JSON_IN_BUF_SIZE];
+    jsmntok_t tokens[SERVER_JSON_MAX_TOKENS];
+    int token_count;
+} json_parser_ctx_t;
+
 static esp_err_t req_http_parse_json(
-    httpd_req_t * const req, cJSON * * const root
+    httpd_req_t * const req, json_parser_ctx_t * const ctx
 ) {
     esp_err_t ret = ESP_OK;
-
     int received = 0;
-    char * buffer = NULL;
 
     EIF_IF_OK_CHECK_CONDITION(ret, (req->content_len == 0),
         ESP_ERR_INVALID_ARG, "Request body is empty, nothing to parse");
 
+    EIF_IF_OK_CHECK_CONDITION(ret, 
+        (req->content_len >= sizeof(ctx->buffer)),
+        ESP_ERR_NO_MEM, "Static buffer too small");
+
     if (ret == ESP_OK) {
-        buffer = (char *)pvPortMalloc(req->content_len + 1);
-        EIF_IF_OK_CHECK_CONDITION(ret, (buffer == NULL), ESP_ERR_NO_MEM,
-            SERVER_ERR_ALLOCATE, req->content_len, "JSON buffer");
+        received = httpd_req_recv(req, ctx->buffer, req->content_len);
+        EIF_IF_OK_CHECK_CONDITION(ret, (received <= 0), 
+            ESP_ERR_HTTPD_INVALID_REQ, "HTTP receive failed");
     }
 
     if (ret == ESP_OK) {
-        received = httpd_req_recv(req, buffer, req->content_len);
-        EIF_IF_OK_CHECK_CONDITION(ret,
-            (received <= 0), ESP_ERR_HTTPD_INVALID_REQ,
-            "HTTP receive failed (received: %d)", received);
-    }
+        ctx->buffer[received] = '\0';
 
-
-    if (ret == ESP_OK) {
-        buffer[received] = '\0';
-
-        *root = cJSON_Parse(buffer);
-        EIF_IF_OK_CHECK_CONDITION(ret, *root == NULL,
+        jsmn_parser parser;
+        jsmn_init(&parser);
+        
+        int r = jsmn_parse(&parser, ctx->buffer,
+            (size_t)received, ctx->tokens, SERVER_JSON_MAX_TOKENS);
+        
+        EIF_IF_OK_CHECK_CONDITION(ret, 
+            ((r < 0) || (ctx->tokens[0].type != JSMN_OBJECT)),
             ESP_ERR_INVALID_STATE, SERVER_ERR_JSON_PARSE);
-    }
 
-    /* Cleanup */
-    if (ret != ESP_OK) {
-        if (*root != NULL) {
-            cJSON_Delete(*root);
-            *root = NULL;
+        if (ret == ESP_OK) {
+            ctx->token_count = r;
         }
-    }
-    if (buffer != NULL) {
-        vPortFree(buffer);
     }
 
     return ret;
 }
 
 static esp_err_t req_json_get_field(
-    const cJSON * const root, char * const out_value,
+    const json_parser_ctx_t * const ctx, char * const out_value, 
     const char * const field, const size_t min_limit, const size_t max_limit
 ) {
     esp_err_t ret = ESP_OK;
+    int val_idx = -1;
+    const size_t field_len = strlen(field);
 
-    const cJSON * const value = cJSON_GetObjectItemCaseSensitive(root, field);
-    EIF_IF_OK_CHECK_CONDITION(ret,
-        ((value == NULL) || !cJSON_IsString(value) || (value->valuestring == NULL)),
+    for (int i = 1; i < (ctx->token_count - 1); i++) {
+        if (ctx->tokens[i].type == JSMN_STRING) {
+            const int diff = ctx->tokens[i].end - ctx->tokens[i].start;
+            const size_t tok_len = (size_t)diff;
+
+            if (tok_len == field_len) {
+                size_t start_idx = (size_t)ctx->tokens[i].start;
+                const char *str_ptr = &ctx->buffer[start_idx];
+                
+                if (strncmp(str_ptr, field, tok_len) == 0) {
+                    val_idx = i + 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    EIF_IF_OK_CHECK_CONDITION(ret, 
+        ((val_idx < 0) || (ctx->tokens[val_idx].type != JSMN_STRING)),
         ESP_ERR_INVALID_ARG, SERVER_ERR_JSON_MISSING, field);
 
-    /* @note The second condition is necessary to successfully pass the
-     * CppCheck check. */
-    if ((ret == ESP_OK) && (value != NULL)) {
-        const size_t len = eif_strnlen(value->valuestring, max_limit);
-        EIF_IF_OK_CHECK_CONDITION(ret,
-            ((len < min_limit) || (len >= max_limit)), ESP_ERR_INVALID_ARG,
-            SERVER_ERR_INVALID_LEN, field, len, min_limit, max_limit - 1U);
+    if (ret == ESP_OK) {
+        const int diff = ctx->tokens[val_idx].end - ctx->tokens[val_idx].start;
+        const size_t tok_len = (size_t)diff;
+
+        EIF_IF_OK_CHECK_CONDITION(ret, 
+            ((tok_len < min_limit) || (tok_len >= max_limit)), 
+            ESP_ERR_INVALID_ARG, SERVER_ERR_INVALID_LEN, 
+            field, tok_len, min_limit, max_limit - 1U);
+            
+        if (ret == ESP_OK) {
+            for (size_t k = 0U; k < tok_len; k++) {
+                size_t src_idx = (size_t)ctx->tokens[val_idx].start + k;
+                out_value[k] = ctx->buffer[src_idx];
+            }
+            out_value[tok_len] = '\0';
+        }
     }
 
-    /* @note The second condition is necessary to successfully pass the
-     * CppCheck check. */
-    if ((ret == ESP_OK) && (value != NULL)) {
-        (void)strncpy(out_value, value->valuestring, max_limit - 1U);
-        out_value[max_limit - 1U] = '\0';
-    }
-
-    /* Cleanup */
     return ret;
 }
 
 static esp_err_t req_json_get_profile_index(
-    const cJSON * const root, uint8_t * const index
+    const json_parser_ctx_t * const ctx, uint8_t * const index
 ) {
     esp_err_t ret = ESP_OK;
-
-    const cJSON * value = NULL;
+    int val_idx = -1;
     const uint8_t wifi_profiles_count = eif_wifi_get_profiles_count();
+    const size_t field_len = strlen(FIELD_WIFI_PROF_IDX);
 
-    value = cJSON_GetObjectItemCaseSensitive(root, FIELD_WIFI_PROF_IDX);
-    if ((value == NULL) || !cJSON_IsNumber(value) || (value->valueint < 0)) {
+    for (int i = 1; i < (ctx->token_count - 1); i++) {
+        if (ctx->tokens[i].type == JSMN_STRING) {
+            const int diff = ctx->tokens[i].end - ctx->tokens[i].start;
+            const size_t tok_len = (size_t)diff;
+            
+            if (tok_len == field_len) {
+                size_t start_idx = (size_t)ctx->tokens[i].start;
+                const char *str_ptr = &ctx->buffer[start_idx];
+                
+                if (strncmp(str_ptr, FIELD_WIFI_PROF_IDX, tok_len) == 0) {
+                    val_idx = i + 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    if ((val_idx < 0) || (ctx->tokens[val_idx].type != JSMN_PRIMITIVE)) {
         ret = ESP_ERR_INVALID_ARG;
         EIF_LOG_E(SERVER_ERR_JSON_MISSING, FIELD_WIFI_PROF_IDX);
     }
 
-    /* @note The second condition is necessary to successfully pass the
-     * CppCheck check. */
-    if ((ret == ESP_OK) && (value != NULL)) {   
-        if ((value->valueint > wifi_profiles_count) || (value->valueint > 255)) {
+    if (ret == ESP_OK) {
+        const int diff = ctx->tokens[val_idx].end - ctx->tokens[val_idx].start;
+        const size_t tok_len = (size_t)diff;
+        
+        if ((tok_len == 0U) || (tok_len > 3U)) {
             ret = ESP_ERR_INVALID_ARG;
-            EIF_LOG_E(SERVER_ERR_INVALID_IDX,
-                FIELD_WIFI_PROF_IDX, value->valueint, 0, wifi_profiles_count);
         } else {
-            *index = (uint8_t)value->valueint;
+            int valueint = 0;
+            bool valid_number = true;
+
+            for (size_t k = 0U; k < tok_len; k++) {
+                size_t src_idx = (size_t)ctx->tokens[val_idx].start + k;
+                char ch = ctx->buffer[src_idx];
+
+                if ((ch >= '0') && (ch <= '9')) {
+                    valueint = (valueint * 10) + ((int)ch - (int)'0');
+                } else {
+                    valid_number = false;
+                    break;
+                }
+            }
+
+            if (!valid_number || 
+                (valueint > (int)wifi_profiles_count) || 
+                (valueint > 255)) {
+                ret = ESP_ERR_INVALID_ARG;
+                EIF_LOG_E(
+                    SERVER_ERR_INVALID_IDX, FIELD_WIFI_PROF_IDX, 
+                    valueint, 0, wifi_profiles_count);
+            } else {
+                *index = (uint8_t)valueint;
+            }
         }
     }
 
-    /* Cleanup */
     return ret;
 }
+
 
 
 
@@ -361,10 +404,13 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
     #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
         EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
     #endif
+    #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+        EIF_DEFINE_HTTP_FILE(logs_html_gz,    RESP_TYPE_HTML, true)
+    #endif
     EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
     EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
-    EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
     EIF_DEFINE_HTTP_FILE(system_html_gz,  RESP_TYPE_HTML, true)
+    EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
 
     EIF_DEFINE_HTTP_FILE(style_css_gz,    RESP_TYPE_CSS,  true)
 
@@ -391,10 +437,13 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
 static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
-    cJSON * root = NULL;
-    cJSON * profile = NULL;
-    cJSON * profiles = NULL;
-    char * response_str = NULL;
+    #if defined(CONFIG_EIF_ENABLE_TLS)
+        #define EIF_TLS_VAL true
+    #else
+        #define EIF_TLS_VAL false
+    #endif
+
+    json_gen_str_t jgen = {0};
     wifi_ap_record_t info = {0};
     char ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
     char pass[EIF_WIFI_PASS_MAX_LEN] = {0};
@@ -403,75 +452,60 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
 
     (void)set_cache(req, false);
 
-    root = cJSON_CreateObject();
-    EIF_IF_OK_CHECK_CONDITION(ret, root == NULL,
-        ESP_ERR_NO_MEM, SERVER_ERR_JSON_NO_MEM);
-
-    if (ret == ESP_OK) {
-        profiles = cJSON_CreateArray();
-        EIF_IF_OK_CHECK_CONDITION(ret, profiles == NULL,
-            ESP_ERR_NO_MEM, SERVER_ERR_JSON_NO_MEM);
+    json_gen_str_start(&jgen,
+        g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
+    /* { */
+    (void)json_gen_start_object(&jgen);
+    /*   "current_profile_index": 2, */
+    (void)json_gen_obj_set_int(&jgen, "current_profile_index", wifi_profiles_index);
+    /*   "used_tls": true, */
+    (void)json_gen_obj_set_int(&jgen, "used_tls", EIF_TLS_VAL);
+    /*   "rssi_now_profile": -45, */
+    if (esp_wifi_sta_get_ap_info(&info) == ESP_OK) {
+        (void)json_gen_obj_set_int(&jgen, "rssi_now_profile", info.rssi);
     }
+    /*   "profiles": [ */
+    (void)json_gen_push_array(&jgen, "profiles");
 
     for (uint16_t idx = 0U; idx <= (uint16_t)wifi_profiles_count; idx++) {
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+            eif_nvs_wifi_profile_load(idx, ssid, pass),
+            SERVER_ERR_NVS_LOAD_PROF, idx);
+
         if (ret == ESP_OK) {
-            profile = cJSON_CreateObject();
-            EIF_IF_OK_CHECK_CONDITION(ret, profile == NULL,
-                ESP_ERR_NO_MEM, SERVER_ERR_JSON_NO_MEM);
-
-            EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-                eif_nvs_wifi_profile_load(idx, ssid, pass),
-                SERVER_ERR_NVS_LOAD_PROF, idx);
-
-            if (ret != ESP_OK) {
-                cJSON_Delete(profile);
-                profile = NULL;
-                cJSON_Delete(profiles);
-                profiles = NULL;
-            } else {
-                cJSON_AddStringToObject(profile, FIELD_WIFI_SSID, ssid);
-                if (idx == 0U) {
-                    cJSON_AddStringToObject(profile, FIELD_WIFI_PASS, pass);
-                }
-
-                cJSON_AddItemToArray(profiles, profile);
+            /* { */
+            (void)json_gen_start_object(&jgen);
+            /*   "ssid": ESP32_SETUP", */
+            (void)json_gen_obj_set_string(&jgen, "ssid", ssid);
+            if (idx == 0U) {
+            /*   "password": 12345678" */
+                (void)json_gen_obj_set_string(&jgen, "password", pass);
             }
+            /* }, */
+            (void)json_gen_end_object(&jgen);
+        } else {
+            break;
         }
     }
 
-    if (ret == ESP_OK) {
-        cJSON_AddItemToObject(root, FIELD_WIFI_PROFS, profiles);
-        cJSON_AddNumberToObject(root,
-            FIELD_WIFI_PROF_IDX_CUR, wifi_profiles_index);
+    /*   ] */
+    (void)json_gen_pop_array(&jgen);
+    /* } */
+    (void)json_gen_end_object(&jgen);
 
-        if (esp_wifi_sta_get_ap_info(&info) == ESP_OK) {
-            cJSON_AddNumberToObject(root, FIELD_WIFI_RSSI_PROF, info.rssi);
-        }
-
-        response_str = cJSON_PrintUnformatted(root);
-        EIF_IF_OK_CHECK_CONDITION(ret, response_str == NULL,
-            ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
-    }
+    int json_len = json_gen_str_end(&jgen);
+    EIF_IF_OK_CHECK_CONDITION(ret,
+        ((json_len <= 0) || (json_len > SERVER_JSON_OUT_BUF_SIZE)),
+        ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
 
     if (ret == ESP_OK) {
         httpd_resp_set_type(req, RESP_TYPE_JSON);
-        httpd_resp_sendstr(req, response_str);
-    }
-
-    /* Cleanup */
-    if (response_str != NULL) {
-        cJSON_free(response_str);
-    }
-    if (root != NULL) {
-        cJSON_Delete(root);
-    } else if (profiles != NULL) {
-        cJSON_Delete(profiles);
-    } else { ; }
-
-    if (ret != ESP_OK) {
+        httpd_resp_sendstr(req, g_server_json_buffer);
+    } else {
         httpd_resp_sendstatus(req, HTTPD_500);
     }
 
+    /* Cleanup */
     return ret;
 }
 
@@ -479,26 +513,26 @@ static esp_err_t h_wifi_update_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
     uint8_t index = 0;
-    cJSON * root = NULL;
+    json_parser_ctx_t parser_ctx = {0};
     char ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
     char pass[EIF_WIFI_PASS_MAX_LEN] = {0};
 
     (void)set_cache(req, false);
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-        req_http_parse_json(req, &root), SERVER_ERR_JSON_PARSE);
+        req_http_parse_json(req, &parser_ctx), SERVER_ERR_JSON_PARSE);
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-        req_json_get_profile_index(root, &index),
+        req_json_get_profile_index(&parser_ctx, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_field(root,
-        ssid, FIELD_WIFI_SSID, EIF_WIFI_SSID_MIN_LEN, EIF_WIFI_SSID_MAX_LEN
-    ), SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_SSID);
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_field(&parser_ctx,
+        ssid, "ssid", EIF_WIFI_SSID_MIN_LEN, EIF_WIFI_SSID_MAX_LEN
+    ), SERVER_ERR_NOT_FOUND_FIELD, "ssid");
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret,req_json_get_field(root,
-        pass, FIELD_WIFI_PASS, EIF_WIFI_PASS_MIN_LEN, EIF_WIFI_PASS_MAX_LEN
-    ), SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PASS);
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_field(&parser_ctx,
+        pass, "password", EIF_WIFI_PASS_MIN_LEN, EIF_WIFI_PASS_MAX_LEN
+    ), SERVER_ERR_NOT_FOUND_FIELD, "password");
 
     if (ret == ESP_ERR_NO_MEM) {
         httpd_resp_sendstatus(req, HTTPD_500);
@@ -509,18 +543,14 @@ static esp_err_t h_wifi_update_do(httpd_req_t * const req) {
             eif_nvs_wifi_profile_save(index, ssid, pass),
             SERVER_ERR_NVS_SAVE_PROF, index);
 
-        if (ret != ESP_OK) {
+        if (ret == ESP_OK) {
+            httpd_resp_sendstatus(req, HTTPD_204);
+        } else {
             httpd_resp_sendstatus(req, HTTPD_500);
         }
     }
 
     /* Cleanup */
-    if (root != NULL) {
-        cJSON_Delete(root);
-    }
-    if (ret == ESP_OK) {
-        httpd_resp_sendstatus(req, HTTPD_204);
-    }
     return ret;
 }
 
@@ -528,33 +558,32 @@ static esp_err_t h_wifi_clear_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
     uint8_t index = 0;
-    cJSON * root = NULL;
+    json_parser_ctx_t parser_ctx = {0};
 
     (void)set_cache(req, false);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root),
-        SERVER_ERR_JSON_PARSE);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index),
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        req_http_parse_json(req, &parser_ctx), SERVER_ERR_JSON_PARSE);
+
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        req_json_get_profile_index(&parser_ctx, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
     if (ret != ESP_OK) {
         httpd_resp_sendstatus(req, HTTPD_400);
     } else {
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_wifi_profile_save(index, "", ""),
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+            eif_nvs_wifi_profile_save(index, "", ""),
             SERVER_ERR_NVS_SAVE_PROF, index);
 
-        if (ret != ESP_OK) {
+        if (ret == ESP_OK) {
+            httpd_resp_sendstatus(req, HTTPD_204);
+        } else {
             httpd_resp_sendstatus(req, HTTPD_500);
         }
     }
 
     /* Cleanup */
-    if (root != NULL) {
-        cJSON_Delete(root);
-    }
-    if (ret == ESP_OK) {
-        httpd_resp_sendstatus(req, HTTPD_204);
-    }
     return ret;
 }
 
@@ -562,13 +591,15 @@ static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
     uint8_t index = 0;
-    cJSON * root = NULL;
+    json_parser_ctx_t parser_ctx = {0};
 
     (void)set_cache(req, false);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root),
-        SERVER_ERR_JSON_PARSE);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index),
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        req_http_parse_json(req, &parser_ctx), SERVER_ERR_JSON_PARSE);
+
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        req_json_get_profile_index(&parser_ctx, &index),
         SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
     if (ret != ESP_OK) {
@@ -586,9 +617,6 @@ static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
     }
 
     /* Cleanup */
-    if (root != NULL) {
-        cJSON_Delete(root);
-    }
     return ret;
 }
 
@@ -596,59 +624,54 @@ static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
     uint8_t index = 0;
-    cJSON * root = NULL;
-    char * out_json = NULL;
-    cJSON * res_obj = NULL;
+    json_gen_str_t jgen = {0};
+    json_parser_ctx_t parser_ctx = {0};
     eif_wifi_test_result test_res = {0};
-
+    
     (void)set_cache(req, false);
 
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_http_parse_json(req, &root),
-        SERVER_ERR_JSON_PARSE);
-    EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_profile_index(root, &index),
-        SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        req_http_parse_json(req, &parser_ctx), SERVER_ERR_JSON_PARSE);
 
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        req_json_get_profile_index(&parser_ctx, &index),
+        SERVER_ERR_NOT_FOUND_FIELD, FIELD_WIFI_PROF_IDX);
 
     if (ret != ESP_OK) {
         httpd_resp_sendstatus(req, HTTPD_400);
     } else {
-        res_obj = cJSON_CreateObject();
-        EIF_IF_OK_CHECK_CONDITION(ret, res_obj == NULL,
-            ESP_ERR_NO_MEM, SERVER_ERR_JSON_NO_MEM);
+        json_gen_str_start(&jgen,
+            g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
 
         EIF_IF_OK_CHECK_ESP_ERR_T(ret,
             eif_wifi_get_test_result(index, &test_res),
             "Couldn't upload Wi-Fi profile test results");
 
         if (ret == ESP_OK) {
-            cJSON_AddBoolToObject(res_obj,
-                FIELD_WIFI_RESULT, test_res.connected);
-            cJSON_AddNumberToObject(res_obj,
-                FIELD_WIFI_RSSI, test_res.rssi);
+            /* { */
+            (void)json_gen_start_object(&jgen);
+            /*   "result": true, */
+            (void)json_gen_obj_set_bool(&jgen, "result", test_res.connected);
+            /*   "rssi": -45 */
+            (void)json_gen_obj_set_int(&jgen, "rssi", test_res.rssi);
+            /* } */
+            (void)json_gen_end_object(&jgen);
 
-            out_json = cJSON_PrintUnformatted(res_obj);
-            EIF_IF_OK_CHECK_CONDITION(ret, out_json == NULL,
+            int json_len = json_gen_str_end(&jgen);
+            EIF_IF_OK_CHECK_CONDITION(ret,
+                ((json_len <= 0) || (json_len > SERVER_JSON_OUT_BUF_SIZE)),
                 ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
         }
 
         if (ret == ESP_OK) {
             httpd_resp_set_type(req, RESP_TYPE_JSON);
-            ret = httpd_resp_sendstr(req, out_json);
+            httpd_resp_sendstr(req, g_server_json_buffer);
         } else {
             httpd_resp_sendstatus(req, HTTPD_500);
         }
     }
 
     /* Cleanup */
-    if (out_json != NULL) {
-        cJSON_free(out_json);
-    }
-    if (res_obj != NULL) {
-        cJSON_Delete(res_obj);
-    }
-    if (root != NULL) {
-        cJSON_Delete(root);
-    }
     return ret;
 }
 
@@ -683,93 +706,93 @@ static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
 static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
-    cJSON * root = NULL;
     uint8_t mac[6] = {0};
     char mac_str[18] = {0};
     uint32_t flash_size = 0;
-    cJSON * features = NULL;
+    json_gen_str_t jgen = {0};
     esp_chip_info_t chip = {0};
-    char * response_str = NULL;
+    const char hex_chars[] = "0123456789ABCDEF";
+    int largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
 
     (void)set_cache(req, false);
+    
+    esp_chip_info(&chip);
+    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+    esp_flash_get_size(NULL, &flash_size);
 
-    root = cJSON_CreateObject();
-    EIF_IF_OK_CHECK_CONDITION(ret, root == NULL, ESP_ERR_NO_MEM,
-        SERVER_ERR_JSON_NO_MEM);
+    {
+        size_t pos = 0U;
 
-    if (ret == ESP_OK) {
-        features = cJSON_CreateObject();
-        EIF_IF_OK_CHECK_CONDITION(ret, features == NULL, ESP_ERR_NO_MEM,
-            SERVER_ERR_JSON_NO_MEM);
+        for (size_t i = 0U; i < 6U; i++) {
+            size_t hi = ((size_t)mac[i] >> 4U) & 0x0FU;
+            size_t lo = (size_t)mac[i] & 0x0FU;
+
+            mac_str[pos] = hex_chars[hi];
+            pos++;
+            mac_str[pos] = hex_chars[lo];
+            pos++;
+
+            if (i < 5U) {
+                mac_str[pos] = ':';
+                pos++;
+            }
+        }
+        
+        mac_str[pos] = '\0';
     }
 
-    if (ret == ESP_OK) {
-        esp_chip_info(&chip);
-        esp_read_mac(mac, ESP_MAC_WIFI_STA);
-        esp_flash_get_size(NULL, &flash_size);
+    json_gen_str_start(&jgen,
+        g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
 
-        cJSON_AddBoolToObject(features, FIELD_SYS_FEATURES_WIFI,
-            (chip.features & CHIP_FEATURE_WIFI_BGN));
-        cJSON_AddBoolToObject(features, FIELD_SYS_FEATURES_BT,
-            (chip.features & CHIP_FEATURE_BT));
-        cJSON_AddBoolToObject(features, FIELD_SYS_FEATURES_BLE,
-            (chip.features & CHIP_FEATURE_BLE));
-        cJSON_AddItemToObject(root, FIELD_SYS_FEATURES, features);
+    /* { */
+    (void)json_gen_start_object(&jgen);
+    /*   "heap_free": 123456, */
+    (void)json_gen_obj_set_int(&jgen, "heap_free", esp_get_free_heap_size());
+    /*   "heap_min": 120000, */
+    (void)json_gen_obj_set_int(&jgen, "heap_min", esp_get_minimum_free_heap_size());
+    /*   "largest_block": 80000, */
+    (void)json_gen_obj_set_int(&jgen, "largest_block", largest_block);
+    /*   "uptime": 3600, */
+    (void)json_gen_obj_set_int(&jgen, "uptime", esp_timer_get_time() / 1000000ULL);
+    /*   "cores": 2, */
+    (void)json_gen_obj_set_int(&jgen, "cores", chip.cores);
+    /*   "chip_rev": 3, */
+    (void)json_gen_obj_set_int(&jgen, "chip_rev", chip.revision);
+    /*   "flash_size": 4, */
+    (void)json_gen_obj_set_int(&jgen, "flash_size", flash_size / (1024U * 1024U));
+    /*   "cpu_freq": 240, */
+    (void)json_gen_obj_set_int(&jgen, "cpu_freq",  EIF_CPU_FREQ_MHZ);
+    /*   "reset_reason": 1, */
+    (void)json_gen_obj_set_int(&jgen, "reset_reason", esp_rom_get_reset_reason(0));
+    /*   "chip_model": "ESP32", */
+    (void)json_gen_obj_set_string(&jgen, "chip_model", CONFIG_IDF_TARGET);
+    /*   "features": { */
+    (void)json_gen_push_object(&jgen, "features");
+    /*     "has_wifi": true, */
+    (void)json_gen_obj_set_bool(&jgen, "has_wifi", (chip.features & CHIP_FEATURE_WIFI_BGN));
+    /*     "has_bluetooth": true, */
+    (void)json_gen_obj_set_bool(&jgen, "has_bluetooth", (chip.features & CHIP_FEATURE_BT));
+    /*     "has_ble": true */
+    (void)json_gen_obj_set_bool(&jgen, "has_ble", (chip.features & CHIP_FEATURE_BLE));
+    /*   }, */
+    (void)json_gen_pop_object(&jgen);
+    /*   "mac": "AA:BB:CC:DD:EE:FF" */
+    (void)json_gen_obj_set_string(&jgen, "mac", mac_str);
+    /* } */
+    (void)json_gen_end_object(&jgen);
 
-        cJSON_AddNumberToObject(root, FIELD_SYS_HEAP_FREE,  
-            esp_get_free_heap_size());
-        cJSON_AddNumberToObject(root, FIELD_SYS_HEAP_MIN,    
-            esp_get_minimum_free_heap_size());
-        cJSON_AddNumberToObject(root, FIELD_SYS_LARG_BLOCK,  
-            heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
-        cJSON_AddNumberToObject(root, FIELD_SYS_UPTIME,
-            esp_timer_get_time() / 1000000ULL);
-        cJSON_AddNumberToObject(root, FIELD_SYS_CORES,
-            chip.cores);
-        cJSON_AddNumberToObject(root, FIELD_SYS_CHIP_REV,
-            chip.revision);
-        cJSON_AddNumberToObject(root, FIELD_SYS_FLASH_SIZE,
-            flash_size / (1024U * 1024U));
-        cJSON_AddNumberToObject(root, FIELD_SYS_CPU_FREQ,
-            EIF_CPU_FREQ_MHZ);
-        cJSON_AddStringToObject(root, FIELD_SYS_CHIP_MODEL,
-            CONFIG_IDF_TARGET);
-        cJSON_AddNumberToObject(root, FIELD_SYS_RESET_REASON,
-            (double)esp_rom_get_reset_reason(0));
-
-        int res = snprintf(mac_str, sizeof(mac_str),
-            "%02X:%02X:%02X:%02X:%02X:%02X",
-            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-        EIF_IF_OK_CHECK_CONDITION(ret,
-            (res < 0) || (res >= (int)sizeof(mac_str)),
-            ESP_ERR_INVALID_SIZE, SERVER_ERR_STR_FORMAT);
-    }
-
-    if (ret == ESP_OK) {
-        cJSON_AddStringToObject(root, FIELD_SYS_MAC, mac_str);
-
-        response_str = cJSON_PrintUnformatted(root);
-        EIF_IF_OK_CHECK_CONDITION(ret, response_str == NULL,
-            ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
-    }
+    int json_len = json_gen_str_end(&jgen);
+    EIF_IF_OK_CHECK_CONDITION(ret, json_len <= 0,
+        ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
 
     if (ret == ESP_OK) {
         httpd_resp_set_type(req, RESP_TYPE_JSON);
-        httpd_resp_sendstr(req, response_str);
+        httpd_resp_sendstr(req, g_server_json_buffer);
+    } else {
+        httpd_resp_sendstatus(req, HTTPD_500);
     }
 
     /* Cleanup */
-    if (ret != ESP_OK) {
-        httpd_resp_sendstatus(req, HTTPD_500);
-    }
-    if (root != NULL) {
-        cJSON_Delete(root);
-    } else if (features != NULL) {
-        cJSON_Delete(features);
-    } else { ; }
-    if (response_str != NULL) {
-        cJSON_free(response_str);
-    }
     return ret;
 }
 
@@ -796,14 +819,15 @@ static esp_err_t h_sys_reboot_do(httpd_req_t * const req) {
         esp_err_t ret = ESP_OK;
         char tx_buffer[HTTP_LOGS_CHUNK_SIZE] = {0};
         
-        (void)httpd_resp_set_type(req, "text/plain; charset=utf-8");
+        (void)httpd_resp_set_type(req, RESP_TYPE_TXT);
 
         size_t bytes_read = eif_core_log_pop_chunk(tx_buffer, HTTP_LOGS_CHUNK_SIZE);
 
         while (bytes_read > 0U) {
-            EIF_IF_OK_CHECK_ESP_ERR_T(ret, httpd_resp_send_chunk(
-                req, tx_buffer, bytes_read
-            ), "Failed to send log chunk of %u bytes", HTTP_LOGS_CHUNK_SIZE);
+            EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+                httpd_resp_send_chunk(req, tx_buffer, bytes_read),
+                "Failed to send log chunk of %u bytes (max: %u)",
+                bytes_read, HTTP_LOGS_CHUNK_SIZE);
                 
             if (ret != ESP_OK) {
                 break;
@@ -827,9 +851,8 @@ static esp_err_t h_sys_reboot_do(httpd_req_t * const req) {
 static esp_err_t h_ota_info_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
-    cJSON * root = NULL;
     char sha_str[65] = {0};
-    char * response_str = NULL;
+    json_gen_str_t jgen = {0};
     const char * status_str = "unknown";
     esp_ota_img_states_t ota_state = ESP_OTA_IMG_NEW;
 
@@ -840,7 +863,6 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
     #endif
     const esp_partition_t *running = esp_ota_get_running_partition();
 
-
     (void)set_cache(req, false);
 
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -849,66 +871,71 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
         esp_ota_get_app_elf_sha256(sha_str, sizeof(sha_str));
     #endif
 
-    root = cJSON_CreateObject();
-    EIF_IF_OK_CHECK_CONDITION(ret, root == NULL, ESP_ERR_NO_MEM,
-        SERVER_ERR_JSON_NO_MEM);
-
-    if (ret == ESP_OK) {
-        if (esp_ota_get_state_partition(running, &ota_state) == ESP_OK) {
-            switch (ota_state) {
-                case ESP_OTA_IMG_NEW:
-                    status_str = "new";
-                    break;
-                case ESP_OTA_IMG_PENDING_VERIFY:
-                    status_str = "pending_verify";
-                    break;
-                case ESP_OTA_IMG_VALID:
-                    status_str = "valid";
-                    break;
-                case ESP_OTA_IMG_INVALID:
-                    status_str = "invalid";
-                    break;
-                case ESP_OTA_IMG_ABORTED:
-                    status_str = "aborted";
-                    break;
-                default:
-                    status_str = "undefined";
-                    break;
-            }
-        } else {
-            status_str = "factory";
+    if (esp_ota_get_state_partition(running, &ota_state) == ESP_OK) {
+        switch (ota_state) {
+            case ESP_OTA_IMG_NEW:
+                status_str = "new";
+                break;
+            case ESP_OTA_IMG_PENDING_VERIFY:
+                status_str = "pending_verify";
+                break;
+            case ESP_OTA_IMG_VALID:
+                status_str = "valid";
+                break;
+            case ESP_OTA_IMG_INVALID:
+                status_str = "invalid";
+                break;
+            case ESP_OTA_IMG_ABORTED:
+                status_str = "aborted";
+                break;
+            default:
+                status_str = "undefined";
+                break;
         }
-
-        cJSON_AddStringToObject(root, FIELD_OTA_PROJECT,    app->project_name);
-        cJSON_AddStringToObject(root, FIELD_OTA_VER,        app->version);
-        cJSON_AddStringToObject(root, FIELD_OTA_BUILD_ID,   sha_str);
-        cJSON_AddStringToObject(root, FIELD_OTA_BUILD_DATE, app->date);
-        cJSON_AddStringToObject(root, FIELD_OTA_BUILD_TIME, app->time);
-        cJSON_AddStringToObject(root, FIELD_OTA_IDF_VER,    app->idf_ver);
-        cJSON_AddStringToObject(root, FIELD_OTA_GCC_VER,    __VERSION__);
-        cJSON_AddStringToObject(root, FIELD_OTA_TARGET,     CONFIG_IDF_TARGET);
-        cJSON_AddStringToObject(root, FIELD_OTA_PARTITION,  running->label);
-        cJSON_AddStringToObject(root, FIELD_OTA_STATUS,     status_str);
-
-        response_str = cJSON_PrintUnformatted(root);
-        EIF_IF_OK_CHECK_CONDITION(ret, response_str == NULL, ESP_ERR_NO_MEM,
-            SERVER_ERR_JSON_SER);
+    } else {
+        status_str = "factory";
     }
+
+    json_gen_str_start(&jgen,
+        g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
+
+    /* { */
+    (void)json_gen_start_object(&jgen);
+    /*   "project": "my_iot_project", */
+    (void)json_gen_obj_set_string(&jgen, "project", app->project_name);
+    /*   "version": "1.0.0", */
+    (void)json_gen_obj_set_string(&jgen, "version", app->version);
+    /*   "build_id": "a1b2c3d4e5f6...", */
+    (void)json_gen_obj_set_string(&jgen, "build_id", sha_str);
+    /*   "build_date": "Jan 1 2026", */
+    (void)json_gen_obj_set_string(&jgen, "build_date", app->date);
+    /*   "build_time": "12:00:00", */
+    (void)json_gen_obj_set_string(&jgen, "build_time", app->time);
+    /*   "idf_version": "v4.4.6", */
+    (void)json_gen_obj_set_string(&jgen, "idf_version", app->idf_ver);
+    /*   "compiler": "gcc 8.4.0", */
+    (void)json_gen_obj_set_string(&jgen, "compiler", __VERSION__);
+    /*   "target": "esp32", */
+    (void)json_gen_obj_set_string(&jgen, "target", CONFIG_IDF_TARGET);
+    /*   "partition": "factory", */
+    (void)json_gen_obj_set_string(&jgen, "partition", running->label);
+    /*   "ota_status": "valid" */
+    (void)json_gen_obj_set_string(&jgen, "ota_status", status_str);
+    /* } */
+    (void)json_gen_end_object(&jgen);
+
+    int json_len = json_gen_str_end(&jgen);
+    EIF_IF_OK_CHECK_CONDITION(ret, json_len <= 0,
+        ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
+    
     if (ret == ESP_OK) {
         httpd_resp_set_type(req, RESP_TYPE_JSON);
-        httpd_resp_sendstr(req, response_str);
+        httpd_resp_sendstr(req, g_server_json_buffer);
+    } else {
+        httpd_resp_sendstatus(req, HTTPD_500);
     }
 
     /* Cleanup */
-    if (ret != ESP_OK) {
-        httpd_resp_sendstatus(req, HTTPD_500);
-    }
-    if (response_str != NULL) {
-        cJSON_free(response_str);
-    }
-    if (root != NULL) {
-        cJSON_Delete(root);
-    }
     return ret;
 }
 
@@ -1049,16 +1076,16 @@ static esp_err_t h_ota_action_do(httpd_req_t * const req) {
     static esp_err_t h_apass_update_do(httpd_req_t * const req) {
         esp_err_t ret = ESP_OK;
 
-        cJSON * root = NULL;
+        json_parser_ctx_t parser_ctx = {0};
         char pass[EIF_BASIC_AUTH_PASS_MAX_LEN] = {0};
 
         EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-            req_http_parse_json(req, &root), SERVER_ERR_JSON_PARSE);
+            req_http_parse_json(req, &parser_ctx), SERVER_ERR_JSON_PARSE);
 
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, req_json_get_field(
-            root, pass, FIELD_APASS_PASS,
+            &parser_ctx, pass, "password",
             EIF_BASIC_AUTH_PASS_MIN_LEN, EIF_BASIC_AUTH_PASS_MAX_LEN
-        ), SERVER_ERR_NOT_FOUND_FIELD, FIELD_APASS_PASS);
+        ), SERVER_ERR_NOT_FOUND_FIELD, "password");
 
         if (ret != ESP_OK) {
             httpd_resp_sendstatus(req, HTTPD_400);
@@ -1067,18 +1094,14 @@ static esp_err_t h_ota_action_do(httpd_req_t * const req) {
                 eif_nvs_basic_auth_line_save((uint8_t *)pass),
                 SERVER_ERR_NVS_SAVE_APASS);
 
-            if (ret != ESP_OK) {
+            if (ret == ESP_OK) {
+                httpd_resp_sendstatus(req, HTTPD_204);
+            } else {
                 httpd_resp_sendstatus(req, HTTPD_500);
             }
         }
 
         /* Cleanup */
-        if (ret == ESP_OK) {
-            httpd_resp_sendstatus(req, HTTPD_204);
-        }
-        if (root != NULL) {
-            cJSON_Delete(root);
-        }
         return ret;
     }
 #endif
@@ -1285,15 +1308,20 @@ esp_err_t eif_server_launch(void) {
         #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
             /* ------------------------- Files ------------------------ */
             #ifdef CONFIG_EIF_ENABLE_WEB_FAVICON
-                {"/favicon.ico",          HTTP_GET, sendf_logo_png_gz,     NULL},
+                {"/favicon.ico",       HTTP_GET, sendf_logo_png_gz,    NULL},
+            #endif 
+            #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+                {"/_/files/logs.html", HTTP_GET, sendf_logs_html_gz,   NULL},
             #endif
-            {"/_/files/license.txt",  HTTP_GET, sendf_LICENSE_gz,      NULL},
-            {"/_/files/index.html",   HTTP_GET, sendf_index_html_gz,   NULL},
-            {"/_/files/network.html", HTTP_GET, sendf_network_html_gz, NULL},
-            {"/_/files/system.html",  HTTP_GET, sendf_system_html_gz,  NULL},
-            {"/_/files/style.css",    HTTP_GET, sendf_style_css_gz,    NULL},
-            {"/_/files/json2.js",     HTTP_GET, sendf_json2_js_gz,     NULL},
             {"/_/files/api.js",       HTTP_GET, sendf_api_js_gz,       NULL},
+            {"/_/files/json2.js",     HTTP_GET, sendf_json2_js_gz,     NULL},
+
+            {"/_/files/style.css",    HTTP_GET, sendf_style_css_gz,    NULL},
+            {"/_/files/license.txt",  HTTP_GET, sendf_LICENSE_gz,      NULL},
+            
+            {"/_/files/index.html",   HTTP_GET, sendf_index_html_gz,   NULL},
+            {"/_/files/system.html",  HTTP_GET, sendf_system_html_gz,  NULL},
+            {"/_/files/network.html", HTTP_GET, sendf_network_html_gz, NULL},
         #endif
 
         /* ----------------------- WiFi API ---------------------- */
