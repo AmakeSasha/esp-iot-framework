@@ -13,7 +13,7 @@ branch_protection:
         - prevent_creation
 
     - target: tag
-      matches: ["**", "!v*", "!esp_iot_framework_*"]
+      matches: ["**", "!v*", "!esp_iot_framework_**"]
       message: "Manual tag creation is restricted. Use version tags or component tags (e.g., v1.0.0 or esp_iot_framework_core/v1.0.0)."
       rules:
         - prevent_creation
