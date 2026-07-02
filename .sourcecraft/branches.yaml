@@ -7,13 +7,13 @@ branch_protection:
         - prevent_deletion
 
     - target: branch
-      matches: ["**", "!firmware/**", "!feature/**", "!bugfix/**", "!hotfix/**", "!chore/**", "!docs/**", "!refactor/**", "!release/**"]
+      matches: ["**", "!feature/**", "!bugfix/**", "!hotfix/**", "!chore/**", "!docs/**", "!refactor/**", "!release/**"]
       message: "Invalid branch name. Allowed prefixes: feature/, bugfix/, hotfix/, chore/, docs/, refactor/, release/"
       rules:
         - prevent_creation
 
     - target: tag
-      matches: ["**", "!v*"]
-      message: "Manual tag creation is restricted. Use version tags only, starting with 'v' (e.g., v1.0.0)."
+      matches: ["**", "!v*", "!esp_iot_framework_*"]
+      message: "Manual tag creation is restricted. Use version tags or component tags (e.g., v1.0.0 or esp_iot_framework_core/v1.0.0)."
       rules:
         - prevent_creation
