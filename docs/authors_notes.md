@@ -33,6 +33,9 @@
  * [CORE, src/system.c, Pins]
       When a debug board with an RGB LED appears, implement its support
 
+ * [DEVICE, web_src/network.html]
+      Add an INFO section with general network information
+
  * [Examples, stepper_control]
       Add support for 'steps_to_move' in the REST API and web interface
 -->

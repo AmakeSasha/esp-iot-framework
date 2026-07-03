@@ -142,10 +142,10 @@
       isPowered = !isPowered;
 
       if (isPowered) {
-        sendHttpRequest("/api/stepper/on");
+        sendHttpRequest("/api/stepper/power/on.do");
       } else {
-        sendHttpRequest("/api/stepper/stop");
-        sendHttpRequest("/api/stepper/off");
+        sendHttpRequest("/api/stepper/dir/stop.do");
+        sendHttpRequest("/api/stepper/power/off.do");
       }
 
       pwrBtn.innerHTML = isPowered ? "POWER: ON" : "POWER: OFF";
@@ -160,7 +160,7 @@
 
     function handleMove(dir) {
       if (!isPowered) return;
-      sendHttpRequest("/api/stepper/" + dir);
+      sendHttpRequest("/api/stepper/dir/" + dir + ".do");
 
       var stepCount = document.getElementById("stepCount");
 
@@ -170,7 +170,7 @@
 
     function handleStop() {
       if (!isPowered) return;
-      sendHttpRequest("/api/stepper/stop");
+      sendHttpRequest("/api/stepper/dir/stop.do");
 
       var stepCount = document.getElementById("stepCount");
 
@@ -179,7 +179,7 @@
     }
 
     function checkStepperStatus() {
-      sendHttpRequest("/api/stepper/status", function(xmlhttp) {
+      sendHttpRequest("/api/stepper/status.json", function(xmlhttp) {
         if (xmlhttp.status === 200) {
           try {
             var data = JSON.parse(xmlhttp.responseText);
