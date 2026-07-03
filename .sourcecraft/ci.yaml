@@ -2,7 +2,7 @@ on:
   push:
     - workflows: [test_build_v4_4, test_build_v5_5]
       filter:
-        tags: ["v*"]
+        tags: ["**"]
 
 workflows:
   test_build_v4_4:
