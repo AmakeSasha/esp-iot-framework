@@ -22,7 +22,7 @@
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
 <meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
-<title>esp_iot_framework: Device Boot</title>
+<title>esp_iot_framework: LED pin</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -65,7 +65,7 @@
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('group__device__c.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('group__core__led__pins.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -73,56 +73,56 @@ $(document).ready(function(){initNavTree('group__device__c.html',''); initResiza
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Device Boot<div class="ingroups"><a class="el" href="group__device__root.html">Node: Device</a> &raquo; <a class="el" href="group__device__group.html">Device</a></div></div>  </div>
+<div class="title">LED pin<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__group.html">Core</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Device startup and runtime environment initialization.  
+<p>Functions for working with the device pin assigned to an LED.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga3d81873b423355576951a5969873b354"><td class="memItemLeft" align="right" valign="top">esp_err_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__device__c.html#ga3d81873b423355576951a5969873b354">eif_device_initialize</a> (void)</td></tr>
-<tr class="memdesc:ga3d81873b423355576951a5969873b354"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures system-wide services and prepares the device networking environment.  <a href="group__device__c.html#ga3d81873b423355576951a5969873b354">More...</a><br /></td></tr>
-<tr class="separator:ga3d81873b423355576951a5969873b354"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4b0114672e7efc1a3e8c88116c9aed92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">eif_pin_led_set_custom</a> (uint32_t gpio_num)</td></tr>
+<tr class="memdesc:ga4b0114672e7efc1a3e8c88116c9aed92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a custom GPIO pin for the LED at runtime.  <a href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">More...</a><br /></td></tr>
+<tr class="separator:ga4b0114672e7efc1a3e8c88116c9aed92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>This module initializes the device hardware and prepares the runtime environment for the application layer. </p>
+<p>This module provides functions for the LED pin settings.</p>
+<p>To change the LED type globally (RGB vs Standard), configure the corresponding option in your project's <code>menuconfig</code> (Kconfig, <code>EIF_SYS_LED_IS_RGB</code>). To change the pin number, use the <code><a class="el" href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92" title="Set a custom GPIO pin for the LED at runtime.">eif_pin_led_set_custom()</a></code> function. </p>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga3d81873b423355576951a5969873b354"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3d81873b423355576951a5969873b354">&#9670;&nbsp;</a></span>eif_device_initialize()</h2>
+<a id="ga4b0114672e7efc1a3e8c88116c9aed92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4b0114672e7efc1a3e8c88116c9aed92">&#9670;&nbsp;</a></span>eif_pin_led_set_custom()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">esp_err_t eif_device_initialize </td>
+          <td class="memname">void eif_pin_led_set_custom </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>gpio_num</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets up the base runtime environment, applies initial device configurations, and binds essential system handlers required to start the device.</p>
-<dl class="section note"><dt>Note</dt><dd>This function should be called immediately after <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code>.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd><ul>
-<li><code>ESP_OK</code>: Device layer initialization was successful.</li>
-<li><code>ESP_ERR_INVALID_ARG</code>: Internal error. One of the mandatory arguments is passed as a <code>NULL</code> pointer.</li>
-</ul>
-</dd></dl>
-<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_device.h&gt;</span></div>
+<p>Overrides the automatically detected pin number to the transmitted one. This method does not block the thread and takes effect immediately upon core initialization.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpio_num</td><td>Custom GPIO pin number to be assigned for the LED</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This function must be called before <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code>.</dd></dl>
+<p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
+<div class="line">    <a class="code" href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">eif_pin_led_set_custom</a>(4);</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
-<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__device__c.html#ga3d81873b423355576951a5969873b354">eif_device_initialize</a>());</div>
-<div class="line"> </div>
+<div class="line">    </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
-<div class="ttc" id="agroup__device__c_html_ga3d81873b423355576951a5969873b354"><div class="ttname"><a href="group__device__c.html#ga3d81873b423355576951a5969873b354">eif_device_initialize</a></div><div class="ttdeci">esp_err_t eif_device_initialize(void)</div><div class="ttdoc">Configures system-wide services and prepares the device networking environment.</div></div>
+<div class="ttc" id="agroup__core__led__pins_html_ga4b0114672e7efc1a3e8c88116c9aed92"><div class="ttname"><a href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">eif_pin_led_set_custom</a></div><div class="ttdeci">void eif_pin_led_set_custom(uint32_t gpio_num)</div><div class="ttdoc">Set a custom GPIO pin for the LED at runtime.</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

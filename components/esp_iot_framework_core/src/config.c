@@ -52,12 +52,14 @@ static eif_core_t cfg = {0};
 /* ===================== */
 /*    Framework Entry    */
 /* ===================== */
-
 esp_err_t eif_core_initialize(void) {
     esp_err_t ret = ESP_OK;
 
     EIF_LOG_D(MSG_CALL_SETTER, __func__);
 
+    #if (SERVER_LED_PIN >= 0)
+        eif_pin_led_init();
+    #endif
     #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
         eif_core_log_init();
     #endif

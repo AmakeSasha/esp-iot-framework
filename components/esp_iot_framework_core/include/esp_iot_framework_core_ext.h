@@ -215,6 +215,85 @@ static inline size_t eif_strnlen(const char * const str, size_t max_allowed) {
 
 
 /**
+ * @defgroup core_ext_led_pins LED pin
+ * @brief Functions for working with the device pin assigned to an LED.
+ *
+ * @{
+ *
+ * This module provides convenient, non-blocking functions for controlling a
+ * pin assigned to an LED on the debug board (DevKit and others). The module 
+ * automatically determines the pin number and LED type relative to the target
+ * chip by default.
+ * 
+ * To change the LED type globally (RGB vs Standard), configure the
+ * corresponding option in your project's `menuconfig` (Kconfig, 
+ * `EIF_SYS_LED_IS_RGB`). To change the pin number, use the
+ * `eif_pin_led_set_custom()` function.
+ */
+
+/**
+ * @brief Change LED pin state immediately.
+ *
+ * Synchronously changes the state of the pin, thereby turning the LED on or
+ * off according to the provided flag.
+ *
+ * @param is_on Flag responsible for the LED state (true to turn ON, false to
+ *              turn OFF)
+ *
+ * @note This function must be called after `eif_core_initialize()`.
+ * 
+ * Example of use:
+ * @code{c}
+ * #include <esp_iot_framework_core_ext.h>
+ *
+ * void app_main(void) {
+ *     ESP_ERROR_CHECK(eif_core_initialize());
+ *     bool flag = true;
+ *     
+ *     while (1) {
+ *         eif_pin_led_set_state(flag);
+ *         flag = !flag;
+ *         vTaskDelay(pdMS_TO_TICKS(1000));
+ *     }
+ * }
+ * @endcode
+ */
+void eif_pin_led_set_state(bool is_on);
+
+/**
+ * @brief Schedule an automatic LED turn-on.
+ *
+ * Starts a background hardware timer that will automatically turn the LED ON 
+ * after the specified duration. This method does not block the thread while
+ * waiting for the timer, allowing you to move on to the next steps immediately.
+ *
+ * @param duration_ms Delay before the LED turns ON (in milliseconds)
+ *
+ * @note This function must be called after `eif_core_initialize()`. Calling 
+ *       it again resets the timer, restarting the delay countdown.
+ * 
+ * Example of use:
+ * @code{c}
+ * #include <esp_iot_framework_core_ext.h>
+ * #include <esp_http_server.h>
+ *
+ * esp_err_t http_server_activity_handler(httpd_req_t *req) {
+ *     eif_pin_led_set_state(false); // Turn off to show activity
+ *     
+ *     httpd_resp_sendstr(req, "OK");
+ *     
+ *     eif_pin_led_delay_on(50); // Schedule turn-on in 50 ms
+ *     
+ *     return ESP_OK;
+ * }
+ * @endcode
+ */
+void eif_pin_led_delay_on(uint32_t duration_ms);
+/** @} */
+
+
+
+/**
  * @defgroup core_ext_config Configuration
  * @brief Functions to retrieve current system configuration.
  *

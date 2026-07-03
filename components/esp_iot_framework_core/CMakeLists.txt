@@ -19,6 +19,7 @@
 # limitations under the License.
 
 set(requires_components
+    driver
     esp_wifi
     nvs_flash
     esp_timer

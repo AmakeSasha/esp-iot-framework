@@ -93,6 +93,7 @@ void eif_wifi_handler_stop_set(bool stop);
 #endif
 
 /* tls_maneger.c */
+
 #ifdef CONFIG_EIF_ENABLE_TLS
     esp_err_t eif_tls_create_creds_and_nvs_save(void);
 #endif
@@ -104,6 +105,33 @@ esp_err_t eif_wifi_deinitialize(void);
 
 /* system.c */
 
+#if defined(CONFIG_IDF_TARGET_ESP32)
+    #define EIF_SYS_LED_PIN    (2)
+    #define EIF_SYS_LED_IS_RGB (0)
+#elif defined(CONFIG_IDF_TARGET_ESP32S2)
+    #define EIF_SYS_LED_PIN    (18)
+    #define EIF_SYS_LED_IS_RGB (1)
+#elif defined(CONFIG_IDF_TARGET_ESP32S3)
+    #define EIF_SYS_LED_PIN    (48)
+    #define EIF_SYS_LED_IS_RGB (1)
+#elif defined(CONFIG_IDF_TARGET_ESP32C2)
+    #define EIF_SYS_LED_PIN    (8)
+    #define EIF_SYS_LED_IS_RGB (0)
+#elif defined(CONFIG_IDF_TARGET_ESP32C3)
+    #define EIF_SYS_LED_PIN    (8)
+    #define EIF_SYS_LED_IS_RGB (1)
+#elif defined(CONFIG_IDF_TARGET_ESP32C6)
+    #define EIF_SYS_LED_PIN    (8)
+    #define EIF_SYS_LED_IS_RGB (1)
+#else
+    #define EIF_SYS_LED_PIN    (-1)
+    #define EIF_SYS_LED_IS_RGB (0)
+    #warning "EIF: Current target chip is not officially supported. LED indicator disabled."
+#endif
+
+#if (EIF_SYS_LED_PIN >= 0)
+    void eif_pin_led_init(void);
+#endif
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
     void eif_core_log_init(void);
 #endif

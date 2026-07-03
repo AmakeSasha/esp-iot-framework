@@ -1,9 +1,7 @@
 <!-- HTML header for doxygen 1.9.1-->
 <!--
   SPDX-License-Identifier: Apache-2.0
-  Project: esp_iot_framework
-  Folder: ./docs/doxygen
-  File: header.html
+  Project: esp-iot-framework
   Copyright 2026 AmakeSasha
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -181,7 +179,7 @@ Wi-Fi Management</h3>
 <div class="line">}</div>
 </div><!-- fragment --><p> <b>Fields</b>:</p><ul>
 <li><code>current_profile_index</code>: Currently active profile (<code>0</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>)</li>
-<li><code>used_tls</code> - <code>true</code> if the Kconfig option <code>CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</code> is enabled</li>
+<li><code>used_tls</code>: Whether TLS is enabled on the server or not</li>
 <li><code>rssi_now_profile</code>: RSSI of current connection in dBm</li>
 <li><code>profiles</code>: Array of Wi-Fi profiles<ul>
 <li><code>ssid</code>: Network SSID (empty if not configured)</li>

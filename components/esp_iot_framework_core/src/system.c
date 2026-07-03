@@ -24,9 +24,13 @@
 #include <string.h>
 #include <esp_log.h>
 #include <inttypes.h>
+#include <driver/gpio.h>
 #include <esp_ota_ops.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#if (EIF_SYS_LED_PIN >= 0)
+    #include <esp_timer.h>
+#endif
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
     #include <freertos/ringbuf.h>
 #endif
@@ -68,7 +72,67 @@
     #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be twice as large as EIF_REBOOT_TASK_STACK_SIZE!"
 #endif
 
+/* Pins */ 
+
+#if (EIF_SYS_LED_PIN >= 0)
+    static uint32_t current_led_pin = EIF_SYS_LED_PIN;
+    static esp_timer_handle_t led_blink_timer = NULL;
+
+    static void led_blink_timer_callback(void* arg) {
+        eif_pin_led_set_state(true);
+    }
+
+    void eif_pin_led_set_custom(uint32_t gpio_num) {
+        current_led_pin = gpio_num;
+    }
+
+    void eif_pin_led_init(void) {
+        #if (EIF_SYS_LED_IS_RGB == 0)
+            gpio_config_t io_conf = {
+                .pin_bit_mask = (1ULL << current_led_pin),
+                .mode = GPIO_MODE_OUTPUT,
+                .pull_up_en = GPIO_PULLUP_DISABLE,
+                .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                .intr_type = GPIO_INTR_DISABLE
+            };
+            (void)gpio_config(&io_conf);
+            (void)gpio_set_level((gpio_num_t)current_led_pin, 0U);
+        #else
+            ESP_LOGI(TAG, "RGB LED detected on GPIO %d (Init deferred)", current_led_pin);
+        #endif
+
+        esp_timer_create_args_t timer_args = {
+            .callback = &led_blink_timer_callback,
+            .name = "led_activity_timer"
+        };
+        (void)esp_timer_create(&timer_args, &led_blink_timer);
+    }
+
+    void eif_pin_led_delay_on(uint32_t duration_ms) {
+        (void)esp_timer_stop(led_blink_timer);
+        
+        eif_pin_led_set_state(false);
+        
+        (void)esp_timer_start_once(led_blink_timer, (uint64_t)duration_ms * 1000ULL);
+    }
+
+    void eif_pin_led_set_state(bool is_on) {
+        #if (EIF_SYS_LED_IS_RGB == 0)
+            (void)gpio_set_level((gpio_num_t)current_led_pin, (uint32_t)is_on);
+        #else
+            if (is_on) {
+                ESP_LOGI(TAG, "RGB LED Status: SERVER LIVE (Blue color simulation)");
+            } else {
+                ESP_LOGI(TAG, "RGB LED Status: SERVER OFFLINE");
+            }
+        #endif
+    }
+#endif
+
+
+
 /* Logging */
+
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
     static RingbufHandle_t core_log_buf = NULL;
 

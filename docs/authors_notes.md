@@ -1,6 +1,6 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
-  Project: esp_iot_framework
+  Project: esp-iot-framework
   Folder: ./docs
   File: authors_notes.md
 
@@ -17,6 +17,24 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+-->
+
+<!--
+              FOR THE FUTURE:
+ * [Components]
+      Create a 'HUB' node
+
+ * [Tools]
+      Create a script to check the validity of license headers in files
+
+ * [CORE, include/esp_iot_framework_core_ext.c, Task Management]
+      Create proper documentation
+
+ * [CORE, src/system.c, Pins]
+      When a debug board with an RGB LED appears, implement its support
+
+ * [Examples, stepper_control]
+      Add support for 'steps_to_move' in the REST API and web interface
 -->
 
 # Author's notes

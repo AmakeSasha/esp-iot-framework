@@ -124,6 +124,10 @@ esp_err_t eif_core_initialize(void);
  *   configured count.
  * - Manages TLS credentials and authentication data (if enabled).
  *
+ * @warning When the device is started for the first time, this function will
+ *          reboot the device, before that, TLS credentials will be created.
+ *          This is done to reduce the RAM consumption of the device.
+ * 
  * @note This function must be called after `eif_core_initialize()` but before
  *       `eif_wifi_initialize()`. This function is
  *       **mandatory** for the framework to work. If you use
@@ -154,6 +158,48 @@ esp_err_t eif_core_initialize(void);
  * @endcode
  */
 esp_err_t eif_nvs_initialize(void);
+/** @} */
+
+
+
+/**
+ * @defgroup core_led_pins LED pin
+ * @brief Functions for working with the device pin assigned to an LED.
+ *
+ * @{
+ *
+ * This module provides functions for the LED pin settings.
+ * 
+ * To change the LED type globally (RGB vs Standard), configure the
+ * corresponding option in your project's `menuconfig` (Kconfig, 
+ * `EIF_SYS_LED_IS_RGB`). To change the pin number, use the
+ * `eif_pin_led_set_custom()` function.
+ */
+
+/**
+ * @brief Set a custom GPIO pin for the LED at runtime.
+ *
+ * Overrides the automatically detected pin number to the transmitted one. This
+ * method does not block the thread and takes effect immediately upon core
+ * initialization.
+ *
+ * @param gpio_num Custom GPIO pin number to be assigned for the LED
+ *
+ * @note This function must be called before `eif_core_initialize()`.
+ * 
+ * Example of use:
+ * @code{c}
+ * #include <esp_iot_framework_core.h>
+ *
+ * void app_main(void) {
+ *     eif_pin_led_set_custom(4);
+ *     ESP_ERROR_CHECK(eif_core_initialize());
+ *     
+ *     // Further code...
+ * }
+ * @endcode
+ */
+void eif_pin_led_set_custom(uint32_t gpio_num);
 /** @} */
 
 

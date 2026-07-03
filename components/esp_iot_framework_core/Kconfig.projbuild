@@ -113,12 +113,20 @@ menu "ESP IoT framework Core"
         config EIF_LOG_REMOTE_BUFFER_SIZE
             int "Remote log ring buffer size (bytes)"
             depends on EIF_LOG_ENABLE_REMOTE_DEBUG
-            range 1024 16384
+            range 1024 51200
             default 4096
             help
                 Size of the internal FreeRTOS ring buffer in RAM.
                 4096 bytes can store around 50-70 log lines.
                 Higher values consume more heap memory.
+
+        config EIF_SYS_LED_IS_RGB
+            bool "Use RGB LED instead of Standard LED"
+            default y if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32C6
+            default n
+            help
+                Enable this if your specific board uses an RGB addressable LED.
+                Disable for standard/analog single-color LEDs.
     endmenu
 
     menu "Memory Monitor Settings"

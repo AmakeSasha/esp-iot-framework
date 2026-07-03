@@ -237,16 +237,22 @@ static void ip_event_handler(
                         "mDNS startup failed");
                     vTaskDelay(pdMS_TO_TICKS(100));
                 #endif
-
                 if (cfg->handler_ip_got != NULL) {
                     EIF_IF_OK_CHECK_ESP_ERR_T(ret, cfg->handler_ip_got(),
                         "Failed to execute 'IP_EVENT_STA_GOT_IP' handler");
                 }
+                #if (SERVER_LED_PIN >= 0)
+                    eif_pin_led_set_state(true);
+                #endif
+
                 break;
             }
             case IP_EVENT_STA_LOST_IP:
                 EIF_LOG_W("IP address lost, taking services offline...");
 
+                #if (SERVER_LED_PIN >= 0)
+                    eif_pin_led_set_state(false);
+                #endif
                 #ifdef CONFIG_EIF_ENABLE_MDNS
                     mdns_deinitialize();
                     vTaskDelay(pdMS_TO_TICKS(100));

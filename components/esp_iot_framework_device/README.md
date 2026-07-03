@@ -1,6 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
-  Project: esp_iot_framework
+  Project: esp-iot-framework
+  Library: esp_iot_framework_device
   Folder: ./components/esp_iot_framework_device
   File: README.md
  

@@ -1206,6 +1206,10 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
     uint32_t start_time = esp_log_timestamp();
 
+    #if (EIF_SYS_LED_PIN >= 0)
+        eif_pin_led_set_state(false);
+    #endif
+
     EIF_LOG_I("%s %s HTTP/1.1", method_to_str(req->method), req->uri);
 
     const httpd_uri_t* orig = (const httpd_uri_t*)req->user_ctx;
@@ -1227,6 +1231,10 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     }
 
     (void)start_time;
+    #if (EIF_SYS_LED_PIN >= 0)
+        eif_pin_led_delay_on(50);
+    #endif
+    
     /* Cleanup */
     return ret;
 }

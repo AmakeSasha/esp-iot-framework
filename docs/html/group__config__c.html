@@ -1,9 +1,7 @@
 <!-- HTML header for doxygen 1.9.1-->
 <!--
   SPDX-License-Identifier: Apache-2.0
-  Project: esp_iot_framework
-  Folder: ./docs/doxygen
-  File: header.html
+  Project: esp-iot-framework
   Copyright 2026 AmakeSasha
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -149,6 +147,7 @@ Functions</h2></td></tr>
 <li>Prepares or loads <a class="el" href="group__eif__wifi__config.html#wifi_profiles_desc">Wi-Fi profiles</a> based on the configured count.</li>
 <li>Manages TLS credentials and authentication data (if enabled).</li>
 </ul>
+<dl class="section warning"><dt>Warning</dt><dd>When the device is started for the first time, this function will reboot the device, before that, TLS credentials will be created. This is done to reduce the RAM consumption of the device.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function must be called after <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code> but before <code><a class="el" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240" title="Launch the Wi-Fi subsystem and automated network services.">eif_wifi_initialize()</a></code>. This function is <b>mandatory</b> for the framework to work. If you use <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, it must be called before calling <code><a class="el" href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350" title="Initialize Non-Volatile Storage (NVS) and framework data.">eif_nvs_initialize()</a></code>. Otherwise, the default number of profiles **(2)** will be loaded into NVS.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>If the NVS partition is corrupted or has a new version, this function will automatically erase it and re-initialize, which results in the loss of previously stored data.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd><ul>

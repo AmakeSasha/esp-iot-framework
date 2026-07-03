@@ -1,6 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
-  Project: esp_iot_framework
+  Project: esp-iot-framework
+  Library: esp_iot_framework_device
   Folder: ./components/esp_iot_framework_device
   File: REST_API.md
  
@@ -130,7 +131,7 @@ Content-Length: 20
   ```
   **Fields**:
   - `current_profile_index`: Currently active profile (`0` - `X`, is set using `eif_set_wifi_profiles_count()`, otherwise it is <code>#EIF_WIFI_PROFILES_DEFAULT_COUNT</code>)
-  - `used_tls` - `true` if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled
+  - `used_tls`: Whether TLS is enabled on the server or not
   - `rssi_now_profile`: RSSI of current connection in dBm
   - `profiles`: Array of Wi-Fi profiles
     - `ssid`: Network SSID (empty if not configured)
