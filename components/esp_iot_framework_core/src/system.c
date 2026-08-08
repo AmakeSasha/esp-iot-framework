@@ -121,9 +121,9 @@
             (void)gpio_set_level((gpio_num_t)current_led_pin, (uint32_t)is_on);
         #else
             if (is_on) {
-                ESP_LOGI(TAG, "RGB LED Status: SERVER LIVE (Blue color simulation)");
+                ESP_LOGI(TAG, "RGB LED Status: On (Blue color simulation)");
             } else {
-                ESP_LOGI(TAG, "RGB LED Status: SERVER OFFLINE");
+                ESP_LOGI(TAG, "RGB LED Status: Off");
             }
         #endif
     }
