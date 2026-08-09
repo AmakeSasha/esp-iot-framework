@@ -10,37 +10,22 @@ workflows:
       - name: build_xtensa
         cubes:
           - name: esp32
-            image:
-              name: pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest
-              username: iam
-              password: ${{ secrets.REGISTRY_PAT }}
+            image: espressif/idf:v4.4
             script: ["cd examples/hello_world && idf.py set-target esp32 && idf.py build"]
           - name: esp32s3_cpp_xtensa
-            image:
-              name: pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest
-              username: iam
-              password: ${{ secrets.REGISTRY_PAT }}
+            image: espressif/idf:v4.4
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32s3 && idf.py build"]
           - name: esp32s2
-            image:
-              name: pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest
-              username: iam
-              password: ${{ secrets.REGISTRY_PAT }}
+            image: espressif/idf:v4.4
             script: ["cd examples/hello_world && idf.py set-target esp32s2 && idf.py build"]
 
       - name: build_riscv
         cubes:
           - name: esp32c3
-            image:
-              name: pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest
-              username: iam
-              password: ${{ secrets.REGISTRY_PAT }}
+            image: espressif/idf:v4.4
             script: ["cd examples/hello_world && idf.py set-target esp32c3 && idf.py build"]
           - name: esp32c3_cpp_riscv
-            image:
-              name: pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest
-              username: iam
-              password: ${{ secrets.REGISTRY_PAT }}
+            image: espressif/idf:v4.4
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32c3 && idf.py build"]
 
   test_build_v5_5:
@@ -68,20 +53,3 @@ workflows:
           - name: esp32c2
             image: espressif/idf:v5.5
             script: ["cd examples/hello_world && idf.py set-target esp32c2 && idf.py build"]
-
-  push_esp_idf_to_registry:
-    tasks:
-      - name: copy_4_4
-        cubes:
-          - name: pull_and_push
-            image:
-              name: quay.io/skopeo/stable:latest
-              entrypoint: ""
-            script:
-              - |
-                skopeo copy \
-                  --dest-creds "iam:${{ secrets.REGISTRY_PAT }}" \
-                  --override-arch amd64 \
-                  --override-os linux \
-                  docker://docker.io/espressif/idf:release-v4.4 \
-                  docker://pkg.sourcecraft.tech/cr/amakesasha/cn1njue9m0ospdam0ej8/esp-idf-v4-4:latest

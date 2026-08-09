@@ -50,6 +50,8 @@ The framework is built around three fundamental concepts, decoupling the infrast
 
 * **End Devices** - A Node augmented with your product's business logic. Smart bulbs, relays, sensors, actuators — any target scenario boils down to implementing that single, unique logic on top of the chosen Node.
 
+---
+
 <h1> Example of use</h1>
 
 ```C
