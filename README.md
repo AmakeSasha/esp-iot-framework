@@ -101,7 +101,6 @@ This framework bundles the following third-party components inside the `componen
 * [jsmn](https://github.com/espressif/idf-extra-components/tree/master/jsmn) - JSMN: minimalistic JSON parser in C (MIT license)
 * [json_generator](https://github.com/espressif/json_generator) - A simple JSON (JavasScript Object Notation) generator with flushing capability (Apache 2.0 license)
 
-
 <h1>License</h1>
 
 This project is licensed under the [`Apache 2.0 License`](./LICENSE).

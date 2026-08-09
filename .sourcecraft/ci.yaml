@@ -10,22 +10,22 @@ workflows:
       - name: build_xtensa
         cubes:
           - name: esp32
-            image: espressif/idf:v4.4
+            image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world && idf.py set-target esp32 && idf.py build"]
           - name: esp32s3_cpp_xtensa
-            image: espressif/idf:v4.4
+            image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32s3 && idf.py build"]
           - name: esp32s2
-            image: espressif/idf:v4.4
+            image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world && idf.py set-target esp32s2 && idf.py build"]
 
       - name: build_riscv
         cubes:
           - name: esp32c3
-            image: espressif/idf:v4.4
+            image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world && idf.py set-target esp32c3 && idf.py build"]
           - name: esp32c3_cpp_riscv
-            image: espressif/idf:v4.4
+            image: espressif/idf:v4.4.6
             script: ["cd examples/hello_world_cpp && idf.py set-target esp32c3 && idf.py build"]
 
   test_build_v5_5:
