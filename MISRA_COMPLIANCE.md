@@ -18,8 +18,7 @@ Hidden dependencies in macro definitions. Cppcheck incorrectly flags macro calls
 
 ## misra-c2012-8.7
 
-The `esp-iot-framework` uses a decoupled architecture where Core components export public APIs to separate Nodes and End Devices. Cppcheck 2.21+ incorrectly flags these functions due to scope limitations. Its analysis is confined to individual component units, leaving it unaware of cross-component linkage and 
-downstream business logic. 
+The `esp-iot-framework` uses a decoupled architecture where Core components export public APIs to separate Nodes and End Devices. Cppcheck 2.21+ incorrectly flags these functions due to scope limitations. Its analysis is confined to individual component units, leaving it unaware of cross-component linkage and downstream business logic. 
 
 Restricting these symbols to internal linkage (`static`) would break the framework's modular design and prevent external layers from accessing the Core engine. All public API functions are properly declared in header files, complying with the intent of the rule.
 
@@ -33,8 +32,8 @@ Removing these symbols to satisfy Rule 2.5 would strip the SDK of conditional fe
 
 ## unusedFunction
 
-The framework functions as an SDK provider for external End Devices. Cppcheck flags public API entry points as `unusedFunction` because their invocations exist outside the framework's own compilation scope. This suppression is mandatory to prevent the analyzer from false-positively demanding the removal of public symbols.
+The framework functions as an SDK provider for external `End Devices`. Cppcheck flags public API entry points as `unusedFunction` because their invocations exist outside the framework's own compilation scope. This suppression is mandatory to prevent the analyzer from false-positively demanding the removal of public symbols.
 
 ## missingIncludeSystem
 
-The framework relies on the ESP-IDF build system (CMake) and toolchain cross-compilers (Xtensa/RISC-V) to resolve system and platform-specific headers (`<stdlib.h>`, `freertos/`). Cppcheck lacks native integration with the ESP-IDF environment paths, leading to false `missingIncludeSystem` flags. Compilation verification is fully strictly handled by the GCC/Clang compiler toolchain in the CI/CD pipeline.
+The framework relies on the `ESP-IDF` build system (`CMake`) and toolchain cross-compilers (`Xtensa`/`RISC-V`) to resolve system and platform-specific headers (`<stdlib.h>`, `freertos/`). Cppcheck lacks native integration with the ESP-IDF environment paths, leading to false `missingIncludeSystem` flags. Compilation verification is fully strictly handled by the `GCC`/`Clang` compiler toolchain in the CI/CD pipeline.
