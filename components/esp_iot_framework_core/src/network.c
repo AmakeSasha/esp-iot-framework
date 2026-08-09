@@ -112,10 +112,11 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
     /* cppcheck-suppress misra-c2012-19.2 */
     wifi_config_t w_cfg;
 
+    (void)memset(&w_cfg, 0, sizeof(w_cfg));
+
     w_cfg.sta.threshold.authmode = WIFI_AUTH_OPEN;
     w_cfg.sta.pmf_cfg.capable = true;
     w_cfg.sta.pmf_cfg.required = false;
-    (void)memset(&w_cfg, 0, sizeof(w_cfg));
 
     (void)eif_set_current_wifi_profile_index(index);
 
