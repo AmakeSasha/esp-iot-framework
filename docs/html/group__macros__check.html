@@ -137,6 +137,7 @@ Macros</h2></td></tr>
 <div class="line"><span class="comment">             * identifier. The expansion evaluates strictly to a well-formed,</span></div>
 <div class="line"><span class="comment">             * immutable string literal, completely eliminating risks of side</span></div>
 <div class="line"><span class="comment">             * effects or undefined behavior. */</span> \</div>
+<div class="line">            <span class="comment">/* cppcheck-suppress misra-c2012-20.10 */</span> \</div>
 <div class="line">            EIF_LOG_E(<span class="stringliteral">&quot;PARAMETER_IS_NULL: &#39;%s&#39;&quot;</span>, #m_ptr); \</div>
 <div class="line">            (m_result) = (m_error); \</div>
 <div class="line">        } \</div>
@@ -170,7 +171,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> ret;</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__check_html_ga250094cf6087063911bd5fd75934e8b6"><div class="ttname"><a href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Executes and validates an ESP-IDF expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:420</div></div>
+<div class="ttc" id="agroup__macros__check_html_ga250094cf6087063911bd5fd75934e8b6"><div class="ttname"><a href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Executes and validates an ESP-IDF expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:421</div></div>
 <div class="ttc" id="agroup__macros__check_html_gac63c89173a7dba6810ded46e47fc1fbd"><div class="ttname"><a href="group__macros__check.html#gac63c89173a7dba6810ded46e47fc1fbd">EIF_IF_OK_CHECK_NOT_NULL</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error)</div><div class="ttdoc">Validates a pointer variable if the current execution state is successful.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:358</div></div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:88</div></div>
 </div><!-- fragment --> 
@@ -351,7 +352,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> ret;</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__check_html_ga1087f0a72e953db7b518d2a345b9c1dc"><div class="ttname"><a href="group__macros__check.html#ga1087f0a72e953db7b518d2a345b9c1dc">EIF_IF_OK_CHECK_CONDITION</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format,...)</div><div class="ttdoc">Checks a condition and sets an error status if the condition is true, only when the current status is...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:494</div></div>
+<div class="ttc" id="agroup__macros__check_html_ga1087f0a72e953db7b518d2a345b9c1dc"><div class="ttname"><a href="group__macros__check.html#ga1087f0a72e953db7b518d2a345b9c1dc">EIF_IF_OK_CHECK_CONDITION</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format,...)</div><div class="ttdoc">Checks a condition and sets an error status if the condition is true, only when the current status is...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:495</div></div>
 <div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:221</div></div>
 </div><!-- fragment --> 
 </div>
@@ -423,7 +424,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> ret;</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__check_html_ga082133ea5c0ad80225f6232707e8913b"><div class="ttname"><a href="group__macros__check.html#ga082133ea5c0ad80225f6232707e8913b">EIF_IF_OK_CHECK_MBEDTLS_ERR</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_MBEDTLS_ERR(m_ret, m_expr, func_name)</div><div class="ttdoc">Executes and validates an MbedTLS expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:558</div></div>
+<div class="ttc" id="agroup__macros__check_html_ga082133ea5c0ad80225f6232707e8913b"><div class="ttname"><a href="group__macros__check.html#ga082133ea5c0ad80225f6232707e8913b">EIF_IF_OK_CHECK_MBEDTLS_ERR</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_MBEDTLS_ERR(m_ret, m_expr, func_name)</div><div class="ttdoc">Executes and validates an MbedTLS expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:568</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

@@ -239,293 +239,250 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core_8h_source.ht
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment"></span> </div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment"> * @defgroup core_led_pins LED pin</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment"> * @brief Functions for working with the device pin assigned to an LED.</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment"> * @{</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment"> * This module provides functions for the LED pin settings.</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment"> * </span></div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment"> * To change the LED type globally (RGB vs Standard), configure the</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment"> * corresponding option in your project&#39;s `menuconfig` (Kconfig, </span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="comment"> * `EIF_SYS_LED_IS_RGB`). To change the pin number, use the</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment"> * `eif_pin_led_set_custom()` function.</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment"> * @brief Set a custom GPIO pin for the LED at runtime.</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="comment"> * Overrides the automatically detected pin number to the transmitted one. This</span></div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="comment"> * method does not block the thread and takes effect immediately upon core</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="comment"> * initialization.</span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="comment"> * @param gpio_num Custom GPIO pin number to be assigned for the LED</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment"> * @note This function must be called before `eif_core_initialize()`.</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="comment"> * </span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="comment"> * Example of use:</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="comment"> * @code{c}</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment"> * @defgroup core_handlers Event Handlers</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment"> * @brief System hooks for application business logic.</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment"> * @{</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment"> * These functions are the primary interface for linking the final product&#39;s</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment"> * business logic with system lifecycle events. They allow the application to</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment"> * execute specific tasks in direct response to internal state changes.</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="comment"> * @brief Prototype for system-level lifecycle event handlers.</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">  177</a></span>&#160;<span class="keyword">typedef</span> esp_err_t (*<a class="code" href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">eif_handler_system_t</a>)(void);<span class="comment"></span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="comment"> * @brief Register a handler for the system reboot event.</span></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment"> * This function hooks a custom handler into the system teardown process.</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="comment"> * It is the final safety net that triggers right before the system reset,</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="comment"> * allowing you to &quot;park&quot; your hardware or commit last-second logs.</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="comment"> * @warning The handler runs within a dedicated reboot task with a limited</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="comment"> *          stack size (`CONFIG_EIF_REBOOT_TASK_STACK_SIZE`). Avoid deep</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="comment"> *          recursion or allocation of a large amount of memory (stack or heap).</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="comment"> * @note Before this handler runs, the framework will automatically trigger the</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="comment"> *       &quot;IP Lost&quot; (registered via `eif_register_handler_ip_lost()`, ESP-IDF</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="comment"> *       event: `IP_EVENT_STA_LOST_IP`) event and disable the Wi-Fi stack. This</span></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="comment"> *       function must be called after `eif_core_initialize()`.</span></div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment"> *     eif_pin_led_set_custom(4);</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment"> *     </span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="comment"> *     // Further code...</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment"> * }</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment"> * @endcode</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">  202</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">eif_pin_led_set_custom</a>(uint32_t gpio_num);<span class="comment"></span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="comment">/** @} */</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment"> * @defgroup core_handlers Event Handlers</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment"> * @brief System hooks for application business logic.</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment"> * @{</span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment"> * These functions are the primary interface for linking the final product&#39;s</span></div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment"> * business logic with system lifecycle events. They allow the application to</span></div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment"> * execute specific tasks in direct response to internal state changes.</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment"> * @brief Prototype for system-level lifecycle event handlers.</span></div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">  219</a></span>&#160;<span class="keyword">typedef</span> esp_err_t (*<a class="code" href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">eif_handler_system_t</a>)(void);<span class="comment"></span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment"> * @brief Register a handler for the system reboot event.</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment"> * This function hooks a custom handler into the system teardown process.</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment"> * It is the final safety net that triggers right before the system reset,</span></div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment"> * allowing you to &quot;park&quot; your hardware or commit last-second logs.</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment"> * @warning The handler runs within a dedicated reboot task with a limited</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment"> *          stack size (`CONFIG_EIF_REBOOT_TASK_STACK_SIZE`). Avoid deep</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment"> *          recursion or allocation of a large amount of memory (stack or heap).</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment"> * @note Before this handler runs, the framework will automatically trigger the</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment"> *       &quot;IP Lost&quot; (registered via `eif_register_handler_ip_lost()`, ESP-IDF</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment"> *       event: `IP_EVENT_STA_LOST_IP`) event and disable the Wi-Fi stack. This</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment"> *       function must be called after `eif_core_initialize()`.</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="comment"> * @warning This registration is not cumulative. Any previously registered</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment"> *          handler for this event will be overwritten. Only the most recent</span></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment"> *          assignment is stored and executed by the `CORE`.</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment"> * @param handler Pointer to the function to execute. Cannot be `NULL`.</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment"> * @return</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment"> *    - `ESP_OK`:              Handler registered successfully.</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment"> *    - `ESP_ERR_INVALID_ARG`: The `handler` pointer is `NULL`.</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment"> * Example of use:</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="comment"> * @code{c}</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="comment"> * esp_err_t my_reboot_logic(void) {</span></div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="comment"> *     // Emergency state save or hardware shutdown</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment"> *     return ESP_OK;</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment"> * }</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_register_handler_system_reboot(my_reboot_logic));</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment"> *    </span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment"> *     // Further code...</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment"> * }</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment"> * @endcode</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno"><a class="line" href="group__core__handlers.html#ga885585d4d73fc9bb8b8697d6368f57db">  264</a></span>&#160;esp_err_t <a class="code" href="group__core__handlers.html#ga885585d4d73fc9bb8b8697d6368f57db">eif_register_handler_system_reboot</a>(<a class="code" href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">eif_handler_system_t</a> handler);<span class="comment"></span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="comment">/** @} */</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="comment"> * @defgroup core_consts Constants</span></div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="comment"> * @brief Default values and length limits.</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="comment"> * @{</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment"> * @warning This registration is not cumulative. Any previously registered</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment"> *          handler for this event will be overwritten. Only the most recent</span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment"> *          assignment is stored and executed by the `CORE`.</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="comment"> * @param handler Pointer to the function to execute. Cannot be `NULL`.</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment"> * @return</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="comment"> *    - `ESP_OK`:              Handler registered successfully.</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment"> *    - `ESP_ERR_INVALID_ARG`: The `handler` pointer is `NULL`.</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment"> * Example of use:</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="comment"> * @code{c}</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment"> * esp_err_t my_reboot_logic(void) {</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment"> *     // Emergency state save or hardware shutdown</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment"> *     return ESP_OK;</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment"> * }</span></div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_register_handler_system_reboot(my_reboot_logic));</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment"> *    </span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment"> *     // Further code...</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="comment"> * }</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment"> * @endcode</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="group__core__handlers.html#ga885585d4d73fc9bb8b8697d6368f57db">  222</a></span>&#160;esp_err_t <a class="code" href="group__core__handlers.html#ga885585d4d73fc9bb8b8697d6368f57db">eif_register_handler_system_reboot</a>(<a class="code" href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">eif_handler_system_t</a> handler);<span class="comment"></span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment">/** @} */</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment"> * @defgroup core_consts Constants</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment"> * @brief Default values and length limits.</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment"> * @{</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment"> * This module contains default values and limits for Wi-Fi, HTTP Basic Auth,</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment"> * and other system configuration parameters.</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="comment"> * @name Wi-Fi Configuration</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment"> * @brief Default values and validation limits for network profiles.</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment"> * @{</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment"> * @brief Maximum number of custom @ref wifi_profiles_desc &quot;Wi-Fi profiles&quot;.</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno"><a class="line" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c">  243</a></span>&#160;<span class="preprocessor">#define EIF_WIFI_PROFILES_MAX_COUNT 9U</span><span class="comment"></span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment"> * @brief Default number of custom @ref wifi_profiles_desc &quot;Wi-Fi profiles&quot;.</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno"><a class="line" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7">  247</a></span>&#160;<span class="preprocessor">#define EIF_WIFI_PROFILES_DEFAULT_COUNT 2U</span><span class="comment"></span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment">/** @} */</span><span class="comment"></span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment">/** @} */</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment"> /**</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment"> * @defgroup eif_wifi_config Wi-Fi Configuration</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment"> * @brief Pre-initialization tuning and profile management for the Wi-Fi stack.</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment"> * This module provides fine-grained control over the Wi-Fi stack behavior,</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment"> * including power management and connection recovery policies.</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment"> * @{</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment"> * @brief Configure Wi-Fi driver and power management policies.</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="comment"> * Overrides the default low-level driver settings. These parameters are</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="comment"> * applied globally and define the performance and energy profile of the device.</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="comment"> * @note This function must be called after `eif_core_initialize()` but before</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment"> *       `eif_wifi_initialize()`.</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="comment"> * @warning The function does not validate incoming data, which may result in</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="comment"> *          unexpected behavior (`UB`), memory leaks, or Wi-Fi crashes. Always</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="comment"> *          validate the data you send.</span></div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="comment"> * This module contains default values and limits for Wi-Fi, HTTP Basic Auth,</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment"> * and other system configuration parameters.</span></div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="comment"> * @name Wi-Fi Configuration</span></div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="comment"> * @brief Default values and validation limits for network profiles.</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="comment"> * @{</span></div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment"> * @brief Maximum number of custom @ref wifi_profiles_desc &quot;Wi-Fi profiles&quot;.</span></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00285"></a><span class="lineno"><a class="line" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c">  285</a></span>&#160;<span class="preprocessor">#define EIF_WIFI_PROFILES_MAX_COUNT 9U</span><span class="comment"></span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="comment"> * @brief Default number of custom @ref wifi_profiles_desc &quot;Wi-Fi profiles&quot;.</span></div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00289"></a><span class="lineno"><a class="line" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7">  289</a></span>&#160;<span class="preprocessor">#define EIF_WIFI_PROFILES_DEFAULT_COUNT 2U</span><span class="comment"></span></div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="comment">/** @} */</span><span class="comment"></span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="comment">/** @} */</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;<span class="comment"> /**</span></div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="comment"> * @defgroup eif_wifi_config Wi-Fi Configuration</span></div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="comment"> * @brief Pre-initialization tuning and profile management for the Wi-Fi stack.</span></div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="comment"> * This module provides fine-grained control over the Wi-Fi stack behavior,</span></div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="comment"> * including power management and connection recovery policies.</span></div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="comment"> * @{</span></div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="comment"> */</span><span class="comment"></span></div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="comment"> * @brief Configure Wi-Fi driver and power management policies.</span></div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;<span class="comment"> * Overrides the default low-level driver settings. These parameters are</span></div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;<span class="comment"> * applied globally and define the performance and energy profile of the device.</span></div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="comment"> * @note This function must be called after `eif_core_initialize()` but before</span></div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;<span class="comment"> *       `eif_wifi_initialize()`.</span></div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="comment"> * @warning The function does not validate incoming data, which may result in</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="comment"> *          unexpected behavior (`UB`), memory leaks, or Wi-Fi crashes. Always</span></div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;<span class="comment"> *          validate the data you send.</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="comment"> * @param wifi_driver_config Low-level ESP-IDF Wi-Fi driver configuration</span></div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="comment"> *                           Use `WIFI_INIT_CONFIG_DEFAULT()` as a base.</span></div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="comment"> * @param wifi_power_mode Wi-Fi Modem-sleep policy. Defines the trade-off between</span></div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="comment"> *                        power consumption and network responsiveness/latency.</span></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="comment"> * @param wifi_attempt_delay_ms Delay in milliseconds before switching to</span></div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;<span class="comment"> *                              the next profile after a failed connection.</span></div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="comment"> * @return</span></div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="comment"> *    - `ESP_OK`:              Settings saved successfully.</span></div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="comment"> *    - `ESP_ERR_INVALID_ARG`: The `wifi_driver_config` pointer is `NULL`.</span></div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="comment"> * Example of use:</span></div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;<span class="comment"> * @code{c}</span></div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;<span class="comment"> * #include &lt;esp_wifi.h&gt;</span></div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_nvs_initialize());</span></div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;<span class="comment"> *     // Creating default Wi-Fi settings</span></div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;<span class="comment"> *     wifi_init_config_t cfg_wifi = WIFI_INIT_CONFIG_DEFAULT();</span></div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;<span class="comment"> *     // Changing Wi-Fi settings</span></div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;<span class="comment"> *     cfg_wifi.dynamic_rx_buf_num = 64;</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="comment"> *     cfg_wifi.csi_enable = false;</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="comment"> * @param wifi_driver_config Low-level ESP-IDF Wi-Fi driver configuration</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment"> *                           Use `WIFI_INIT_CONFIG_DEFAULT()` as a base.</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;<span class="comment"> * @param wifi_power_mode Wi-Fi Modem-sleep policy. Defines the trade-off between</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="comment"> *                        power consumption and network responsiveness/latency.</span></div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="comment"> * @param wifi_attempt_delay_ms Delay in milliseconds before switching to</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;<span class="comment"> *                              the next profile after a failed connection.</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="comment"> * @return</span></div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<span class="comment"> *    - `ESP_OK`:              Settings saved successfully.</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment"> *    - `ESP_ERR_INVALID_ARG`: The `wifi_driver_config` pointer is `NULL`.</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="comment"> * Example of use:</span></div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="comment"> * @code{c}</span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="comment"> * #include &lt;esp_wifi.h&gt;</span></div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_nvs_initialize());</span></div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;<span class="comment"> *     // Creating default Wi-Fi settings</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="comment"> *     wifi_init_config_t cfg_wifi = WIFI_INIT_CONFIG_DEFAULT();</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="comment"> *     // Changing Wi-Fi settings</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="comment"> *     cfg_wifi.dynamic_rx_buf_num = 64;</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="comment"> *     cfg_wifi.csi_enable = false;</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_set_wifi_config(&amp;cfg_wifi, WIFI_PS_MIN_MODEM, 1000));</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="comment"> *     // Further code...</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="comment"> * }</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;<span class="comment"> * @endcode</span></div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00307"></a><span class="lineno"><a class="line" href="group__eif__wifi__config.html#gab26f7416dd6841b5496e17b4be08e139">  307</a></span>&#160;esp_err_t <a class="code" href="group__eif__wifi__config.html#gab26f7416dd6841b5496e17b4be08e139">eif_set_wifi_config</a>(</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="keyword">const</span> wifi_init_config_t *wifi_driver_config,</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    wifi_ps_type_t wifi_power_mode,</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    uint32_t wifi_attempt_delay_ms</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;);<span class="comment"></span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="comment"> * @brief Set the number of additional user Wi-Fi profiles.</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="comment"> * Defines how many additional user-defined slots are available in NVS.</span></div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="comment"> * @note This function must be called after `eif_core_initialize()` but before</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="comment"> *       `eif_nvs_initialize()`.</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;<span class="comment"> * @anchor wifi_profiles_desc</span></div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;<span class="comment"> * `Profile` - configuration for a specific Wi-Fi network (`SSID` and `Password`).</span></div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;<span class="comment"> *             Profiles are managed in a circular (ring) list: if a connection</span></div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="comment"> *             attempt fails or if the active connection is broken, the framework</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="comment"> *             automatically rotates to the next available slot. Upon reaching</span></div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="comment"> *             the end of the list, it wraps around to the first profile. This</span></div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;<span class="comment"> *             cycle continues indefinitely until a stable connection is</span></div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="comment"> *             re-established.</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;<span class="comment"> * @note The total number of managed profiles is equal to</span></div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;<span class="comment"> *       (`wifi_profiles_count + 1`). If set to `0`, only the system default</span></div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="comment"> *       profile (index 0) will be used. The default profile is hardcoded and</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;<span class="comment"> *       cannot be changed. The default value is</span></div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;<span class="comment"> *       &lt;code&gt;#EIF_WIFI_PROFILES_DEFAULT_COUNT&lt;/code&gt;.</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="comment"> * @param wifi_profiles_count Number of extra slots (0 to</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;<span class="comment"> *                            &lt;code&gt;#EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;).</span></div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;<span class="comment"> * @return</span></div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;<span class="comment"> *    - `ESP_OK`:              Profile capacity set and state reset.</span></div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;<span class="comment"> *    - `ESP_ERR_INVALID_ARG`: `wifi_profiles_count` exceeds</span></div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="comment"> *                             &lt;code&gt;#EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;.</span></div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_set_wifi_config(&amp;cfg_wifi, WIFI_PS_MIN_MODEM, 1000));</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="comment"> *     // Further code...</span></div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="comment"> * }</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="comment"> * @endcode</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno"><a class="line" href="group__eif__wifi__config.html#gab26f7416dd6841b5496e17b4be08e139">  349</a></span>&#160;esp_err_t <a class="code" href="group__eif__wifi__config.html#gab26f7416dd6841b5496e17b4be08e139">eif_set_wifi_config</a>(</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="keyword">const</span> wifi_init_config_t *wifi_driver_config,</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    wifi_ps_type_t wifi_power_mode,</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    uint32_t wifi_attempt_delay_ms</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;);<span class="comment"></span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="comment"> * @brief Set the number of additional user Wi-Fi profiles.</span></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="comment"> * Defines how many additional user-defined slots are available in NVS.</span></div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="comment"> * @note This function must be called after `eif_core_initialize()` but before</span></div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="comment"> *       `eif_nvs_initialize()`.</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="comment"> * Example of use:</span></div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="comment"> * @code{c}</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_set_wifi_profiles_count(5));</span></div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_nvs_initialize());</span></div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="comment"> *     // Further code...</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="comment"> * }</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="comment"> * @endcode</span></div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno"><a class="line" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757">  358</a></span>&#160;esp_err_t <a class="code" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757">eif_set_wifi_profiles_count</a>(uint8_t wifi_profiles_count);<span class="comment"></span></div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="comment"> * @brief Launch the Wi-Fi subsystem and automated network services.</span></div>
 <div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="comment"> * @anchor wifi_profiles_desc</span></div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="comment"> * `Profile` - configuration for a specific Wi-Fi network (`SSID` and `Password`).</span></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment"> *             Profiles are managed in a circular (ring) list: if a connection</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment"> *             attempt fails or if the active connection is broken, the framework</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="comment"> *             automatically rotates to the next available slot. Upon reaching</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="comment"> *             the end of the list, it wraps around to the first profile. This</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="comment"> *             cycle continues indefinitely until a stable connection is</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="comment"> *             re-established.</span></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="comment"> * @note The total number of managed profiles is equal to</span></div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="comment"> *       (`wifi_profiles_count + 1`). If set to `0`, only the system default</span></div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="comment"> *       profile (index 0) will be used. The default profile is hardcoded and</span></div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="comment"> *       cannot be changed. The default value is</span></div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="comment"> *       &lt;code&gt;#EIF_WIFI_PROFILES_DEFAULT_COUNT&lt;/code&gt;.</span></div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="comment"> * @param wifi_profiles_count Number of extra slots (0 to</span></div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="comment"> *                            &lt;code&gt;#EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;).</span></div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="comment"> * @return</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="comment"> *    - `ESP_OK`:              Profile capacity set and state reset.</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="comment"> *    - `ESP_ERR_INVALID_ARG`: `wifi_profiles_count` exceeds</span></div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="comment"> *                             &lt;code&gt;#EIF_WIFI_PROFILES_MAX_COUNT&lt;/code&gt;.</span></div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="comment"> * Initializes the Wi-Fi stack, registers event handlers for automatic profile</span></div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="comment"> * failover, and starts mDNS/Web Server once an IP is obtained. In case of</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment"> * IP loss, the Web Server and mDNS services are gracefully stopped to save</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment"> * resources and prevent invalid states. Once a new IP address is obtained,</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="comment"> * the framework automatically resumes these services.</span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="comment"> * @note This function should come after any other `eif_*` functions</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="comment"> *       (like URI registration or Wi-Fi connectivity). This function is</span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="comment"> *       **mandatory** for the framework to work.</span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="comment"> * @warning Otherwise, there is a chance that the settings will not be applied</span></div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="comment"> *          immediately or unexpected behavior (`UB`) will occur.</span></div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="comment"> * @return</span></div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="comment"> *    - `ESP_OK`:         Subsystem initialized successfully.</span></div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="comment"> *    - `ESP_ERR_NO_MEM`: Failed to allocate memory for network interface.</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="comment"> *    - `ESP_ERR_*`:      Internal driver errors. Look at the logs to understand</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="comment"> *                        the cause of the errors.</span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="comment"> * Example of use:</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="comment"> * @code{c}</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="comment"> * Example of use:</span></div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="comment"> * @code{c}</span></div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_set_wifi_profiles_count(5));</span></div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_nvs_initialize());</span></div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="comment"> *     // Further code...</span></div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="comment"> * }</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="comment"> * @endcode</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00400"></a><span class="lineno"><a class="line" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757">  400</a></span>&#160;esp_err_t <a class="code" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757">eif_set_wifi_profiles_count</a>(uint8_t wifi_profiles_count);<span class="comment"></span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="comment"> * @brief Launch the Wi-Fi subsystem and automated network services.</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="comment"> * Initializes the Wi-Fi stack, registers event handlers for automatic profile</span></div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="comment"> * failover, and starts mDNS/Web Server once an IP is obtained. In case of</span></div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="comment"> * IP loss, the Web Server and mDNS services are gracefully stopped to save</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="comment"> * resources and prevent invalid states. Once a new IP address is obtained,</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="comment"> * the framework automatically resumes these services.</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="comment"> * @note This function should come after any other `eif_*` functions</span></div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="comment"> *       (like URI registration or Wi-Fi connectivity). This function is</span></div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="comment"> *       **mandatory** for the framework to work.</span></div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;<span class="comment"> * @warning Otherwise, there is a chance that the settings will not be applied</span></div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="comment"> *          immediately or unexpected behavior (`UB`) will occur.</span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="comment"> * @return</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="comment"> *    - `ESP_OK`:         Subsystem initialized successfully.</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="comment"> *    - `ESP_ERR_NO_MEM`: Failed to allocate memory for network interface.</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="comment"> *    - `ESP_ERR_*`:      Internal driver errors. Look at the logs to understand</span></div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="comment"> *                        the cause of the errors.</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="comment"> * Example of use:</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="comment"> * @code{c}</span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="comment"> * #include &lt;esp_err.h&gt;</span></div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="comment"> * #include &lt;esp_iot_framework_core.h&gt;</span></div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_nvs_initialize());</span></div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_wifi_initialize());</span></div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="comment"> *    </span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="comment"> *     // Necessary to keep the flow alive</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="comment"> *     while (1) {</span></div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;<span class="comment"> *         vTaskDelay(pdMS_TO_TICKS(1000));</span></div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="comment"> *     }</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;<span class="comment"> * }</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;<span class="comment"> * @endcode</span></div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00440"></a><span class="lineno"><a class="line" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">  440</a></span>&#160;esp_err_t <a class="code" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a>(<span class="keywordtype">void</span>);<span class="comment"></span></div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;<span class="comment">/** @} */</span><span class="comment"></span></div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="comment">/** @} */</span></div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160; </div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    }</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="comment"> * void app_main(void) {</span></div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_core_initialize());</span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_nvs_initialize());</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="comment"> *     ESP_ERROR_CHECK(eif_wifi_initialize());</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="comment"> *    </span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="comment"> *     // Necessary to keep the flow alive</span></div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="comment"> *     while (1) {</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="comment"> *         vTaskDelay(pdMS_TO_TICKS(1000));</span></div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="comment"> *     }</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="comment"> * }</span></div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="comment"> * @endcode</span></div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00398"></a><span class="lineno"><a class="line" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">  398</a></span>&#160;esp_err_t <a class="code" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a>(<span class="keywordtype">void</span>);<span class="comment"></span></div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="comment">/** @} */</span><span class="comment"></span></div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="comment">/** @} */</span></div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160; </div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    }</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="agroup__config__c_html_gae24819dbf0c169ad7e418a5d3a978350"><div class="ttname"><a href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a></div><div class="ttdeci">esp_err_t eif_nvs_initialize(void)</div><div class="ttdoc">Initialize Non-Volatile Storage (NVS) and framework data.</div></div>
 <div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
 <div class="ttc" id="agroup__core__handlers_html_ga885585d4d73fc9bb8b8697d6368f57db"><div class="ttname"><a href="group__core__handlers.html#ga885585d4d73fc9bb8b8697d6368f57db">eif_register_handler_system_reboot</a></div><div class="ttdeci">esp_err_t eif_register_handler_system_reboot(eif_handler_system_t handler)</div><div class="ttdoc">Register a handler for the system reboot event.</div></div>
-<div class="ttc" id="agroup__core__handlers_html_gab45722182aad79061b54ce86c3468078"><div class="ttname"><a href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">eif_handler_system_t</a></div><div class="ttdeci">esp_err_t(* eif_handler_system_t)(void)</div><div class="ttdoc">Prototype for system-level lifecycle event handlers.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core.h:219</div></div>
-<div class="ttc" id="agroup__core__led__pins_html_ga4b0114672e7efc1a3e8c88116c9aed92"><div class="ttname"><a href="group__core__led__pins.html#ga4b0114672e7efc1a3e8c88116c9aed92">eif_pin_led_set_custom</a></div><div class="ttdeci">void eif_pin_led_set_custom(uint32_t gpio_num)</div><div class="ttdoc">Set a custom GPIO pin for the LED at runtime.</div></div>
+<div class="ttc" id="agroup__core__handlers_html_gab45722182aad79061b54ce86c3468078"><div class="ttname"><a href="group__core__handlers.html#gab45722182aad79061b54ce86c3468078">eif_handler_system_t</a></div><div class="ttdeci">esp_err_t(* eif_handler_system_t)(void)</div><div class="ttdoc">Prototype for system-level lifecycle event handlers.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core.h:177</div></div>
 <div class="ttc" id="agroup__eif__wifi__config_html_ga46875c7d8c6588027981c2659a1d1240"><div class="ttname"><a href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a></div><div class="ttdeci">esp_err_t eif_wifi_initialize(void)</div><div class="ttdoc">Launch the Wi-Fi subsystem and automated network services.</div></div>
 <div class="ttc" id="agroup__eif__wifi__config_html_ga49c11ceaa41e1224cd0323f91a14d757"><div class="ttname"><a href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757">eif_set_wifi_profiles_count</a></div><div class="ttdeci">esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count)</div><div class="ttdoc">Set the number of additional user Wi-Fi profiles.</div></div>
 <div class="ttc" id="agroup__eif__wifi__config_html_gab26f7416dd6841b5496e17b4be08e139"><div class="ttname"><a href="group__eif__wifi__config.html#gab26f7416dd6841b5496e17b4be08e139">eif_set_wifi_config</a></div><div class="ttdeci">esp_err_t eif_set_wifi_config(const wifi_init_config_t *wifi_driver_config, wifi_ps_type_t wifi_power_mode, uint32_t wifi_attempt_delay_ms)</div><div class="ttdoc">Configure Wi-Fi driver and power management policies.</div></div>

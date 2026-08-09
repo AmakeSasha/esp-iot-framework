@@ -137,8 +137,11 @@ Macros</h2></td></tr>
 <div class="line">    (m_ret) = <a class="code" href="group__core__ext__tasks.html#gae6a7dc06d3fc028a7d226099e562d012">eif_task_common_spawn</a>( \</div>
 <div class="line">        &amp;(m_handle), \</div>
 <div class="line">        (m_worker), \</div>
+<div class="line">        <span class="comment">/* cppcheck-suppress misra-c2012-20.10 */</span> \</div>
 <div class="line">        TASK_##m_alias##_NAME, \</div>
+<div class="line">        <span class="comment">/* cppcheck-suppress misra-c2012-20.10 */</span> \</div>
 <div class="line">        TASK_##m_alias##_SIZE, \</div>
+<div class="line">        <span class="comment">/* cppcheck-suppress misra-c2012-20.10 */</span> \</div>
 <div class="line">        TASK_##m_alias##_PRIORITY \</div>
 <div class="line">    ); \</div>
 <div class="line">} <span class="keywordflow">while</span> (<span class="keyword">false</span>)</div>
@@ -194,7 +197,7 @@ Macros</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:88</div></div>
 <div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:221</div></div>
-<div class="ttc" id="agroup__macros__other_html_ga31d11fee3617e9ff49becee84a1feaaf"><div class="ttname"><a href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf">EIF_TASK_LAUNCH</a></div><div class="ttdeci">#define EIF_TASK_LAUNCH(m_ret, m_handle, m_alias, m_worker)</div><div class="ttdoc">Spawns a system task using standardized, auto-resolved configuration macros.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:690</div></div>
+<div class="ttc" id="agroup__macros__other_html_ga31d11fee3617e9ff49becee84a1feaaf"><div class="ttname"><a href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf">EIF_TASK_LAUNCH</a></div><div class="ttdeci">#define EIF_TASK_LAUNCH(m_ret, m_handle, m_alias, m_worker)</div><div class="ttdoc">Spawns a system task using standardized, auto-resolved configuration macros.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:700</div></div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>If double-spawn restrictions are not required (e.g., creating multiple instances of the same task), pass a pointer to a temporary standalone task handle variable instead of the main module handle.</dd></dl>
 <p>Example of use (without double-call protection): </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;freertos/FreeRTOS.h&gt;</span></div>
