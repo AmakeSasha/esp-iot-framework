@@ -45,12 +45,14 @@
 
 #define CFG_ERR_ALLOCATE    "Failed to allocate %d bytes for '%s'"
 
-#define MSG_CALL_SETTER  "Calling the setter `%s`"
-#define MSG_CALL_UPDATER "Calling the setter `%s`"
+#if CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D
+    #define MSG_CALL_SETTER  "Calling the setter `%s`"
+    #define MSG_CALL_UPDATER "Calling the setter `%s`"
+#endif
 
 /* --- */
 
-static eif_device_t cfg = {0};
+static eif_device_t eif_dev_cfg = {0};
 
 /* ===================== */
 /*    Framework Entry    */
@@ -97,7 +99,7 @@ esp_err_t eif_device_initialize(void) {
         .server_config = config
     };
 
-    cfg = temp_config;
+    eif_dev_cfg = temp_config;
     EIF_LOG_I("Configuration initialized successfully");
 
     /* Cleanup */
@@ -120,23 +122,23 @@ esp_err_t eif_device_initialize(void) {
         EIF_IF_OK_CHECK_NOT_NULL(ret, server_config, ESP_ERR_INVALID_ARG);
        
         if (ret == ESP_OK) {
-            memcpy(&cfg.server_config, server_config, sizeof(httpd_ssl_config_t));
+            (void)memcpy(&eif_dev_cfg.server_config, server_config, sizeof(httpd_ssl_config_t));
 
-            if (cfg.server_config.cacert_pem) {
-                vPortFree((void *)cfg.server_config.cacert_pem);
+            if (eif_dev_cfg.server_config.cacert_pem) {
+                vPortFree((void *)eif_dev_cfg.server_config.cacert_pem);
             }
-            cfg.server_config.cacert_pem = NULL;
-            cfg.server_config.cacert_len = 0;
+            eif_dev_cfg.server_config.cacert_pem = NULL;
+            eif_dev_cfg.server_config.cacert_len = 0;
 
-            if (cfg.server_config.prvtkey_pem) {
-                vPortFree((void *)cfg.server_config.prvtkey_pem);
+            if (eif_dev_cfg.server_config.prvtkey_pem) {
+                vPortFree((void *)eif_dev_cfg.server_config.prvtkey_pem);
             }
-            cfg.server_config.prvtkey_pem = NULL;
-            cfg.server_config.prvtkey_len = 0;
+            eif_dev_cfg.server_config.prvtkey_pem = NULL;
+            eif_dev_cfg.server_config.prvtkey_len = 0;
 
             #ifdef CONFIG_EIF_ENABLE_TLS
-                cfg.server_config.transport_mode = HTTPD_SSL_TRANSPORT_SECURE;
-                cfg.server_config.session_tickets = false;
+                eif_dev_cfg.server_config.transport_mode = HTTPD_SSL_TRANSPORT_SECURE;
+                eif_dev_cfg.server_config.session_tickets = false;
             #endif
         }
 
@@ -153,7 +155,7 @@ esp_err_t eif_device_initialize(void) {
 
         EIF_IF_OK_CHECK_NOT_NULL(ret, server_config, ESP_ERR_INVALID_ARG);
         if (ret == ESP_OK) {
-            memcpy(&cfg.server_config, server_config, sizeof(httpd_config_t));
+            memcpy(&eif_dev_cfg.server_config, server_config, sizeof(httpd_config_t));
         }
 
         /* Cleanup */
@@ -171,12 +173,12 @@ esp_err_t eif_set_uri_handlers(
     EIF_IF_OK_CHECK_NOT_NULL(ret, uri_handlers, ESP_ERR_INVALID_ARG);
 
     if (ret == ESP_OK) {
-        if (cfg.uri_handlers) {
-            vPortFree(cfg.uri_handlers);
+        if (eif_dev_cfg.uri_handlers) {
+            vPortFree(eif_dev_cfg.uri_handlers);
         }
         if (uri_handlers_count == 0U) {
-            cfg.uri_handlers = NULL;
-            cfg.uri_handlers_count = 0U;
+            eif_dev_cfg.uri_handlers = NULL;
+            eif_dev_cfg.uri_handlers_count = 0U;
             EIF_LOG_W("No handlers to copy (count = 0)");
         }
     }
@@ -184,20 +186,20 @@ esp_err_t eif_set_uri_handlers(
     if ((ret == ESP_OK) && (uri_handlers_count > 0U)) {
         size_t size_array_uris = uri_handlers_count * sizeof(httpd_uri_t);
 
-        cfg.uri_handlers = pvPortMalloc(size_array_uris);
-        EIF_IF_OK_CHECK_NOT_NULL(ret, cfg.uri_handlers, ESP_ERR_NO_MEM);
+        eif_dev_cfg.uri_handlers = pvPortMalloc(size_array_uris);
+        EIF_IF_OK_CHECK_NOT_NULL(ret, eif_dev_cfg.uri_handlers, ESP_ERR_NO_MEM);
 
         if (ret == ESP_OK) {
-            memcpy(cfg.uri_handlers, uri_handlers, size_array_uris);
-            cfg.uri_handlers_count = uri_handlers_count;
+            (void)memcpy(eif_dev_cfg.uri_handlers, uri_handlers, size_array_uris);
+            eif_dev_cfg.uri_handlers_count = uri_handlers_count;
         }
     }
 
     /* Cleanup */
-    if ((ret != ESP_OK) && (cfg.uri_handlers)) {
-        vPortFree(cfg.uri_handlers);
-        cfg.uri_handlers = NULL;
-        cfg.uri_handlers_count = 0U;
+    if ((ret != ESP_OK) && (eif_dev_cfg.uri_handlers)) {
+        vPortFree(eif_dev_cfg.uri_handlers);
+        eif_dev_cfg.uri_handlers = NULL;
+        eif_dev_cfg.uri_handlers_count = 0U;
     }
     return ret;
 }
@@ -209,11 +211,11 @@ esp_err_t eif_set_uri_handlers(
 void eif_uri_handlers_count_update(void) {
     EIF_LOG_D(MSG_CALL_UPDATER, __func__);
 
-    size_t count = cfg.uri_handlers_count + DEFAULT_HANDLERS_COUNT;
+    size_t count = eif_dev_cfg.uri_handlers_count + DEFAULT_HANDLERS_COUNT;
     #ifdef CONFIG_EIF_ENABLE_TLS
-        cfg.server_config.httpd.max_uri_handlers = count;
+        eif_dev_cfg.server_config.httpd.max_uri_handlers = count;
     #else
-        cfg.server_config.max_uri_handlers = count;
+        eif_dev_cfg.server_config.max_uri_handlers = count;
     #endif
 }
 
@@ -239,34 +241,34 @@ void eif_uri_handlers_count_update(void) {
             EIF_LOG_I("Cert: %u, Key: %u", (unsigned int)c_len, (unsigned int)k_len);
         }
 
-        c_copy = pvPortMalloc(c_len);
+        c_copy = (uint8_t *)pvPortMalloc(c_len);
         if (c_copy == NULL) {
             EIF_LOG_E(CFG_ERR_ALLOCATE, c_len, "c_copy");
             ret = ESP_ERR_NO_MEM;
         }
-        k_copy = pvPortMalloc(k_len);
-        if (k_copy == NULL) {
-            EIF_LOG_E(CFG_ERR_ALLOCATE, k_len, "k_copy");
-            ret = ESP_ERR_NO_MEM;
-        }
-
         if (ret == ESP_OK) {
-            memcpy(c_copy, c_buf, c_len);
-            memcpy(k_copy, k_buf, k_len);
-
-            if (cfg.server_config.cacert_pem != NULL) {
-                vPortFree((void *)cfg.server_config.cacert_pem);
-            }
-            if (cfg.server_config.prvtkey_pem != NULL) {
-                vPortFree((void *)cfg.server_config.prvtkey_pem);
+            k_copy = (uint8_t *)pvPortMalloc(k_len);
+            if (k_copy == NULL) {
+                EIF_LOG_E(CFG_ERR_ALLOCATE, k_len, "k_copy");
+                ret = ESP_ERR_NO_MEM;
             }
         }
 
         if (ret == ESP_OK) {
-            cfg.server_config.cacert_pem = c_copy;
-            cfg.server_config.cacert_len = c_len;
-            cfg.server_config.prvtkey_pem = k_copy;
-            cfg.server_config.prvtkey_len = k_len;
+            (void)memcpy(c_copy, c_buf, c_len);
+            (void)memcpy(k_copy, k_buf, k_len);
+
+            if (eif_dev_cfg.server_config.cacert_pem != NULL) {
+                vPortFree((void *)eif_dev_cfg.server_config.cacert_pem);
+            }
+            if (eif_dev_cfg.server_config.prvtkey_pem != NULL) {
+                vPortFree((void *)eif_dev_cfg.server_config.prvtkey_pem);
+            }
+            
+            eif_dev_cfg.server_config.cacert_pem = c_copy;
+            eif_dev_cfg.server_config.cacert_len = c_len;
+            eif_dev_cfg.server_config.prvtkey_pem = k_copy;
+            eif_dev_cfg.server_config.prvtkey_len = k_len;
 
             EIF_LOG_I("TLS credentials successfully applied to config");
         }
@@ -298,5 +300,5 @@ void eif_uri_handlers_count_update(void) {
 const eif_device_t* eif_device_get(void) {
     EIF_LOG_D(MSG_CALL_GETTER, __func__);
 
-    return &cfg;
+    return &eif_dev_cfg;
 }

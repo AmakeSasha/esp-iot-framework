@@ -87,20 +87,19 @@
     #define EIF_CPU_FREQ_MHZ 160
 #endif
 
-#define RESP_TYPE_JS   "application/javascript; charset=UTF-8"
 #define RESP_TYPE_JSON "application/json; charset=UTF-8"
 
+#if defined(CONFIG_EIF_ENABLE_WEB_ADMIN_GUI) || defined(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG)
+    #define RESP_TYPE_TXT  "text/plain; charset=UTF-8"
+#endif
 #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
+    #define RESP_TYPE_PNG  "image/png"
     #define RESP_TYPE_CSS  "text/css; charset=UTF-8"
     #define RESP_TYPE_HTML "text/html; charset=UTF-8"
-    #define RESP_TYPE_TXT  "text/plain; charset=UTF-8"
-    #define RESP_TYPE_PNG  "image/png"
+    #define RESP_TYPE_JS   "application/javascript; charset=UTF-8"
 
     #define ESP_WARN_CACHE_HIT 1234
     #define ETAG_VALUE "\"" __DATE__ " " __TIME__ "\""
-#endif
-#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
-    #define RESP_TYPE_TEXT "text/plain; charset=UTF-8"
 #endif
 
 #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
@@ -372,19 +371,27 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
 }
 
 #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-    typedef struct {
-        const uint8_t * const start;
-        const uint8_t * const end;
-        const char * const content_type;
-        const char * const file_name;
-        bool need_cache;
-    } eif_web_file_t;
-
     static esp_err_t httpd_resp_sendfile(
         httpd_req_t * const req, const eif_web_file_t * const file
     ) {
         esp_err_t ret = ESP_OK;
-        const size_t size = (file->end - file->start);
+
+        /* @deviation [Rule 18.4] Pointer subtraction is justified here because the
+         * asset length must be derived from two immutable bounds of a linker-defined
+         * binary object. The start and end symbols are generated automatically from
+         * an embedded HTTP resource, ensuring their existence and correct relative
+         * ordering at link time. This operation is necessary to provide the exact
+         * byte count required by the HTTP transmission API. The calculation is safe
+         * because both pointers reference the same contiguous memory block, and no
+         * out-of-bounds access is performed. */
+        /* @deviation [Rule 10.8] The explicit cast to 'size_t' is required to convert
+         * the pointer difference into the unsigned integer type expected by the web
+         * server API. This conversion is safe in this context because the calculated
+         * value represents the exact, valid size of the underlying linker-generated
+         * resource and is used strictly as a buffer length parameter. */
+        /* cppcheck-suppress misra-c2012-18.4 */
+        /* cppcheck-suppress misra-c2012-10.8 */
+        const size_t size = (size_t)(file->end - file->start);
 
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, set_cache(req, file->need_cache),
             "Failed to set cache for '%s'", file->file_name);
@@ -392,7 +399,7 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
         if (ret == ESP_OK) {
             httpd_resp_set_type(req, file->content_type);
             httpd_resp_set_hdr(req, "Content-Encoding", "gzip");
-            return httpd_resp_send(req, (const char *)file->start, size);
+            ret = httpd_resp_send(req, (const char *)file->start, size);
         } else if (ret == ESP_WARN_CACHE_HIT) {
             ret = ESP_OK;
         } else { ; }
@@ -401,33 +408,39 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
         return ret;
     }
 
-    #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
-        EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
+    /* @note Cppcheck 2.21 incorrectly reports a syntax error on this macro. The code
+     * is valid and passes compilation with GCC/Clang. Excluded from linting to avoid
+     * false positives. Run Cppcheck with -D__CPPCHECK__ flag.
+     */
+    #ifndef __CPPCHECK__
+        #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
+             EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
+        #endif
+        #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+            EIF_DEFINE_HTTP_FILE(logs_html_gz,    RESP_TYPE_HTML, true)
+        #endif
+        EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
+        EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
+        EIF_DEFINE_HTTP_FILE(system_html_gz,  RESP_TYPE_HTML, true)
+        EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
+
+        EIF_DEFINE_HTTP_FILE(style_css_gz,    RESP_TYPE_CSS,  true)
+
+        EIF_DEFINE_HTTP_FILE(LICENSE_gz,      RESP_TYPE_TXT,  true)
+
+        EIF_DEFINE_HTTP_FILE(json2_js_gz,     RESP_TYPE_JS,   true)
+        EIF_DEFINE_HTTP_FILE(api_js_gz,       RESP_TYPE_JS,   true)
+
+        #ifdef CONFIG_EIF_ENABLE_WEB_FAVICON
+            EIF_DEFINE_HTTP_FILE(logo_png_gz,     RESP_TYPE_PNG,  true)
+        #endif
+
+        static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
+            EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
+            httpd_resp_set_status(req, HTTPD_404);
+            return sendf_e404_html_gz(req);
+        }
     #endif
-    #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
-        EIF_DEFINE_HTTP_FILE(logs_html_gz,    RESP_TYPE_HTML, true)
-    #endif
-    EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
-    EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
-    EIF_DEFINE_HTTP_FILE(system_html_gz,  RESP_TYPE_HTML, true)
-    EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
-
-    EIF_DEFINE_HTTP_FILE(style_css_gz,    RESP_TYPE_CSS,  true)
-
-    EIF_DEFINE_HTTP_FILE(LICENSE_gz,      RESP_TYPE_TXT,  true)
-
-    EIF_DEFINE_HTTP_FILE(json2_js_gz,     RESP_TYPE_JS,   true)
-    EIF_DEFINE_HTTP_FILE(api_js_gz,       RESP_TYPE_JS,   true)
-
-    #ifdef CONFIG_EIF_ENABLE_WEB_FAVICON
-        EIF_DEFINE_HTTP_FILE(logo_png_gz,     RESP_TYPE_PNG,  true)
-    #endif
-
-    static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
-        EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
-        httpd_resp_set_status(req, HTTPD_404);
-        return sendf_e404_html_gz(req);
-    }
 #endif
 
 
@@ -965,13 +978,13 @@ static esp_err_t h_ota_update_do(httpd_req_t * const req) {
     }
 
     if (ret == ESP_OK) {
-        buf = pvPortMalloc(CONFIG_EIF_WEB_SIZE_OTA_BUFFER);
+        buf = (char *)pvPortMalloc(CONFIG_EIF_WEB_SIZE_OTA_BUFFER);
         EIF_IF_OK_CHECK_CONDITION(ret, buf == NULL, ESP_ERR_NO_MEM,
             SERVER_ERR_ALLOCATE, CONFIG_EIF_WEB_SIZE_OTA_BUFFER, "ota_buffer");
     }
        
     while ((remaining > 0U) && (ret == ESP_OK)) {
-        const bool flag = remaining < CONFIG_EIF_WEB_SIZE_OTA_BUFFER;
+        const bool flag = remaining < (size_t)CONFIG_EIF_WEB_SIZE_OTA_BUFFER;
         const int chunk_size = flag ? (int)remaining : CONFIG_EIF_WEB_SIZE_OTA_BUFFER;
         const int received = httpd_req_recv(req, buf, chunk_size);
 
@@ -1206,10 +1219,6 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
     uint32_t start_time = esp_log_timestamp();
 
-    #if (EIF_SYS_LED_PIN >= 0)
-        eif_pin_led_set_state(false);
-    #endif
-
     EIF_LOG_I("%s %s HTTP/1.1", method_to_str(req->method), req->uri);
 
     const httpd_uri_t* orig = (const httpd_uri_t*)req->user_ctx;
@@ -1231,9 +1240,6 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     }
 
     (void)start_time;
-    #if (EIF_SYS_LED_PIN >= 0)
-        eif_pin_led_delay_on(50);
-    #endif
     
     /* Cleanup */
     return ret;
@@ -1245,14 +1251,13 @@ static esp_err_t register_uris_with_middleware(
 ) {
     esp_err_t ret = ESP_OK;
 
-
-    size_t max_method_len = 0;
-    size_t max_uri_len = 0;
-
     if (route_count == 0U) {
         EIF_LOG_W("No handlers to register");
     } else {
         EIF_IF_OK_CHECK_NOT_NULL(ret, routes, ESP_ERR_INVALID_ARG);
+
+        size_t max_method_len = 0;
+        size_t max_uri_len = 0;
 
         if (ret == ESP_OK) {
             for (size_t i = 0; i < route_count; i++) {

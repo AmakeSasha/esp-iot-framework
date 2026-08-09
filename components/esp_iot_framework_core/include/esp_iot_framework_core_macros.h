@@ -368,6 +368,7 @@ do { \
              * identifier. The expansion evaluates strictly to a well-formed,
              * immutable string literal, completely eliminating risks of side
              * effects or undefined behavior. */ \
+            /* cppcheck-suppress misra-c2012-20.10 */ \
             EIF_LOG_E("PARAMETER_IS_NULL: '%s'", #m_ptr); \
             (m_result) = (m_error); \
         } \
@@ -517,6 +518,15 @@ do { \
     } \
 } while(false)
 #else
+    /* @deviation [Rule 2.5] The 'EIF_IF_OK_CHECK_CONDITION' macro definition 
+     * within this #else branch provides a silent fallback when logging is disabled. 
+     * It mimics the logging-enabled API contract to keep code behavior and compilation 
+     * identical across different build configurations. This macro is triggered 
+     * dynamically, so it stays unused when error logging is globally active in the 
+     * system. Memory and logic safety are guaranteed because the macro only performs 
+     * safe status evaluation and contains no functional side effects or undefined 
+     * operations. */
+    /* cppcheck-suppress misra-c2012-2.5 */
     #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
 do { \
     if ((m_ret) == ESP_OK) { \
@@ -714,8 +724,11 @@ do { \
     (m_ret) = eif_task_common_spawn( \
         &(m_handle), \
         (m_worker), \
+        /* cppcheck-suppress misra-c2012-20.10 */ \
         TASK_##m_alias##_NAME, \
+        /* cppcheck-suppress misra-c2012-20.10 */ \
         TASK_##m_alias##_SIZE, \
+        /* cppcheck-suppress misra-c2012-20.10 */ \
         TASK_##m_alias##_PRIORITY \
     ); \
 } while (false)

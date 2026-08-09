@@ -65,12 +65,22 @@ typedef struct {
     #endif
 } eif_device_t;
 
+#ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
+    typedef struct {
+        const uint8_t * const start;
+        const uint8_t * const end;
+        const char * const content_type;
+        const char * const file_name;
+        bool need_cache;
+    } eif_web_file_t;
+#endif
+
 const eif_device_t* eif_device_get(void);
 
 void eif_uri_handlers_count_update(void);
 
 #ifdef CONFIG_EIF_ENABLE_TLS
-    esp_err_t eif_set_tls_creds_from_nvs();
+    esp_err_t eif_set_tls_creds_from_nvs(void);
 #endif
 
 /* web.c */

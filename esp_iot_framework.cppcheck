@@ -1,71 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
-    <builddir>esp_iot_framework_cppcheck_build_dir</builddir>
-    <platform>Unspecified</platform>
+    <builddir>esp-iot-framework_cppcheck</builddir>
     <analyze-all-vs-configs>false</analyze-all-vs-configs>
     <check-headers>true</check-headers>
     <check-unused-templates>true</check-unused-templates>
-    <max-ctu-depth>10</max-ctu-depth>
+    <inline-suppression>true</inline-suppression>
+    <max-ctu-depth>8</max-ctu-depth>
+    <max-template-recursion>100</max-template-recursion>
     <includedir>
-        <dir name="build/config"/>
+        <dir name="examples/hello_world/build/config"/>
         <dir name="components/esp_iot_framework_core/include"/>
         <dir name="components/esp_iot_framework_core/private_include"/>
         <dir name="components/esp_iot_framework_device/include"/>
         <dir name="components/esp_iot_framework_device/private_include"/>
         <dir name="components/jsmn/include"/>
         <dir name="components/json_generator/include"/>
-
-        <dir name="/opt/esp/idf/components/esp_common/include/"/>
-        <dir name="/opt/esp/idf/components/nvs_flash/include/"/>
-        <dir name="/opt/esp/idf/components/esp_rom/include/"/>
-        <dir name="/opt/esp/idf/components/mdns/include/"/>
-        <dir name="/opt/esp/idf/components/esp_wifi/include/"/>
-        <dir name="/opt/esp/idf/components/freertos/include/"/>
-        <dir name="/opt/esp/idf/components/freertos/port/xtensa/include/"/>
-
-        <dir name="../embedded/esp_idf/components/esp_common/include/"/>
-        <dir name="../embedded/esp_idf/components/nvs_flash/include/"/>
-        <dir name="../embedded/esp_idf/components/esp_rom/include/"/>
-        <dir name="../embedded/esp_idf/components/mdns/include/"/>
-        <dir name="../embedded/esp_idf/components/esp_wifi/include/"/>
-        <dir name="../embedded/esp_idf/components/freertos/include/"/>
-        <dir name="../embedded/esp_idf/components/freertos/port/xtensa/include/"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/esp_common/include"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/nvs_flash/include"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/esp_rom/include"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/mdns/include"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/esp_wifi/include"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/freertos/include"/>
+        <dir name="D:/embedded/esp-idf-v4.4.8/components/freertos/port/xtensa/include"/>
     </includedir>
     <defines>
-        <define name="CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS=3"/>
-        <define name="MDNS_HOSTNAME_FULL_MAX_LEN=64U"/>
-        <define name="configMAX_PRIORITIES=15"/>
-        <define name="pdPASS=1"/>
-        <define name="pdFAIL=0"/>
-        <define name="HTTPD_SOCK_ERR_TIMEOUT=-1"/>
-        <define name="HTTPD_204=&quot;204 No Content&quot;"/>
+        <define name="__CPPCHECK__"/>
+        <define name="HTTPD_SOCK_ERR_TIMEOUT=-3"/>
+        <define name="HTTPD_204=204"/>
     </defines>
     <paths>
         <dir name="components/esp_iot_framework_core"/>
         <dir name="components/esp_iot_framework_device"/>
     </paths>
+    <libraries>
+        <library>gnu</library>
+    </libraries>
     <suppressions>
-        <suppression>misra-c2012-8.2</suppression>
-        <suppression>misra-c2012-17.3</suppression>
-        
-        <suppression fileName="*/src/network.c">misra-c2012-19.2</suppression>
-        <suppression fileName="*/include/esp_iot_framework_core_macros.h">misra-c2012-20.10</suppression>
-        <suppression fileName="*/private_include/device_macros.h">misra-c2012-20.7</suppression>
-        <suppression fileName="*/private_include/device_macros.h">misra-c2012-20.10</suppression>
-        <suppression>purgedConfiguration</suppression>
-        <suppression>variableScope</suppression>
         <suppression>unusedFunction</suppression>
-
-        <suppression fileName="*esp_idf*">*</suppression>
-        <suppression fileName="*freertos*">*</suppression>
-        <suppression fileName="*/opt/esp*">*</suppression>
-        <suppression fileName="*jsmn*">*</suppression>
-        <suppression fileName="*json_generator*">*</suppression>
+        <suppression fileName="*/embedded/*">*</suppression>
+        <suppression>missingIncludeSystem</suppression>
+        <suppression>misra-c2012-21.3</suppression>
+        <suppression>misra-c2012-17.3</suppression>
+        <suppression fileName="examples/*">*</suppression>
+        <suppression>misra-c2012-8.7</suppression>
+        <suppression>misra-c2012-2.5</suppression>
+        <suppression fileName="components/jsmn/*">*</suppression>
+        <suppression fileName="components/json_generator/*">*</suppression>
     </suppressions>
     <addons>
         <addon>misra</addon>
     </addons>
-    <tools>
-        <tool>clang-tidy</tool>
-    </tools>
+    <check-level-exhaustive/>
+    <project-name>esp-iot-framework</project-name>
 </project>

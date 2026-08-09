@@ -48,7 +48,7 @@
         EIF_TAG_WITH_UNUSED "mDNS";
 
         esp_err_t ret = ESP_OK;
-        const eif_core_t * const cfg = eif_core_get();
+        eif_core_t * const cfg = eif_core_get();
 
         /* @note Testing revealed that omitting this call triggers hard kernel
          * panic (IllegalInstruction). Forcing an explicit cleanup here prevents
@@ -87,7 +87,7 @@
 
         EIF_LOG_I("Stopping mDNS...");
 
-        mdns_service_remove_all();
+        (void)mdns_service_remove_all();
         vTaskDelay(pdMS_TO_TICKS(100));
         mdns_free();
 
@@ -102,17 +102,20 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
     EIF_TAG_WITH_UNUSED "Wifi Config";
 
     esp_err_t ret = ESP_OK;
+
     char ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
     char pass[EIF_WIFI_PASS_MAX_LEN] = {0};
     /* @deviation [Rule 19.2] The use of 'union' is mandatory here as it is
      * part of the 'wifi_config_t' structure defined by the ESP-IDF SDK.
      * Manual zero-initialization via '{0}' used to ensure all union members
      * are in a safe, predictable state before accessing specific fields. */
-    wifi_config_t w_cfg = {0};
+    /* cppcheck-suppress misra-c2012-19.2 */
+    wifi_config_t w_cfg;
 
     w_cfg.sta.threshold.authmode = WIFI_AUTH_OPEN;
     w_cfg.sta.pmf_cfg.capable = true;
     w_cfg.sta.pmf_cfg.required = false;
+    (void)memset(&w_cfg, 0, sizeof(w_cfg));
 
     (void)eif_set_current_wifi_profile_index(index);
 
@@ -152,7 +155,19 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
 }
 
 /* --- */
+
+/* @deviation The parameter 'event_data' cannot be declared as 'const void*'
+ * because the signature of this callback must strictly match the
+ * 'esp_event_handler_t' type defined by the ESP-IDF SDK. Adding 'const' would
+ * force an unsafe function pointer typecast during registration, risking severe
+ * stack corruption if the SDK signature changes.
+ * 
+ * This approach is entirely safe as 'event_data' is treated as strictly
+ * read-only within the handler body. No data write or modification is performed,
+ * ensuring complete type safety and preventing any accidental corruption of
+ * the OS event subsystem memory. */
 static void wifi_event_handler(
+    // cppcheck-suppress constParameterCallback
     void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data
 ) {
     EIF_TAG_WITH_UNUSED "Wi-Fi Handler";
@@ -212,15 +227,28 @@ static void wifi_event_handler(
                 break;
         }
     }
+
+    /* Cleanup */
+    (void)ret;
 }
 
+/* @deviation The parameter 'event_data' cannot be declared as 'const void*'
+ * because the signature of this callback must strictly match the
+ * 'esp_event_handler_t' type defined by the ESP-IDF SDK. Adding 'const' would
+ * force an unsafe function pointer typecast during registration, risking severe
+ * stack corruption if the SDK signature changes.
+ * 
+ * This approach is entirely safe as 'event_data' is treated as strictly
+ * read-only within the handler body. No data write or modification is performed,
+ * ensuring complete type safety and preventing any accidental corruption of
+ * the OS event subsystem memory. */
 static void ip_event_handler(
+    // cppcheck-suppress constParameterCallback
     void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data
 ) {
     EIF_TAG_WITH_UNUSED "IP Handler";
     (void)arg;
     (void)event_base;
-
 
     esp_err_t ret = ESP_OK;
     const eif_core_t * const cfg = eif_core_get();
@@ -241,20 +269,14 @@ static void ip_event_handler(
                     EIF_IF_OK_CHECK_ESP_ERR_T(ret, cfg->handler_ip_got(),
                         "Failed to execute 'IP_EVENT_STA_GOT_IP' handler");
                 }
-                #if (SERVER_LED_PIN >= 0)
-                    eif_pin_led_set_state(true);
-                #endif
 
                 break;
             }
             case IP_EVENT_STA_LOST_IP:
                 EIF_LOG_W("IP address lost, taking services offline...");
 
-                #if (SERVER_LED_PIN >= 0)
-                    eif_pin_led_set_state(false);
-                #endif
                 #ifdef CONFIG_EIF_ENABLE_MDNS
-                    mdns_deinitialize();
+                    (void)mdns_deinitialize();
                     vTaskDelay(pdMS_TO_TICKS(100));
                 #endif
                 if (cfg->handler_ip_lost != NULL) {
@@ -264,10 +286,12 @@ static void ip_event_handler(
                 break;
 
             default:
-                // EIF_LOG_W("Unhandled IP event: %" PRId32, event_id);
                 break;
         }
     }
+
+    /* Cleanup */
+    (void)ret;
 }
 
 /* --- */

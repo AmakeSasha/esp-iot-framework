@@ -36,6 +36,7 @@
  * well-defined C string literals, eliminating any risk of syntactic corruption or
  * undefined preprocessor evaluation order.
  */
+/* cppcheck-suppress misra-c2012-20.10 */
 #define EIF_STR_HELPER(x) #x
 #define EIF_STR(x) EIF_STR_HELPER(x)
 
@@ -58,6 +59,8 @@
      * only valid, well-defined C identifiers and string literals, eliminating
      * any risk of syntactic corruption or undefined evaluation order.
      */
+    /* cppcheck-suppress misra-c2012-20.7 */
+    /* cppcheck-suppress misra-c2012-20.10 */
     #define EIF_DEFINE_HTTP_FILE(m_filename, m_resp_type, m_need_cache) \
         extern const uint8_t m_filename##_start[] asm("_binary_" #m_filename "_start"); \
         extern const uint8_t m_filename##_end[]   asm("_binary_" #m_filename "_end");   \

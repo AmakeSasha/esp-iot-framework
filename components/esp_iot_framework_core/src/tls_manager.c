@@ -40,9 +40,7 @@
 #define TLS_ERR_GEN_KEY    "Failed to generate ECC keypair"
 #define TLS_ERR_GEN_CERT   "Failed to generate self-signed certificate"
 #define TLS_ERR_TLS        "Failed to generate TLS credentials"
-#define TLS_ERR_SAN_SET    "Failed to set Subject Alternative Name (DNS: %s)"
 #define TLS_ERR_SAVE       "Saving '%s' failed"
-#define TLS_ERR_SPAWN_TASK "Failed to spawn [%s]. Free heap: %zu bytes"
 #define TLS_ERR_ALLOCATE   "Failed to allocate %d bytes for '%s'"
 
 #define TLS_MSG_KEY_GEN_OK  "ECC key pair generated. Size: %u bytes"
@@ -50,7 +48,6 @@
 #define TLS_MSG_CREATE_OK   "Creation of `tls credentials` completed successfully"
 
 #define KEY_PEM_LEN   384
-#define PUB_DER_LEN   256
 #define CERT_BUF_SIZE 1024
 
 /* --- */
@@ -147,7 +144,7 @@ static esp_err_t eif_generate_self_signed_cert(
     esp_fill_random(serial_buf, sizeof(serial_buf));
 
     /* 1. Load Key */
-    #if MBEDTLS_VERSION_NUMBER >= 0x03000000
+    #if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER >= 0x03000000)
         EIF_IF_OK_CHECK_MBEDTLS_ERR(ret, mbedtls_pk_parse_key(
             &key, key_pem, key_len, NULL, 0, NULL, NULL), "parse_key");
     #else
@@ -178,6 +175,7 @@ static esp_err_t eif_generate_self_signed_cert(
             subject[total_len - 1U] = '\0';
         }
     }
+
     if (ret == 0) {
         mbedtls_x509write_crt_set_subject_name(&crt, subject);
         mbedtls_x509write_crt_set_issuer_name(&crt, subject);
@@ -192,7 +190,7 @@ static esp_err_t eif_generate_self_signed_cert(
 
     /* 4. Random Serial */
         mbedtls_mpi_read_binary(&serial, serial_buf, sizeof(serial_buf));
-        #if MBEDTLS_VERSION_NUMBER >= 0x03000000
+        #if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER >= 0x03000000)
             EIF_IF_OK_CHECK_MBEDTLS_ERR(ret, mbedtls_x509write_crt_set_serial_raw(
                 &crt, serial_buf, sizeof(serial_buf)), "set_serial");
         #else
@@ -220,7 +218,7 @@ static esp_err_t eif_generate_self_signed_cert(
         san_der[1] = (unsigned char)(name_len + F_SAN_TYPE_DNS_OFFSET);
         san_der[2] = F_ASN1_TAG_DNS_NAME;
         san_der[3] = (unsigned char)name_len;
-        memcpy(&san_der[4], temp_name, name_len);
+        (void)memcpy(&san_der[F_SAN_HEADER_SIZE], temp_name, name_len);
     }
 
     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret,
@@ -239,7 +237,7 @@ static esp_err_t eif_generate_self_signed_cert(
         ), "set_extension_key");
 
     if (ret == 0) {
-        #if MBEDTLS_VERSION_NUMBER < 0x03000000
+        #if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER < 0x03000000)
             mbedtls_x509write_crt_set_subject_key_identifier(&crt);
             mbedtls_x509write_crt_set_authority_key_identifier(&crt);
         #else
@@ -276,11 +274,15 @@ static esp_err_t eif_generate_self_signed_cert(
 }
 
 static inline void if_ok_erase_it(
-    esp_err_t ret, char * const buf, size_t size
+    esp_err_t ret, char * const buf, size_t size, const char * const name
 ) {
+    EIF_TAG_WITH_UNUSED "TLS manager";
+    
     if ((ret == ESP_OK) && (buf != NULL)) {
         (void)memset((void *)buf, 0, size);
-    }
+    } else if (ret == ESP_OK) {
+        EIF_LOG_E(TLS_ERR_ALLOCATE, (int)CERT_BUF_SIZE, name);
+    } else { ; }
 }
 
 static esp_err_t eif_tls_create_creds(
@@ -292,13 +294,15 @@ static esp_err_t eif_tls_create_creds(
     esp_err_t ret = ESP_OK;
     const eif_core_t * const cfg = eif_core_get();
 
-    *cert_pem = pvPortMalloc((size_t)CERT_BUF_SIZE);
-    EIF_IF_OK_CHECK_NOT_NULL(ret, *cert_pem, ESP_ERR_NO_MEM);
-    if_ok_erase_it(ret, *cert_pem, (size_t)CERT_BUF_SIZE);
-
-    *key_pem = pvPortMalloc((size_t)KEY_PEM_LEN);
+    *cert_pem = (char *)pvPortMalloc((size_t)CERT_BUF_SIZE);
     EIF_IF_OK_CHECK_NOT_NULL(ret, *key_pem, ESP_ERR_NO_MEM);
-    if_ok_erase_it(ret, *key_pem, (size_t)KEY_PEM_LEN);
+    if_ok_erase_it(ret, *cert_pem, (size_t)CERT_BUF_SIZE, "cert_pem_buf");
+    
+    if (ret == ESP_OK) {
+        *key_pem = (char *)pvPortMalloc((size_t)KEY_PEM_LEN);
+        EIF_IF_OK_CHECK_NOT_NULL(ret, *key_pem, ESP_ERR_NO_MEM);
+        if_ok_erase_it(ret, *key_pem, (size_t)KEY_PEM_LEN, "key_pem_buf");
+    } 
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_generate_ecc_keypair(
         (uint8_t *)*key_pem, key_len), TLS_ERR_GEN_KEY);
@@ -310,12 +314,12 @@ static esp_err_t eif_tls_create_creds(
     /* Cleanup */
     if (ret != ESP_OK) {
         if (*cert_pem != NULL) {
-            if_ok_erase_it(ESP_OK, *cert_pem, (size_t)CERT_BUF_SIZE);
+            if_ok_erase_it(ESP_OK, *cert_pem, (size_t)CERT_BUF_SIZE, "cert_pem_buf");
             vPortFree(*cert_pem);
             *cert_pem = NULL;
         }
         if (*key_pem != NULL) {
-            if_ok_erase_it(ESP_OK, *key_pem,  (size_t)KEY_PEM_LEN);
+            if_ok_erase_it(ESP_OK, *key_pem,  (size_t)KEY_PEM_LEN, "key_pem_buf");
             vPortFree(*key_pem);
             *key_pem = NULL;
         }
@@ -333,7 +337,7 @@ esp_err_t eif_tls_create_creds_and_nvs_save(void) {
     size_t key_len = 0;
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds(
-        &cert_out, &cert_len, &key_out, &key_len), TLS_ERR_GEN_CERT);
+        &cert_out, &cert_len, &key_out, &key_len), TLS_ERR_TLS);
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_nvs_value_save(
         EIF_NVS_KEY_TLS_CERT, cert_out, 1, CERT_BUF_SIZE, false
     ), TLS_ERR_SAVE, EIF_NVS_KEY_TLS_CERT);
@@ -347,11 +351,11 @@ esp_err_t eif_tls_create_creds_and_nvs_save(void) {
 
     /* Cleanup */
     if (cert_out != NULL) {
-        if_ok_erase_it(ESP_OK, cert_out, (size_t)CERT_BUF_SIZE);
+        if_ok_erase_it(ESP_OK, cert_out, (size_t)CERT_BUF_SIZE, "cert_out_buf");
         vPortFree(cert_out);
     }
     if (key_out != NULL) {
-        if_ok_erase_it(ESP_OK, key_out, (size_t)KEY_PEM_LEN);
+        if_ok_erase_it(ESP_OK, key_out, (size_t)KEY_PEM_LEN, "key_out_buf");
         vPortFree(key_out);
     }
     return ret;

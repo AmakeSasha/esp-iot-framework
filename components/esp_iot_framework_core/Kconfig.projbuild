@@ -52,15 +52,16 @@ menu "ESP IoT framework Core"
               can easily intercept your session and compromise the system.
 
             PERFORMANCE CONSIDERATIONS:
-            HTTPS is resource-intensive for the ESP32. Enabling this feature
-            will result in:
-            1. Increased RAM consumption (~30-50 KB for SSL buffers).
-            2. Initial connection latency (1-3 seconds for the TLS handshake).
-            3. Higher CPU utilization during active data transfer.
+              HTTPS is resource-intensive for the ESP32. Enabling this feature
+              will result in:
+                1. Increased RAM consumption (~30-50 KB for SSL buffers).
+                2. Initial connection latency (1-3 seconds for the TLS handshake).
+                3. Higher CPU utilization during active data transfer.
 
             WARNING: Disabling TLS is strongly discouraged for production
-            environments. Modern browsers will mark your admin panel as
-            "Not Secure" and may block access to critical web features.
+                     environments. Modern browsers will mark your admin panel
+                     as "Not Secure" and may block access to critical web
+                     features.
 
     menu "Logging Settings"
         config EIF_LOG_LEVEL
@@ -119,14 +120,6 @@ menu "ESP IoT framework Core"
                 Size of the internal FreeRTOS ring buffer in RAM.
                 4096 bytes can store around 50-70 log lines.
                 Higher values consume more heap memory.
-
-        config EIF_SYS_LED_IS_RGB
-            bool "Use RGB LED instead of Standard LED"
-            default y if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32C6
-            default n
-            help
-                Enable this if your specific board uses an RGB addressable LED.
-                Disable for standard/analog single-color LEDs.
     endmenu
 
     menu "Memory Monitor Settings"
@@ -136,16 +129,17 @@ menu "ESP IoT framework Core"
             default 12288
             help
                 Minimum free block size that must be available for stable operation.
-                If the largest free block is smaller than this value, the system will reboot.
+                If the largest free block is smaller than this value, the system
+                will reboot.
 
-                WARNING: To ensure the reboot task can be created, this value
-                MUST be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE
-                (which is measured in 4-byte words).
+                WARNING: To ensure the reboot task can be created, this value MUST be
+                         at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE
+                         (which is measured in 4-byte words).
 
                 Formula: CRITICAL_SIZE >= STACK_SIZE * 4 * 2.
 
                 Note: Setting too low may cause missed fragmentation issues; too
-                high may lead to unnecessary reboots.
+                      high may lead to unnecessary reboots.
 
         config EIF_MEM_MONITOR_CHECK_INTERVAL
             int "Memory check interval (ms)"
@@ -157,11 +151,18 @@ menu "ESP IoT framework Core"
                 This parameter defines the time interval between consecutive memory fragmentation
                 checks performed by the memory monitor task.
 
-                The actual time to reboot = CHECK_INTERVAL × NUMBER_CHECKS.
+                The actual time to reboot = (CHECK_INTERVAL / 2) × NUMBER_CHECKS.
 
                 Examples:
-                - 30 000 ms (30 s) + NUMBER_CHECKS=3 → reboot after 90 seconds.
-                - 60 000 ms (60 s) + NUMBER_CHECKS=5 → reboot after 300 seconds (5 min).
+                - 30 000 ms (30 s) + NUMBER_CHECKS=3 → reboot after 45 seconds.
+                - 60 000 ms (60 s) + NUMBER_CHECKS=5 → reboot after 150 seconds (2.5 min).
+
+                WARNING: If the monitor detects fragmentation or low RAM, the scan
+                         time is cut in half for more reliable monitoring of the situation.
+
+                         Examples:
+                         - Normal state: checks run every 30 seconds.
+                         - Critical state: checks accelerate to every 15 seconds.
 
         config EIF_MEM_MONITOR_NUMBER_CHECKS
             int "Number of fragmentation confirmations before reboot"
@@ -184,7 +185,7 @@ menu "ESP IoT framework Core"
                 Stack size for the task that manages the system shutdown sequence.
                
                 The task stops the Wi-Fi driver halts the HTTP server, and
-                executes the user_pre_reboot_cb' before calling esp_restart().
+                executes the 'user_pre_reboot_cb' before calling esp_restart().
                 Increase this value if 'user_pre_reboot_cb' performs stack-heavy
                 operations like NVS writes or complex logging.
 

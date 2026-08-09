@@ -41,9 +41,11 @@
 #define CFG_ERR_ALLOCATE    "Failed to allocate %d bytes for '%s'"
 #define CFG_ERR_INVALID_LEN "Invalid '%s' length: %u (allowed range: %u-%u)"
 
-#define CFG_MSG_CALL_SETTER  "Calling the setter `%s`"
-#define CFG_MSG_CALL_UPDATER "Calling the setter `%s`"
-#define CFG_MSG_REPLACED     "`%s` with %d replaced by %d"
+#if CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D
+    #define CFG_MSG_CALL_SETTER  "Calling the setter `%s`"
+    #define CFG_MSG_CALL_UPDATER "Calling the setter `%s`"
+    #define CFG_MSG_REPLACED     "`%s` with %d replaced by %d"
+#endif
 
 /* --- */
 
@@ -57,9 +59,6 @@ esp_err_t eif_core_initialize(void) {
 
     EIF_LOG_D(MSG_CALL_SETTER, __func__);
 
-    #if (SERVER_LED_PIN >= 0)
-        eif_pin_led_init();
-    #endif
     #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
         eif_core_log_init();
     #endif
@@ -74,29 +73,16 @@ esp_err_t eif_core_initialize(void) {
         }
     }
 
-    eif_core_t temp_config = {
-        .wifi_driver_config = WIFI_INIT_CONFIG_DEFAULT(),
-        .wifi_power_mode = WIFI_PS_NONE,
-        .wifi_attempt_delay_ms = 2000,
-        .wifi_profiles_count = 3,
-        .wifi_test_results = {{0}},
+    /* --- INIT --- */
+    eif_core_t temp_config = {0};
 
-        #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
-            .mdns_hostname = {0},
-        #endif
-        #ifdef CONFIG_EIF_ENABLE_MDNS
-            .mdns_instance_name = {0},
-            .mdns_txt_records = {{0}},
-            .mdns_txt_records_count = 0,
-        #endif
+    wifi_init_config_t default_wifi_cfg = WIFI_INIT_CONFIG_DEFAULT();
 
-        .handler_ip_got = NULL,
-        .handler_ip_lost = NULL,
-        .handler_system_reboot = NULL,
-
-        .current_wifi_profile_index = 0,
-        .wifi_handler_stop = false
-    };
+    temp_config.wifi_driver_config = default_wifi_cfg;
+    temp_config.wifi_power_mode = WIFI_PS_NONE;
+    temp_config.wifi_attempt_delay_ms = 2000U;
+    temp_config.wifi_profiles_count = 3U;
+    /* --- END INIT --- */
 
     for (uint32_t i = 0U; i < EIF_WIFI_PROFILES_MAX_COUNT; i++) {
         temp_config.wifi_test_results[i].connected = false;
@@ -278,8 +264,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         if (ret == ESP_OK) {
             (void)memcpy(cfg.mdns_hostname, hostname, hostname_len);
             cfg.mdns_hostname[hostname_len] = '\0';
-        }
-        if (ret == ESP_OK) {
+
             (void)memcpy(cfg.mdns_instance_name, instance_name, instance_len);
             cfg.mdns_instance_name[instance_len] = '\0';
         }
@@ -331,7 +316,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 
 /* Private setters */
 #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
-    esp_err_t eif_format_mdns_hostname() {
+    esp_err_t eif_format_mdns_hostname(void) {
         esp_err_t ret = ESP_OK;
 
         uint8_t mac[6] = {0};

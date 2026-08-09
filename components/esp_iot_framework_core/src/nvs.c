@@ -58,6 +58,10 @@
 
 /* --- */
 
+/* @for_linter misra-c2012-8.7 */
+esp_err_t eif_nvs_initialize(void);
+
+
 #define TAG "NVS"
 
 static inline esp_err_t eif_nvs_check_range(
@@ -127,7 +131,7 @@ esp_err_t eif_nvs_value_load(
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
         nvs_open(NVS_STORAGE_NAME, NVS_READWRITE, &handle),
-        NVS_ERR_OPEN_WRITE, key);
+        NVS_ERR_OPEN_READ, key);
 
     size_t length = max_len;
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_get_str(handle, key, value_out, &length),
@@ -161,12 +165,16 @@ esp_err_t eif_nvs_value_load_malloc(
     EIF_IF_OK_CHECK_NOT_NULL(ret, value_out, ESP_ERR_INVALID_ARG);
     EIF_IF_OK_CHECK_NOT_NULL(ret, value_out_len, ESP_ERR_INVALID_ARG);
 
-    vPortFree(*value_out);
-    *value_out = NULL;
+    if ((ret == ESP_OK) && (value_out)) {
+        if (*value_out != NULL) {
+            vPortFree(*value_out);
+        }
+        *value_out = NULL;
+    }
 
     EIF_IF_OK_CHECK_ESP_ERR_T(ret,
         nvs_open(NVS_STORAGE_NAME, NVS_READWRITE, &handle),
-        NVS_ERR_OPEN_WRITE, key);
+        NVS_ERR_OPEN_READ, key);
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, nvs_get_str(handle, key, NULL, &length),
         NVS_ERR_MISSING, key);
 
@@ -216,6 +224,7 @@ static inline esp_err_t eif_nvs_wifi_gen_keys(
 
     if (ret == ESP_OK) {
         (void)memcpy(s_buf, "wifi_ssid", 9U);
+        (void)memcpy(p_buf, "wifi_pass", 9U);
 
         size_t high_nibble = ((size_t)index >> 4U) & 0x0FU;
         size_t low_nibble = (size_t)index & 0x0FU;
@@ -223,12 +232,6 @@ static inline esp_err_t eif_nvs_wifi_gen_keys(
         s_buf[9]  = hex_chars[high_nibble];
         s_buf[10] = hex_chars[low_nibble];
         s_buf[11] = '\0';
-    }
-    if (ret == ESP_OK) {
-        (void)memcpy(p_buf, "wifi_pass", 9U);
-
-        size_t high_nibble = ((size_t)index >> 4U) & 0x0FU;
-        size_t low_nibble = (size_t)index & 0x0FU;
 
         p_buf[9]  = hex_chars[high_nibble];
         p_buf[10] = hex_chars[low_nibble];
@@ -331,29 +334,47 @@ esp_err_t eif_nvs_wifi_profile_load(
     #define EIF_BASIC_AUTH_LINE_DEFAULT "Basic YWRtaW46"
     #define NVS_KEY_BASIC_AUTH_LINE "web_auth_pass"
 
-    static const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    static inline uint32_t read_next_octet(
+        const unsigned char *input, size_t input_length, size_t *index
+    ) {
+        uint32_t octet = 0U;
+        if ((*index) < input_length) {
+            octet = (uint32_t)input[*index];
+            (*index)++;
+        }
+        return octet;
+    }
+    
     static char *base64_encode(const unsigned char *input, size_t input_length) {
+        static const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    
         esp_err_t err = ESP_OK;
 
         size_t output_length = 4U * ((input_length + 2U) / 3U);
-        char *encoded_data = pvPortMalloc(output_length + 1U);
+        char *encoded_data = (char *)pvPortMalloc(output_length + 1U);
         EIF_IF_OK_CHECK_NOT_NULL(err, encoded_data, ESP_ERR_NO_MEM);
 
-        if (err == ESP_OK) {
-            for (size_t i = 0, j = 0; i < input_length; ) {
-                uint32_t octet_a = i < input_length ? input[i++] : 0U;
-                uint32_t octet_b = i < input_length ? input[i++] : 0U;
-                uint32_t octet_c = i < input_length ? input[i++] : 0U;
-                uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
+        if ((err == ESP_OK) && (encoded_data)) {
+            size_t i = 0;
+            size_t j = 0;
 
-                encoded_data[j++] = base64_table[(triple >> 3U * 6U) & 0x3F];
-                encoded_data[j++] = base64_table[(triple >> 2U * 6U) & 0x3F];
-                encoded_data[j++] = base64_table[(triple >> 1U * 6U) & 0x3F];
-                encoded_data[j++] = base64_table[(triple >> 0U * 6U) & 0x3F];
+            while (i < input_length) {
+                uint32_t octet_a = read_next_octet(input, input_length, &i);
+                uint32_t octet_b = read_next_octet(input, input_length, &i);
+                uint32_t octet_c = read_next_octet(input, input_length, &i);
+
+                uint32_t triple = (octet_a << 16U) | (octet_b << 8U) | octet_c;
+
+                encoded_data[j + 0U] = base64_table[(triple >> 18U) & 0x3FU];
+                encoded_data[j + 1U] = base64_table[(triple >> 12U) & 0x3FU];
+                encoded_data[j + 2U] = base64_table[(triple >> 6U) & 0x3FU];
+                encoded_data[j + 3U] = base64_table[triple & 0x3FU];
+                j += 4U;
             }
 
-            for (size_t i = 0U; i < (3U - input_length % 3U) % 3U; i++) {
-                encoded_data[output_length - 1U - i] = '=';
+            const size_t padding_count = (3U - (input_length % 3U)) % 3U;
+            for (size_t k = 0U; k < padding_count; k++) {
+                encoded_data[output_length - 1U - k] = '=';
             }
 
             encoded_data[output_length] = '\0';
@@ -366,8 +387,9 @@ esp_err_t eif_nvs_wifi_profile_load(
         esp_err_t ret = ESP_OK;
         char line[EIF_BASIC_AUTH_LINE_MAX_LEN] = {0};
         char *b64_pass = NULL;
-        size_t pass_len = eif_strnlen((char *)pass,
-            EIF_BASIC_AUTH_PASS_MAX_LEN - 1U);
+        size_t pass_len = eif_strnlen(
+            (const char *)pass, EIF_BASIC_AUTH_PASS_MAX_LEN - 1U
+        );
 
         EIF_IF_OK_CHECK_NOT_NULL(ret, pass, ESP_ERR_INVALID_ARG);
         /* @note The macro includes the null-terminator, so 1 is subtracted
@@ -395,6 +417,7 @@ esp_err_t eif_nvs_wifi_profile_load(
              * checking the return value to ensure the output is not truncated.
              * This approach prevents malformed data from being written to NVS
              * and is more maintainable than manual string concatenation. */
+            /* cppcheck-suppress misra-c2012-21.6 */
             int res = snprintf(line, sizeof(line), "%s%s",
                 EIF_BASIC_AUTH_LINE_DEFAULT, b64_pass);
             if ((res < 0) || (res >= (int)EIF_BASIC_AUTH_LINE_MAX_LEN)) {
@@ -469,7 +492,6 @@ esp_err_t eif_nvs_initialize(void) {
             }
         }
     }
-
 
     if (ret == ESP_OK) {
         EIF_LOG_I("NVS Flash system is ready");

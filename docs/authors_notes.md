@@ -27,11 +27,11 @@
  * [Tools]
       Create a script to check the validity of license headers in files
 
+ * [Documentation]
+      Add a description for each of the 'Kconfig' fields
+
  * [CORE, include/esp_iot_framework_core_ext.c, Task Management]
       Create proper documentation
-
- * [CORE, src/system.c, Pins]
-      When a debug board with an RGB LED appears, implement its support
 
  * [DEVICE, web_src/network.html]
       Add an INFO section with general network information
