@@ -14,18 +14,21 @@ This software contains components from the ESP-IDF SDK and its dependencies, whi
 
 For full license information, see:
 * https://espressif.com/
-* https://github.com/espressif
+* https://github.com/espressif/
 * https://github.com/espressif/esp-idf/
 
 This product also includes third-party software:
 - json2.js - Created by Douglas Crockford
   * Source: https://github.com/douglascrockford/JSON-js/
   * License: Public Domain (as stated in the source code comments)
+  * Path: ./components/esp_iot_framework_device/web_src/json2.js
 
 - jsmn - Created by Serge Zaitsev
   * Source: https://github.com/espressif/idf-extra-components/tree/master/jsmn
   * License: MIT License (Copyright (c) 2010 Serge Zaitsev)
+  * Path: ./components/jsmn/*
 
 - json_generator - Created by Piyush Shah
   * Source: https://github.com/espressif/json_generator
   * License: Apache License 2.0 (Copyright 2020 Piyush Shah)
+  * Path: ./components/json_generator/*

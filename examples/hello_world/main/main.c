@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
- #include <esp_err.h>
+#include <esp_err.h>
 #include <esp_http_server.h>
 #include <esp_iot_framework_core.h>
 #include <esp_iot_framework_device.h>

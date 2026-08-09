@@ -81,7 +81,7 @@ esp_err_t eif_core_initialize(void) {
     temp_config.wifi_driver_config = default_wifi_cfg;
     temp_config.wifi_power_mode = WIFI_PS_NONE;
     temp_config.wifi_attempt_delay_ms = 2000U;
-    temp_config.wifi_profiles_count = 3U;
+    temp_config.wifi_profiles_count = 2U;
     /* --- END INIT --- */
 
     for (uint32_t i = 0U; i < EIF_WIFI_PROFILES_MAX_COUNT; i++) {

@@ -42,7 +42,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">esp_iot_framework
-   &#160;<span id="projectnumber">v0.1.0-alpha</span>
+   &#160;<span id="projectnumber">v0.2.1</span>
    </div>
    <div id="projectbrief">© 2026 AmakeSasha, distributed under a license Apache-2.0</div>
   </td>
@@ -94,7 +94,39 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <ul>
 <li><b>End Devices</b> - A Node augmented with your product's business logic. Smart bulbs, relays, sensors, actuators — any target scenario boils down to implementing that single, unique logic on top of the chosen Node.</li>
 </ul>
-<h1>Storage, documentation and mirrors</h1>
+<h1>Example of use</h1>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_http_server.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_device.h&gt;</span></div>
+<div class="line"> </div>
+<div class="line">esp_err_t hello_world(httpd_req_t *req) {</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> *resp = <span class="stringliteral">&quot;Hello World, from esp_iot_framework!&quot;</span>;</div>
+<div class="line">    httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);</div>
+<div class="line">    <span class="keywordflow">return</span> ESP_OK;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keyword">const</span> httpd_uri_t my_uris[] = {</div>
+<div class="line">    { .uri = <span class="stringliteral">&quot;/hello&quot;</span>, .method = HTTP_GET, .handler = hello_world }</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
+<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
+<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__device__c.html#ga3d81873b423355576951a5969873b354">eif_device_initialize</a>());</div>
+<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a>());</div>
+<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__eif__server.html#gafd10cfadfcb353f67b04252cec3683a3">eif_set_uri_handlers</a>(my_uris, 1));</div>
+<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a>());</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">while</span> (1) {</div>
+<div class="line">        vTaskDelay(pdMS_TO_TICKS(1000));</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="agroup__config__c_html_gae24819dbf0c169ad7e418a5d3a978350"><div class="ttname"><a href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a></div><div class="ttdeci">esp_err_t eif_nvs_initialize(void)</div><div class="ttdoc">Initialize Non-Volatile Storage (NVS) and framework data.</div></div>
+<div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
+<div class="ttc" id="agroup__device__c_html_ga3d81873b423355576951a5969873b354"><div class="ttname"><a href="group__device__c.html#ga3d81873b423355576951a5969873b354">eif_device_initialize</a></div><div class="ttdeci">esp_err_t eif_device_initialize(void)</div><div class="ttdoc">Configures system-wide services and prepares the device networking environment.</div></div>
+<div class="ttc" id="agroup__eif__server_html_gafd10cfadfcb353f67b04252cec3683a3"><div class="ttname"><a href="group__eif__server.html#gafd10cfadfcb353f67b04252cec3683a3">eif_set_uri_handlers</a></div><div class="ttdeci">esp_err_t eif_set_uri_handlers(const httpd_uri_t *const uri_handlers, size_t uri_handlers_count)</div><div class="ttdoc">Register custom URI handlers (endpoints).</div></div>
+<div class="ttc" id="agroup__eif__wifi__config_html_ga46875c7d8c6588027981c2659a1d1240"><div class="ttname"><a href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a></div><div class="ttdeci">esp_err_t eif_wifi_initialize(void)</div><div class="ttdoc">Launch the Wi-Fi subsystem and automated network services.</div></div>
+</div><!-- fragment --><h1>Storage, documentation and mirrors</h1>
 <p>To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
