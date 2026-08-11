@@ -1,9 +1,13 @@
-/* SPDX-License-Identifier: CC0-1.0
- * Original Author: Douglas Crockford
- * Source: https://github.com/douglascrockford/JSON-js
- * Date: 2023-05-10
- *
+/*
+ * SPDX-License-Identifier: CC0-1.0
+ * Library: json2.js
+ * Folder: ./components/esp_iot_framework_device/web_src
  * File: json2.js
+ * Original Author: Douglas Crockford
+ * Version: 2023-05-10
+ * Source: https://github.com/douglascrockford/JSON-js
+ * 
+ * Public Domain
  */
 
 if (typeof JSON !== "object") {

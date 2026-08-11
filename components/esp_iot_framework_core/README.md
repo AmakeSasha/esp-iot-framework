@@ -3,15 +3,16 @@
   Project: esp-iot-framework
   Folder: ./components/esp_iot_framework_core
   File: README.md
- 
+  Library: esp_iot_framework_core
+  
   Copyright 2026 AmakeSasha
- 
+  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
-    http://www.apache.org/licenses/LICENSE-2.0
- 
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,6 +43,7 @@
 * Fully manages the mDNS subsystem lifecycle from initialization and HTTP/HTTPS service registration to resource cleanup.
 * Includes a set of handy macros that simplify logging, debugging, and error handling.
 * Periodically checks heap fragmentation and triggers a preventive auto-reboot if memory degradation hits a critical threshold.
+* Log capture layer that hooks into the ESP-IDF logging system, buffers all runtime logs into a ring buffer, and exposes them for any Node to fetch and transmit to the outside world.
 
 For an in-depth look, check out the documentation for each section:
 * [Public Core](../../docs/invalid_link.md#group__core__group.html)

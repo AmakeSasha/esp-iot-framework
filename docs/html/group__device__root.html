@@ -1,18 +1,4 @@
 <!-- HTML header for doxygen 1.9.1-->
-<!--
-  SPDX-License-Identifier: Apache-2.0
-  Project: esp-iot-framework
-  Copyright 2026 AmakeSasha
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -96,10 +82,11 @@ Modules</h2></td></tr>
 <h2>REST API Features</h2>
 <p>The built-in API equips your end device with a scalable suite of management capabilities:</p>
 <ul>
-<li><b>Wi-Fi Management</b> — Retrieve the list of saved Wi-Fi profiles, update or clear Wi-Fi profiles, and run background connectivity and health tests for a specific Wi-Fi profile.</li>
-<li><b>System Metrics</b> — Access essential and expandable device telemetry, including heap statistics (free/minimum heap, largest free block), uptime, CPU frequency, core count, chip model and hardware revision, flash size, last reset reason, the device MAC address, and other system data.</li>
-<li><b>OTA Firmware Management</b> — Read running software metadata (such as project name, version, compile date, and ESP-IDF version), upload new binaries, and handle update confirmations or automatic rollbacks.</li>
-<li><b>Security Control</b> — Modify the administrator password on the fly and trigger on-device regeneration of cryptographic TLS keys and certificates.</li>
+<li><b>Wi-Fi Management</b> - Retrieve the list of saved Wi-Fi profiles, update or clear Wi-Fi profiles, and run background connectivity and health tests for a specific Wi-Fi profile.</li>
+<li><b>System Metrics</b> - Access essential and expandable device telemetry, including heap statistics (free/minimum heap, largest free block), uptime, CPU frequency, core count, chip model and hardware revision, flash size, last reset reason, the device MAC address, and other system data.</li>
+<li><b>OTA Firmware Management</b> - Read running software metadata (such as project name, version, compile date, and ESP-IDF version), upload new binaries, and handle update confirmations or automatic rollbacks.</li>
+<li><b>Security Control</b> - Modify the administrator password on the fly and trigger on-device regeneration of cryptographic TLS keys and certificates.</li>
+<li><b>Remote log reading</b> - View device logs directly in the browser without a UART connection. <code>CORE</code> captures all system and business logs into an internal ring buffer; the <code>DEVICE</code> streams them live to the <code>Logs</code> page in the Web Admin GUI.</li>
 </ul>
 <p>For an in-depth look, check out the <a href="group__device__rest__api.html">API documentation</a>.</p>
 <h2>Web Admin GUI</h2>

@@ -1,17 +1,18 @@
-/* SPDX-License-Identifier: Apache-2.0
+/*
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
- * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/include
  * File: esp_iot_framework_core_mdns.h
- *
+ * Library: esp_iot_framework_core
+ * 
  * Copyright 2026 AmakeSasha
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -95,12 +96,10 @@
      * @{
      */
 
-
     /**
      * @brief Maximum number of mDNS txt-records
      */
     #define EIF_MDNS_TXT_RECORDS_MAX_COUNT 32
-
 
     /**
      * @brief Configure the mDNS hostname and instance name.
@@ -142,7 +141,6 @@
     esp_err_t eif_set_mdns(
         const char * const hostname, const char * const instance_name
     );
-
 
     /**
      * @brief Set custom TXT records for mDNS service discovery.

@@ -1,18 +1,18 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Library: esp_iot_framework_device
   Folder: ./components/esp_iot_framework_device
   File: README.md
- 
+  Library: esp_iot_framework_device
+  
   Copyright 2026 AmakeSasha
- 
+  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
-    http://www.apache.org/licenses/LICENSE-2.0
- 
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,10 +45,11 @@ The entire server infrastructure functions via a middleware layer that handles u
 
 The built-in API equips your end device with a scalable suite of management capabilities:
 
-* **Wi-Fi Management** — Retrieve the list of saved Wi-Fi profiles, update or clear Wi-Fi profiles, and run background connectivity and health tests for a specific Wi-Fi profile.
-* **System Metrics** — Access essential and expandable device telemetry, including heap statistics (free/minimum heap, largest free block), uptime, CPU frequency, core count, chip model and hardware revision, flash size, last reset reason, the device MAC address, and other system data.
-* **OTA Firmware Management** — Read running software metadata (such as project name, version, compile date, and ESP-IDF version), upload new binaries, and handle update confirmations or automatic rollbacks.
-* **Security Control** — Modify the administrator password on the fly and trigger on-device regeneration of cryptographic TLS keys and certificates.
+* **Wi-Fi Management** - Retrieve the list of saved Wi-Fi profiles, update or clear Wi-Fi profiles, and run background connectivity and health tests for a specific Wi-Fi profile.
+* **System Metrics** - Access essential and expandable device telemetry, including heap statistics (free/minimum heap, largest free block), uptime, CPU frequency, core count, chip model and hardware revision, flash size, last reset reason, the device MAC address, and other system data.
+* **OTA Firmware Management** - Read running software metadata (such as project name, version, compile date, and ESP-IDF version), upload new binaries, and handle update confirmations or automatic rollbacks.
+* **Security Control** - Modify the administrator password on the fly and trigger on-device regeneration of cryptographic TLS keys and certificates.
+* **Remote log reading** - View device logs directly in the browser without a UART connection. `CORE` captures all system and business logs into an internal ring buffer; the `DEVICE` streams them live to the `Logs` page in the Web Admin GUI.
 
 For an in-depth look, check out the [API documentation](../../docs/invalid_link.md#group__device__rest__api.html).
 

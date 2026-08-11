@@ -1,15 +1,16 @@
 <!--
   SPDX-License-Identifier: MIT
-  Original Author: Serge Zaitsev
   Library: jsmn
+  Folder: ./components/jsmn
+  File: README.md
+  Relative folder: .
+  Original Author: Serge Zaitsev
   Version: 1.1.0
   Source: https://github.com/espressif/idf-extra-components/tree/master/jsmn
-  Folder: .
-  File: README.md
-  
-  MIT License
   
   Copyright (c) 2010 Serge Zaitsev
+  
+  MIT License
   
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal

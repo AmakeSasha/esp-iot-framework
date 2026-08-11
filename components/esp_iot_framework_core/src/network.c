@@ -1,17 +1,18 @@
-/* SPDX-License-Identifier: Apache-2.0
+/*
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
- * Library: esp_iot_framework_core
  * Folder: ./components/esp_iot_framework_core/src
  * File: network.c
- *
+ * Library: esp_iot_framework_core
+ * 
  * Copyright 2026 AmakeSasha
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +49,7 @@
         EIF_TAG_WITH_UNUSED "mDNS";
 
         esp_err_t ret = ESP_OK;
-        eif_core_t * const cfg = eif_core_get();
+        const eif_core_t * const cfg = eif_core_get();
 
         /* @note Testing revealed that omitting this call triggers hard kernel
          * panic (IllegalInstruction). Forcing an explicit cleanup here prevents
@@ -64,6 +65,15 @@
             mdns_instance_name_set(cfg->mdns_instance_name),
             "Failed to set instance name: %s", cfg->mdns_instance_name);
 
+        /* @deviation [Rule 11.8] eif_core_get() intentionally returns a const pointer 
+         * to protect core configuration data from accidental modification, enforcing 
+         * changes strictly through dedicated setters. The explicit cast is required 
+         * only because the third-party ESP-IDF 'mdns_service_add()' function misses 
+         * 'const' in its signature for the TXT items argument. Making core data 
+         * non-const would break the system data protection model. Code review of the 
+         * ESP-IDF source confirms that 'mdns_service_add()' operates in read-only 
+         * mode and does not modify the buffer, making this cast completely safe. */
+        /* cppcheck-suppress misra-c2012-11.8 */
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_service_add(
             cfg->mdns_instance_name, MDNS_PROTOCOL, "_tcp", MDNS_PORT,
             (mdns_txt_item_t *)cfg->mdns_txt_records,
