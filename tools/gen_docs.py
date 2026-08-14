@@ -120,8 +120,20 @@ def main():
             "dst_path": ""
         },
         {
+            "src": "components/esp_iot_framework_core/KCONFIG.md",
+            "name": "KCONFIG_CORE.md",
+            "type": "readme",
+            "dst_path": ""
+        },
+        {
             "src": "components/esp_iot_framework_device/README.md",
             "name": "README_DEVICE.md",
+            "type": "readme",
+            "dst_path": ""
+        },
+        {
+            "src": "components/esp_iot_framework_device/KCONFIG.md",
+            "name": "KCONFIG_DEVICE.md",
             "type": "readme",
             "dst_path": ""
         }

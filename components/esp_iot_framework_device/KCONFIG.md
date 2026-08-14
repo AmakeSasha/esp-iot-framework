@@ -22,7 +22,7 @@
 
 # Kconfig esp_iot_framework_device
 
-This section describes the `esp_iot_framework_device` configuration parameters. All settings are available in the `idf.py menuconfig` configuration utility within the `ESP IoT framework Device` menu.
+This section describes the `esp_iot_framework_device` configuration parameters. All settings are available in the `idf.py menuconfig` configuration utility within the `ESP IoT Framework, DEVICE` menu.
 
 ---
 

@@ -22,7 +22,7 @@
 
 # Kconfig esp_iot_framework_core
 
-This section describes the `esp_iot_framework_core` configuration parameters. All settings are available in the `idf.py menuconfig` configuration utility within the `ESP IoT framework Core` menu.
+This section describes the `esp_iot_framework_core` configuration parameters. All settings are available in the `idf.py menuconfig` configuration utility within the `ESP IoT framework, CORE` menu.
 
 ---
 
@@ -117,7 +117,7 @@ Name in the `menuconfig`: `Enable remote diagnostic logging engine`
 
 Intercepts all system and application logs into an internal RAM ring buffer for network-based diagnostics.
 
-- If `y`: The framework redirects all standard console output to a continuous FreeRTOS ring buffer. These logs can be read via the <code><a class="el" href="group__core__ext__group.html" title="CORE Extension">CORE Extension</a></code> API (`eif_core_log_pop_chunk()`) and transmitted over network protocols (HTTP, MQTT, BLE, or WebSockets), eliminating the need for a physical UART/serial connection.
+- If `y`: The framework redirects all standard console output to a continuous FreeRTOS ring buffer. These logs can be read via the <code><a class="el" href="../../docs/invalid_link.md#group__core__ext__group.html" title="CORE Extension">CORE Extension</a></code> API (`eif_core_log_pop_chunk()`) and transmitted over network protocols (HTTP, MQTT, BLE, or WebSockets), eliminating the need for a physical UART/serial connection.
 
 - If `n`: Logs are routed strictly to the physical UART port. Remote logging APIs are completely compiled out to save flash and RAM.
 

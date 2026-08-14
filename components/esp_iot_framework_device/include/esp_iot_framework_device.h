@@ -58,7 +58,7 @@
 /**
  * @defgroup device_kconfig Kconfig
  * @brief Node `Kconfig` configuration options.
- * @copydoc md_components_esp_iot_framework_device_KCONFIG
+ * @copydoc md_docs_html_KCONFIG_DEVICE
  */
 /** @} */
 

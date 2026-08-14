@@ -66,10 +66,10 @@ WARN_FORMAT            = "$file:$line: $text"
 #---------------------------------------------------------------------------
 STRIP_FROM_PATH        = ..
 INPUT                  = ../components/esp_iot_framework_core/include \
-                         ../components/esp_iot_framework_core/KCONFIG.md \
+                         html/KCONFIG_CORE.md \
                          html/README_CORE.md \
                          ../components/esp_iot_framework_device/include \
-                         ../components/esp_iot_framework_device/KCONFIG.md \
+                         html/KCONFIG_DEVICE.md \
                          html/README_DEVICE.md \
                          ../components/esp_iot_framework_device/REST_API.md \
                          html/README.md \

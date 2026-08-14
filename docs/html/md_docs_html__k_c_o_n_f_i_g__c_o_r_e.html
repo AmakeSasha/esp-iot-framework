@@ -8,7 +8,7 @@
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
 <meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
-<title>esp_iot_framework: KCONFIG</title>
+<title>esp_iot_framework: KCONFIG_CORE</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -51,18 +51,18 @@
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('md_components_esp_iot_framework_core__k_c_o_n_f_i_g.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('md_docs_html__k_c_o_n_f_i_g__c_o_r_e.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">KCONFIG </div>  </div>
+<div class="title">KCONFIG_CORE </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="autotoc_md0"></a>
 Kconfig esp_iot_framework_core</h1>
-<p>This section describes the <code>esp_iot_framework_core</code> configuration parameters. All settings are available in the <code>idf.py menuconfig</code> configuration utility within the <code>ESP IoT framework Core</code> menu.</p>
+<p>This section describes the <code>esp_iot_framework_core</code> configuration parameters. All settings are available in the <code>idf.py menuconfig</code> configuration utility within the <code>ESP IoT framework, CORE</code> menu.</p>
 <hr  />
 <p><code>EIF_ENABLE_MDNS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)</p>
 <p>Name in the <code>menuconfig</code>: <code>Enable mDNS Support (Multicast DNS)</code></p>
@@ -139,7 +139,7 @@ Kconfig esp_iot_framework_core</h1>
 <p>Name in the <code>menuconfig</code>: <code>Enable remote diagnostic logging engine</code></p>
 <p>Intercepts all system and application logs into an internal RAM ring buffer for network-based diagnostics.</p>
 <ul>
-<li>If <code>y</code>: The framework redirects all standard console output to a continuous FreeRTOS ring buffer. These logs can be read via the <code><a href="group__core__ext__group.html" class="el" title="CORE Extension">CORE Extension</a></code> API (<code><a class="el" href="group___ofher.html#gaf19fba0fe07bd090a2871a913f4de721" title="Thread-safe extraction of diagnostic logs from the core ring buffer.">eif_core_log_pop_chunk()</a></code>) and transmitted over network protocols (HTTP, MQTT, BLE, or WebSockets), eliminating the need for a physical UART/serial connection.</li>
+<li>If <code>y</code>: The framework redirects all standard console output to a continuous FreeRTOS ring buffer. These logs can be read via the <code><a href="../../docs/invalid_link.md#group__core__ext__group.html" class="el" title="CORE Extension">CORE Extension</a></code> API (<code><a class="el" href="group___ofher.html#gaf19fba0fe07bd090a2871a913f4de721" title="Thread-safe extraction of diagnostic logs from the core ring buffer.">eif_core_log_pop_chunk()</a></code>) and transmitted over network protocols (HTTP, MQTT, BLE, or WebSockets), eliminating the need for a physical UART/serial connection.</li>
 <li>If <code>n</code>: Logs are routed strictly to the physical UART port. Remote logging APIs are completely compiled out to save flash and RAM.</li>
 </ul>
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />

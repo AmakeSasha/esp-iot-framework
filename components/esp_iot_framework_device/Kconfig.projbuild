@@ -18,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-menu "ESP IoT Framework"
+menu "ESP IoT Framework, DEVICE"
     menu "Web admin GUI"
         config EIF_ENABLE_WEB_ADMIN_GUI
             bool "Enable Web-based Administration Panel"

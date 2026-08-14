@@ -54,7 +54,7 @@
 /**
  * @defgroup core_kconfig Kconfig
  * @brief Core `Kconfig` configuration options.
- * @copydoc md_components_esp_iot_framework_core_KCONFIG
+ * @copydoc md_docs_html_KCONFIG_CORE
  */
 /** @} */
 
