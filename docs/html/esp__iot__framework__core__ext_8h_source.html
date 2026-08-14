@@ -1181,8 +1181,8 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;<span class="comment"> *        part of a group large enough for a separate module.</span></div>
 <div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;<span class="comment"> * @{</span></div>
 <div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;<span class="preprocessor">#if (defined(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG) || defined(DOXYGEN))</span></div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    <span class="comment">/*</span></div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;<span class="preprocessor">#if (defined(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG) || defined(DOXYGEN))</span><span class="comment"></span></div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;<span class="comment">    /**</span></div>
 <div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;<span class="comment">     * @brief Thread-safe extraction of diagnostic logs from the core ring buffer.</span></div>
 <div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;<span class="comment">     *</span></div>
 <div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;<span class="comment">     * This function retrieves accumulated logs from the internal ring buffer, </span></div>
@@ -1195,7 +1195,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;<span class="comment">     * @return size_t The number of bytes actually copied into dest_buf. </span></div>
 <div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;<span class="comment">     *                Returns 0 if the log buffer is empty.</span></div>
 <div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;    <span class="keywordtype">size_t</span> eif_core_log_pop_chunk(<span class="keywordtype">char</span> *dest_buf, <span class="keywordtype">size_t</span> max_size);</div>
+<div class="line"><a name="l01136"></a><span class="lineno"><a class="line" href="group___ofher.html#gaf19fba0fe07bd090a2871a913f4de721"> 1136</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="group___ofher.html#gaf19fba0fe07bd090a2871a913f4de721">eif_core_log_pop_chunk</a>(<span class="keywordtype">char</span> *dest_buf, <span class="keywordtype">size_t</span> max_size);</div>
 <div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;<span class="preprocessor">#endif</span><span class="comment"></span></div>
 <div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;<span class="comment">/** @} */</span><span class="comment"></span></div>
 <div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;<span class="comment">/** @} */</span></div>
@@ -1204,6 +1204,7 @@ $(document).ready(function(){initNavTree('esp__iot__framework__core__ext_8h_sour
 <div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;    }</div>
 <div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="agroup___ofher_html_gaf19fba0fe07bd090a2871a913f4de721"><div class="ttname"><a href="group___ofher.html#gaf19fba0fe07bd090a2871a913f4de721">eif_core_log_pop_chunk</a></div><div class="ttdeci">size_t eif_core_log_pop_chunk(char *dest_buf, size_t max_size)</div><div class="ttdoc">Thread-safe extraction of diagnostic logs from the core ring buffer.</div></div>
 <div class="ttc" id="agroup__core__ext__config_html_ga02bc7fad9258223f55198c7698afce4c"><div class="ttname"><a href="group__core__ext__config.html#ga02bc7fad9258223f55198c7698afce4c">eif_wifi_get_current_profile_index</a></div><div class="ttdeci">uint8_t eif_wifi_get_current_profile_index(void)</div><div class="ttdoc">Gets the index of the currently active Wi-Fi profile.</div></div>
 <div class="ttc" id="agroup__core__ext__config_html_ga2d99b168300669bae31f6b374759875f"><div class="ttname"><a href="group__core__ext__config.html#ga2d99b168300669bae31f6b374759875f">eif_wifi_get_test_result</a></div><div class="ttdeci">esp_err_t eif_wifi_get_test_result(uint8_t index, eif_wifi_test_result *const out_result)</div><div class="ttdoc">Gets the network availability test result for a specific Wi-Fi profile.</div></div>
 <div class="ttc" id="agroup__core__ext__config_html_gab65a93f355fa329c6d13853685ab8e48"><div class="ttname"><a href="group__core__ext__config.html#gab65a93f355fa329c6d13853685ab8e48">eif_wifi_get_profiles_count</a></div><div class="ttdeci">uint8_t eif_wifi_get_profiles_count(void)</div><div class="ttdoc">Gets the total number of Wi-Fi profiles.</div></div>

@@ -69,7 +69,7 @@
 
 /* --- */
 #if CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE < (CONFIG_EIF_REBOOT_TASK_STACK_SIZE * 8)
-    #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be twice as large as EIF_REBOOT_TASK_STACK_SIZE!"
+    #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE!"
 #endif
 
 /* @for_linter misra-c2012-8.7 */
@@ -524,16 +524,8 @@ static void eif_task_memory_monitor(void *arg) {
             count_critical_checks = 0;
         }
 
-        vTaskDelay(pdMS_TO_TICKS(
-            is_critical
-                ? ((size_t)CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL / 2U)
-                : (size_t)CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL
-        ));
+        vTaskDelay(pdMS_TO_TICKS(CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL));
     }
-
-    /* Cleanup */
-
-
 }
 
 esp_err_t eif_task_memory_monitor_launch(void) {

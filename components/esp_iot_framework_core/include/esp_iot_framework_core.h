@@ -51,6 +51,11 @@
  * @defgroup core_macros_group Core Macros
  * @brief Preprocessor utilities for standardized logging, sequential error checking, and task spawning.
  */
+/**
+ * @defgroup core_kconfig Kconfig
+ * @brief Core `Kconfig` configuration options.
+ * @copydoc md_components_esp_iot_framework_core_KCONFIG
+ */
 /** @} */
 
 /**

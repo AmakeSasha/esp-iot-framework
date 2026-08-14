@@ -1,6 +1,7 @@
 var NAVTREEINDEX0 =
 {
 "group___ofher.html":[0,0,1,6],
+"group___ofher.html#gaf19fba0fe07bd090a2871a913f4de721":[0,0,1,6,0],
 "group__config__c.html":[0,0,0,0],
 "group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350":[0,0,0,0,1],
 "group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6":[0,0,0,0,0],
@@ -50,11 +51,13 @@ var NAVTREEINDEX0 =
 "group__core__handlers.html":[0,0,0,1],
 "group__core__handlers.html#ga885585d4d73fc9bb8b8697d6368f57db":[0,0,0,1,1],
 "group__core__handlers.html#gab45722182aad79061b54ce86c3468078":[0,0,0,1,0],
+"group__core__kconfig.html":[0,0,3],
 "group__core__macros__group.html":[0,0,2],
 "group__core__root.html":[0,0],
 "group__device__c.html":[0,1,0,0],
 "group__device__c.html#ga3d81873b423355576951a5969873b354":[0,1,0,0,0],
 "group__device__group.html":[0,1,0],
+"group__device__kconfig.html":[0,1,2],
 "group__device__rest__api.html":[0,1,1],
 "group__device__root.html":[0,1],
 "group__eif__mdns.html":[0,0,0,4],

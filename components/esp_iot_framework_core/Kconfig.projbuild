@@ -26,12 +26,12 @@ menu "ESP IoT framework Core"
         help
             Enables the Multicast DNS (mDNS) responder service.
            
-            - If enabled: The device can be accessed via both a friendly
-              local name (e.g., http://esp-iot.local) and its IP address.
-              This makes it easier to find the device without checking
-              the router's DHCP list.
-            - If disabled: The device is accessible only via its direct
-              IP address.
+            - If `y`: The device can be accessed via both a friendly local name
+              (e.g., `http://device-aabbcc.local`) and its IP
+              (e.g., `http://192.168.1.45:80`). This makes it easier to find the device
+              without checking the router's DHCP list.
+            - If `n`: The device is accessible only via its direct IP address
+              (e.g., `http://192.168.1.45:80`).
 
     config EIF_ENABLE_TLS
         bool "Enable HTTPS (TLS/SSL) Support"
@@ -51,12 +51,11 @@ menu "ESP IoT framework Core"
               on the same network. Using simple packet sniffers, an attacker
               can easily intercept your session and compromise the system.
 
-            PERFORMANCE CONSIDERATIONS:
-              HTTPS is resource-intensive for the ESP32. Enabling this feature
-              will result in:
-                1. Increased RAM consumption (~30-50 KB for SSL buffers).
-                2. Initial connection latency (1-3 seconds for the TLS handshake).
-                3. Higher CPU utilization during active data transfer.
+            HTTPS is resource-intensive for the ESP32. Enabling this feature
+            will result in:
+              * Increased RAM consumption (~30-50 KB for TLS buffers).
+              * Initial connection latency (1-3 seconds for the TLS handshake).
+              * Higher CPU utilization during active data transfer.
 
             WARNING: Disabling TLS is strongly discouraged for production
                      environments. Modern browsers will mark your admin panel
@@ -78,11 +77,12 @@ menu "ESP IoT framework Core"
                 4: Debug
 
         config EIF_LOG_SHOW_METADATA
-            bool "Show metadata in logs (file, line, func)"
+            bool "Show metadata in logs (path, line, function)"
             default n
             help
                 If enabled, logs will include the source file, line number,
                 and function name.
+                
                 If enabled:
                 ```
                 I (8536) HTTPS server: src/web.c:990 (eif_server_launch) HTTP Server started.

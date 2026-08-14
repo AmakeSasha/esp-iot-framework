@@ -217,25 +217,25 @@
  * arguments is structurally enforced at compile-time by the toolchain via
  * printf compiler attributes, completely eliminating runtime type mismatch
  * risks. */
-/** @brief Logs an error message using the ESP_LOGE severity. */
+/** @brief Logs an error message using the `ESP_LOGE` severity, is level `Error`. */
 #if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_E || defined(DOXYGEN))
     #define EIF_LOG_E(...) EIF_PRINT(ESP_LOGE, __VA_ARGS__)
 #else
     #define EIF_LOG_E(...) ((void)0U)
 #endif
-/** @brief Logs a warning message using the ESP_LOGW severity. */
+/** @brief Logs a warning message using the `ESP_LOGW` severity, is level `Warning`. */
 #if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_W || defined(DOXYGEN))
     #define EIF_LOG_W(...) EIF_PRINT(ESP_LOGW, __VA_ARGS__)
 #else
     #define EIF_LOG_W(...) ((void)0U)
 #endif
-/** @brief Logs an informational message using the ESP_LOGI severity. */
+/** @brief Logs an informational message using the `ESP_LOGI` severity, is level `Info`. */
 #if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_I || defined(DOXYGEN))
     #define EIF_LOG_I(...) EIF_PRINT(ESP_LOGI, __VA_ARGS__)
 #else
     #define EIF_LOG_I(...) ((void)0U)
 #endif
-/** @brief Logs a debug message using the ESP_LOGD severity. */
+/** @brief Logs a debug message using the `ESP_LOGD` severity, is level `Debug`. */
 #if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D || defined(DOXYGEN))
     #define EIF_LOG_D(...) EIF_PRINT(ESP_LOGD, __VA_ARGS__)
 #else

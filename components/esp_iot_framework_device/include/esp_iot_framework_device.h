@@ -54,6 +54,11 @@
  * @defgroup device_rest_api REST API
  * @brief Device REST API documentation.
  * @details @copydoc md_components_esp_iot_framework_device_REST_API
+ */ 
+/**
+ * @defgroup device_kconfig Kconfig
+ * @brief Node `Kconfig` configuration options.
+ * @copydoc md_components_esp_iot_framework_device_KCONFIG
  */
 /** @} */
 
