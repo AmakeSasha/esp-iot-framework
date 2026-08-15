@@ -23,7 +23,7 @@
 The `esp_iot_framework_device` provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with `/_/` and support JSON format for requests and responses.
 
 ## Authentication
-When Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled, all administrative endpoints (all endpoints listed in `MAP URIs`) require HTTP Basic Authentication.
+When Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in `MAP URIs`) require HTTP Basic Authentication.
 
 To authenticate, include the following HTTP header in each of your requests:
 ```text
@@ -48,13 +48,13 @@ Content-Length: 20
 ## Map URIs
 
 * `/_`
-  * `/files` - only if the Kconfig option `CONFIG_EIF_ENABLE_WEB_ADMIN_GUI` is enabled
+  * `/files` - only if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_WEB_ADMIN_GUI">CONFIG_EIF_ENABLE_WEB_ADMIN_GUI</a></code> is enabled
     * `/favicon.ico` - Project logo
     
-      Only if the Kconfig option `CONFIG_EIF_ENABLE_WEB_FAVICON` is enabled
+      Only if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_WEB_FAVICON">CONFIG_EIF_ENABLE_WEB_FAVICON</a></code> is enabled
     * `/logs.html` - The page for viewing logs from the device
 
-      Only if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled
+      Only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
     * `/api.js` - JavaScript API library
     * `/json2.js` - JSON utility library
     * `/style.css` - Stylesheet
@@ -64,16 +64,17 @@ Content-Length: 20
     * `/network.html` - Network management page
   * `/wifi`
     * `/list.json` - [List Wi-Fi profiles](#h_wifi_list_json)
+    * `/info.json` - [Get Wi-Fi and network information](#h_wifi_info_json)
     * `/update.do` - [Update Wi-Fi profile](#h_wifi_update_do)
     * `/clear.do` - [Clear Wi-Fi profile](#h_wifi_clear_do)
     * `/check.do` - [Wi-Fi network availability test](#h_wifi_check_do)
     * `/result.json` - [Get the results of the Wi-Fi test](#h_wifi_result_json)
-  * `/tls` - only if the Kconfig option `CONFIG_EIF_ENABLE_TLS` is enabled
+  * `/tls` - only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled
     * `/recreate.do` - [Regenerate TLS keys and certificate](#h_tls_recreate_do)
   * `/sys`
     * `/logs.txt` - [Get logs from the device](#h_sys_logs_txt)
 
-      Only if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled
+      Only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
     * `/info.json` - [Get system information](#h_sys_info_json)
     * `/reboot.do` - [Reboot system](#h_sys_reboot_do)
   * `/ota`
@@ -81,7 +82,7 @@ Content-Length: 20
     * `/update.do` - [Upload firmware](#h_ota_update_do)
     * `/confirm.do` - [Confirm successful update](#h_ota_confirm_do)
     * `/rollback.do` - [Rollback firmware](#h_ota_rollback_do)
-  * `/apass` - only if the Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled
+  * `/apass` - only if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled
     * `/update.do` - [Update administrator password](#h_apass_update_do)
 
 ## HTTP Status Codes
@@ -136,6 +137,53 @@ Content-Length: 20
   - `profiles`: Array of Wi-Fi profiles
     - `ssid`: Network SSID (empty if not configured)
     - `password`: Password (only for profile `0`)
+
+---
+
+<a id="h_wifi_info_json"></a>
+* Get Wi-Fi and network information
+  ```text
+  GET /_/wifi/info.json
+  ```
+
+  Returns detailed active network connection parameters.
+  
+  **Request body**: `No body`
+
+  **Response body**:
+  ```json
+  {
+    "ssid": "MyNetwork",
+    "rssi": -65,
+    "channel": 6,
+    "auth_mode": "WPA2_PSK",
+    "bssid": "00:11:22:33:44:55",
+    "ip": "192.168.1.45",
+    "gateway": "192.168.1.1",
+    "netmask": "255.255.255.0",
+    "mac": "AA:BB:CC:DD:EE:FF",
+    "proto": "802.11n (Wi-Fi 4)",
+    "band": "2.4 GHz",
+    "lwip_hostname": "device-aabbcc",
+    "mdns_hostname": "device-aabbcc",
+    "used_tls": true
+  }
+  ```
+  **Fields**:
+  - `ssid`: Network SSID of the current active connection
+  - `rssi`: RSSI of current connection in dBm
+  - `channel`: Radio channel used by the current network
+  - `auth_mode`: Security type (string name mapped from `wifi_auth_mode_t`)
+  - `bssid`: Physical MAC address of the connected router antenna
+  - `ip`: Device IPv4 address assigned to the station interface
+  - `gateway`: Default gateway IP address
+  - `netmask`: Subnet mask
+  - `mac`: Station hardware MAC address of the device (`ESP_MAC_WIFI_STA`)
+  - `proto`: Wi-Fi protocol generation (mapped from `esp_wifi_get_protocol()`)
+  - `band`: Active frequency band (`2.4 GHz` or `5 GHz`)
+  - `lwip_hostname`: Device network name registered in the router DHCP client table (`null` if unassigned)
+  - `mdns_hostname`: Local mDNS domain name (`null` if <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS</a></code> is disabled)
+  - `used_tls`: Whether TLS is enabled on the server or not
 
 ---
 
@@ -254,7 +302,7 @@ Content-Length: 20
 
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
   <strong>Note</strong><br>
-  Only available if the Kconfig option `CONFIG_EIF_ENABLE_TLS` is enabled.
+  Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled.
 </div>
 
 <a id="h_tls_recreate_do"></a>
@@ -286,7 +334,7 @@ Content-Length: 20
 
   <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
     <strong>Note</strong><br>
-    Only available if the Kconfig option `CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG` is enabled.
+    Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled.
   </div>
 
   Streams the system log buffer in plain text using HTTP chunked transfer encoding.
@@ -326,6 +374,7 @@ Content-Length: 20
     "cpu_freq": 240,
     "chip_model": "ESP32",
     "reset_reason": 1,
+    "reset_reason_str": "Power-On Reset",
     "features": {
       "has_wifi": true,
       "has_bluetooth": true,
@@ -345,11 +394,31 @@ Content-Length: 20
   - `cpu_freq`: CPU frequency in MHz
   - `chip_model`: ESP chip model
   - `reset_reason`: Last reset reason code
+  - `reset_reason_str`: Last reset reason string
   - `features`: Object containing supported hardware features
     - `has_wifi`: `true` if Wi-Fi (802.11 b/g/n) is supported
     - `has_bluetooth`: `true` if Bluetooth Classic is supported
     - `has_ble`: `true` if Bluetooth Low Energy (BLE) is supported
   - `mac`: Device MAC address
+
+  <br>
+
+  **Reset Reason Codes**:
+  | Code | String                     |
+  |------|----------------------------|
+  | `1`  | `Power-on reset`           |
+  | `2`  | `External pin reset`       |
+  | `3`  | `Software reset`           |
+  | `4`  | `System panic reset`       |
+  | `5`  | `Watchdog timer reset`     |
+  | `6`  | `Task watchdog reset`      |
+  | `7`  | `Interrupt watchdog reset` |
+  | `8`  | `Deep sleep wake-up reset` |
+  | `9`  | `SDIO reset`               |
+  | `10` | `USB reset`                |
+  | `11` | `JTAG reset`               |
+  | `12` | `RTC system reset`         |
+  | `13` | `RTC CPU reset`            |
 
 ---
 
@@ -389,7 +458,7 @@ Content-Length: 20
   {
     "project": "my_iot_project",
     "version": "1.0.0",
-    "build_id": "a1b2c3d4e5f6...",
+    "elf_sha256": "a1b2c3d4e5f6...",
     "build_date": "Jan 1 2026",
     "build_time": "12:00:00",
     "idf_version": "v4.4.6",
@@ -402,7 +471,7 @@ Content-Length: 20
   **Fields**:
   - `project`: Project name
   - `version`: Firmware version
-  - `build_id`: SHA256 of ELF file
+  - `elf_sha256`: SHA256 of ELF file
   - `build_date`: Build date
   - `build_time`: Build time
   - `idf_version`: ESP-IDF version
@@ -481,7 +550,7 @@ Content-Length: 20
 
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
   <strong>Note</strong><br>
-  Only available if the Kconfig option `CONFIG_EIF_ENABLE_BASIC_AUTH` is enabled.
+  Only available if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled.
 </div>
 
 <a id="h_apass_update_do"></a>

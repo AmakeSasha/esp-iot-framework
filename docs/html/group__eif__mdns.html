@@ -60,7 +60,7 @@ $(document).ready(function(){initNavTree('group__eif__mdns.html',''); initResiza
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">mDNS Configuration<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__group.html">Core</a></div></div>  </div>
+<div class="title">mDNS Configuration<div class="ingroups"><a class="el" href="group__core__root.html">CORE</a> &raquo; <a class="el" href="group__core__group.html">CORE</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -70,9 +70,17 @@ $(document).ready(function(){initNavTree('group__eif__mdns.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ga225273b9d480b38138a095cf93f913e0"><td class="memItemLeft" align="right" valign="top"><a id="ga225273b9d480b38138a095cf93f913e0"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__eif__mdns.html#ga225273b9d480b38138a095cf93f913e0">EIF_MDNS_TXT_RECORDS_MAX_COUNT</a>&#160;&#160;&#160;32</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__eif__mdns.html#ga225273b9d480b38138a095cf93f913e0">EIF_MDNS_TXT_RECORDS_MAX_COUNT</a>&#160;&#160;&#160;32U</td></tr>
 <tr class="memdesc:ga225273b9d480b38138a095cf93f913e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of mDNS txt-records. <br /></td></tr>
 <tr class="separator:ga225273b9d480b38138a095cf93f913e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0af7ec73dafef3753b9f4922f441a090"><td class="memItemLeft" align="right" valign="top"><a id="ga0af7ec73dafef3753b9f4922f441a090"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__eif__mdns.html#ga0af7ec73dafef3753b9f4922f441a090">EIF_MDNS_HOSTNAME_MAX_LEN</a>&#160;&#160;&#160;57U</td></tr>
+<tr class="memdesc:ga0af7ec73dafef3753b9f4922f441a090"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of the mDNS hostname prefix including null-terminator (<code>\0)</code>. <br /></td></tr>
+<tr class="separator:ga0af7ec73dafef3753b9f4922f441a090"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3808f6e171f6e8d29d389d817d534539"><td class="memItemLeft" align="right" valign="top"><a id="ga3808f6e171f6e8d29d389d817d534539"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__eif__mdns.html#ga3808f6e171f6e8d29d389d817d534539">EIF_MDNS_INSTANCE_NAME_MAX_LEN</a>&#160;&#160;&#160;64U</td></tr>
+<tr class="memdesc:ga3808f6e171f6e8d29d389d817d534539"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of the mDNS instance name (friendly name) including null-terminator (<code>\0)</code>. <br /></td></tr>
+<tr class="separator:ga3808f6e171f6e8d29d389d817d534539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -84,11 +92,11 @@ Functions</h2></td></tr>
 <tr class="separator:gaebd461482bdf91710b7b63c3613bdbd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<dl class="section note"><dt>Note</dt><dd>This module is available when Kconfig option <code>CONFIG_EIF_ENABLE_MDNS</code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
+<dl class="section note"><dt>Note</dt><dd>This module is available when <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS </a> </code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
 </div><!-- fragment --></dd></dl>
 <p>This module allows you to configure mDNS. mDNS enables the device to be discovered via a human-readable name (e.g., <code>my-device.local</code>) instead of an IP address.</p>
 <p>The framework automatically appends a unique identifier based on the MAC address to prevent network collisions (e.g., common hostname set: <code>esp32.local</code>, the framework turns this into <code>esp32-1a2b3c.local</code> on a device with MAC <code>XX:XX:XX:1A:2B:3C</code>).</p>
-<dl class="section note"><dt>Note</dt><dd>In case the mDNS hostname is not set, <code>device</code> will be used as the common hostname. To disable mDNS, turn off Kconfig option <code>CONFIG_EIF_ENABLE_MDNS</code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>In case the mDNS hostname is not set, <code>device</code> will be used as the common hostname. To disable mDNS, turn off <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS </a> </code>.</dd></dl>
 <p>If you frequently need to enable and disable mDNS during development, you can use the following construct: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;mdns.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
@@ -151,8 +159,8 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>This function must be called after <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code> but before <code><a class="el" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240" title="Launch the Wi-Fi subsystem and automated network services.">eif_wifi_initialize()</a></code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">hostname</td><td>Base name prefix (e.g., "my-sensor"). Max length: <code>32</code>. </td></tr>
-    <tr><td class="paramname">instance_name</td><td>Friendly name for discovery tools (e.g., "Main Hall Sensor"). If <code>NULL</code> or empty, the formatted <code>mdns_hostname</code>(with MAC) will be used as the instance name by default.</td></tr>
+    <tr><td class="paramname">hostname</td><td>Base name prefix (e.g., <code>my-sensor</code>). The length should be less than <code><a class="el" href="group__eif__mdns.html#ga0af7ec73dafef3753b9f4922f441a090" title="Maximum length of the mDNS hostname prefix including null-terminator (\0).">EIF_MDNS_HOSTNAME_MAX_LEN</a></code>. If empty, the default hostname will be used (<code>device</code>). </td></tr>
+    <tr><td class="paramname">instance_name</td><td>Friendly name for discovery tools (e.g., <code>Hall Sensor</code>). The length should be less than <code><a class="el" href="group__eif__mdns.html#ga3808f6e171f6e8d29d389d817d534539" title="Maximum length of the mDNS instance name (friendly name) including null-terminator (\0).">EIF_MDNS_INSTANCE_NAME_MAX_LEN</a></code>. If empty, the formatted <code>mdns_hostname</code> (with MAC) will be used as the instance name by default.</td></tr>
   </table>
   </dd>
 </dl>

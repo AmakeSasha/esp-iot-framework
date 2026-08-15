@@ -64,8 +64,7 @@ $(document).ready(function(){initNavTree('md_docs_html__k_c_o_n_f_i_g__d_e_v_i_c
 Kconfig esp_iot_framework_device</h1>
 <p>This section describes the <code>esp_iot_framework_device</code> configuration parameters. All settings are available in the <code>idf.py menuconfig</code> configuration utility within the <code>ESP IoT Framework, DEVICE</code> menu.</p>
 <hr  />
-<p><code>Web admin GUI</code> -&gt; <code>EIF_ENABLE_WEB_ADMIN_GUI</code> - <code>bool</code> (<em>default</em>: <code>y</code>)</p>
-<p>Name in the <code>menuconfig</code>: <code>Enable Web-based Administration Panel</code></p>
+<div class="highlight-block" id="CONFIG_EIF_ENABLE_WEB_ADMIN_GUI"> <code>Web admin GUI</code> -&gt; <code>EIF_ENABLE_WEB_ADMIN_GUI</code> - <code>bool</code> (<em>default</em>: <code>y</code>) </div><p>Name in the <code>menuconfig</code>: <code>Enable Web-based Administration Panel</code></p>
 <p>Enables the integrated web interface for framework management. This affects <b>ONLY</b> the administrative panel, not your custom user UI.</p>
 <ul>
 <li>If <code>y</code>: All static web assets (HTML, CSS, JS) from the <code>web_src</code> directory are compressed and embedded directly into the firmware flash.</li>
@@ -73,16 +72,14 @@ Kconfig esp_iot_framework_device</h1>
 </ul>
 <p>Disabling this feature significantly reduces Flash usage and optimizes the HTTP server's memory footprint by completely removing the file-serving routing logic.</p>
 <hr  />
-<p><code>Web admin GUI</code> -&gt; <code>EIF_ENABLE_WEB_FAVICON</code> - <code>bool</code> (<em>default</em>: <code>y</code>)</p>
-<p>Name in the <code>menuconfig</code>: <code>Embed Web Favicon (Logo)</code></p>
+<div class="highlight-block" id="CONFIG_EIF_ENABLE_WEB_FAVICON"> <code>Web admin GUI</code> -&gt; <code>EIF_ENABLE_WEB_FAVICON</code> - <code>bool</code> (<em>default</em>: <code>y</code>) </div><p>Name in the <code>menuconfig</code>: <code>Embed Web Favicon (Logo)</code></p>
 <p>Includes the official framework branding icon in the firmware.</p>
 <ul>
 <li>If <code>y</code>: The PNG favicon image is compiled into Flash and automatically served on <code>/favicon.ico</code> requests.</li>
 <li>If <code>n</code>: Strips the asset from the firmware, saving extra Flash space and removing the specific URI route handler.</li>
 </ul>
 <hr  />
-<p><code>Web admin GUI</code> -&gt; <code>EIF_WEB_CACHE_MAX_AGE</code> - <code>int</code> (<em>range</em>: <code>0</code> - <code>31536000</code>, <em>default</em>: <code>360</code>)</p>
-<p>Name in the <code>menuconfig</code>: <code>Static files cache max-age (seconds)</code></p>
+<div class="highlight-block" id="CONFIG_EIF_WEB_CACHE_MAX_AGE"> <code>Web admin GUI</code> -&gt; <code>EIF_WEB_CACHE_MAX_AGE</code> - <code>int</code> (<em>range</em>: <code>0</code> - <code>31536000</code>, <em>default</em>: <code>360</code>) </div><p>Name in the <code>menuconfig</code>: <code>Static files cache max-age (seconds)</code></p>
 <p>Sets the <code>max-age</code> value (in seconds) for the HTTP <code>Cache-Control</code> header. During this period, the browser serves web pages strictly from its local cache without hitting the ESP32, minimizing CPU and heap usage.</p>
 <ul>
 <li>Production: Set a high value (e.g., <code>86400</code>) to avoid repetitive TLS handshakes and save MCU resources.</li>
@@ -90,17 +87,15 @@ Kconfig esp_iot_framework_device</h1>
 </ul>
 <div style="background-color: #d1ecf1; border-left: 5px solid #17a2b8; padding: 12px; margin: 10px 0; color: #0c5460;"> <b>Note</b><br  />
  <code>ETag</code> validation occurs only <b>AFTER</b> this timer expires or if the user performs a manual refresh. </div><hr  />
-<p><code>EIF_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>)</p>
-<p>Name in the <code>menuconfig</code>: <code>Enable Basic Auth for the core URL (/_/*)</code></p>
+<div class="highlight-block" id="CONFIG_EIF_ENABLE_BASIC_AUTH"> <code>EIF_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>) </div><p>Name in the <code>menuconfig</code>: <code>Enable Basic Auth for the core URL (/_/*)</code></p>
 <p>Enables mandatory HTTP Basic Authentication for all administrative paths.</p>
 <ul>
 <li>If <code>y</code>: Any access to the Web GUI or the core JSON REST API requires a valid username (<code>admin</code>) and password verified against NVS storage.</li>
 <li>If <code>n</code>: Access control is bypassed. Anyone on the local network can change configuration, read logs, or trigger reboots.</li>
 </ul>
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
- Disabling authentication is highly dangerous for production. If <code>EIF_ENABLE_TLS</code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air. </div><hr  />
-<p><code>EIF_WEB_SIZE_OTA_BUFFER</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>65536</code>, <em>default</em>: <code>4096</code>)</p>
-<p>Name in the <code>menuconfig</code>: <code>OTA update buffer size (bytes)</code></p>
+ Disabling authentication is highly dangerous for production. If <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">EIF_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air. </div><hr  />
+<div class="highlight-block" id="CONFIG_EIF_WEB_SIZE_OTA_BUFFER"> <code>EIF_WEB_SIZE_OTA_BUFFER</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>65536</code>, <em>default</em>: <code>4096</code>) </div><p>Name in the <code>menuconfig</code>: <code>OTA update buffer size (bytes)</code></p>
 <p>Size of the allocation buffer (in bytes) for receiving OTA firmware binaries via HTTP. This buffer size directly impacts throughput and is allocated dynamically from the heap only during an active OTA session.</p>
 <p>Recommended values:</p><ul>
 <li><code>4096</code>: Optimal balance between flashing speed and heap preservation.</li>
@@ -109,8 +104,7 @@ Kconfig esp_iot_framework_device</h1>
 </ul>
 <p>Setting this value too high may cause OTA initialization to fail due to heap fragmentation (cannot allocate a continuous block).</p>
 <hr  />
-<p><code>Logging Settings</code> -&gt; <code>EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP</code> - <code>bool</code> (<em>default</em>: <code>n</code>)</p>
-<p>Name in the <code>menuconfig</code>: <code>Include timestamp in HTTP response</code></p>
+<div class="highlight-block" id="CONFIG_EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP"> <code>Logging Settings</code> -&gt; <code>EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP</code> - <code>bool</code> (<em>default</em>: <code>n</code>) </div><p>Name in the <code>menuconfig</code>: <code>Include timestamp in HTTP response</code></p>
 <p>Injects the internal system startup timestamp (<code>esp_log_timestamp()</code>) into the body of HTTP responses.</p>
 <ul>
 <li><p class="startli">If <code>y</code>: The MCU appends the current uptime in milliseconds as a raw text string to the response body (except for <code>204 No Content</code>). This acts as a direct correlation ID. If a specific request fails or triggers an error, you can immediately match the timestamp from the network response with the corresponding line in the UART console logs.</p>

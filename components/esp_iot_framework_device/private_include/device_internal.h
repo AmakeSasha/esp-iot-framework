@@ -36,7 +36,7 @@
 /* config.c */
 
 enum {
-    DEFAULT_HANDLERS_COUNT = 11
+    DEFAULT_HANDLERS_COUNT = 12
     #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
         + 7
     #endif

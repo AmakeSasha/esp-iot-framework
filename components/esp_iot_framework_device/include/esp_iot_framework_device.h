@@ -42,28 +42,28 @@
 #endif
 
 /**
- * @defgroup device_root Node: Device
+ * @defgroup device_root Node: DEVICE
  * @copydoc md_docs_html_README_DEVICE
  * @{
  */
 /**
- * @defgroup device_group Device
+ * @defgroup device_group DEVICE
  * @brief Public API for application development. Provides framework initialization, Wi-Fi configuration, network profile management, and system lifecycle hooks.
  */
 /**
  * @defgroup device_rest_api REST API
- * @brief Device REST API documentation.
+ * @brief DEVICE REST API documentation.
  * @details @copydoc md_components_esp_iot_framework_device_REST_API
  */ 
 /**
  * @defgroup device_kconfig Kconfig
- * @brief Node `Kconfig` configuration options.
+ * @brief Node DEVICE `Kconfig` configuration options.
  * @copydoc md_docs_html_KCONFIG_DEVICE
  */
 /** @} */
 
 /**
- * @addtogroup device_group Device
+ * @addtogroup device_group DEVICE
  * @{
  *
  * @details @note This group of modules is available when you include this line
@@ -124,8 +124,11 @@ esp_err_t eif_device_initialize(void);
  * framework automatically manages the server lifecycle, starting it only when
  * a valid IP is obtained and stopping it upon disconnection.
  *
- * @note To enable or disable encryption (TLS/HTTPS), use the
- *       `CONFIG_EIF_ENABLE_TLS` flag from Kconfig via `idf.py menuconfig`.
+ * @note To enable or disable encryption (TLS/HTTPS), use the <code>
+ *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
+ *           CONFIG_EIF_ENABLE_TLS
+ *         </a>
+ *       </code> flag from `Kconfig` via `idf.py menuconfig`.
  *       Depending on this setting, the server will operate in either HTTP
  *       or HTTPS mode, and the corresponding configuration functions will
  *       be available.
@@ -184,14 +187,18 @@ esp_err_t eif_device_initialize(void);
     /**
      * @brief Tune the HTTPS server settings.
      *
-     * @note Only available if the Kconfig option `CONFIG_EIF_ENABLE_TLS` is enabled.
+     * @note Only available if the `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
+     *           CONFIG_EIF_ENABLE_TLS
+     *         </a>
+     *       </code> is enabled.
      *
      * Overrides default HTTPS server parameters (ports, stack size, timeouts,
      * etc.). You can also change the server's HTTP settings via `server_config`.
      * The framework creates an internal copy of the structure, so the original
      * data's lifecycle no longer matters after the call.
      *
-     * @note This function must be called after `eif_initialize()` but before
+     * @note This function must be called after `eif_device_initialize()` but before
      *       `eif_wifi_initialize()`.
      *
      * @warning The framework handles TLS credentials internally. To ensure
@@ -245,14 +252,18 @@ esp_err_t eif_device_initialize(void);
     /**
      * @brief Tune the HTTP server settings.
      *
-     * @note Only available if the Kconfig option `CONFIG_EIF_ENABLE_TLS` is disabled.
+     * @note Only available if the `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
+     *           CONFIG_EIF_ENABLE_TLS
+     *         </a>
+     *       </code> is disabled.
      *
      * Overrides default HTTP server parameters (ports, stack size, priority,
      * timeouts, etc.). You can also change the server's HTTP settings via
      * `server_config`. The framework creates an internal copy of the structure,
      * so the original data's lifecycle no longer matters after the call.
      *
-     * @note This function must be called after `eif_initialize()` but before
+     * @note This function must be called after `eif_device_initialize()` but before
      *       `eif_wifi_initialize()`.
      *
      * @warning To ensure stability and prevent memory conflicts, the following
@@ -300,7 +311,7 @@ esp_err_t eif_device_initialize(void);
 /**
  * @brief Register custom URI handlers (endpoints).
  *
- * @note This function must be called after `eif_initialize()` but before
+ * @note This function must be called after `eif_device_initialize()` but before
  *       `eif_wifi_initialize()`.
  *
  * Passes application-specific routes (e.g., `/api/data`, `/status`) to the

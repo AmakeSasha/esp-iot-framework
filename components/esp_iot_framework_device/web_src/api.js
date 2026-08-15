@@ -32,7 +32,7 @@
       var s;
       try {
         s = t.XMLHttpRequest ? new XMLHttpRequest : new ActiveXObject("Microsoft.XMLHTTP")
-      } catch (t) {
+      } catch (errInit) {
         return void(i && i("XHR_INIT_ERR"))
       }
       s.open(n, this._addAnticash(e), !0), o && s.setRequestHeader("Content-Type", o), s.onreadystatechange = function() {
@@ -45,7 +45,7 @@
       };
       try {
         s.send(a || null)
-      } catch (t) {
+      } catch (errInit) {
         i && i("SEND_ERR")
       }
     },
@@ -97,6 +97,28 @@
       var finalUrl = baseHost + n._addAnticash(baseUri);
 
       setTimeout(function() { top.location.href = finalUrl }, 5e3)
+    },
+
+    // JSON
+    formatJson: function(json) {
+      var res = JSON.stringify(json, null, 2);
+
+      res = res.replace(/("(\\.|[^"\\])*")/g, function(match) {
+          return '<span class="json-string">' + match + '</span>';
+      });
+      res = res.replace(/\b\d+\b/g, function(match, offset, fullString) {
+        var part = fullString.substring(0, offset);
+        if (part.lastIndexOf('<span class="json-string">') > part.lastIndexOf('</span>')) return match;
+        return '<span class="json-number">' + match + '</span>';
+      });
+      res = res.replace(/\b(true|false|null)\b/g, function(match, word, offset, fullString) {
+        var part = fullString.substring(0, offset);
+        if (part.lastIndexOf('<span class="json-string">') > part.lastIndexOf('</span>')) return match;
+        return '<span class="json-boolean">' + match + '</span>';
+      });
+      res = res.replace(/<span class="json-string">("[^"]+")<\/span>\s*:/g, '<span class="json-key">$1</span>:');
+     
+      return res;
     }
   };
   t.API = n

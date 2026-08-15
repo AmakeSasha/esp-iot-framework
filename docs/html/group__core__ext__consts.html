@@ -57,7 +57,7 @@ $(document).ready(function(){initNavTree('group__core__ext__consts.html',''); in
 <div id="doc-content">
 <div class="header">
   <div class="headertitle">
-<div class="title">Constants<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
+<div class="title">Constants<div class="ingroups"><a class="el" href="group__core__root.html">CORE</a> &raquo; <a class="el" href="group__core__ext__group.html">CORE Extension</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -65,7 +65,7 @@ $(document).ready(function(){initNavTree('group__core__ext__consts.html',''); in
 <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">Wi-Fi Configuration</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp1dfd7968719cdae0ae40972f5a15888c"></a>Default values and validation limits for <a class="el" href="group__eif__wifi__config.html#wifi_profiles_desc">Wi-Fi profiles</a>. </p>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp1dfd7968719cdae0ae40972f5a15888c"></a>Default values and validation limits for <code><a class="el" href="group__eif__wifi__config.html#wifi_profiles_desc">Wi-Fi profiles</a></code>. </p>
 </td></tr>
 <tr class="memitem:gacae2fbc25c60f67acb2c5b71f5ec2bf9"><td class="memItemLeft" align="right" valign="top"><a id="gacae2fbc25c60f67acb2c5b71f5ec2bf9"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#gacae2fbc25c60f67acb2c5b71f5ec2bf9">EIF_WIFI_SSID_DEFAULT</a>&#160;&#160;&#160;&quot;ESP32_SETUP&quot;</td></tr>
@@ -73,12 +73,12 @@ $(document).ready(function(){initNavTree('group__core__ext__consts.html',''); in
 <tr class="separator:gacae2fbc25c60f67acb2c5b71f5ec2bf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga26a797b8507c185ac48e27d966cd5f34"><td class="memItemLeft" align="right" valign="top"><a id="ga26a797b8507c185ac48e27d966cd5f34"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga26a797b8507c185ac48e27d966cd5f34">EIF_WIFI_SSID_MIN_LEN</a>&#160;&#160;&#160;1U</td></tr>
-<tr class="memdesc:ga26a797b8507c185ac48e27d966cd5f34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>SSID</code> length without null-terminator.<br  />
+<tr class="memdesc:ga26a797b8507c185ac48e27d966cd5f34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>SSID</code> length without null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>Q</code> <br /></td></tr>
 <tr class="separator:ga26a797b8507c185ac48e27d966cd5f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1f91bceefd2a3f4bb0a459ed1050077d"><td class="memItemLeft" align="right" valign="top"><a id="ga1f91bceefd2a3f4bb0a459ed1050077d"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d">EIF_WIFI_SSID_MAX_LEN</a>&#160;&#160;&#160;32U</td></tr>
-<tr class="memdesc:ga1f91bceefd2a3f4bb0a459ed1050077d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>SSID</code> length including null-terminator.<br  />
+<tr class="memdesc:ga1f91bceefd2a3f4bb0a459ed1050077d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>SSID</code> length including null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>My_Super_Long_Wifi_Network_Name</code> <br /></td></tr>
 <tr class="separator:ga1f91bceefd2a3f4bb0a459ed1050077d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a8f6903aa1b09ab9eb66f26c1d1d33d"><td class="memItemLeft" align="right" valign="top"><a id="ga7a8f6903aa1b09ab9eb66f26c1d1d33d"></a>
@@ -87,12 +87,12 @@ Example of the value: <code>My_Super_Long_Wifi_Network_Name</code> <br /></td></
 <tr class="separator:ga7a8f6903aa1b09ab9eb66f26c1d1d33d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1eb7a99abb300a875c3ef4d93039541a"><td class="memItemLeft" align="right" valign="top"><a id="ga1eb7a99abb300a875c3ef4d93039541a"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga1eb7a99abb300a875c3ef4d93039541a">EIF_WIFI_PASS_MIN_LEN</a>&#160;&#160;&#160;8U</td></tr>
-<tr class="memdesc:ga1eb7a99abb300a875c3ef4d93039541a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>Password</code> length for WPA2 without null-terminator.<br  />
+<tr class="memdesc:ga1eb7a99abb300a875c3ef4d93039541a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>Password</code> length for WPA2 without null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>12345678</code> <br /></td></tr>
 <tr class="separator:ga1eb7a99abb300a875c3ef4d93039541a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa665c1575a5eecebc48261147404af16"><td class="memItemLeft" align="right" valign="top"><a id="gaa665c1575a5eecebc48261147404af16"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16">EIF_WIFI_PASS_MAX_LEN</a>&#160;&#160;&#160;64U</td></tr>
-<tr class="memdesc:gaa665c1575a5eecebc48261147404af16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>Password</code> length including null-terminator.<br  />
+<tr class="memdesc:gaa665c1575a5eecebc48261147404af16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>Password</code> length including null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>this_is_a_very_long_password_that_exactly_reaches_63_characters</code> <br /></td></tr>
 <tr class="separator:gaa665c1575a5eecebc48261147404af16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -101,22 +101,22 @@ Example of the value: <code>this_is_a_very_long_password_that_exactly_reaches_63
 </td></tr>
 <tr class="memitem:gad0464815b12b631c2e546ee7e7918a45"><td class="memItemLeft" align="right" valign="top"><a id="gad0464815b12b631c2e546ee7e7918a45"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#gad0464815b12b631c2e546ee7e7918a45">EIF_BASIC_AUTH_LINE_MIN_LEN</a>&#160;&#160;&#160;14U</td></tr>
-<tr class="memdesc:gad0464815b12b631c2e546ee7e7918a45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>Line</code> length without null-terminator.<br  />
+<tr class="memdesc:gad0464815b12b631c2e546ee7e7918a45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>Line</code> length without null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>Basic YWRtaW46</code> <br /></td></tr>
 <tr class="separator:gad0464815b12b631c2e546ee7e7918a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a98d6f44868c5d521060879df2fb6b9"><td class="memItemLeft" align="right" valign="top"><a id="ga5a98d6f44868c5d521060879df2fb6b9"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9">EIF_BASIC_AUTH_LINE_MAX_LEN</a>&#160;&#160;&#160;59U</td></tr>
-<tr class="memdesc:ga5a98d6f44868c5d521060879df2fb6b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>Line</code> length including null-terminator.<br  />
+<tr class="memdesc:ga5a98d6f44868c5d521060879df2fb6b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>Line</code> length including null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>Basic YWRtaW46MTIzNDU2Nzg5MHF3ZXJ0eTBxd2VydHkwcXdlcnR5MDE=</code> <br /></td></tr>
 <tr class="separator:ga5a98d6f44868c5d521060879df2fb6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga48c047f9ef9f6f388bba5c45c7d1268e"><td class="memItemLeft" align="right" valign="top"><a id="ga48c047f9ef9f6f388bba5c45c7d1268e"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga48c047f9ef9f6f388bba5c45c7d1268e">EIF_BASIC_AUTH_PASS_MIN_LEN</a>&#160;&#160;&#160;0U</td></tr>
-<tr class="memdesc:ga48c047f9ef9f6f388bba5c45c7d1268e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>Password</code> length without null-terminator.<br  />
+<tr class="memdesc:ga48c047f9ef9f6f388bba5c45c7d1268e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum <code>Password</code> length without null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>ㅤ</code> <br /></td></tr>
 <tr class="separator:ga48c047f9ef9f6f388bba5c45c7d1268e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7aa81b184d0ca114ee98d6d1a38b481e"><td class="memItemLeft" align="right" valign="top"><a id="ga7aa81b184d0ca114ee98d6d1a38b481e"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga7aa81b184d0ca114ee98d6d1a38b481e">EIF_BASIC_AUTH_PASS_MAX_LEN</a>&#160;&#160;&#160;33U</td></tr>
-<tr class="memdesc:ga7aa81b184d0ca114ee98d6d1a38b481e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>Password</code> length including null-terminator.<br  />
+<tr class="memdesc:ga7aa81b184d0ca114ee98d6d1a38b481e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum <code>Password</code> length including null-terminator (<code>\0</code>).<br  />
 Example of the value: <code>1234567890qwerty0qwerty0qwerty01</code> <br /></td></tr>
 <tr class="separator:ga7aa81b184d0ca114ee98d6d1a38b481e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">

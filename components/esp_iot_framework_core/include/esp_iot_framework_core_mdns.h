@@ -34,7 +34,7 @@
 
 #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(DOXYGEN)
     /**
-     * @addtogroup core_group Core
+     * @addtogroup core_group CORE
      * @{
      */
 
@@ -42,11 +42,14 @@
      * @defgroup eif_mdns mDNS Configuration
      * @brief Network discovery and mDNS management
      *
-     * @note This module is available when Kconfig option `CONFIG_EIF_ENABLE_MDNS`
-     * is enabled and you include this line at the beginning of the file.:
-     * @code{c}
-     * #include <esp_iot_framework_core_mdns.h>
-     * @endcode
+     * @note This module is available when `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
+     *           CONFIG_EIF_ENABLE_MDNS
+     *         </a>
+     *       </code> is enabled and you include this line at the beginning of the file.:
+     *       @code{c}
+     *       #include <esp_iot_framework_core_mdns.h>
+     *       @endcode
      *
      * This module allows you to configure mDNS. mDNS enables the device to be
      * discovered via a human-readable name (e.g., `my-device.local`) instead of an
@@ -58,8 +61,11 @@
      * device with MAC `XX:XX:XX:1A:2B:3C`).
      *
      * @note In case the mDNS hostname is not set, `device` will be used as the
-     *       common hostname. To disable mDNS, turn off Kconfig option
-     *       `CONFIG_EIF_ENABLE_MDNS`.
+     *       common hostname. To disable mDNS, turn off `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
+     *           CONFIG_EIF_ENABLE_MDNS
+     *         </a>
+     *       </code>.
      *
      * If you frequently need to enable and disable mDNS during development,
      * you can use the following construct:
@@ -99,7 +105,15 @@
     /**
      * @brief Maximum number of mDNS txt-records
      */
-    #define EIF_MDNS_TXT_RECORDS_MAX_COUNT 32
+    #define EIF_MDNS_TXT_RECORDS_MAX_COUNT 32U
+    /**
+     * @brief Maximum length of the mDNS hostname prefix including null-terminator (`\0)`.
+     */
+    #define EIF_MDNS_HOSTNAME_MAX_LEN 57U
+    /**
+     * @brief Maximum length of the mDNS instance name (friendly name) including null-terminator (`\0)`.
+     */
+    #define EIF_MDNS_INSTANCE_NAME_MAX_LEN 64U
 
     /**
      * @brief Configure the mDNS hostname and instance name.
@@ -109,11 +123,14 @@
      * @note This function must be called after `eif_core_initialize()` but before
      *       `eif_wifi_initialize()`.
      *
-     * @param hostname Base name prefix (e.g., "my-sensor"). Max length: `32`.
-     * @param instance_name Friendly name for discovery tools (e.g.,
-     *        "Main Hall Sensor"). If `NULL` or empty, the formatted
-     *        `mdns_hostname`(with MAC) will be used as the instance name by
-     *        default.
+     * @param hostname Base name prefix (e.g., `my-sensor`). The length should be less
+     *                 than <code>#EIF_MDNS_HOSTNAME_MAX_LEN</code>. If empty,
+     *                 the default hostname will be used (`device`).
+     * @param instance_name Friendly name for discovery tools (e.g., `Hall
+     *                      Sensor`). The length should be less than 
+     *                      <code>#EIF_MDNS_INSTANCE_NAME_MAX_LEN</code>. If empty,
+     *                      the formatted `mdns_hostname` (with MAC) will be used as
+     *                      the instance name by default. 
      *
      * @return
      *    - `ESP_OK`:               Configuration stored.
@@ -204,6 +221,68 @@
     );
     /** @} */
     /** @} */
+
+    /**
+     * @addtogroup core_ext_group CORE Extension
+     * @{
+     */
+
+    /**
+     * @defgroup eif_mdns_ext mDNS Extension
+     * @brief Network discovery and mDNS management
+     *
+     * @note This module is available when `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
+     *           CONFIG_EIF_ENABLE_MDNS
+     *         </a>
+     *       </code> is enabled and you include this line at the beginning of the file.:
+     *       @code{c}
+     *       #include <esp_iot_framework_core_mdns.h>
+     *       @endcode
+     *
+     * This module provides more advanced and low-level tools for working with mDNS.
+     * @{
+     */
+
+    /**
+     * @brief Get the currently configured mDNS hostname.
+     *
+     * Returns the device network name used for local mDNS domain routing.
+     * 
+     * @warning The returned pointer references the immutable internal configuration 
+     *          buffer owned by the core module. Do **NOT** attempt to explicitly
+     *          `free()` this pointer, and do **NOT** modify its contents via type
+     *          casting. Doing so will corrupt the core memory or cause an immediate
+     *          hardfault.
+     * 
+     * @return
+     *    - `const char*`: Pointer to the null-terminated hostname string.
+     *    - `NULL`:        mDNS is disabled via <code>
+     *                       <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
+     *                         CONFIG_EIF_ENABLE_MDNS
+     *                       </a>
+     *                     </code>.
+     * 
+     * Example of use:
+     * @code{c}
+     * #include <esp_iot_framework_core_mdns.h>
+     *
+     * void some_function(void) {
+     *     const char *hostname = eif_core_get_mdns_hostname();
+     *     if (hostname != NULL) {
+     *         // Use hostname...
+     *     } else {
+     *         // mDNS is disabled...
+     *     }
+     * }  
+     * @endcode
+     */
+    const char* eif_get_mdns_hostname(void);
+    /** @} */
+    /** @} */
+#elif defined(CONFIG_EIF_ENABLE_TLS)
+    /* esp32-divece */
+    #define MDNS_HOSTNAME_PREFIX_MAX_LEN MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN
 #endif
 
 #ifdef __cplusplus

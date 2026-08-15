@@ -59,7 +59,7 @@ $(document).ready(function(){initNavTree('group__macros__log.html',''); initResi
   <div class="summary">
 <a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
-<div class="title">Logging<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__macros__group.html">Core Macros</a></div></div>  </div>
+<div class="title">Logging<div class="ingroups"><a class="el" href="group__core__root.html">CORE</a> &raquo; <a class="el" href="group__core__macros__group.html">CORE Macros</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -81,25 +81,46 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader">Logging Severity Levels</h2></td></tr>
 <tr class="memitem:gaa74ca21073b7955d8979afa5e51dbe96"><td class="memItemLeft" align="right" valign="top"><a id="gaa74ca21073b7955d8979afa5e51dbe96"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__macros__log.html#gaa74ca21073b7955d8979afa5e51dbe96">EIF_LOG_LEVEL_E</a>&#160;&#160;&#160;1</td></tr>
-<tr class="memdesc:gaa74ca21073b7955d8979afa5e51dbe96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error log level severity. <br /></td></tr>
+<tr class="memdesc:gaa74ca21073b7955d8979afa5e51dbe96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error log level severity, is level <code>Error</code>. <br /></td></tr>
 <tr class="separator:gaa74ca21073b7955d8979afa5e51dbe96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga380f700cda3794c290c431215fb55a57"><td class="memItemLeft" align="right" valign="top"><a id="ga380f700cda3794c290c431215fb55a57"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__macros__log.html#ga380f700cda3794c290c431215fb55a57">EIF_LOG_LEVEL_W</a>&#160;&#160;&#160;2</td></tr>
-<tr class="memdesc:ga380f700cda3794c290c431215fb55a57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warning log level severity. <br /></td></tr>
+<tr class="memdesc:ga380f700cda3794c290c431215fb55a57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warning log level severity, is level <code>Warning</code>. <br /></td></tr>
 <tr class="separator:ga380f700cda3794c290c431215fb55a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6a42571deb9c602867747c8d70cfa1ff"><td class="memItemLeft" align="right" valign="top"><a id="ga6a42571deb9c602867747c8d70cfa1ff"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__macros__log.html#ga6a42571deb9c602867747c8d70cfa1ff">EIF_LOG_LEVEL_I</a>&#160;&#160;&#160;3</td></tr>
-<tr class="memdesc:ga6a42571deb9c602867747c8d70cfa1ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Informational log level severity. <br /></td></tr>
+<tr class="memdesc:ga6a42571deb9c602867747c8d70cfa1ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Informational log level severity, is level <code>Info</code>. <br /></td></tr>
 <tr class="separator:ga6a42571deb9c602867747c8d70cfa1ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaeaca3a093fbbc4037242b283425f5a9c"><td class="memItemLeft" align="right" valign="top"><a id="gaeaca3a093fbbc4037242b283425f5a9c"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__macros__log.html#gaeaca3a093fbbc4037242b283425f5a9c">EIF_LOG_LEVEL_D</a>&#160;&#160;&#160;4</td></tr>
-<tr class="memdesc:gaeaca3a093fbbc4037242b283425f5a9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug log level severity. <br /></td></tr>
+<tr class="memdesc:gaeaca3a093fbbc4037242b283425f5a9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug log level severity, is level <code>Debug</code>. <br /></td></tr>
 <tr class="separator:gaeaca3a093fbbc4037242b283425f5a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">Application Logging Interface</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp7f92eb2eb6bb439ab12c9a4a2190fbdc"></a>Main logging macros with global compile-time filtering.</p>
-<p>Use these macros to print logs to the console. Which logs actually get compiled into the firmware depends on the <code>CONFIG_EIF_LOG_LEVEL</code> value. A logging macro works only if <code>CONFIG_EIF_LOG_LEVEL</code> is equal to or higher than its corresponding severity level constant (from 1 to 4).</p>
-<p>For example: if <code>CONFIG_EIF_LOG_LEVEL</code> is set to <code>EIF_LOG_LEVEL_W</code> (2), then <code>EIF_LOG_E</code> and <code>EIF_LOG_W</code> will print logs normally. However, <code>EIF_LOG_I</code> and <code>EIF_LOG_D</code> will be completely ignored.</p>
+<p>Use these macros to print logs to the console. Which logs actually get compiled into the firmware depends on the <code> <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">CONFIG_EIF_LOG_LEVEL </a> </code> value. A logging macro works only if <code> <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">CONFIG_EIF_LOG_LEVEL </a> </code> is equal to or higher than its corresponding severity level constant (from <code>1</code> to <code>4</code>):</p>
+<ul>
+<li><code>0</code>: <code>None</code><ul>
+<li>Turns off absolutely everything. No errors, warnings, or system logs will be printed to the console.</li>
+</ul>
+</li>
+<li><code>1</code>: <code>Error</code> - <code><a class="el" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4" title="Logs an error message using the ESP_LOGE severity, is level Error.">EIF_LOG_E()</a></code><ul>
+<li>* Turns on only <code>Errors</code>. Everything below (<code>Warning</code>, <code>Info</code>, <code>Debug</code>) is turned off.</li>
+</ul>
+</li>
+<li><code>2</code>: <code>Warning</code> - <code><a class="el" href="group__macros__log.html#ga303a7bc42f0b2f9f7f4aae320df28faf" title="Logs a warning message using the ESP_LOGW severity, is level Warning.">EIF_LOG_W()</a></code><ul>
+<li>Turns on <code>Warnings</code> and <code>Errors</code>. <code>Info</code> and <code>Debug</code> logs are turned off.</li>
+</ul>
+</li>
+<li><code>3</code>: <code>Info</code> - <code><a class="el" href="group__macros__log.html#ga33642c84ee1bcb3c74be76f8fd57e8e4" title="Logs an informational message using the ESP_LOGI severity, is level Info.">EIF_LOG_I()</a></code><ul>
+<li>Turns on <code>Info</code>, <code>Warning</code>, and <code>Error</code>. Only <code>Debug</code> logs are turned off.</li>
+</ul>
+</li>
+<li><code>4</code>: <code>Debug</code> - <code><a class="el" href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1" title="Logs a debug message using the ESP_LOGD severity, is level Debug.">EIF_LOG_D()</a></code><ul>
+<li>Turns on absolutely everything. Full output mode without any filtering.</li>
+</ul>
+</li>
+</ul>
 <p>When a log level is ignored, its macro turns into an empty <code>((void)0U)</code>. The compiler completely deletes these lines and their text strings.</p>
 <dl class="section note"><dt>Note</dt><dd>All macros in this interface implicitly rely on a <code>TAG</code> identifier being defined and accessible within the current execution scope.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -123,9 +144,9 @@ Macros</h2></td></tr>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:89</div></div>
-<div class="ttc" id="agroup__macros__log_html_ga303a7bc42f0b2f9f7f4aae320df28faf"><div class="ttname"><a href="group__macros__log.html#ga303a7bc42f0b2f9f7f4aae320df28faf">EIF_LOG_W</a></div><div class="ttdeci">#define EIF_LOG_W(...)</div><div class="ttdoc">Logs a warning message using the ESP_LOGW severity, is level Warning.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:228</div></div>
-<div class="ttc" id="agroup__macros__log_html_ga33642c84ee1bcb3c74be76f8fd57e8e4"><div class="ttname"><a href="group__macros__log.html#ga33642c84ee1bcb3c74be76f8fd57e8e4">EIF_LOG_I</a></div><div class="ttdeci">#define EIF_LOG_I(...)</div><div class="ttdoc">Logs an informational message using the ESP_LOGI severity, is level Info.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:234</div></div>
-<div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity, is level Error.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:222</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga303a7bc42f0b2f9f7f4aae320df28faf"><div class="ttname"><a href="group__macros__log.html#ga303a7bc42f0b2f9f7f4aae320df28faf">EIF_LOG_W</a></div><div class="ttdeci">#define EIF_LOG_W(...)</div><div class="ttdoc">Logs a warning message using the ESP_LOGW severity, is level Warning.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:244</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga33642c84ee1bcb3c74be76f8fd57e8e4"><div class="ttname"><a href="group__macros__log.html#ga33642c84ee1bcb3c74be76f8fd57e8e4">EIF_LOG_I</a></div><div class="ttdeci">#define EIF_LOG_I(...)</div><div class="ttdoc">Logs an informational message using the ESP_LOGI severity, is level Info.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:250</div></div>
+<div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity, is level Error.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:238</div></div>
 </div><!-- fragment --> </td></tr>
 <tr class="memitem:gac7d67dbda8de3524715e3e6a7abe46b4"><td class="memItemLeft" align="right" valign="top"><a id="gac7d67dbda8de3524715e3e6a7abe46b4"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a>(...)&#160;&#160;&#160;<a class="el" href="group__macros__log.html#ga5b15122d0bf92c296d14625e137d199c">EIF_PRINT</a>(ESP_LOGE, __VA_ARGS__)</td></tr>
@@ -170,7 +191,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">EIF_LOG_D</a>(<span class="stringliteral">&quot;Data processed&quot;</span>);</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__log_html_ga4879eece848a8081e2fd6afdab97d0c1"><div class="ttname"><a href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">EIF_LOG_D</a></div><div class="ttdeci">#define EIF_LOG_D(...)</div><div class="ttdoc">Logs a debug message using the ESP_LOGD severity, is level Debug.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:240</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga4879eece848a8081e2fd6afdab97d0c1"><div class="ttname"><a href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">EIF_LOG_D</a></div><div class="ttdeci">#define EIF_LOG_D(...)</div><div class="ttdoc">Logs a debug message using the ESP_LOGD severity, is level Debug.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:256</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -315,7 +336,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    esp_restart();</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__log_html_ga54f4350b639170b9abdcdf9144c77b18"><div class="ttname"><a href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">EIF_SHOW_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Unconditionally executes an expression and logs warning details on failure.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:288</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga54f4350b639170b9abdcdf9144c77b18"><div class="ttname"><a href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">EIF_SHOW_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Unconditionally executes an expression and logs warning details on failure.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:304</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

@@ -123,3 +123,7 @@ button:hover:not(:disabled),.button:hover:not(:disabled){
   gap:5px;
   flex-wrap:wrap;
 }
+.json-key { color: darkblue; }
+.json-string { color: darkgreen; }
+.json-number { color: purple; }
+.json-boolean { color: red; }

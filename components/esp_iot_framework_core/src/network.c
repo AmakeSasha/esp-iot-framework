@@ -396,6 +396,14 @@ esp_err_t eif_wifi_initialize(void) {
     #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_format_mdns_hostname(),
             "Error formatting mDNS fields");
+
+        if (ret == ESP_OK) {
+            EIF_SHOW_ESP_ERR_T(ret,
+                esp_netif_set_hostname(sta_netif, cfg->mdns_hostname),
+                "Failed to set Wi-Fi DHCP hostname");
+
+            ret = ESP_OK;
+        }
     #endif
 
     if (ret == ESP_OK) {

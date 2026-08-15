@@ -42,11 +42,10 @@
     #define MDNS_HOSTNAME_FULL_MAX_LEN 64U
     /* -aaccbb */
     #define MDNS_SUFFIX_MAC_LEN 7U
-    /* esp32-divece */
-    #define MDNS_HOSTNAME_PREFIX_MAX_LEN MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN
-#endif
-#ifdef CONFIG_EIF_ENABLE_MDNS
-    #define MDNS_INSTANCE_NAME_MAX_LEN 64U
+
+    #if (MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN != EIF_MDNS_HOSTNAME_MAX_LEN)
+        #error "Invalid value `EIF_MDNS_HOSTNAME_MAX_LEN`"
+    #endif
 #endif
 
 /* ESP IoT Framework - eif */
@@ -64,7 +63,7 @@ typedef struct {
     #endif
     #ifdef CONFIG_EIF_ENABLE_MDNS
         /* eif_set_mdns */
-        char mdns_instance_name[MDNS_INSTANCE_NAME_MAX_LEN];
+        char mdns_instance_name[EIF_MDNS_INSTANCE_NAME_MAX_LEN];
         /* eif_set_mdns_records */
         mdns_txt_item_t mdns_txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT];
         size_t mdns_txt_records_count;

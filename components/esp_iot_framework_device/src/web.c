@@ -44,6 +44,7 @@
 #include "device_internal.h"
 #include <esp_iot_framework_device.h>
 #include <esp_iot_framework_core_ext.h>
+#include <esp_iot_framework_core_mdns.h>
 #include <esp_iot_framework_core_macros.h>
 
 #ifdef CONFIG_EIF_ENABLE_TLS
@@ -103,6 +104,12 @@
     #define ETAG_VALUE "\"" __DATE__ " " __TIME__ "\""
 #endif
 
+#if defined(CONFIG_EIF_ENABLE_TLS)
+    #define EIF_TLS_VAL true
+#else
+    #define EIF_TLS_VAL false
+#endif
+
 #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
     #define HTTP_BASIC_AUTH_REALM "Basic realm=\"web_basic_auth\""
 #endif
@@ -113,6 +120,11 @@
 #define HTTP_METHOD_MAX_LEN 8
 #define HTTP_URI_MAX_LEN 16 * 1024
 #define HTTP_LOGS_CHUNK_SIZE 512
+
+#define MAX_REASONS_RESET_NUM 13
+#define MAC_NUMBERS_LEN 6U
+#define MAC_FORMATED_LEN 18U
+#define IP_FORMATED_LEN 16U
 
 #define HDR_CACHE_CONTROL_VALUE "public, max-age=" EIF_STR(CONFIG_EIF_WEB_CACHE_MAX_AGE)
 
@@ -149,6 +161,45 @@ static void httpd_resp_sendstatus(
     EIF_LOG_D("httpd_resp_sendstatus:status - %s", status);
     (void)httpd_resp_set_status(req, status);
     (void)httpd_resp_sendstr(req, p_body);
+}
+
+
+
+/* Other */
+
+static esp_err_t format_mac_addr_to_buf(
+    const uint8_t * const mac, char * const dest_str, size_t dest_size
+) {
+    const char hex_chars[] = "0123456789ABCDEF";
+
+    esp_err_t ret = ESP_OK;
+
+    EIF_IF_OK_CHECK_CONDITION(ret,
+        ((mac == NULL) || (dest_str == NULL) || (dest_size < MAC_FORMATED_LEN)), 
+        ESP_ERR_INVALID_ARG, "Invalid arguments passed to MAC formatter");
+
+    if (ret == ESP_OK) {
+        size_t pos = 0U;
+
+        for (size_t i = 0U; i < MAC_NUMBERS_LEN; i++) {
+            size_t hi = ((size_t)mac[i] >> 4U) & 0x0FU;
+            size_t lo = (size_t)mac[i] & 0x0FU;
+
+            dest_str[pos] = hex_chars[hi];
+            pos++;
+            dest_str[pos] = hex_chars[lo];
+            pos++;
+
+            if (i < 5U) {
+                dest_str[pos] = ':';
+                pos++;
+            }
+        }
+            
+        dest_str[pos] = '\0';
+    }
+    
+    return ret;
 }
 
 
@@ -451,12 +502,6 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
 static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
-    #if defined(CONFIG_EIF_ENABLE_TLS)
-        #define EIF_TLS_VAL true
-    #else
-        #define EIF_TLS_VAL false
-    #endif
-
     json_gen_str_t jgen = {0};
     wifi_ap_record_t info = {0};
     char ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
@@ -520,6 +565,186 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
     }
 
     /* Cleanup */
+    return ret;
+}
+
+static esp_err_t h_wifi_info_json(httpd_req_t * const req) {
+    esp_err_t ret = ESP_OK;
+
+    #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+        wifi_protocol_type_t proto = 0U;
+    #else
+        uint8_t proto = 0U;
+    #endif
+
+    json_gen_str_t jgen = {0};
+    const char *band_str = "";
+    const char *proto_str = "";
+    const char *lwip_hostname = NULL;
+    wifi_ap_record_t ap_info = {0};
+    char ip[IP_FORMATED_LEN] = {0};
+    char gw[IP_FORMATED_LEN] = {0};
+    const char *auth_mode_str = "";
+    esp_netif_ip_info_t ip_info = {0};
+    char netmask[IP_FORMATED_LEN] = {0};
+    char mac_str[MAC_FORMATED_LEN] = {0};
+    char bssid_str[MAC_FORMATED_LEN] = {0};
+    uint8_t own_mac[MAC_NUMBERS_LEN] = {0};
+
+    const char * const mdns_hostname = eif_get_mdns_hostname();
+    esp_netif_t * netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
+
+    EIF_IF_OK_CHECK_CONDITION(ret, netif == NULL, ESP_ERR_INVALID_STATE,
+        "WiFi STA netif interface not initialized");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_sta_get_ap_info(&ap_info),
+        "WiFi not connected or STA mode not active");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_netif_get_ip_info(netif, &ip_info),
+        "Failed to get IP info from netif interface");
+    EIF_IF_OK_CHECK_CONDITION(ret, (ip_info.ip.addr == 0U), 
+        ESP_ERR_INVALID_STATE, "WiFi station IP address not assigned yet");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_wifi_get_protocol(WIFI_IF_STA, &proto),
+        "Failed to get Wi-Fi protocol type");
+
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_read_mac(own_mac, ESP_MAC_WIFI_STA),
+        "Failed to read hardware MAC address");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, format_mac_addr_to_buf(
+        own_mac, mac_str, sizeof(mac_str)), "MAC formatting failed");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, format_mac_addr_to_buf(
+        ap_info.bssid, bssid_str, sizeof(bssid_str)), "BSSID formatting failed");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_netif_get_hostname(netif, &lwip_hostname),
+        "Failed to retrieve Wi-Fi DHCP hostname");
+
+    if (ret == ESP_OK) {
+        switch (ap_info.authmode) {
+            case WIFI_AUTH_OPEN:
+                auth_mode_str = "OPEN";
+                break;
+            case WIFI_AUTH_WEP:
+                auth_mode_str = "WEP";
+                break;
+            case WIFI_AUTH_WPA_PSK:
+                auth_mode_str = "WPA_PSK";
+                break;
+            case WIFI_AUTH_WPA2_PSK:
+                auth_mode_str = "WPA2_PSK";
+                break;
+            case WIFI_AUTH_WPA_WPA2_PSK:
+                auth_mode_str = "WPA_WPA2_PSK";
+                break;
+            case WIFI_AUTH_WPA2_ENTERPRISE:
+                auth_mode_str = "WPA2_ENTERPRISE";
+                break;
+            case WIFI_AUTH_WPA3_PSK:
+                auth_mode_str = "WPA3_PSK";
+                break;
+            case WIFI_AUTH_WPA2_WPA3_PSK:
+                auth_mode_str = "WPA2_WPA3_PSK";
+                break;
+            case WIFI_AUTH_WAPI_PSK:
+                auth_mode_str = "WAPI_PSK";
+                break;
+            case WIFI_AUTH_WPA3_ENT_192:
+                auth_mode_str = "WPA3_ENT_192";
+                break;
+            case WIFI_AUTH_MAX:
+                auth_mode_str = "UNKNOWN";
+                break;
+            default:
+                auth_mode_str = "UNKNOWN";
+                break;
+        }
+
+        #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+            if ((proto & WIFI_PROTOCOL_11AX) != 0U) {
+                proto_str = "802.11ax (Wi-Fi 6)";
+            } else if ((proto & WIFI_PROTOCOL_11N) != 0U) {
+                proto_str = "802.11n (Wi-Fi 4)";
+            } else if ((proto & WIFI_PROTOCOL_11G) != 0U) {
+                proto_str = "802.11g (Wi-Fi 3)";
+            } else {
+                proto_str = "802.11b (Wi-Fi 1)";
+            }
+        #else
+            if ((proto & (uint8_t)WIFI_PROTOCOL_11N) != 0U) {
+                proto_str = "802.11n (Wi-Fi 4)";
+            } else if ((proto & (uint8_t)WIFI_PROTOCOL_11G) != 0U) {
+                proto_str = "802.11g (Wi-Fi 3)";
+            } else {
+                proto_str = "802.11b (Wi-Fi 1)";
+            }
+        #endif
+
+        if (ap_info.primary >= 32U) {
+            band_str = "5 GHz";
+        } else {
+            band_str = "2.4 GHz";
+        }
+
+        (void)esp_ip4addr_ntoa(&ip_info.ip, ip, sizeof(ip));
+        (void)esp_ip4addr_ntoa(&ip_info.gw, gw, sizeof(gw));
+        (void)esp_ip4addr_ntoa(&ip_info.netmask, netmask, sizeof(netmask));
+
+        json_gen_str_start(&jgen,
+            g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
+
+        /* { */
+        (void)json_gen_start_object(&jgen);
+        /*   "ssid": "MyNetwork", */
+        (void)json_gen_obj_set_string(&jgen, "ssid", (char*)ap_info.ssid);
+        /*   "rssi": -65, */
+        (void)json_gen_obj_set_int(&jgen, "rssi", ap_info.rssi);
+        /*   "channel": 6, */
+        (void)json_gen_obj_set_int(&jgen, "channel", ap_info.primary);
+        /*   "auth_mode": "WPA2_PSK", */
+        (void)json_gen_obj_set_string(&jgen, "auth_mode", auth_mode_str);
+        /*   "bssid": "00:11:22:33:44:55", */
+        (void)json_gen_obj_set_string(&jgen, "bssid", bssid_str);
+        /*   "ip": "192.168.1.45", */
+        (void)json_gen_obj_set_string(&jgen, "ip", ip);
+        /*   "gateway": "192.168.1.1", */
+        (void)json_gen_obj_set_string(&jgen, "gateway", gw);
+        /*   "netmask": "255.255.255.0", */
+        (void)json_gen_obj_set_string(&jgen, "netmask", netmask);
+        /*   "mac": "AA:BB:CC:DD:EE:FF" */
+        (void)json_gen_obj_set_string(&jgen, "mac", mac_str);
+        /*   "proto": "802.11n (Wi-Fi 4)", */
+        (void)json_gen_obj_set_string(&jgen, "proto", proto_str);
+        /*   "band": "2.4 GHz", */
+        (void)json_gen_obj_set_string(&jgen, "band", band_str);
+
+        if (lwip_hostname != NULL) {
+            /*   "lwip_hostname": "device-aabbcc", */
+            (void)json_gen_obj_set_string(&jgen, "lwip_hostname", lwip_hostname);
+        } else {
+            /*   "lwip_hostname": null, */
+            (void)json_gen_obj_set_null(&jgen, "lwip_hostname");
+        }
+        if (mdns_hostname != NULL) {
+            /*   "mdns_hostname": "device-aabbcc", */
+            (void)json_gen_obj_set_string(&jgen, "mdns_hostname", mdns_hostname);
+        } else {
+            /*   "mdns_hostname": null, */
+            (void)json_gen_obj_set_null(&jgen, "mdns_hostname");
+        }
+
+        /*   "used_tls": true */
+        (void)json_gen_obj_set_bool(&jgen, "used_tls", EIF_TLS_VAL);
+        /* } */
+        (void)json_gen_end_object(&jgen);
+
+        int json_len = json_gen_str_end(&jgen);
+        EIF_IF_OK_CHECK_CONDITION(ret,
+            ((json_len <= 0) || (json_len > SERVER_JSON_OUT_BUF_SIZE)),
+            ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
+    }
+    
+    if (ret == ESP_OK) {
+        httpd_resp_set_type(req, RESP_TYPE_JSON);
+        httpd_resp_sendstr(req, g_server_json_buffer);
+    } else {
+        httpd_resp_sendstatus(req, HTTPD_500);
+    }
+    
     return ret;
 }
 
@@ -718,86 +943,97 @@ static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
 /* System */
 
 static esp_err_t h_sys_info_json(httpd_req_t * const req) {
+    static const char* reasons[MAX_REASONS_RESET_NUM] = {
+        /*  0 */ "Power-On reset",
+        /*  1 */ "External pin reset",
+        /*  2 */ "System panic reset",
+        /*  3 */ "Panic reset",
+        /*  4 */ "Watchdog timer reset",
+        /*  5 */ "Task watchdog reset",
+        /*  6 */ "Interrupt watchdog reset",
+        /*  7 */ "Deep sleep wake-up reset",
+        /*  8 */ "SDIO reset",
+        /*  9 */ "USB reset",
+        /* 10 */ "JTAG reset",
+        /* 11 */ "RTC system reset",
+        /* 12 */ "RTC CPU reset"
+    };
+
     esp_err_t ret = ESP_OK;
 
-    uint8_t mac[6] = {0};
-    char mac_str[18] = {0};
     uint32_t flash_size = 0;
     json_gen_str_t jgen = {0};
     esp_chip_info_t chip = {0};
-    const char hex_chars[] = "0123456789ABCDEF";
+    const char *reset_reason_str = "";
+    char mac_str[MAC_FORMATED_LEN] = {0};
+    uint8_t own_mac[MAC_NUMBERS_LEN] = {0};
+    int reset_reason_int = esp_rom_get_reset_reason(0);
     int largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
 
     (void)set_cache(req, false);
-    
+
     esp_chip_info(&chip);
-    esp_read_mac(mac, ESP_MAC_WIFI_STA);
-    esp_flash_get_size(NULL, &flash_size);
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_flash_get_size(NULL, &flash_size),
+        "Failed to get internal flash storage size");
+    
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, esp_read_mac(own_mac, ESP_MAC_WIFI_STA),
+        "Failed to read hardware MAC address");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, format_mac_addr_to_buf(
+        own_mac, mac_str, sizeof(mac_str)), "MAC formatting failed");
 
-    {
-        size_t pos = 0U;
-
-        for (size_t i = 0U; i < 6U; i++) {
-            size_t hi = ((size_t)mac[i] >> 4U) & 0x0FU;
-            size_t lo = (size_t)mac[i] & 0x0FU;
-
-            mac_str[pos] = hex_chars[hi];
-            pos++;
-            mac_str[pos] = hex_chars[lo];
-            pos++;
-
-            if (i < 5U) {
-                mac_str[pos] = ':';
-                pos++;
-            }
-        }
-        
-        mac_str[pos] = '\0';
+    if ((reset_reason_int >= 1) && (reset_reason_int < MAX_REASONS_RESET_NUM)) {
+        reset_reason_str = reasons[reset_reason_int - 1];
+    } else {
+        ret = ESP_ERR_INVALID_STATE;
     }
 
-    json_gen_str_start(&jgen,
-        g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
+    if (ret == ESP_OK) {
+        json_gen_str_start(&jgen,
+            g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL);
 
-    /* { */
-    (void)json_gen_start_object(&jgen);
-    /*   "heap_free": 123456, */
-    (void)json_gen_obj_set_int(&jgen, "heap_free", esp_get_free_heap_size());
-    /*   "heap_min": 120000, */
-    (void)json_gen_obj_set_int(&jgen, "heap_min", esp_get_minimum_free_heap_size());
-    /*   "largest_block": 80000, */
-    (void)json_gen_obj_set_int(&jgen, "largest_block", largest_block);
-    /*   "uptime": 3600, */
-    (void)json_gen_obj_set_int(&jgen, "uptime", esp_timer_get_time() / 1000000ULL);
-    /*   "cores": 2, */
-    (void)json_gen_obj_set_int(&jgen, "cores", chip.cores);
-    /*   "chip_rev": 3, */
-    (void)json_gen_obj_set_int(&jgen, "chip_rev", chip.revision);
-    /*   "flash_size": 4, */
-    (void)json_gen_obj_set_int(&jgen, "flash_size", flash_size / (1024U * 1024U));
-    /*   "cpu_freq": 240, */
-    (void)json_gen_obj_set_int(&jgen, "cpu_freq",  EIF_CPU_FREQ_MHZ);
-    /*   "reset_reason": 1, */
-    (void)json_gen_obj_set_int(&jgen, "reset_reason", esp_rom_get_reset_reason(0));
-    /*   "chip_model": "ESP32", */
-    (void)json_gen_obj_set_string(&jgen, "chip_model", CONFIG_IDF_TARGET);
-    /*   "features": { */
-    (void)json_gen_push_object(&jgen, "features");
-    /*     "has_wifi": true, */
-    (void)json_gen_obj_set_bool(&jgen, "has_wifi", (chip.features & CHIP_FEATURE_WIFI_BGN));
-    /*     "has_bluetooth": true, */
-    (void)json_gen_obj_set_bool(&jgen, "has_bluetooth", (chip.features & CHIP_FEATURE_BT));
-    /*     "has_ble": true */
-    (void)json_gen_obj_set_bool(&jgen, "has_ble", (chip.features & CHIP_FEATURE_BLE));
-    /*   }, */
-    (void)json_gen_pop_object(&jgen);
-    /*   "mac": "AA:BB:CC:DD:EE:FF" */
-    (void)json_gen_obj_set_string(&jgen, "mac", mac_str);
-    /* } */
-    (void)json_gen_end_object(&jgen);
+        /* { */
+        (void)json_gen_start_object(&jgen);
+        /*   "heap_free": 123456, */
+        (void)json_gen_obj_set_int(&jgen, "heap_free", esp_get_free_heap_size());
+        /*   "heap_min": 120000, */
+        (void)json_gen_obj_set_int(&jgen, "heap_min", esp_get_minimum_free_heap_size());
+        /*   "largest_block": 80000, */
+        (void)json_gen_obj_set_int(&jgen, "largest_block", largest_block);
+        /*   "uptime": 3600, */
+        (void)json_gen_obj_set_int(&jgen, "uptime", esp_timer_get_time() / 1000000ULL);
+        /*   "cores": 2, */
+        (void)json_gen_obj_set_int(&jgen, "cores", chip.cores);
+        /*   "chip_rev": 3, */
+        (void)json_gen_obj_set_int(&jgen, "chip_rev", chip.revision);
+        /*   "flash_size": 4, */
+        (void)json_gen_obj_set_int(&jgen, "flash_size", flash_size / (1024U * 1024U));
+        /*   "cpu_freq": 240, */
+        (void)json_gen_obj_set_int(&jgen, "cpu_freq",  EIF_CPU_FREQ_MHZ);
+        /*   "reset_reason": 1, */
+        (void)json_gen_obj_set_int(&jgen, "reset_reason", reset_reason_int);
+        /*   "reset_reason_str": "Power-On Reset", */
+        (void)json_gen_obj_set_string(&jgen, "reset_reason_str", reset_reason_str);
+        /*   "chip_model": "ESP32", */
+        (void)json_gen_obj_set_string(&jgen, "chip_model", CONFIG_IDF_TARGET);
+        /*   "features": { */
+        (void)json_gen_push_object(&jgen, "features");
+        /*     "has_wifi": true, */
+        (void)json_gen_obj_set_bool(&jgen, "has_wifi", (chip.features & CHIP_FEATURE_WIFI_BGN));
+        /*     "has_bluetooth": true, */
+        (void)json_gen_obj_set_bool(&jgen, "has_bluetooth", (chip.features & CHIP_FEATURE_BT));
+        /*     "has_ble": true */
+        (void)json_gen_obj_set_bool(&jgen, "has_ble", (chip.features & CHIP_FEATURE_BLE));
+        /*   }, */
+        (void)json_gen_pop_object(&jgen);
+        /*   "mac": "AA:BB:CC:DD:EE:FF" */
+        (void)json_gen_obj_set_string(&jgen, "mac", mac_str);
+        /* } */
+        (void)json_gen_end_object(&jgen);
 
-    int json_len = json_gen_str_end(&jgen);
-    EIF_IF_OK_CHECK_CONDITION(ret, json_len <= 0,
-        ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
+        int json_len = json_gen_str_end(&jgen);
+        EIF_IF_OK_CHECK_CONDITION(ret, json_len <= 0,
+            ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
+    }
 
     if (ret == ESP_OK) {
         httpd_resp_set_type(req, RESP_TYPE_JSON);
@@ -919,8 +1155,8 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
     (void)json_gen_obj_set_string(&jgen, "project", app->project_name);
     /*   "version": "1.0.0", */
     (void)json_gen_obj_set_string(&jgen, "version", app->version);
-    /*   "build_id": "a1b2c3d4e5f6...", */
-    (void)json_gen_obj_set_string(&jgen, "build_id", sha_str);
+    /*   "elf_sha256": "a1b2c3d4e5f6...", */
+    (void)json_gen_obj_set_string(&jgen, "elf_sha256", sha_str);
     /*   "build_date": "Jan 1 2026", */
     (void)json_gen_obj_set_string(&jgen, "build_date", app->date);
     /*   "build_time": "12:00:00", */
@@ -937,9 +1173,10 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
     (void)json_gen_obj_set_string(&jgen, "ota_status", status_str);
     /* } */
     (void)json_gen_end_object(&jgen);
-
+    
     int json_len = json_gen_str_end(&jgen);
-    EIF_IF_OK_CHECK_CONDITION(ret, json_len <= 0,
+    EIF_IF_OK_CHECK_CONDITION(ret,
+        ((json_len <= 0) || (json_len > SERVER_JSON_OUT_BUF_SIZE)),
         ESP_ERR_NO_MEM, SERVER_ERR_JSON_SER);
     
     if (ret == ESP_OK) {
@@ -1341,6 +1578,8 @@ esp_err_t eif_server_launch(void) {
         /* ----------------------- WiFi API ---------------------- */
         /* Get parameters of all WiFi profiles */
         {"/_/wifi/list.json",   HTTP_GET,  h_wifi_list_json,   NULL},
+        /* Get Wi-Fi and network information */
+        {"/_/wifi/info.json",   HTTP_GET,  h_wifi_info_json, NULL},
         /* Update WiFi profile under index X */
         {"/_/wifi/update.do",   HTTP_POST, h_wifi_update_do,   NULL},
         /* Clear WiFi profile under index X */

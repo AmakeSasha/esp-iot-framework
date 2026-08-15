@@ -33,7 +33,7 @@
 #endif
 
 /**
- * @addtogroup core_macros_group Core Macros
+ * @addtogroup core_macros_group CORE Macros
  * @{
  *
  * @details @note This group of modules is available when you include this line
@@ -159,13 +159,13 @@
  * @name Logging Severity Levels
  * @{
  */
-/** @brief Error log level severity. */
+/** @brief Error log level severity, is level `Error`. */
 #define EIF_LOG_LEVEL_E 1
-/** @brief Warning log level severity. */
+/** @brief Warning log level severity, is level `Warning`. */
 #define EIF_LOG_LEVEL_W 2
-/** @brief Informational log level severity. */
+/** @brief Informational log level severity, is level `Info`. */
 #define EIF_LOG_LEVEL_I 3
-/** @brief Debug log level severity. */
+/** @brief Debug log level severity, is level `Debug`. */
 #define EIF_LOG_LEVEL_D 4
 /** @} */
 
@@ -175,13 +175,29 @@
  * @brief Main logging macros with global compile-time filtering.
  *
  * Use these macros to print logs to the console. Which logs actually
- * get compiled into the firmware depends on the `CONFIG_EIF_LOG_LEVEL` value.
- * A logging macro works only if `CONFIG_EIF_LOG_LEVEL` is equal to or higher
- * than its corresponding severity level constant (from 1 to 4).
- *
- * For example: if `CONFIG_EIF_LOG_LEVEL` is set to `EIF_LOG_LEVEL_W` (2), then
- * `EIF_LOG_E` and `EIF_LOG_W` will print logs normally. However, `EIF_LOG_I`
- * and `EIF_LOG_D` will be completely ignored.
+ * get compiled into the firmware depends on the <code>
+ *   <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">
+ *     CONFIG_EIF_LOG_LEVEL
+ *   </a>
+ * </code> value. A logging macro works only if <code>
+ *   <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">
+ *     CONFIG_EIF_LOG_LEVEL
+ *   </a>
+ * </code> is equal to or higher than its corresponding severity level constant
+ * (from `1` to `4`):
+ * 
+ * * `0`: `None`
+ *   * Turns off absolutely everything. No errors, warnings, or system logs will be
+ *     printed to the console.
+ * * `1`: `Error` - `EIF_LOG_E()`
+ *  *   * Turns on only `Errors`. Everything below (`Warning`, `Info`, `Debug`) is
+ *        turned off.
+ * * `2`: `Warning` - `EIF_LOG_W()`
+ *   * Turns on `Warnings` and `Errors`. `Info` and `Debug` logs are turned off.
+ * * `3`: `Info` - `EIF_LOG_I()`
+ *   * Turns on `Info`, `Warning`, and `Error`. Only `Debug` logs are turned off.
+ * * `4`: `Debug` - `EIF_LOG_D()`
+ *   * Turns on absolutely everything. Full output mode without any filtering.
  *
  * When a log level is ignored, its macro turns into an empty `((void)0U)`.
  * The compiler completely deletes these lines and their text strings.
@@ -542,9 +558,13 @@ do { \
     /**
      * @brief Executes and validates an MbedTLS expression sequentially.
      *
-     * @note Only available if the Kconfig option `CONFIG_EIF_ENABLE_TLS` is enabled.
+     * @note Only available if the `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
+     *           CONFIG_EIF_ENABLE_TLS
+     *         </a>
+     *       </code> is enabled.
      *
-     * This macro operates similarly to `EIF_IF_OK_CHECK_ESP_ERR_T`, but is
+     * This macro operates similarly to `EIF_IF_OK_CHECK_ESP_ERR_T()`, but is
      * specifically designed for the MbedTLS library, which uses `int` (where
      * `0` is success and negative values are errors) instead of `esp_err_t`.
      *

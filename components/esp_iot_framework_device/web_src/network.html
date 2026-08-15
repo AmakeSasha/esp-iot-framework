@@ -78,8 +78,13 @@
 <body>
   <div class="window">
     <div class="title">📶 WiFi Settings</div>
-    <div id="cards-container"></div>
 
+    <div class="card">
+      <div class="slot" style="margin-bottom:0px;">INFO</div>
+      <div class="status-bar" id="jsonOutNET" style="text-align:left;font-size:16px;background:yellow;color:red;"></div>
+    </div>
+
+    <div id="cards-container"></div>
 
     <div class="card" id="cardTemplate" style="display: none" data-state="view">
       <div class="slot" id="slotTitleSLOT_ID">SLOT_LABEL</div>
@@ -106,7 +111,7 @@
   <script language="JavaScript">
     var wifiNetworks = [];
     var countTestButtons = 0;
-
+    
     API.getProfiles =   function(cb)    { API._sendJson("GET",  "/_/wifi/list.json",   null, cb); };
     API.getResult =     function(cb, d) { API._sendJson("POST", "/_/wifi/result.json",    d, cb); };
     API.updateProfile = function(cb, d) { API._sendJson("POST", "/_/wifi/update.do",      d, cb); };
@@ -274,6 +279,7 @@
     }
 
     window.onload = function() {
+      getInfoNet();
       API.getProfiles(function(err, cfg) {
         if (err || !cfg || !cfg.profiles|| typeof cfg.current_profile_index === 'undefined') {
           if (window.console) console.error("Failed to load config:", err);
@@ -320,6 +326,22 @@
       btn.removeAttribute('data-state');
       API.sendWithBtn(btn, API.recreateTLS, null, function() {
         API.reloadWindow(btn);
+      });
+    }
+
+    API.getInfoNet = function(cb) { API._sendJson("GET",  "/_/wifi/info.json", null, cb); };
+
+    function getInfoNet() {
+      var status = document.getElementById('jsonOutNET');
+      status.innerHTML = '⏳ Sending...';
+      
+      API.getInfoNet(function(err, data) {
+        if (err) {
+          status.innerHTML = '<span style="color:red;">❌ Error: ' + err + '</span>';
+          return;
+        } else {
+          status.innerHTML = '<pre style=\'margin:0;\'>' + API.formatJson(data) + '</pre>';
+        }
       });
     }
   </script>

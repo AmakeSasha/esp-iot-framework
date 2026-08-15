@@ -59,10 +59,6 @@
 
 /* --- */
 
-/* @for_linter misra-c2012-8.7 */
-esp_err_t eif_nvs_initialize(void);
-
-
 #define TAG "NVS"
 
 static inline esp_err_t eif_nvs_check_range(

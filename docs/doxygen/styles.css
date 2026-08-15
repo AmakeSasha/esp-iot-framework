@@ -158,7 +158,7 @@ a.code {
 .fragment .contents a:visited { color: Teal !important;}
 .fragment .stringliteral { color: Lime !important;}
 
-/* 8. DARK MODE */
+/* 10. DARK MODE */
 @media (prefers-color-scheme: dark) {
   * { color: White !important; }
   .memname,
@@ -229,4 +229,32 @@ a.code {
   dl.warning dt { color: #ffa500 !important; }
   dl.note dt { color: #61afef !important; }
   img.footer { opacity: 0.5; }
+}
+
+/* 11. OBJEVY ILLUMINATION */
+.highlight-block {
+  padding: 7px;
+  background-color: transparent;
+  transition: background-color 1.5s ease-out;
+}
+.highlight-block:target {
+  background-color: #00bfff;
+  transition: background-color 0s;
+}
+
+@supports (animation: name) {
+  .highlight-block:target {
+    animation: neon-fade 2.5s ease-in-out forwards;
+  }
+}
+@keyframes neon-fade {
+  0% {
+    background-color: #00bfff;
+  }
+  15% {
+    background-color: #00bfff;
+  }
+  100% {
+    background-color: transparent;
+  }
 }

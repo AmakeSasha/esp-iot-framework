@@ -31,12 +31,6 @@
   <script type="text/javascript" src="/_/files/json2.js"></script>
   <script type="text/javascript" src="/_/files/api.js"></script>
   <link rel="stylesheet" type="text/css" href="/_/files/style.css">
-  <style>
-    .json-key { color: darkblue; }
-    .json-string { color: darkgreen; }
-    .json-number { color: purple; }
-    .json-boolean { color: red; }
-  </style>
 </head>
 <body>
   <!-- System -->
@@ -44,7 +38,7 @@
     <div class="title">🔧 System Settings</div>
     <div class="card">
       <button onclick="rebootWeb()" id="rebootBtn" style="width:100%; background:red;">🔃 FORCE SYSTEM REBOOT</button>
-    </div> 
+    </div>
     <div class="card">
       <div class="slot" style="margin-bottom:0px;">INFO</div>
       <div class="status-bar" id="jsonOutSYS" style="text-align:left;font-size:16px;background:yellow;color:red;"></div>
@@ -65,8 +59,14 @@
 
     function loadSYSstatus() {
       var status = document.getElementById('jsonOutSYS');
-      API.sendWithBtn(status, API.getInfoSYS, null, function(data) {
-        status.innerHTML = '<pre style=\'margin:0;\'>' + formatJson(data) + '</pre>';
+      status.innerHTML = '⏳ Sending...';
+      
+      API.getInfoSYS(function(err, data) {
+        if (err) {
+          status.innerHTML = '<span style="color:red;">❌ Error: ' + err + '</span>';
+          return;
+        }
+        status.innerHTML = '<pre style=\'margin:0;\'>' + API.formatJson(data) + '</pre>';
       });
     }
   </script>
@@ -154,9 +154,17 @@
 
     function loadOTAstatus() {
       var status = document.getElementById('jsonOutOTA');
-      API.sendWithBtn(status, API.getInfoOTA, null, function(data) {
-        status.innerHTML = '<pre style=\'margin:0;\'>' + formatJson(data) + '</pre>';
-        var ok = data.ota_status && data.ota_status === "pending_verify";
+      status.innerHTML = '⏳ Sending...';
+
+      API.getInfoOTA(function(err, data) {
+        if (err) {
+          status.innerHTML = '<span style="color:red;">❌ Error: ' + err + '</span>';
+          return;
+        }
+        
+        status.innerHTML = '<pre style=\'margin:0;\'>' + API.formatJson(data) + '</pre>';
+
+        var ok = data && data.ota_status && data.ota_status === "pending_verify";
          
         document.getElementById('btnOTAsend').style.display = ok ? 'none' : 'block';
         document.getElementById('rowOTAfile').style.display = ok ? 'none' : 'block';
@@ -253,27 +261,6 @@
   </script>
   <!-- Other -->
   <script language="JavaScript">
-    function formatJson(json) {
-      var res = JSON.stringify(json, null, 2);
-
-      res = res.replace(/("(\\.|[^"\\])*")/g, function(match) {
-          return '<span class="json-string">' + match + '</span>';
-      });
-      res = res.replace(/\b\d+\b/g, function(match, offset, fullString) {
-        var part = fullString.substring(0, offset);
-        if (part.lastIndexOf('<span class="json-string">') > part.lastIndexOf('</span>')) return match;
-        return '<span class="json-number">' + match + '</span>';
-      });
-      res = res.replace(/\b(true|false|null)\b/g, function(match, word, offset, fullString) {
-        var part = fullString.substring(0, offset);
-        if (part.lastIndexOf('<span class="json-string">') > part.lastIndexOf('</span>')) return match;
-        return '<span class="json-boolean">' + match + '</span>';
-      });
-      res = res.replace(/<span class="json-string">("[^"]+")<\/span>\s*:/g, '<span class="json-key">$1</span>:');
-     
-      return res;
-    }
-
     window.onload = function() {
       setTimeout(toggleAdminForm, 50);
       setTimeout(loadSYSstatus, 50);

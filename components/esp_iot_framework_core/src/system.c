@@ -49,7 +49,7 @@
 
 #define TASK_MEMORY_MONITOR_NAME "t_memory_monitor"
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
-#define TASK_MEMORY_MONITOR_SIZE 1280
+#define TASK_MEMORY_MONITOR_SIZE 1512
 #else
     #define TASK_MEMORY_MONITOR_SIZE 1108
 #endif
@@ -72,11 +72,6 @@
     #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE!"
 #endif
 
-/* @for_linter misra-c2012-8.7 */
-esp_err_t eif_task_wifi_test_launch(uint8_t profile_inde);
-
-
-
 /* Logging */
 
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
@@ -93,7 +88,7 @@ esp_err_t eif_task_wifi_test_launch(uint8_t profile_inde);
      * globally at the compiler level via explicit build verification flags. */
     /* cppcheck-suppress misra-c2012-17.1 */
     static int core_global_log_vprintf(const char *fmt, va_list l) {
-        ringbuf_t *buf = core_log_buf;
+        RingbufHandle_t buf = core_log_buf;
 
         if (buf != NULL) {
             char line_buf[192] = {0};
@@ -489,9 +484,9 @@ static void eif_task_memory_monitor(void *arg) {
 
     EIF_LOG_I(MSG_SPAWN_TASK, __func__);
     EIF_LOG_I("Interval: %d ms, Critical size: %d bytes, Checks needed: %d",
-        CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL,
-        CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE,
-        CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
+        (int)CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL,
+        (int)CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE,
+        (int)CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
 
     for (;;) {
         size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);

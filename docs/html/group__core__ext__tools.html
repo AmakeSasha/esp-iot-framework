@@ -59,7 +59,7 @@ $(document).ready(function(){initNavTree('group__core__ext__tools.html',''); ini
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Tools<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
+<div class="title">Tools<div class="ingroups"><a class="el" href="group__core__root.html">CORE</a> &raquo; <a class="el" href="group__core__ext__group.html">CORE Extension</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -119,14 +119,13 @@ Functions</h2></td></tr>
 <div class="line"><span class="preprocessor">#define TAG &quot;STR_UTIL&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> validate_json_payload(<span class="keyword">const</span> <span class="keywordtype">char</span> * <span class="keyword">const</span> payload) {</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">bool</span> is_empty = <a class="code" href="group__core__ext__tools.html#ga3c45f50c96556e55b95f222587574cae">eif_strempty</a>(payload);</div>
-<div class="line">    <span class="keywordflow">if</span> (is_empty == <span class="keyword">true</span>) {</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group__core__ext__tools.html#ga3c45f50c96556e55b95f222587574cae">eif_strempty</a>(payload)) {</div>
 <div class="line">        ESP_LOGE(TAG, <span class="stringliteral">&quot;Payload is completely empty or NULL.&quot;</span>);</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>
 <div class="line">        ESP_LOGI(TAG, <span class="stringliteral">&quot;Payload validation passed.&quot;</span>);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__core__ext__tools_html_ga3c45f50c96556e55b95f222587574cae"><div class="ttname"><a href="group__core__ext__tools.html#ga3c45f50c96556e55b95f222587574cae">eif_strempty</a></div><div class="ttdeci">static bool eif_strempty(const char *const str)</div><div class="ttdoc">Checks if a string is empty.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:149</div></div>
+<div class="ttc" id="agroup__core__ext__tools_html_ga3c45f50c96556e55b95f222587574cae"><div class="ttname"><a href="group__core__ext__tools.html#ga3c45f50c96556e55b95f222587574cae">eif_strempty</a></div><div class="ttdeci">static bool eif_strempty(const char *const str)</div><div class="ttdoc">Checks if a string is empty.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:148</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -167,12 +166,14 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">str</td><td>Constant pointer to the constant string to measure. </td></tr>
-    <tr><td class="paramname">max_allowed</td><td>Maximum number of characters to examine, excluding the null-terminator.</td></tr>
+    <tr><td class="paramname">max_allowed</td><td>Maximum number of characters to examine, excluding the null-terminator (<code>\0</code>).</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><ul>
-<li>The number of characters in <code>str</code> if a null-terminator is found within the boundary. If <code>str</code> is <code>NULL</code>, returns <code>0U</code>. If no null-terminator is found within the limit, returns the internal bounded limit.</li>
+<li>The number of characters in <code>str</code> if a null-terminator (<code>\0</code>) is found within the boundary.</li>
+<li><code>max_allowed</code> if no null-terminator (<code>\0</code>) is found within the limit.</li>
+<li><code>0U</code> if <code>str</code> is <code>NULL</code>.</li>
 </ul>
 </dd></dl>
 <p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>

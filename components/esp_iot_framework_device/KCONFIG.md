@@ -26,7 +26,9 @@ This section describes the `esp_iot_framework_device` configuration parameters. 
 
 ---
 
-`Web admin GUI` -> `EIF_ENABLE_WEB_ADMIN_GUI` - `bool` (*default*: `y`)
+<div class="highlight-block" id="CONFIG_EIF_ENABLE_WEB_ADMIN_GUI">
+  <code>Web admin GUI</code> -> <code>EIF_ENABLE_WEB_ADMIN_GUI</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
+</div>
 
 Name in the `menuconfig`: `Enable Web-based Administration Panel`
 
@@ -39,7 +41,9 @@ Disabling this feature significantly reduces Flash usage and optimizes the HTTP 
 
 ---
 
-`Web admin GUI` -> `EIF_ENABLE_WEB_FAVICON` - `bool` (*default*: `y`)
+<div class="highlight-block" id="CONFIG_EIF_ENABLE_WEB_FAVICON">
+  <code>Web admin GUI</code> -> <code>EIF_ENABLE_WEB_FAVICON</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
+</div>
 
 Name in the `menuconfig`: `Embed Web Favicon (Logo)`
 
@@ -50,7 +54,9 @@ Includes the official framework branding icon in the firmware.
 
 ---
 
-`Web admin GUI` -> `EIF_WEB_CACHE_MAX_AGE` - `int` (*range*: `0` - `31536000`, *default*: `360`)
+<div class="highlight-block" id="CONFIG_EIF_WEB_CACHE_MAX_AGE">
+  <code>Web admin GUI</code> -> <code>EIF_WEB_CACHE_MAX_AGE</code> - <code>int</code> (<em>range</em>: <code>0</code> - <code>31536000</code>, <em>default</em>: <code>360</code>)
+</div>
 
 Name in the `menuconfig`: `Static files cache max-age (seconds)`
 
@@ -66,7 +72,9 @@ Sets the `max-age` value (in seconds) for the HTTP `Cache-Control` header. Durin
 
 ---
 
-`EIF_ENABLE_BASIC_AUTH` - `bool` (*default*: `y`)
+<div class="highlight-block" id="CONFIG_EIF_ENABLE_BASIC_AUTH">
+  <code>EIF_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
+</div>
 
 Name in the `menuconfig`: `Enable Basic Auth for the core URL (/_/*)`
 
@@ -77,12 +85,14 @@ Enables mandatory HTTP Basic Authentication for all administrative paths.
 
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
     <strong>Warning</strong><br>
-    Disabling authentication is highly dangerous for production. If <code>EIF_ENABLE_TLS</code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air.
+    Disabling authentication is highly dangerous for production. If <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">EIF_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air.
 </div>
 
 ---
 
-`EIF_WEB_SIZE_OTA_BUFFER` - `int` (*range*: `1024` - `65536`, *default*: `4096`)
+<div class="highlight-block" id="CONFIG_EIF_WEB_SIZE_OTA_BUFFER">
+  <code>EIF_WEB_SIZE_OTA_BUFFER</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>65536</code>, <em>default</em>: <code>4096</code>)
+</div>
 
 Name in the `menuconfig`: `OTA update buffer size (bytes)`
 
@@ -97,7 +107,9 @@ Setting this value too high may cause OTA initialization to fail due to heap fra
 
 ---
 
-`Logging Settings` -> `EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP` - `bool` (*default*: `n`)
+<div class="highlight-block" id="CONFIG_EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP">
+  <code>Logging Settings</code> -> <code>EIF_LOG_ENABLE_WEB_SEND_TIMESTAMP</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
+</div>
 
 Name in the `menuconfig`: `Include timestamp in HTTP response`
 

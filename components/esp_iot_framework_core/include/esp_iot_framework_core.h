@@ -35,31 +35,31 @@
 #endif
 
 /**
- * @defgroup core_root Core
+ * @defgroup core_root CORE
  * @copydoc md_docs_html_README_CORE
  * @{
  */
 /**
- * @defgroup core_group Core
+ * @defgroup core_group CORE
  * @brief The ecosystem engine. Provides framework initialization, Wi-Fi configuration, network profile management, and system lifecycle hooks.
  */
 /**
- * @defgroup core_ext_group Core Extension
+ * @defgroup core_ext_group CORE Extension
  * @brief Low-level API exposing NVS storage, FreeRTOS task management, IP event handlers, and internal configuration queries for creating nodes.
  */
 /**
- * @defgroup core_macros_group Core Macros
+ * @defgroup core_macros_group CORE Macros
  * @brief Preprocessor utilities for standardized logging, sequential error checking, and task spawning.
  */
 /**
  * @defgroup core_kconfig Kconfig
- * @brief Core `Kconfig` configuration options.
+ * @brief CORE `Kconfig` configuration options.
  * @copydoc md_docs_html_KCONFIG_CORE
  */
 /** @} */
 
 /**
- * @addtogroup core_group Core
+ * @addtogroup core_group CORE
  * @{
  *
  * @details @note This group of modules is available when you include this line
@@ -81,7 +81,7 @@
  */
 
 /**
- * @defgroup config_c Core Entry
+ * @defgroup config_c CORE Entry
  * @brief Base initialization and framework-wide settings.
  *
  * This module contains functions that must be called at the very beginning
@@ -126,8 +126,8 @@ esp_err_t eif_core_initialize(void);
  * This function performs the following essential steps:
  * - Initializes the NVS flash partition (with automatic repair/erase if
  *   corrupted).
- * - Prepares or loads @ref wifi_profiles_desc "Wi-Fi profiles" based on the
- *   configured count.
+ * - Prepares or loads <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code> based on
+ *   the configured count.
  * - Manages TLS credentials and authentication data (if enabled).
  *
  * @warning When the device is started for the first time, this function will
@@ -139,7 +139,7 @@ esp_err_t eif_core_initialize(void);
  *       **mandatory** for the framework to work. If you use
  *       `eif_set_wifi_profiles_count()`, it must be called before calling
  *       `eif_nvs_initialize()`. Otherwise, the default number of profiles
- *       **(2)** will be loaded into NVS.
+ *       (<code>#EIF_WIFI_PROFILES_DEFAULT_COUNT</code>) will be loaded into NVS.
  *
  * @warning If the NVS partition is corrupted or has a new version, this function
  *          will automatically erase it and re-initialize, which results in the
@@ -189,8 +189,12 @@ typedef esp_err_t (*eif_handler_system_t)(void);
  * allowing you to "park" your hardware or commit last-second logs.
  *
  * @warning The handler runs within a dedicated reboot task with a limited
- *          stack size (`CONFIG_EIF_REBOOT_TASK_STACK_SIZE`). Avoid deep
- *          recursion or allocation of a large amount of memory (stack or heap).
+ *          stack size (<code>
+ *              <a href="group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">
+ *                  CONFIG_EIF_REBOOT_TASK_STACK_SIZE
+ *              </a>
+ *          </code>). Avoid deep recursion or allocation of a large amount of
+ *          memory (stack or heap).
  *
  * @note Before this handler runs, the framework will automatically trigger the
  *       "IP Lost" (registered via `eif_register_handler_ip_lost()`, ESP-IDF
@@ -244,11 +248,11 @@ esp_err_t eif_register_handler_system_reboot(eif_handler_system_t handler);
  * @{
  */
 /**
- * @brief Maximum number of custom @ref wifi_profiles_desc "Wi-Fi profiles".
+ * @brief Maximum number of custom <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code>.
  */
 #define EIF_WIFI_PROFILES_MAX_COUNT 9U
 /**
- * @brief Default number of custom @ref wifi_profiles_desc "Wi-Fi profiles".
+ * @brief Default number of custom <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code>.
  */
 #define EIF_WIFI_PROFILES_DEFAULT_COUNT 2U
 /** @} */
@@ -277,7 +281,7 @@ esp_err_t eif_register_handler_system_reboot(eif_handler_system_t handler);
  *          unexpected behavior (`UB`), memory leaks, or Wi-Fi crashes. Always
  *          validate the data you send.
  *
- * @param wifi_driver_config Low-level ESP-IDF Wi-Fi driver configuration
+ * @param wifi_driver_config Low-level ESP-IDF Wi-Fi driver configuration.
  *                           Use `WIFI_INIT_CONFIG_DEFAULT()` as a base.
  * @param wifi_power_mode Wi-Fi Modem-sleep policy. Defines the trade-off between
  *                        power consumption and network responsiveness/latency.
@@ -334,11 +338,11 @@ esp_err_t eif_set_wifi_config(
  *
  * @note The total number of managed profiles is equal to
  *       (`wifi_profiles_count + 1`). If set to `0`, only the system default
- *       profile (index 0) will be used. The default profile is hardcoded and
+ *       profile (index `0`) will be used. The default profile is hardcoded and
  *       cannot be changed. The default value is
  *       <code>#EIF_WIFI_PROFILES_DEFAULT_COUNT</code>.
  *
- * @param wifi_profiles_count Number of extra slots (0 to
+ * @param wifi_profiles_count Number of extra slots (`0` to
  *                            <code>#EIF_WIFI_PROFILES_MAX_COUNT</code>).
  *
  * @return

@@ -57,7 +57,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <div id="doc-content">
 <div class="header">
   <div class="headertitle">
-<div class="title">Non-Volatile Storage (NVS)<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__ext__group.html">Core Extension</a></div></div>  </div>
+<div class="title">Non-Volatile Storage (NVS)<div class="ingroups"><a class="el" href="group__core__root.html">CORE</a> &raquo; <a class="el" href="group__core__ext__group.html">CORE Extension</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -167,8 +167,8 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
   <table class="params">
     <tr><td class="paramname">key</td><td>NVS storage key (maximum <code>15</code> characters). Cannot be <code>NULL</code>. </td></tr>
     <tr><td class="paramname">value</td><td>The string to save. Cannot be <code>NULL</code>. </td></tr>
-    <tr><td class="paramname">min_len</td><td>Minimum allowed length (excluding the null-terminator). </td></tr>
-    <tr><td class="paramname">max_len</td><td>Maximum allowed length (including the null-terminator). </td></tr>
+    <tr><td class="paramname">min_len</td><td>Minimum allowed length (excluding the null-terminator (<code>\0</code>)). </td></tr>
+    <tr><td class="paramname">max_len</td><td>Maximum allowed length (including the null-terminator (<code>\0</code>)). </td></tr>
     <tr><td class="paramname">it_can_be_empty</td><td>Allow saving an empty string, bypassing length limits.</td></tr>
   </table>
   </dd>
@@ -238,7 +238,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
   <table class="params">
     <tr><td class="paramname">key</td><td>NVS storage key (maximum <code>15</code> characters). Cannot be <code>NULL</code>. </td></tr>
     <tr><td class="paramname">value_out</td><td>Pointer to the buffer where the string will be stored. Cannot be <code>NULL</code>. </td></tr>
-    <tr><td class="paramname">max_len</td><td>Maximum bytes allocated for <code>value_out</code> (including the null-terminator).</td></tr>
+    <tr><td class="paramname">max_len</td><td>Maximum bytes allocated for <code>value_out</code> (including the null-terminator (<code>\0</code>)).</td></tr>
   </table>
   </dd>
 </dl>
@@ -306,7 +306,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 </div><div class="memdoc">
 <p>Queries storage to determine the data size, allocates a buffer from the heap via <code>pvPortMalloc()</code>, and copies the string into it. If any operation fails, <code>*value_out</code> is guaranteed to be set to <code>NULL</code> and <code>*value_out_len</code> is set to <code>0U</code>.</p>
 <dl class="section note"><dt>Note</dt><dd>This function automatically calls <code>vPortFree(*value_out)</code> at the beginning to clear pre-existing allocations.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>The caller assumes ownership of the allocated buffer. If this function returns <code>ESP_OK</code>, the caller MUST release the memory using <code>vPortFree(*value_out)</code> (or the respective pointer variable) to avoid leaks.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The caller assumes ownership of the allocated buffer. If this function returns <code>ESP_OK</code>, the caller <b>MUST</b> release the memory using <code>vPortFree(*value_out)</code> (or the respective pointer variable) to avoid leaks.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>NVS storage key (maximum <code>15</code> characters). Cannot be <code>NULL</code>. </td></tr>
@@ -389,8 +389,8 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">index</td><td>Profile index slot. Must be from <code>1</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>. </td></tr>
-    <tr><td class="paramname">ssid</td><td>Wi-Fi SSID string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga26a797b8507c185ac48e27d966cd5f34" title="Minimum SSID length without null-terminator. Example of the value: Q">EIF_WIFI_SSID_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator. Example of the value: My_Super_Long_Wifi_Network_Name">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
-    <tr><td class="paramname">pass</td><td>Wi-Fi Password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga1eb7a99abb300a875c3ef4d93039541a" title="Minimum Password length for WPA2 without null-terminator. Example of the value: 12345678">EIF_WIFI_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator. Example of the value: this_is_a_very_long_password...">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">ssid</td><td>Wi-Fi SSID string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga26a797b8507c185ac48e27d966cd5f34" title="Minimum SSID length without null-terminator (\0). Example of the value: Q">EIF_WIFI_SSID_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator (\0). Example of the value: My_Super_Long_Wifi_Network_...">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
+    <tr><td class="paramname">pass</td><td>Wi-Fi Password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga1eb7a99abb300a875c3ef4d93039541a" title="Minimum Password length for WPA2 without null-terminator (\0). Example of the value: 12345678">EIF_WIFI_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator (\0). Example of the value: this_is_a_very_long_pas...">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -458,8 +458,8 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">index</td><td>Profile index slot. Must be from <code>0</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>. </td></tr>
-    <tr><td class="paramname">ssid_out</td><td>Buffer for SSID. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator. Example of the value: My_Super_Long_Wifi_Network_Name">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
-    <tr><td class="paramname">pass_out</td><td>Buffer for password. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator. Example of the value: this_is_a_very_long_password...">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">ssid_out</td><td>Buffer for SSID. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator (\0). Example of the value: My_Super_Long_Wifi_Network_...">EIF_WIFI_SSID_MAX_LEN</a></code>. </td></tr>
+    <tr><td class="paramname">pass_out</td><td>Buffer for password. Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator (\0). Example of the value: this_is_a_very_long_pas...">EIF_WIFI_PASS_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -485,8 +485,8 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <div class="line">        ESP_LOGI(TAG, <span class="stringliteral">&quot;Profile %u: SSID=[%s]&quot;</span>, idx, ssid);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__core__ext__consts_html_ga1f91bceefd2a3f4bb0a459ed1050077d"><div class="ttname"><a href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d">EIF_WIFI_SSID_MAX_LEN</a></div><div class="ttdeci">#define EIF_WIFI_SSID_MAX_LEN</div><div class="ttdoc">Maximum SSID length including null-terminator. Example of the value: My_Super_Long_Wifi_Network_Name</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:71</div></div>
-<div class="ttc" id="agroup__core__ext__consts_html_gaa665c1575a5eecebc48261147404af16"><div class="ttname"><a href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16">EIF_WIFI_PASS_MAX_LEN</a></div><div class="ttdeci">#define EIF_WIFI_PASS_MAX_LEN</div><div class="ttdoc">Maximum Password length including null-terminator. Example of the value: this_is_a_very_long_password...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:78</div></div>
+<div class="ttc" id="agroup__core__ext__consts_html_ga1f91bceefd2a3f4bb0a459ed1050077d"><div class="ttname"><a href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d">EIF_WIFI_SSID_MAX_LEN</a></div><div class="ttdeci">#define EIF_WIFI_SSID_MAX_LEN</div><div class="ttdoc">Maximum SSID length including null-terminator (\0). Example of the value: My_Super_Long_Wifi_Network_...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:71</div></div>
+<div class="ttc" id="agroup__core__ext__consts_html_gaa665c1575a5eecebc48261147404af16"><div class="ttname"><a href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16">EIF_WIFI_PASS_MAX_LEN</a></div><div class="ttdeci">#define EIF_WIFI_PASS_MAX_LEN</div><div class="ttdoc">Maximum Password length including null-terminator (\0). Example of the value: this_is_a_very_long_pas...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:78</div></div>
 <div class="ttc" id="agroup__core__ext__nvs_html_ga4a54f573191d1d0e3d2550bb0d5b689b"><div class="ttname"><a href="group__core__ext__nvs.html#ga4a54f573191d1d0e3d2550bb0d5b689b">eif_nvs_wifi_profile_load</a></div><div class="ttdeci">esp_err_t eif_nvs_wifi_profile_load(uint8_t index, char *const ssid_out, char *const pass_out)</div><div class="ttdoc">Loads Wi-Fi network credentials for a specific profile index.</div></div>
 </div><!-- fragment --> 
 </div>
@@ -506,11 +506,12 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH </a> </code> is enabled.</dd></dl>
 <p>Takes the raw password, combines it with the default username (<code>admin</code>), and encodes the <code>admin:password</code> combination into Base64. The final string is prefixed with <code>Basic&#160;</code> (e.g., <code>Basic YWRtaW46cGFzcw==</code>) and saved to NVS.</p>
 <p>If an empty password (length <code>0</code>) is provided, the function automatically generates and saves the default empty-password line (<code>Basic YWRtaW46</code>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pass</td><td>Raw password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga48c047f9ef9f6f388bba5c45c7d1268e" title="Minimum Password length without null-terminator. Example of the value: ㅤ">EIF_BASIC_AUTH_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga7aa81b184d0ca114ee98d6d1a38b481e" title="Maximum Password length including null-terminator. Example of the value: 1234567890qwerty0qwerty0qwer...">EIF_BASIC_AUTH_PASS_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">pass</td><td>Raw password string. Cannot be <code>NULL</code>. The length should be from <code><a class="el" href="group__core__ext__consts.html#ga48c047f9ef9f6f388bba5c45c7d1268e" title="Minimum Password length without null-terminator (\0). Example of the value: ㅤ">EIF_BASIC_AUTH_PASS_MIN_LEN</a></code> to <code><a class="el" href="group__core__ext__consts.html#ga7aa81b184d0ca114ee98d6d1a38b481e" title="Maximum Password length including null-terminator (\0). Example of the value: 1234567890qwerty0qwerty...">EIF_BASIC_AUTH_PASS_MAX_LEN</a></code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -542,7 +543,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__core__ext__nvs_html_ga73a4fd15dd672219f27ca6ea3fc5c22f"><div class="ttname"><a href="group__core__ext__nvs.html#ga73a4fd15dd672219f27ca6ea3fc5c22f">eif_nvs_basic_auth_line_save</a></div><div class="ttdeci">esp_err_t eif_nvs_basic_auth_line_save(const unsigned char *const pass)</div><div class="ttdoc">Encodes and saves the HTTP Basic Auth credentials to NVS.</div></div>
-<div class="ttc" id="agroup__macros__check_html_ga250094cf6087063911bd5fd75934e8b6"><div class="ttname"><a href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Executes and validates an ESP-IDF expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:422</div></div>
+<div class="ttc" id="agroup__macros__check_html_ga250094cf6087063911bd5fd75934e8b6"><div class="ttname"><a href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Executes and validates an ESP-IDF expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:438</div></div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:89</div></div>
 </div><!-- fragment --> 
 </div>
@@ -562,11 +563,12 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH </a> </code> is enabled.</dd></dl>
 <p>Reads the stored authorization string from NVS into a pre-allocated buffer. The output string contains the configuration prefix, username, and password.</p>
 <p>Example of output written to <code>buf_out</code>: </p><div class="fragment"><div class="line">Basic YWRtaW46bXlfcGFzcw==</div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">buf_out</td><td>Buffer for Basic Auth string (e.g., <code>Basic YWRtaW46cGFzcw==</code>). Cannot be <code>NULL</code>. The length should be <code><a class="el" href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9" title="Maximum Line length including null-terminator. Example of the value: Basic YWRtaW46MTIzNDU2Nzg5MHF3ZX...">EIF_BASIC_AUTH_LINE_MAX_LEN</a></code>.</td></tr>
+    <tr><td class="paramname">buf_out</td><td>Buffer for Basic Auth string (e.g., <code>Basic YWRtaW46cGFzcw==</code>). Cannot be <code>NULL</code>. The length should be <code>EIF_BASIC_AUTH_LINE_MAX_LEN</code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -596,7 +598,7 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <div class="line">        <span class="comment">// Pass auth_line to HTTP client configuration here</span></div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__core__ext__consts_html_ga5a98d6f44868c5d521060879df2fb6b9"><div class="ttname"><a href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9">EIF_BASIC_AUTH_LINE_MAX_LEN</a></div><div class="ttdeci">#define EIF_BASIC_AUTH_LINE_MAX_LEN</div><div class="ttdoc">Maximum Line length including null-terminator. Example of the value: Basic YWRtaW46MTIzNDU2Nzg5MHF3ZX...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:88</div></div>
+<div class="ttc" id="agroup__core__ext__consts_html_ga5a98d6f44868c5d521060879df2fb6b9"><div class="ttname"><a href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9">EIF_BASIC_AUTH_LINE_MAX_LEN</a></div><div class="ttdeci">#define EIF_BASIC_AUTH_LINE_MAX_LEN</div><div class="ttdoc">Maximum Line length including null-terminator (\0). Example of the value: Basic YWRtaW46MTIzNDU2Nzg5M...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:88</div></div>
 <div class="ttc" id="agroup__core__ext__nvs_html_gaae1c90eeb60dbc587c9b57d1c70049ec"><div class="ttname"><a href="group__core__ext__nvs.html#gaae1c90eeb60dbc587c9b57d1c70049ec">eif_nvs_basic_auth_line_load</a></div><div class="ttdeci">esp_err_t eif_nvs_basic_auth_line_load(char *const buf_out)</div><div class="ttdoc">Loads the complete HTTP Basic Auth credentials from NVS.</div></div>
 </div><!-- fragment --> 
 </div>

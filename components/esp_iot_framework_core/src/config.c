@@ -82,7 +82,7 @@ esp_err_t eif_core_initialize(void) {
     temp_config.wifi_driver_config = default_wifi_cfg;
     temp_config.wifi_power_mode = WIFI_PS_NONE;
     temp_config.wifi_attempt_delay_ms = 2000U;
-    temp_config.wifi_profiles_count = 2U;
+    temp_config.wifi_profiles_count = EIF_WIFI_PROFILES_DEFAULT_COUNT;
     /* --- END INIT --- */
 
     for (uint32_t i = 0U; i < EIF_WIFI_PROFILES_MAX_COUNT; i++) {
@@ -238,6 +238,20 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 /*    mDNS Configuration    */
 /* ======================== */
 #ifdef CONFIG_EIF_ENABLE_MDNS
+    const char* eif_get_mdns_hostname(void) {
+        const char *mdns_name = NULL;
+
+        EIF_LOG_D(CFG_MSG_CALL_GETTER, __func__);
+
+        #ifdef CONFIG_EIF_ENABLE_MDNS
+            if (cfg.mdns_hostname[0] != '\0') {
+                mdns_name = (const char *)cfg.mdns_hostname;
+            }
+        #endif
+
+        return mdns_name;
+    }
+
     esp_err_t eif_set_mdns(
         const char * const hostname, const char * const instance_name
     ) {
@@ -248,17 +262,17 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
         EIF_IF_OK_CHECK_NOT_NULL(ret, hostname, ESP_ERR_INVALID_ARG);
         EIF_IF_OK_CHECK_NOT_NULL(ret, instance_name, ESP_ERR_INVALID_ARG);
 
-        size_t hostname_len = eif_strnlen(hostname, MDNS_HOSTNAME_PREFIX_MAX_LEN);
-        if (hostname_len >= (size_t)MDNS_HOSTNAME_PREFIX_MAX_LEN) {
+        size_t hostname_len = eif_strnlen(hostname, EIF_MDNS_HOSTNAME_MAX_LEN);
+        if (hostname_len >= (size_t)EIF_MDNS_HOSTNAME_MAX_LEN) {
             EIF_LOG_E(CFG_ERR_INVALID_LEN, "hostname",
-                hostname_len, 0, MDNS_HOSTNAME_PREFIX_MAX_LEN);
+                hostname_len, 0, EIF_MDNS_HOSTNAME_MAX_LEN);
             ret = ESP_ERR_INVALID_SIZE;
         }
 
-        size_t instance_len = eif_strnlen(instance_name, MDNS_INSTANCE_NAME_MAX_LEN);
-        if (instance_len >= (size_t)MDNS_INSTANCE_NAME_MAX_LEN) {
+        size_t instance_len = eif_strnlen(instance_name, EIF_MDNS_INSTANCE_NAME_MAX_LEN);
+        if (instance_len >= (size_t)EIF_MDNS_INSTANCE_NAME_MAX_LEN) {
             EIF_LOG_E(CFG_ERR_INVALID_LEN, "instance_name",
-                instance_len, 0, MDNS_INSTANCE_NAME_MAX_LEN);
+                instance_len, 0, EIF_MDNS_INSTANCE_NAME_MAX_LEN);
             ret = ESP_ERR_INVALID_SIZE;
         }
 

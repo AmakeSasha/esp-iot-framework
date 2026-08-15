@@ -30,7 +30,7 @@
 #endif
 
 /**
- * @addtogroup core_ext_group Core Extension
+ * @addtogroup core_ext_group CORE Extension
  * @{
  *
  * @details @note This group of modules is available when you include this line
@@ -61,20 +61,20 @@
 
 /**
  * @name Wi-Fi Configuration
- * @brief Default values and validation limits for @ref wifi_profiles_desc "Wi-Fi profiles".
+ * @brief Default values and validation limits for <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code>.
  * @{ */
 /** @brief Default `SSID` value. */
 #define EIF_WIFI_SSID_DEFAULT "ESP32_SETUP"
-/** @brief Minimum `SSID` length without null-terminator.<br>Example of the value: `Q` */
+/** @brief Minimum `SSID` length without null-terminator (`\0`).<br>Example of the value: `Q` */
 #define EIF_WIFI_SSID_MIN_LEN 1U
-/** @brief Maximum `SSID` length including null-terminator.<br>Example of the value: `My_Super_Long_Wifi_Network_Name` */
+/** @brief Maximum `SSID` length including null-terminator (`\0`).<br>Example of the value: `My_Super_Long_Wifi_Network_Name` */
 #define EIF_WIFI_SSID_MAX_LEN 32U
 
 /** @brief Default `Password` value. */
 #define EIF_WIFI_PASS_DEFAULT "12345678"
-/** @brief Minimum `Password` length for WPA2 without null-terminator.<br>Example of the value: `12345678` */
+/** @brief Minimum `Password` length for WPA2 without null-terminator (`\0`).<br>Example of the value: `12345678` */
 #define EIF_WIFI_PASS_MIN_LEN 8U
-/** @brief Maximum `Password` length including null-terminator.<br>Example of the value: `this_is_a_very_long_password_that_exactly_reaches_63_characters` */
+/** @brief Maximum `Password` length including null-terminator (`\0`).<br>Example of the value: `this_is_a_very_long_password_that_exactly_reaches_63_characters` */
 #define EIF_WIFI_PASS_MAX_LEN 64U
 /** @} */
 
@@ -82,13 +82,13 @@
  * @name Basic Auth Configuration
  * @brief Validation limits for HTTP Basic Auth.
  * @{ */
-/** @brief Minimum `Line` length without null-terminator.<br>Example of the value: `Basic YWRtaW46` */
+/** @brief Minimum `Line` length without null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46` */
 #define EIF_BASIC_AUTH_LINE_MIN_LEN 14U
-/** @brief Maximum `Line` length including null-terminator.<br>Example of the value: `Basic YWRtaW46MTIzNDU2Nzg5MHF3ZXJ0eTBxd2VydHkwcXdlcnR5MDE=` */
+/** @brief Maximum `Line` length including null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46MTIzNDU2Nzg5MHF3ZXJ0eTBxd2VydHkwcXdlcnR5MDE=` */
 #define EIF_BASIC_AUTH_LINE_MAX_LEN 59U
-/** @brief Minimum `Password` length without null-terminator.<br>Example of the value: <code>ㅤ</code>*/
+/** @brief Minimum `Password` length without null-terminator (`\0`).<br>Example of the value: <code>ㅤ</code>*/
 #define EIF_BASIC_AUTH_PASS_MIN_LEN 0U
-/** @brief Maximum `Password` length including null-terminator.<br>Example of the value: `1234567890qwerty0qwerty0qwerty01` */
+/** @brief Maximum `Password` length including null-terminator (`\0`).<br>Example of the value: `1234567890qwerty0qwerty0qwerty01` */
 #define EIF_BASIC_AUTH_PASS_MAX_LEN 33U
 /** @} */
 
@@ -137,8 +137,7 @@
  * #define TAG "STR_UTIL"
  *
  * void validate_json_payload(const char * const payload) {
- *     const bool is_empty = eif_strempty(payload);
- *     if (is_empty == true) {
+ *     if (eif_strempty(payload)) {
  *         ESP_LOGE(TAG, "Payload is completely empty or NULL.");
  *     } else {
  *         ESP_LOGI(TAG, "Payload validation passed.");
@@ -158,12 +157,13 @@ static inline bool eif_strempty(const char * const str) {
  *
  * @param str         Constant pointer to the constant string to measure.
  * @param max_allowed Maximum number of characters to examine, excluding the
- *                    null-terminator.
+ *                    null-terminator (`\0`).
  *
  * @return
- *    * The number of characters in `str` if a null-terminator is found within
- *      the boundary. If `str` is `NULL`, returns `0U`. If no null-terminator
- *      is found within the limit, returns the internal bounded limit.
+ *    * The number of characters in `str` if a null-terminator (`\0`) is found within
+ *      the boundary.
+ *    * `max_allowed` if no null-terminator (`\0`) is found within the limit.
+ *    * `0U` if `str` is `NULL`.
  *
  * Example of use:
  * @code{c}
@@ -205,7 +205,7 @@ static inline size_t eif_strnlen(const char * const str, size_t max_allowed) {
          * that exactly fits the limit and one that exceeds it. Pre-check
          * against 'SIZE_MAX' ensures no integer wrap-around occurs. Memory
          * access is guaranteed to be within safe bounds as strnlen stops at
-         * the first null-terminator or the provided 'search_limit'. */
+         * the first null-terminator (`\0`) or the provided 'search_limit'. */
         return strnlen(str, search_limit);
     #if defined(__GNUC__) && (__GNUC__ >= 11)
         #pragma GCC diagnostic pop
@@ -265,9 +265,9 @@ typedef struct {
 } eif_wifi_test_result;
 
 /**
- * @brief Gets the total number of @ref wifi_profiles_desc "Wi-Fi profiles".
+ * @brief Gets the total number of <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code>.
  *
- * Returns the number of @ref wifi_profiles_desc "Wi-Fi profiles" stored in
+ * Returns the number of <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code> stored in
  * the system. It is set using `eif_set_wifi_profiles_count()`.
  *
  * Example of use:
@@ -290,8 +290,7 @@ uint8_t eif_wifi_get_profiles_count(void);
 /**
  * @brief Gets the index of the currently active @ref wifi_profiles_desc "Wi-Fi profile".
  *
- * Returns the zero-based index of the active
- * @ref wifi_profiles_desc "Wi-Fi profile" currently in use.
+ * Returns the zero-based index of the active <code>@ref wifi_profiles_desc "Wi-Fi profile"</code> currently in use.
  *
  * Example of use:
  * @code{c}
@@ -530,8 +529,8 @@ esp_err_t eif_register_handler_ip_lost(eif_handler_ip_t handler);
  * @param key             NVS storage key (maximum `15` characters). Cannot be
  *                        `NULL`.
  * @param value           The string to save. Cannot be `NULL`.
- * @param min_len         Minimum allowed length (excluding the null-terminator).
- * @param max_len         Maximum allowed length (including the null-terminator).
+ * @param min_len         Minimum allowed length (excluding the null-terminator (`\0`)).
+ * @param max_len         Maximum allowed length (including the null-terminator (`\0`)).
  * @param it_can_be_empty Allow saving an empty string, bypassing length limits.
  *
  * @return
@@ -585,7 +584,7 @@ esp_err_t eif_nvs_value_save(
  * @param value_out Pointer to the buffer where the string will be stored.
  *                  Cannot be `NULL`.
  * @param max_len   Maximum bytes allocated for `value_out` (including the
- *                  null-terminator).
+ *                  null-terminator (`\0`)).
  *
  * @return
  *    - `ESP_OK`:                Value located and copied successfully.
@@ -634,8 +633,8 @@ esp_err_t eif_nvs_value_load(
  *       beginning to clear pre-existing allocations.
  *
  * @warning The caller assumes ownership of the allocated buffer. If this
- *          function returns `ESP_OK`, the caller MUST release the memory using
- *          `vPortFree(*value_out)` (or the respective pointer variable) to
+ *          function returns `ESP_OK`, the caller <b>MUST</b> release the memory
+ *          using `vPortFree(*value_out)` (or the respective pointer variable) to
  *          avoid leaks.
  *
  * @param key           NVS storage key (maximum `15` characters). Cannot be
@@ -767,9 +766,9 @@ esp_err_t eif_nvs_wifi_profile_save(
  * @param index    Profile index slot. Must be from `0` to
  *                 <code>#EIF_WIFI_PROFILES_MAX_COUNT</code>.
  * @param ssid_out Buffer for SSID. Cannot be `NULL`. The length should be
- *              <code>#EIF_WIFI_SSID_MAX_LEN</code>.
+ *                 <code>#EIF_WIFI_SSID_MAX_LEN</code>.
  * @param pass_out Buffer for password. Cannot be `NULL`. The length should be
- *              <code>#EIF_WIFI_PASS_MAX_LEN</code>.
+ *                 <code>#EIF_WIFI_PASS_MAX_LEN</code>.
  *
  * @return
  *    - `ESP_OK`:                Profile loaded successfully.
@@ -809,7 +808,13 @@ esp_err_t eif_nvs_wifi_profile_load(
  */
 /**
  * @brief Encodes and saves the HTTP Basic Auth credentials to NVS.
- *
+ * 
+ * @note Only available if the `Kconfig` option <code>
+ *         <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">
+ *           CONFIG_EIF_ENABLE_BASIC_AUTH
+ *         </a>
+ *       </code> is enabled.
+ * 
  * Takes the raw password, combines it with the default username (`admin`),
  * and encodes the `admin:password` combination into Base64. The final string
  * is prefixed with <code>Basic&nbsp;</code> (e.g., `Basic YWRtaW46cGFzcw==`) and
@@ -859,6 +864,12 @@ esp_err_t eif_nvs_basic_auth_line_save(const unsigned char * const pass);
 /**
  * @brief Loads the complete HTTP Basic Auth credentials from NVS.
  *
+ * @note Only available if the `Kconfig` option <code>
+ *         <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">
+ *           CONFIG_EIF_ENABLE_BASIC_AUTH
+ *         </a>
+ *       </code> is enabled.
+ * 
  * Reads the stored authorization string from NVS into a pre-allocated buffer.
  * The output string contains the configuration prefix, username, and password.
  *
@@ -869,7 +880,7 @@ esp_err_t eif_nvs_basic_auth_line_save(const unsigned char * const pass);
  *
  * @param buf_out Buffer for Basic Auth string (e.g., `Basic YWRtaW46cGFzcw==`).
  *                Cannot be `NULL`. The length should be
- *                <code>#EIF_BASIC_AUTH_LINE_MAX_LEN</code>.
+ *                `EIF_BASIC_AUTH_LINE_MAX_LEN`.
  *
  * @return
  *    - `ESP_OK`:              Credential string located and loaded successfully.
@@ -968,7 +979,7 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  *    - `ESP_ERR_NO_MEM`:        Memory could not be allocated due to the lack
  *                               of an empty block of the required size.
  *
- * Example of use (but it's better to use #EIF_TASK_LAUNCH macro):
+ * Example of use (but it's better to use `EIF_TASK_LAUNCH()` macro):
  * @code{c}
  * #include <esp_log.h>
  * #include <freertos/FreeRTOS.h>
@@ -1003,7 +1014,7 @@ esp_err_t eif_nvs_basic_auth_line_load(char * const buf_out);
  *       task handle variable instead of the main module handle.
  *
  * Example of use (without double-call protection, but it's better to use
- * #EIF_TASK_LAUNCH macro):
+ * `EIF_TASK_LAUNCH()` macro):
  * @code{c}
  * #include <esp_log.h>
  * #include <freertos/FreeRTOS.h>
@@ -1060,7 +1071,7 @@ esp_err_t eif_task_reboot_launch(void);
  * Spawns an asynchronous task to execute a Wi-Fi profile test.
  *
  * @param profile_index The index of the Wi-Fi profile under test. Must be
- *       from `0` to number of @ref wifi_profiles_desc "Wi-Fi profiles" stored
+ *       from `0` to number of <code>@ref wifi_profiles_desc "Wi-Fi profiles"</code> stored
  *       in the system. It is set using `eif_set_wifi_profiles_count()`.
  *
  * @return
@@ -1078,7 +1089,11 @@ esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);
     /**
      * @brief Spawns an asynchronous task to regenerate TLS credentials.
      * 
-     * @note Must enable the `CONFIG_EIF_ENABLE_TLS` flag in `Kconfig` to use
+     * @note Only available if the `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
+     *           CONFIG_EIF_ENABLE_TLS
+     *         </a>
+     *       </code> is enabled.
      * 
      * Spawns an asynchronous task to regenerate TLS credentials.
      *
@@ -1130,8 +1145,8 @@ esp_err_t eif_task_rollback_and_reboot_launch(void);
      * @param dest_buf  Pointer to the destination buffer where logs will be copied.
      * @param max_size  Maximum capacity of the destination buffer in bytes.
      *
-     * @return size_t The number of bytes actually copied into dest_buf. 
-     *                Returns 0 if the log buffer is empty.
+     * @return `size_t` The number of bytes actually copied into `dest_buf`. 
+     *                Returns `0` if the log buffer is empty.
      */
     size_t eif_core_log_pop_chunk(char *dest_buf, size_t max_size);
 #endif

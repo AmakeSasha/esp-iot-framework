@@ -59,7 +59,7 @@ $(document).ready(function(){initNavTree('group__eif__wifi__config.html',''); in
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Wi-Fi Configuration<div class="ingroups"><a class="el" href="group__core__root.html">Core</a> &raquo; <a class="el" href="group__core__group.html">Core</a></div></div>  </div>
+<div class="title">Wi-Fi Configuration<div class="ingroups"><a class="el" href="group__core__root.html">CORE</a> &raquo; <a class="el" href="group__core__group.html">CORE</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -117,7 +117,7 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>The function does not validate incoming data, which may result in unexpected behavior (<code>UB</code>), memory leaks, or Wi-Fi crashes. Always validate the data you send.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wifi_driver_config</td><td>Low-level ESP-IDF Wi-Fi driver configuration Use <code>WIFI_INIT_CONFIG_DEFAULT()</code> as a base. </td></tr>
+    <tr><td class="paramname">wifi_driver_config</td><td>Low-level ESP-IDF Wi-Fi driver configuration. Use <code>WIFI_INIT_CONFIG_DEFAULT()</code> as a base. </td></tr>
     <tr><td class="paramname">wifi_power_mode</td><td>Wi-Fi Modem-sleep policy. Defines the trade-off between power consumption and network responsiveness/latency. </td></tr>
     <tr><td class="paramname">wifi_attempt_delay_ms</td><td>Delay in milliseconds before switching to the next profile after a failed connection.</td></tr>
   </table>
@@ -170,10 +170,10 @@ Functions</h2></td></tr>
 <p>Defines how many additional user-defined slots are available in NVS.</p>
 <dl class="section note"><dt>Note</dt><dd>This function must be called after <code><a class="el" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6" title="Initializes the CORE of the framework.">eif_core_initialize()</a></code> but before <code><a class="el" href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350" title="Initialize Non-Volatile Storage (NVS) and framework data.">eif_nvs_initialize()</a></code>.</dd></dl>
 <p><a class="anchor" id="wifi_profiles_desc"></a><code>Profile</code> - configuration for a specific Wi-Fi network (<code>SSID</code> and <code>Password</code>). Profiles are managed in a circular (ring) list: if a connection attempt fails or if the active connection is broken, the framework automatically rotates to the next available slot. Upon reaching the end of the list, it wraps around to the first profile. This cycle continues indefinitely until a stable connection is re-established.</p>
-<dl class="section note"><dt>Note</dt><dd>The total number of managed profiles is equal to (<code>wifi_profiles_count + 1</code>). If set to <code>0</code>, only the system default profile (index 0) will be used. The default profile is hardcoded and cannot be changed. The default value is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The total number of managed profiles is equal to (<code>wifi_profiles_count + 1</code>). If set to <code>0</code>, only the system default profile (index <code>0</code>) will be used. The default profile is hardcoded and cannot be changed. The default value is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wifi_profiles_count</td><td>Number of extra slots (0 to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>).</td></tr>
+    <tr><td class="paramname">wifi_profiles_count</td><td>Number of extra slots (<code>0</code> to <code><a class="el" href="group__core__consts.html#ga57e42a003bfa8dcc0b6adb9fdd565c3c" title="Maximum number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_MAX_COUNT</a></code>).</td></tr>
   </table>
   </dd>
 </dl>
