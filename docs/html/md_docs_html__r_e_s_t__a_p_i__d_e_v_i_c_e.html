@@ -8,7 +8,7 @@
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
 <meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
-<title>esp_iot_framework: REST_API</title>
+<title>esp_iot_framework: REST_API_DEVICE</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -51,17 +51,17 @@
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('md_components_esp_iot_framework_device__r_e_s_t__a_p_i.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('md_docs_html__r_e_s_t__a_p_i__d_e_v_i_c_e.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">REST_API </div>  </div>
+<div class="title">REST_API_DEVICE </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>The <code>esp_iot_framework_device</code> provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with <code>/_/</code> and support JSON format for requests and responses.</p>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 Authentication</h2>
 <p>When Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in <code>MAP URIs</code>) require HTTP Basic Authentication.</p>
 <p>To authenticate, include the following HTTP header in each of your requests: </p><div class="fragment"><div class="line">Authorization: Basic &lt;base64_encoded_credentials&gt;</div>
@@ -72,7 +72,7 @@ Authentication</h2>
 <div class="line">Content-Length: 20</div>
 <div class="line"> </div>
 <div class="line">{&quot;profile_index&quot;: 1}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md33"></a>
 Map URIs</h2>
 <ul>
 <li><code>/_</code><ul>
@@ -127,7 +127,7 @@ Map URIs</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md34"></a>
 HTTP Status Codes</h2>
 <ul>
 <li><code>200 OK</code> - Successful GET request</li>
@@ -139,9 +139,9 @@ HTTP Status Codes</h2>
 <li><code>409 Conflict</code> - Resource conflict (e.g., OTA already in progress)</li>
 <li><code>500 Internal Server Error</code> - Server error</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md35"></a>
 API Endpoints</h2>
-<h3><a class="anchor" id="autotoc_md23"></a>
+<h3><a class="anchor" id="autotoc_md36"></a>
 Wi-Fi Management</h3>
 <p><a class="anchor" id="h_wifi_list_json"></a></p><ul>
 <li><p class="startli">List Wi-Fi profiles </p><div class="fragment"><div class="line">GET /_/wifi/list.json</div>
@@ -282,7 +282,7 @@ Wi-Fi Management</h3>
  Due to the change of Wi-Fi networks for the test, this request may be sent too early and the server may not even see it. To get the result, use a loop of requests after some time has passed since the test started (about 8 seconds) </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md30"></a>
+<h3><a class="anchor" id="autotoc_md43"></a>
 TLS Management</h3>
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
  Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled. </div><p><a class="anchor" id="h_tls_recreate_do"></a></p><ul>
@@ -294,7 +294,7 @@ TLS Management</h3>
  After regenerating TLS keys and certificate, the device will automatically restart to apply the new configuration. The entire process usually takes less than 5 seconds. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md32"></a>
+<h3><a class="anchor" id="autotoc_md45"></a>
 System Management</h3>
 <p><a class="anchor" id="h_sys_logs_txt"></a></p><ul>
 <li><p class="startli">Get logs from the device </p><div class="fragment"><div class="line">GET /_/sys/logs.txt</div>
@@ -397,7 +397,7 @@ System Management</h3>
  The device will reboot immediately after this request. All active connections will be closed. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md36"></a>
+<h3><a class="anchor" id="autotoc_md49"></a>
 OTA Updates</h3>
 <p><a class="anchor" id="h_ota_info_json"></a></p><ul>
 <li><p class="startli">Get firmware information </p><div class="fragment"><div class="line">GET /_/ota/info.json</div>
@@ -476,7 +476,7 @@ OTA Updates</h3>
  The device will automatically restart immediately after the rollback is initiated. This process usually takes less than 5 seconds. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md41"></a>
+<h3><a class="anchor" id="autotoc_md54"></a>
 Authentication Management</h3>
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
  Only available if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled. </div><p><a class="anchor" id="h_apass_update_do"></a></p><ul>

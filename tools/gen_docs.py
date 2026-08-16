@@ -75,8 +75,8 @@ def generate_readme(docs_dir, src_path, filename):
             content = src.read()
 
             content = re.sub(
-                r'(?<=href=")\.\./\.\./docs/invalid_link\.md#(group__.*?)-(html)_____([^"]*)(?=")', 
-                r'\1.\2#\3', 
+                r'href="[^"]*"\s+real_ref="([^"]*)"', 
+                r'href="\1"', 
                 content
             )
 
@@ -145,6 +145,12 @@ def main():
         {
             "src": "components/esp_iot_framework_device/KCONFIG.md",
             "name": "KCONFIG_DEVICE.md",
+            "type": "readme",
+            "dst_path": ""
+        },
+        {
+            "src": "components/esp_iot_framework_device/REST_API.md",
+            "name": "REST_API_DEVICE.md",
             "type": "readme",
             "dst_path": ""
         }

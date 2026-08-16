@@ -53,7 +53,7 @@
 /**
  * @defgroup device_rest_api REST API
  * @brief DEVICE REST API documentation.
- * @details @copydoc md_components_esp_iot_framework_device_REST_API
+ * @details @copydoc md_docs_html_REST_API_DEVICE
  */ 
 /**
  * @defgroup device_kconfig Kconfig

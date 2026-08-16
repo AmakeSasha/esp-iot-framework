@@ -85,7 +85,7 @@ Enables mandatory HTTP Basic Authentication for all administrative paths.
 
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
     <strong>Warning</strong><br>
-    Disabling authentication is highly dangerous for production. If <code><a href="../../docs/invalid_link.md#group__core__kconfig-html_____CONFIG_EIF_ENABLE_TLS">EIF_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air.
+    Disabling authentication is highly dangerous for production. If <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">EIF_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air.
 </div>
 
 ---

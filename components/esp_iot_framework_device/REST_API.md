@@ -23,7 +23,7 @@
 The `esp_iot_framework_device` provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with `/_/` and support JSON format for requests and responses.
 
 ## Authentication
-When Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in `MAP URIs`) require HTTP Basic Authentication.
+When Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in `MAP URIs`) require HTTP Basic Authentication.
 
 To authenticate, include the following HTTP header in each of your requests:
 ```text
@@ -48,13 +48,13 @@ Content-Length: 20
 ## Map URIs
 
 * `/_`
-  * `/files` - only if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_WEB_ADMIN_GUI">CONFIG_EIF_ENABLE_WEB_ADMIN_GUI</a></code> is enabled
+  * `/files` - only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__device__kconfig.html#CONFIG_EIF_ENABLE_WEB_ADMIN_GUI">CONFIG_EIF_ENABLE_WEB_ADMIN_GUI</a></code> is enabled
     * `/favicon.ico` - Project logo
     
-      Only if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_WEB_FAVICON">CONFIG_EIF_ENABLE_WEB_FAVICON</a></code> is enabled
+      Only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__device__kconfig.html#CONFIG_EIF_ENABLE_WEB_FAVICON">CONFIG_EIF_ENABLE_WEB_FAVICON</a></code> is enabled
     * `/logs.html` - The page for viewing logs from the device
 
-      Only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
+      Only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
     * `/api.js` - JavaScript API library
     * `/json2.js` - JSON utility library
     * `/style.css` - Stylesheet
@@ -69,12 +69,12 @@ Content-Length: 20
     * `/clear.do` - [Clear Wi-Fi profile](#h_wifi_clear_do)
     * `/check.do` - [Wi-Fi network availability test](#h_wifi_check_do)
     * `/result.json` - [Get the results of the Wi-Fi test](#h_wifi_result_json)
-  * `/tls` - only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled
+  * `/tls` - only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled
     * `/recreate.do` - [Regenerate TLS keys and certificate](#h_tls_recreate_do)
   * `/sys`
     * `/logs.txt` - [Get logs from the device](#h_sys_logs_txt)
 
-      Only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
+      Only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
     * `/info.json` - [Get system information](#h_sys_info_json)
     * `/reboot.do` - [Reboot system](#h_sys_reboot_do)
   * `/ota`
@@ -82,7 +82,7 @@ Content-Length: 20
     * `/update.do` - [Upload firmware](#h_ota_update_do)
     * `/confirm.do` - [Confirm successful update](#h_ota_confirm_do)
     * `/rollback.do` - [Rollback firmware](#h_ota_rollback_do)
-  * `/apass` - only if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled
+  * `/apass` - only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled
     * `/update.do` - [Update administrator password](#h_apass_update_do)
 
 ## HTTP Status Codes
@@ -182,7 +182,7 @@ Content-Length: 20
   - `proto`: Wi-Fi protocol generation (mapped from `esp_wifi_get_protocol()`)
   - `band`: Active frequency band (`2.4 GHz` or `5 GHz`)
   - `lwip_hostname`: Device network name registered in the router DHCP client table (`null` if unassigned)
-  - `mdns_hostname`: Local mDNS domain name (`null` if <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS</a></code> is disabled)
+  - `mdns_hostname`: Local mDNS domain name (`null` if <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS</a></code> is disabled)
   - `used_tls`: Whether TLS is enabled on the server or not
 
 ---
@@ -302,7 +302,7 @@ Content-Length: 20
 
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
   <strong>Note</strong><br>
-  Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled.
+  Only available if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS</a></code> is enabled.
 </div>
 
 <a id="h_tls_recreate_do"></a>
@@ -334,7 +334,7 @@ Content-Length: 20
 
   <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
     <strong>Note</strong><br>
-    Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled.
+    Only available if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled.
   </div>
 
   Streams the system log buffer in plain text using HTTP chunked transfer encoding.
@@ -550,7 +550,7 @@ Content-Length: 20
 
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;">
   <strong>Note</strong><br>
-  Only available if the Kconfig option <code><a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled.
+  Only available if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled.
 </div>
 
 <a id="h_apass_update_do"></a>
