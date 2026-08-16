@@ -110,7 +110,7 @@ Show metadata in logs (path, line, function).
 
 Name in the `menuconfig`: `Enable memory status logging`
 
--  If `y`: The monitor task dumps the total free heap, the largest free block, and the critical status flag to the console. This allows tracking memory leaks and fragmentation every <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> ms.
+-  If `y`: The monitor task dumps the total free heap, the largest free block, and the critical status flag to the console. This allows tracking memory leaks and fragmentation every <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> ms.
   
   Example output:
   ```
@@ -160,8 +160,8 @@ Minimum free block size (in bytes) that must be available for stable operation. 
 
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
     <strong>Warning</strong><br>
-    To ensure the reboot task can be created, this value <b>MUST</b> be at least <code>8</code> times larger than <code><a href="group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">EIF_REBOOT_TASK_STACK_SIZE</a></code> (which is measured in 4-byte words).<br><br>
-    Formula: <code>CRITICAL_SIZE >= <a href="group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">EIF_REBOOT_TASK_STACK_SIZE</a> * 8</code>.
+    To ensure the reboot task can be created, this value <b>MUST</b> be at least <code>8</code> times larger than <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">EIF_REBOOT_TASK_STACK_SIZE</a></code> (which is measured in 4-byte words).<br><br>
+    Formula: <code>CRITICAL_SIZE >= <a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">EIF_REBOOT_TASK_STACK_SIZE</a> * 8</code>.
 </div>
 
 ---
@@ -172,11 +172,11 @@ Minimum free block size (in bytes) that must be available for stable operation. 
 
 Name in the `menuconfig`: `Memory check interval (ms)`
 
-How often to check memory fragmentation (in milliseconds). This parameter defines the time interval between consecutive memory fragmentation checks performed by the memory monitor task. The actual time to reboot = <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> × <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code>.
+How often to check memory fragmentation (in milliseconds). This parameter defines the time interval between consecutive memory fragmentation checks performed by the memory monitor task. The actual time to reboot = <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> × <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code>.
 
 Examples (when memory is fragmented):
-- <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> = `30000` (30 s) with <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code> = `3` -> reboot after `90` seconds (1.5 min).
-- <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> = `60000` (60 s) with <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code> = `5` -> reboot after `300` seconds (5 min).
+- <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> = `30000` (30 s) with <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code> = `3` -> reboot after `90` seconds (1.5 min).
+- <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> = `60000` (60 s) with <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code> = `5` -> reboot after `300` seconds (5 min).
 
 ---
 
@@ -188,7 +188,7 @@ Name in the `menuconfig`: `Number of fragmentation confirmations before reboot`
 
 Number of consecutive memory fragmentation checks that must detect a critical condition before the system initiates a safe reboot.
 
-This parameter prevents false reboots due to temporary memory spikes. The system will only trigger a reboot if the largest free memory block remains below the critical threshold (<code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">EIF_MEM_MONITOR_CRITICAL_SIZE</a></code>) for the specified number of consecutive checks.
+This parameter prevents false reboots due to temporary memory spikes. The system will only trigger a reboot if the largest free memory block remains below the critical threshold (<code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">EIF_MEM_MONITOR_CRITICAL_SIZE</a></code>) for the specified number of consecutive checks.
 
 ---
 
@@ -202,4 +202,4 @@ Stack size for the task that manages the system shutdown sequence.
    
 The task stops the Wi-Fi driver halts the HTTP server, and executes the `user_pre_reboot_cb` (registered using the `eif_register_handler_system_reboot()`) before calling `esp_restart()`. Increase this value if `user_pre_reboot_cb` performs stack-heavy operations like NVS writes or complex logging.
 
-Defined in 4-byte words. To ensure the task can be successfully created in low-memory conditions, <code><a href="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">EIF_MEM_MONITOR_CRITICAL_SIZE</a></code> must be at least `8` times larger than this value.
+Defined in 4-byte words. To ensure the task can be successfully created in low-memory conditions, <code><a href="../../docs/invalid_link.md#group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">EIF_MEM_MONITOR_CRITICAL_SIZE</a></code> must be at least `8` times larger than this value.

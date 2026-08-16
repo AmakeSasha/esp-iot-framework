@@ -100,8 +100,9 @@
 
     <input type="text" id="stepCount" class="win-input"
       style="color: #808080;" value="Steps"
-      onfocus="if(this.value=='Steps'){this.value='';this.style.color='#000';}" 
+      onfocus="if(this.value=='Steps'){this.value='';this.style.color='#000';}"
       onblur="if(this.value==''){this.value='Steps';this.style.color='#808080';}"/>
+
     
     <button id="upBtn"   class="ctrl-btn"
       onclick="handleMove('up')">MOVE UP</button>
@@ -117,7 +118,7 @@
   <script>
     var isPowered = false;
 
-    function sendHttpRequest(targetUrl, callback) {
+    function sendHttpRequest(targetUrl, callback, headers) {
       var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 
       if (callback) {
@@ -129,6 +130,15 @@
       }
 
       xmlhttp.open("GET", targetUrl + "?t=" + new Date().getTime(), true);
+
+      if (headers) {
+        for (var key in headers) {
+          if (headers.hasOwnProperty(key)) {
+            xmlhttp.setRequestHeader(key, headers[key]);
+          }
+        }
+      }
+
       xmlhttp.send();
     }
 
@@ -159,9 +169,15 @@
 
     function handleMove(dir) {
       if (!isPowered) return;
-      sendHttpRequest("/api/stepper/dir/" + dir + ".do");
-
       var stepCount = document.getElementById("stepCount");
+      var stepsValue = stepCount.value;
+      var headers = null;
+
+      if (stepsValue !== "" && stepsValue !== "Steps" && !isNaN(stepsValue)) {
+        headers = { "X-Steps": stepsValue };
+      }
+
+      sendHttpRequest("/api/stepper/dir/" + dir + ".do", null, headers);
 
       stepCount.style.display = "none";
       stepCount.value = "Steps";
@@ -185,12 +201,21 @@
             document.getElementById("statusLabel").textContent = JSON.stringify(data, null, 2);
 
             var stepCount = document.getElementById("stepCount");
+            var isFocused = (document.activeElement === stepCount);
+
             if (data.current_dir && data.current_dir === "STOP" && data.is_powered) {
-              stepCount.style.display = "block";
+              if (stepCount.style.display !== "block") stepCount.style.display = "block";
             } else {
-              stepCount.style.display = "none";
+              if (stepCount.style.display !== "none") {
+                stepCount.style.display = "none";
+                if (isFocused) stepCount.blur();
+              }
             }
-            stepCount.value = "Steps";
+            
+            if (!isFocused && stepCount.style.display === "block" && stepCount.value === "") {
+              stepCount.value = "Steps";
+              stepCount.style.color = "#808080";
+            }
           } catch (e) {
             document.getElementById("statusLabel").innerHTML = "JSON_PARSE_ERROR";
           }

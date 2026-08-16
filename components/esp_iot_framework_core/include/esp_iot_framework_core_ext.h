@@ -24,6 +24,8 @@
 #define ESP_IOT_FRAMEWORK_CORE_EXT_H
 
 #include <esp_err.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #ifdef __cplusplus
     extern "C" {
@@ -1138,6 +1140,12 @@ esp_err_t eif_task_rollback_and_reboot_launch(void);
     /**
      * @brief Thread-safe extraction of diagnostic logs from the core ring buffer.
      *
+     * @note Only available if the `Kconfig` option <code>
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">
+     *           CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+     *         </a>
+     *       </code> is enabled.
+     * 
      * This function retrieves accumulated logs from the internal ring buffer, 
      * copies them into the provided destination buffer, and releases the
      * consumed memory within the ring.
@@ -1147,6 +1155,25 @@ esp_err_t eif_task_rollback_and_reboot_launch(void);
      *
      * @return `size_t` The number of bytes actually copied into `dest_buf`. 
      *                Returns `0` if the log buffer is empty.
+     *
+     * @code{c}
+     * #include <stdio.h>
+     * #include <string.h>
+     * #include <esp_iot_framework_core_ext.h>
+     * 
+     * void dump_core_logs(void) {
+     *     char log_buffer[256];
+     *     size_t bytes_popped = 0;
+     * 
+     *     do {
+     *         memset(log_buffer, 0, sizeof(log_buffer));
+     *         bytes_popped = eif_core_log_pop_chunk(log_buffer, sizeof(log_buffer) - 1);
+     *         if (bytes_popped > 0) {
+     *             printf("%s", log_buffer);
+     *         }
+     *     } while (bytes_popped > 0);
+     * }
+     * @endcode
      */
     size_t eif_core_log_pop_chunk(char *dest_buf, size_t max_size);
 #endif

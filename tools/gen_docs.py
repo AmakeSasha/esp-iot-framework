@@ -74,7 +74,9 @@ def generate_readme(docs_dir, src_path, filename):
         with open(src_path, "r", encoding="utf-8") as src:
             content = src.read()
 
-            content = re.sub(r"\(\.\./\.\./docs/invalid_link.md#(group__.*?\.html)\)", r"(\1)", content)
+            content = re.sub(r'href="\.\./\.\./docs/invalid_link\.md#(group__.*?\.html[^"]*)"', r'href="\1"', content)
+            content = re.sub(r'\(\.\./\.\./docs/invalid_link\.md#(group__.*?\.html[^)]*)\)', r'(\1)', content)
+
 
             for item in replacement_data:
                 content = re.sub(item["original"], item["converted"], content)

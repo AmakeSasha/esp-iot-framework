@@ -36,15 +36,15 @@
 
 The framework is built around three fundamental concepts, decoupling the infrastructure from your business logic:
 
-* <b>Core (<code>[esp_iot_framework_core](./components/esp_iot_framework_core/README.md)</code>)</b> - The ecosystem engine. It handles connectivity, security, and device resilience. Anything built on top of *Core* inherits these critical properties for free.
+* <b>CORE (<code>[esp_iot_framework_core](./components/esp_iot_framework_core/README.md)</code>)</b> - The ecosystem engine. It handles connectivity, security, and device resilience, abstracting away low-level services like Wi-Fi, NVS, and TLS. Anything built on top of *CORE* inherits these critical properties for free.
 
 ---
 
-* **Nodes** - The abstraction of a network unit built on top of *Core*. A Node implements a specific interaction pattern with the outside world — whether it is a web interface, an industrial protocol, or a cloud bridge. It hides the complexity of network interaction and provides a clean layer for business logic development.
+* **Nodes** - The abstraction of a network unit built on top of *CORE*. A Node implements a specific interaction pattern with the outside world — whether it is a web interface, an industrial protocol, or a cloud bridge. It hides the complexity of network interaction and provides a clean layer for business logic development.
  
   Examples of nodes:
  
-  * <b>Device (<code>[esp_iot_framework_device](./components/esp_iot_framework_device/README.md)</code>)</b> - A foundational network node based on Espressif chips, designed for building fully manageable end IoT products.
+  * <b>DEVICE (<code>[esp_iot_framework_device](./components/esp_iot_framework_device/README.md)</code>)</b> - A foundational network node, designed for building fully manageable end IoT products using the HTTP(S) protocol.
 
 ---
 

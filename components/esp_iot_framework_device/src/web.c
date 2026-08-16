@@ -591,7 +591,11 @@ static esp_err_t h_wifi_info_json(httpd_req_t * const req) {
     char bssid_str[MAC_FORMATED_LEN] = {0};
     uint8_t own_mac[MAC_NUMBERS_LEN] = {0};
 
-    const char * const mdns_hostname = eif_get_mdns_hostname();
+    #ifdef CONFIG_EIF_ENABLE_MDNS
+        const char * const mdns_hostname = eif_get_mdns_hostname();
+    #else
+        const char * const mdns_hostname = NULL;
+    #endif
     esp_netif_t * netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
 
     EIF_IF_OK_CHECK_CONDITION(ret, netif == NULL, ESP_ERR_INVALID_STATE,

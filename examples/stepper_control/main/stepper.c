@@ -46,17 +46,6 @@
     #define TIMER_0       0
 #endif
 
-typedef struct {
-    /* What is the stepper doing right now: STOP, UP, DOWN */
-    stepper_dir_t current_dir;
-    /* Power state on the driver (SLEEP_PIN) */
-    bool is_powered;
-    /* The number of steps taken since the start */
-    uint32_t step_counter;
-    /* The number of steps left to complete the move (0 for infinite) */
-    uint32_t steps_to_move;
-} stepper_state_t;
-
 static volatile stepper_state_t g_stepper_state = {
     .current_dir = STEPPER_STOP,
     .is_powered = false,
@@ -87,17 +76,8 @@ void stepper_set_steps_to_move(uint32_t steps) {
 }
 
 /* Getters */
-stepper_dir_t stepper_get_dir(void) {
-    return g_stepper_state.current_dir;
-}
-bool stepper_get_power(void) {
-    return g_stepper_state.is_powered;
-}
-uint32_t stepper_get_step_counter(void) {
-    return g_stepper_state.step_counter;
-}
-uint32_t stepper_get_steps_to_move(void) {
-    return g_stepper_state.steps_to_move;
+const stepper_state_t* stepper_get_cfg(void) {
+    return &g_stepper_state;
 }
 
 /* --- */

@@ -269,19 +269,19 @@ def tokenize_header(lines):
 def get_comment_type(path):
     COMMENT_HTML    = { ".md", ".html", ".xml" }
     COMMENT_C_STYLE = { ".h", ".c", ".js", ".css", ".cpp" }
-    COMMENT_HASH    = {
-        ".py",
-        "kconfig",
-        "doxyfile",
-        "cmakelists.txt",
-        "kconfig.projbuild",
+    HASH_EXACT_NAMES = {
+        "kconfig", 
+        "doxyfile", 
+        "cmakelists.txt", 
+        "kconfig.projbuild", 
         "sdkconfig.defaults"
     }
+    HASH_EXTENSIONS  = { ".py" }
 
     file_name = path.name.lower()
     file_ext = path.suffix.lower()
 
-    if any(ext in file_name for ext in COMMENT_HASH):
+    if file_name in HASH_EXACT_NAMES or file_ext in HASH_EXTENSIONS:
         return "hash"
     elif file_ext in COMMENT_C_STYLE:
         return "c_style"

@@ -33,7 +33,13 @@
             * `/off.do` - [Turn off the power of the stepper](#h_api_stepper_off)
         * `/status.json` - [Get the state of the stepper](#h_api_stepper_status)
 
-The entire API is also available from the [Device](../../components/esp_iot_framework_device/REST_API.md) node.
+The entire API is also available from the [DEVICE](../../components/esp_iot_framework_device/REST_API.md) node.
+
+## HTTP Status Codes
+
+- `200 OK` - Successful GET request
+- `204 No Content` - Successful POST
+- `400 Bad Request` - Invalid request parameters
 
 ## API Endpoints
 
@@ -43,7 +49,8 @@ The entire API is also available from the [Device](../../components/esp_iot_fram
     GET /api/stepper/dir/up.do
     ```
     
-    **Request body**: `No body`
+    **Request headers** (Optional):
+    * `X-Steps`: `[uint32]` Number of steps to move. If omitted or set to `0`, the motor rotates infinitely.
     
     **Response**: `HTTP 204 No Content`
 
@@ -54,8 +61,9 @@ The entire API is also available from the [Device](../../components/esp_iot_fram
     ```text
     GET /api/stepper/dir/down.do
     ```
-    
-    **Request body**: `No body`
+
+    **Request headers** (Optional):
+    * `X-Steps`: `[uint32]` Number of steps to move. If omitted or set to `0`, the motor rotates infinitely.
     
     **Response**: `HTTP 204 No Content`
 

@@ -21,7 +21,7 @@
 
 # Stepper Control
 
-An example of controlling a stepper motor via a web interface based on the `esp_iot_framework_device`.
+An example of controlling a stepper motor via a web interface based on the [`esp_iot_framework_device`](../../components/esp_iot_framework_device/README.md).
 
 ![screenshot0.png](./assets/screenshot0.png)
 

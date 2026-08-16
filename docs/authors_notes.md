@@ -32,9 +32,6 @@
 
  * [CORE, include/esp_iot_framework_core_ext.c, Other]
       Create proper documentation
-
- * [Examples, stepper_control]
-      Add support for 'steps_to_move' in the REST API and web interface
 -->
 
 # Author's notes

@@ -42,20 +42,53 @@ esp_err_t sendf_index_html(httpd_req_t *req) {
 }
 
 /* API */
+
+esp_err_t get_count_steps_from_req(httpd_req_t *req, uint32_t *steps_out) {
+    esp_err_t ret = ESP_OK;
+
+    char *endptr = NULL;
+    char steps_param[16] = {0};
+
+    ret = httpd_req_get_hdr_value_str(req, "X-Steps", steps_param, sizeof(steps_param));
+    if (ret == ESP_OK) {
+        uint32_t steps = (uint32_t)strtoul(steps_param, &endptr, 10);
+
+        if (endptr == steps_param || *endptr != '\0') {
+            ret = ESP_ERR_INVALID_ARG;
+        } else {
+            *steps_out = steps;
+        }
+    } else if (ret == ESP_ERR_NOT_FOUND) {
+        ret = ESP_OK;
+    } else { ; }
+
+    return ret;
+}
+
 esp_err_t stepper_dir_handler(httpd_req_t *req) {
-    bool real_url = true;
+    esp_err_t ret = ESP_OK;
+
+    uint32_t steps_out = 0;
 
     if (strncmp(req->uri, "/api/stepper/dir/up.do", 22) == 0) {
-        stepper_set_dir(STEPPER_UP);
+        ret = get_count_steps_from_req(req, &steps_out);
+        if (ret == ESP_OK) {
+            stepper_set_steps_to_move(steps_out);
+            stepper_set_dir(STEPPER_UP);
+        }
     } else if (strncmp(req->uri, "/api/stepper/dir/down.do", 24) == 0) {
-        stepper_set_dir(STEPPER_DOWN);
+        ret = get_count_steps_from_req(req, &steps_out);
+        if (ret == ESP_OK) {
+            stepper_set_steps_to_move(steps_out);
+            stepper_set_dir(STEPPER_DOWN);
+        }
     } else if (strncmp(req->uri, "/api/stepper/dir/stop.do", 24) == 0) {
         stepper_set_dir(STEPPER_STOP);
     } else {
-        real_url = false;
+        ret = ESP_ERR_INVALID_ARG;
     }
 
-    httpd_resp_set_status(req, real_url ? HTTPD_204 : HTTPD_400);
+    httpd_resp_set_status(req, (ret == ESP_OK) ? HTTPD_204 : HTTPD_400);
     httpd_resp_send(req, NULL, 0);
 
     return ESP_OK;
@@ -89,7 +122,8 @@ esp_err_t stepper_status_handler(httpd_req_t *req) {
     json_gen_str_t jgen = {0};
     char json_buffer[JSON_BUF_LEN] = {0};
 
-    char* current_dir = stepper_dir_to_str(stepper_get_dir());
+    const stepper_state_t * const cfg = stepper_get_cfg();
+    char* current_dir = stepper_dir_to_str(cfg->current_dir);
 
     json_gen_str_start(&jgen, json_buffer, JSON_BUF_LEN, NULL, NULL);
     /* { */
@@ -97,11 +131,11 @@ esp_err_t stepper_status_handler(httpd_req_t *req) {
     /*   "current_dir": "UP", */
     json_gen_obj_set_string(&jgen, "current_dir", current_dir);
     /*   "is_powered": true, */
-    json_gen_obj_set_bool(&jgen, "is_powered", stepper_get_power());
+    json_gen_obj_set_bool(&jgen, "is_powered", cfg->is_powered);
     /*   "step_counter": 12345, */
-    json_gen_obj_set_int(&jgen, "step_counter", stepper_get_step_counter());
+    json_gen_obj_set_int(&jgen, "step_counter", cfg->step_counter);
     /*   "steps_to_move": 995, */
-    json_gen_obj_set_int(&jgen, "steps_to_move", stepper_get_steps_to_move());
+    json_gen_obj_set_int(&jgen, "steps_to_move", cfg->steps_to_move);
     /* } */
     json_gen_end_object(&jgen);
 
