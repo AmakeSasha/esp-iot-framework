@@ -38,7 +38,7 @@ The entire API is also available from the [DEVICE](../../components/esp_iot_fram
 ## HTTP Status Codes
 
 - `200 OK` - Successful GET request
-- `204 No Content` - Successful POST
+- `204 No Content` - Successful POST request
 - `400 Bad Request` - Invalid request parameters
 
 ## API Endpoints
@@ -46,7 +46,7 @@ The entire API is also available from the [DEVICE](../../components/esp_iot_fram
 <a id="h_api_stepper_up"></a>
 * Switch the direction of the stepper to UP
     ```text
-    GET /api/stepper/dir/up.do
+    POST /api/stepper/dir/up.do
     ```
     
     **Request headers** (Optional):
@@ -59,7 +59,7 @@ The entire API is also available from the [DEVICE](../../components/esp_iot_fram
 <a id="h_api_stepper_down"></a>
 * Switch the direction of the stepper to DOWN
     ```text
-    GET /api/stepper/dir/down.do
+    POST /api/stepper/dir/down.do
     ```
 
     **Request headers** (Optional):
@@ -72,7 +72,7 @@ The entire API is also available from the [DEVICE](../../components/esp_iot_fram
 <a id="h_api_stepper_stop"></a>
 * Stop the movement of the stepper
     ```text
-    GET /api/stepper/dir/stop.do
+    POST /api/stepper/dir/stop.do
     ```
     
     **Request body**: `No body`
@@ -84,7 +84,7 @@ The entire API is also available from the [DEVICE](../../components/esp_iot_fram
 <a id="h_api_stepper_on"></a>
 * Turn on the power of the stepper
     ```text
-    GET /api/stepper/power/on.do
+    POST /api/stepper/power/on.do
     ```
     
     **Request body**: `No body`
@@ -96,7 +96,7 @@ The entire API is also available from the [DEVICE](../../components/esp_iot_fram
 <a id="h_api_stepper_off"></a>
 * Turn off the power of the stepper
     ```text
-    GET /api/stepper/power/off.do
+    POST /api/stepper/power/off.do
     ```
     
     **Request body**: `No body`

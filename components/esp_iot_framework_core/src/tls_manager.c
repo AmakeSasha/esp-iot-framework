@@ -296,7 +296,7 @@ static esp_err_t eif_tls_create_creds(
     const eif_core_t * const cfg = eif_core_get();
 
     *cert_pem = (char *)pvPortMalloc((size_t)CERT_BUF_SIZE);
-    EIF_IF_OK_CHECK_NOT_NULL(ret, *key_pem, ESP_ERR_NO_MEM);
+    EIF_IF_OK_CHECK_NOT_NULL(ret, *cert_pem, ESP_ERR_NO_MEM);
     if_ok_erase_it(ret, *cert_pem, (size_t)CERT_BUF_SIZE, "cert_pem_buf");
     
     if (ret == ESP_OK) {

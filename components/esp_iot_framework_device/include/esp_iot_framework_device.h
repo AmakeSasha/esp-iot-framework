@@ -321,7 +321,7 @@ esp_err_t eif_device_initialize(void);
  * is called again, the handlers saved in advance will be deleted.
  *
  * @warning The handler array length must be equal to `uri_handlers_count`. If
- *          the count exceeds the actual array length, a `Buffer Overread` will
+ *          the count exceeds the actual array length, a `Load Prohibited` will
  *          occur. If the count is less than the actual length, `Truncation`
  *          will occur (only the first `uri_handlers_count` elements will be
  *          registered).

@@ -1,8 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
- * Example: stepper_control
- * Folder: ./examples/stepper_control/main
- * File: stepper.h
+ * Example: relay_control
+ * Folder: ./examples/relay_control/main
+ * File: relay.h
  * 
  * Copyright 2026 AmakeSasha
  * 
@@ -29,32 +29,28 @@
     extern "C" {
 #endif
 
-typedef enum {
-    STEPPER_STOP = 0,
-    STEPPER_UP,
-    STEPPER_DOWN
-} stepper_dir_t;
-
 typedef struct {
-    /* What is the stepper doing right now: STOP, UP, DOWN */
-    stepper_dir_t current_dir;
-    /* Power state on the driver (SLEEP_PIN) */
-    bool is_powered;
-    /* The number of steps taken since the start */
-    uint32_t step_counter;
-    /* The number of steps left to complete the move (0 for infinite) */
-    uint32_t steps_to_move;
-} stepper_state_t;
+    /* Whether the hardware relay operates on inverted logic (LOW to close) or not */
+    bool is_inversed;
+    /* Whether current is flowing through the `RELAY_PIN` or not */
+    bool is_closed; 
+    /* Total count of all switching operations performed since system boot */
+    uint32_t number_of_changes;
+} relay_state_t;
 
-char* stepper_dir_to_str(stepper_dir_t dir);
+typedef enum {
+    PIN_ON  = 0,
+    PIN_OFF = 1,
+} pin_state_t;
 
-void stepper_set_dir(stepper_dir_t dir);
-void stepper_set_power(bool power);
-void stepper_set_steps_to_move(uint32_t steps);
+void relay_set_state(pin_state_t state);
+void relay_toggle(void);
+void relay_set_inversed_logic(void);
 
-const volatile stepper_state_t* stepper_get_cfg(void);
+/* Getters */
+const volatile relay_state_t* relay_get_cfg(void);
 
-void stepper_init(void);
+void relay_init(bool is_inversed);
 
 #ifdef __cplusplus
     }

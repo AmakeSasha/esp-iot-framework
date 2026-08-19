@@ -159,13 +159,12 @@ esp_err_t eif_register_handler_ip_lost(eif_handler_ip_t handler) {
 /*    Wi-Fi Configuration    */
 /* ========================= */
 
-uint8_t eif_wifi_get_profiles_count (void) {
+uint8_t eif_wifi_get_profiles_count(void) {
     return cfg.wifi_profiles_count;
 }
 
 uint8_t eif_wifi_get_current_profile_index(void) {
     return cfg.current_wifi_profile_index;
-
 }
 
 esp_err_t eif_wifi_get_test_result(
@@ -185,6 +184,7 @@ esp_err_t eif_wifi_get_test_result(
             sizeof(eif_wifi_test_result));
     }
 
+    /* Cleanup */
     return ret;
 }
 

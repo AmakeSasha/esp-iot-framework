@@ -76,13 +76,3 @@ if(TARGET ${comp_target})
         endif()
     endif()
 endif()
-
-get_filename_component(ABSOLUTE_WORKSPACE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../" ABSOLUTE)
-find_package(Python3 REQUIRED)
-
-add_custom_target(cppcheck
-    COMMAND "${Python3_EXECUTABLE}" "${ABSOLUTE_WORKSPACE_PATH}/tools/cppcheck_ext.py"
-    COMMENT "Running custom cppcheck analysis..."
-    USES_TERMINAL
-    VERBATIM
-)

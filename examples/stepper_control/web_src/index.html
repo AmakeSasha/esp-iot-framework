@@ -118,7 +118,7 @@
   <script>
     var isPowered = false;
 
-    function sendHttpRequest(targetUrl, callback, headers) {
+    function sendHttpRequest(method, targetUrl, callback, headers) {
       var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 
       if (callback) {
@@ -129,7 +129,7 @@
         };
       }
 
-      xmlhttp.open("GET", targetUrl + "?t=" + new Date().getTime(), true);
+      xmlhttp.open(method, targetUrl + "?t=" + new Date().getTime(), true);
 
       if (headers) {
         for (var key in headers) {
@@ -152,10 +152,10 @@
       isPowered = !isPowered;
 
       if (isPowered) {
-        sendHttpRequest("/api/stepper/power/on.do");
+        sendHttpRequest("POST", "/api/stepper/power/on.do");
       } else {
-        sendHttpRequest("/api/stepper/dir/stop.do");
-        sendHttpRequest("/api/stepper/power/off.do");
+        sendHttpRequest("POST", "/api/stepper/dir/stop.do");
+        sendHttpRequest("POST", "/api/stepper/power/off.do");
       }
 
       pwrBtn.innerHTML = isPowered ? "POWER: ON" : "POWER: OFF";
@@ -177,7 +177,7 @@
         headers = { "X-Steps": stepsValue };
       }
 
-      sendHttpRequest("/api/stepper/dir/" + dir + ".do", null, headers);
+      sendHttpRequest("POST", "/api/stepper/dir/" + dir + ".do", null, headers);
 
       stepCount.style.display = "none";
       stepCount.value = "Steps";
@@ -185,7 +185,7 @@
 
     function handleStop() {
       if (!isPowered) return;
-      sendHttpRequest("/api/stepper/dir/stop.do");
+      sendHttpRequest("POST", "/api/stepper/dir/stop.do");
 
       var stepCount = document.getElementById("stepCount");
 
@@ -194,7 +194,7 @@
     }
 
     function checkStepperStatus() {
-      sendHttpRequest("/api/stepper/status.json", function(xmlhttp) {
+      sendHttpRequest("GET", "/api/stepper/status.json", function(xmlhttp) {
         if (xmlhttp.status === 200) {
           try {
             var data = JSON.parse(xmlhttp.responseText);

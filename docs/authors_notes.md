@@ -20,18 +20,29 @@
 -->
 
 <!--
-              FOR THE FUTURE:
+                        FOR THE FUTURE:
  * [Project]
       Add unity-based tests
 
  * [Components]
       Create a 'HUB' node
 
+ * [Examples]
+      Add example `relay_controler`
+
  * [CORE, include/esp_iot_framework_core_ext.c, Task Management]
       Create proper documentation
+-->
 
- * [CORE, include/esp_iot_framework_core_ext.c, Other]
-      Create proper documentation
+<!--
+                        HUB FEATURES:
+
+  * Automatic discovery of ecosystem devices on the network
+  * Storing a list of devices and their status
+  * A system for periodically polling devices and their status
+  * Forwarding commands to the end device
+  * Automatic OTA device updates from a dedicated server
+  * A scripting language interpreter for executing custom logic
 -->
 
 # Author's notes

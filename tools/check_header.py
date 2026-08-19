@@ -1,4 +1,3 @@
-# 
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
 # Folder: ./tools

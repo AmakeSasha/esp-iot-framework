@@ -122,7 +122,7 @@ esp_err_t stepper_status_handler(httpd_req_t *req) {
     json_gen_str_t jgen = {0};
     char json_buffer[JSON_BUF_LEN] = {0};
 
-    const stepper_state_t * const cfg = stepper_get_cfg();
+    const volatile stepper_state_t * const cfg = stepper_get_cfg();
     char* current_dir = stepper_dir_to_str(cfg->current_dir);
 
     json_gen_str_start(&jgen, json_buffer, JSON_BUF_LEN, NULL, NULL);
@@ -158,12 +158,12 @@ static const httpd_uri_t my_uris[] = {
     /* Files */
     { .uri = "/", .method = HTTP_GET, .handler = sendf_index_html },
     /* Dir */
-    { .uri = "/api/stepper/dir/up.do",   .method = HTTP_GET, .handler = stepper_dir_handler },
-    { .uri = "/api/stepper/dir/down.do", .method = HTTP_GET, .handler = stepper_dir_handler },
-    { .uri = "/api/stepper/dir/stop.do", .method = HTTP_GET, .handler = stepper_dir_handler },
+    { .uri = "/api/stepper/dir/up.do",   .method = HTTP_POST, .handler = stepper_dir_handler },
+    { .uri = "/api/stepper/dir/down.do", .method = HTTP_POST, .handler = stepper_dir_handler },
+    { .uri = "/api/stepper/dir/stop.do", .method = HTTP_POST, .handler = stepper_dir_handler },
     /* Power */
-    { .uri = "/api/stepper/power/on.do",  .method = HTTP_GET, .handler = stepper_power_handler },
-    { .uri = "/api/stepper/power/off.do", .method = HTTP_GET, .handler = stepper_power_handler },
+    { .uri = "/api/stepper/power/on.do",  .method = HTTP_POST, .handler = stepper_power_handler },
+    { .uri = "/api/stepper/power/off.do", .method = HTTP_POST, .handler = stepper_power_handler },
     /* JSON */
     { .uri = "/api/stepper/status.json", .method = HTTP_GET, .handler = stepper_status_handler }
 };
@@ -180,7 +180,7 @@ void app_main(void) {
     ESP_ERROR_CHECK(eif_register_handler_system_reboot(reboot_logic));
     ESP_ERROR_CHECK(eif_device_initialize());
     ESP_ERROR_CHECK(eif_nvs_initialize());
-    ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, 7));
+    ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, sizeof(my_uris) / sizeof(my_uris[0])));
     ESP_ERROR_CHECK(eif_wifi_initialize());
 
     stepper_init();

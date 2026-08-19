@@ -76,7 +76,7 @@ void stepper_set_steps_to_move(uint32_t steps) {
 }
 
 /* Getters */
-const stepper_state_t* stepper_get_cfg(void) {
+const volatile stepper_state_t* stepper_get_cfg(void) {
     return &g_stepper_state;
 }
 
