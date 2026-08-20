@@ -6,7 +6,7 @@
   Relative folder: .
   Original Author: Piyush Shah
   Version: 1.2.0
-  Source: https://github.com/espressif/json_generator
+  Source: https://github.com/shahpiyushv/json_generator
   
   Copyright 2020 Piyush Shah <shahpiyushv@gmail.com>
   

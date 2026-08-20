@@ -50,6 +50,8 @@ The framework is built around three fundamental concepts, decoupling the infrast
 
 * **End Devices** - A Node augmented with your product's business logic. Smart bulbs, relays, sensors, actuators — any target scenario boils down to implementing that single, unique logic on top of the chosen Node.
 
+  You can see examples of end devices in the [`examples`](./examples) folder.
+ 
 ---
 
 <h1> Example of use</h1>
@@ -98,8 +100,9 @@ To protect against network restrictions, blockages, and infrastructure failures,
 
 This framework bundles the following third-party components inside the `components/` directory:
 
-* [jsmn](https://github.com/espressif/idf-extra-components/tree/master/jsmn) - JSMN: minimalistic JSON parser in C (MIT license)
-* [json_generator](https://github.com/espressif/json_generator) - A simple JSON (JavasScript Object Notation) generator with flushing capability (Apache 2.0 license)
+* <code>[json2](https://github.com/douglascrockford/JSON-js/)</code> - JSON in JavaScript (`Public Domain` or `CC0-1.0`, at your discretion)
+* <code>[jsmn](https://github.com/zserge/jsmn)</code> - JSMN: minimalistic JSON parser in C (`MIT license`)
+* <code>[json_generator](https://github.com/shahpiyushv/json_generator)</code> - A simple JSON (JavasScript Object Notation) generator with flushing capability (`Apache 2.0 license`)
 
 <h1>License</h1>
 

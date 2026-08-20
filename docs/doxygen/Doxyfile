@@ -67,7 +67,7 @@ WARN_FORMAT            = "$file:$line: $text"
 STRIP_FROM_PATH        = ..
 INPUT                  = ../components/esp_iot_framework_core/include \
                          ../components/esp_iot_framework_device/include \
-                         authors_notes.md html
+                         ../AUTHOR_NOTES.md html
 LAYOUT_FILE            = doxygen/DoxygenLayout.xml
 HTML_HEADER            = doxygen/header.html
 HTML_EXTRA_FILES       = images/logo.png ../LICENSE ../NOTICE
@@ -80,7 +80,7 @@ USE_MDFILE_AS_MAINPAGE = html/README.md
 #---------------------------------------------------------------------------
 SOURCE_BROWSER         = NO
 STRIP_CODE_COMMENTS    = NO
-VERBATIM_HEADERS       = YES
+VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the HTML output
 #---------------------------------------------------------------------------

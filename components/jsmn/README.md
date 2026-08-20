@@ -6,7 +6,7 @@
   Relative folder: .
   Original Author: Serge Zaitsev
   Version: 1.1.0
-  Source: https://github.com/espressif/idf-extra-components/tree/master/jsmn
+  Source: https://github.com/zserge/jsmn
   
   Copyright (c) 2010 Serge Zaitsev
   

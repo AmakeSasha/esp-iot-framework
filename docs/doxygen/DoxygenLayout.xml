@@ -26,7 +26,9 @@
     <tab type="mainpage" visible="yes" title="Welcome"/>
     <tab type="modules" visible="yes" title="Framework Modules"/>
     <tab type="pages" visible="no" title="Related Pages"/>
-    <tab type="user" visible="yes" title="Author's notes" url="md_docs_authors_notes.html"/>
+    <tab type="user" visible="yes" title="Author's notes" url="md__a_u_t_h_o_r__n_o_t_e_s.html"/>
+    <tab type="user" visible="yes" title="LICENSE" url="md_docs_html_license_page.html"/>
+    <tab type="user" visible="yes" title="NOTICE" url="md_docs_html_notice_page.html"/>
   </navindex>
 
   <!-- Layout definition for a class page -->

@@ -19,16 +19,16 @@ For full license information, see:
 
 This product also includes third-party software:
 - json2.js - Created by Douglas Crockford
-  * Source: https://github.com/douglascrockford/JSON-js/
-  * License: Public Domain (as stated in the source code comments)
+  * Source: https://github.com/douglascrockford/JSON-js
+  * License: Public Domain (as stated in the source code comments, or CC0-1.0, at your discretion)
   * Path: ./components/esp_iot_framework_device/web_src/json2.js
 
 - jsmn - Created by Serge Zaitsev
-  * Source: https://github.com/espressif/idf-extra-components/tree/master/jsmn
+  * Source: https://github.com/zserge/jsmn
   * License: MIT License (Copyright (c) 2010 Serge Zaitsev)
   * Path: ./components/jsmn/*
 
 - json_generator - Created by Piyush Shah
-  * Source: https://github.com/espressif/json_generator
+  * Source: https://github.com/shahpiyushv/json_generator
   * License: Apache License 2.0 (Copyright 2020 Piyush Shah)
   * Path: ./components/json_generator/*

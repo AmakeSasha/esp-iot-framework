@@ -19,14 +19,85 @@
 
 import os, subprocess, shutil, re
 
-def get_dir_size(path):
-    total = 0
-    if not os.path.exists(path): return 0
-    for root, _, files in os.walk(path):
-        for f in files:
-            total += os.path.getsize(os.path.join(root, f))
-    return total
+REPLACEMENT_DATA = [
+    {
+        "original": r"\(./components/esp_iot_framework_core/README.md\)",
+        "converted": "(group__core__root.html)"
+    },
+    {
+        "original": r"\(./components/esp_iot_framework_device/README.md\)",
+        "converted": "(group__device__root.html)"
+    },
+    {
+        "original": r"\(./examples\)",
+        "converted": "(index.html)"
+    },
+    {
+        "original": r"\(./LICENSE\)",
+        "converted": "(md_docs_html_license_page.html)"
+    },
+    {
+        "original": r"\(./NOTICE\)",
+        "converted": "(md_docs_html_notice_page.html)"
+    }
+]
 
+LIST_FILES = [
+    {
+        "src": "LICENSE",
+        "title": "Apache 2.0 License",
+        "name": "license",
+        "type": "file",
+        "dst_path": ""
+    },
+    {
+        "src": "NOTICE",
+        "title": "NOTICE for Apache 2.0",
+        "name": "notice",
+        "type": "file",
+        "dst_path": ""
+    },
+    {
+        "src": "README.md",
+        "name": "README.md",
+        "type": "readme",
+        "dst_path": ""
+    },
+    {
+        "src": "components/esp_iot_framework_core/README.md",
+        "name": "README_CORE.md",
+        "type": "readme",
+        "dst_path": ""
+    },
+    {
+        "src": "components/esp_iot_framework_core/KCONFIG.md",
+        "name": "KCONFIG_CORE.md",
+        "type": "readme",
+        "dst_path": ""
+    },
+    {
+        "src": "components/esp_iot_framework_device/README.md",
+        "name": "README_DEVICE.md",
+        "type": "readme",
+        "dst_path": ""
+    },
+    {
+        "src": "components/esp_iot_framework_device/KCONFIG.md",
+        "name": "KCONFIG_DEVICE.md",
+        "type": "readme",
+        "dst_path": ""
+    },
+    {
+        "src": "components/esp_iot_framework_device/REST_API.md",
+        "name": "REST_API_DEVICE.md",
+        "type": "readme",
+        "dst_path": ""
+    }
+]
+
+# --------------------------------------------------------------------------------
+#                                 FILE PREPARATION
+# --------------------------------------------------------------------------------
 def generate_md_page(docs_dir, src_path, title, name):
     dst_path = os.path.normpath(os.path.join(docs_dir, "html", f"{name}_page.md"))
 
@@ -46,29 +117,6 @@ def generate_md_page(docs_dir, src_path, title, name):
 def generate_readme(docs_dir, src_path, filename):
     dst_path = os.path.normpath(os.path.join(docs_dir, "html", filename))
 
-    replacement_data = [
-        {
-            "original": r"\(./components/esp_iot_framework_core/README.md\)",
-            "converted": "(group__core__root.html)"
-        },
-        {
-            "original": r"\(./components/esp_iot_framework_device/README.md\)",
-            "converted": "(group__device__root.html)"
-        },
-        {
-            "original": r"\(./examples\)",
-            "converted": "(index.html)"
-        },
-        {
-            "original": r"\(./LICENSE\)",
-            "converted": "(md_docs_html_license_page.html)"
-        },
-        {
-            "original": r"\(./NOTICE\)",
-            "converted": "(md_docs_html_notice_page.html)"
-        },
-    ]
-
     if os.path.exists(src_path):
         with open(src_path, "r", encoding="utf-8") as src:
             content = src.read()
@@ -85,7 +133,7 @@ def generate_readme(docs_dir, src_path, filename):
                 content
             )
 
-            for item in replacement_data:
+            for item in REPLACEMENT_DATA:
                 content = re.sub(item["original"], item["converted"], content)
 
         with open(dst_path, "w", encoding="utf-8") as dst:
@@ -94,74 +142,14 @@ def generate_readme(docs_dir, src_path, filename):
         return dst_path
     return None
 
-
-def main():
-    print(">>> Init script...")
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.normpath(os.path.join(script_dir, ".."))
-    docs_dir = os.path.normpath(os.path.join(project_root, "docs"))
-    html_dir = os.path.normpath(os.path.join(docs_dir, "html"))
-
-    list_files = [
-        {
-            "src": "LICENSE",
-            "title": "Apache 2.0 License",
-            "name": "license",
-            "type": "file",
-            "dst_path": ""
-        },
-        {
-            "src": "NOTICE",
-            "title": "NOTICE for Apache 2.0",
-            "name": "notice",
-            "type": "file",
-            "dst_path": ""
-        },
-        {
-            "src": "README.md",
-            "name": "README.md",
-            "type": "readme",
-            "dst_path": ""
-        },
-        {
-            "src": "components/esp_iot_framework_core/README.md",
-            "name": "README_CORE.md",
-            "type": "readme",
-            "dst_path": ""
-        },
-        {
-            "src": "components/esp_iot_framework_core/KCONFIG.md",
-            "name": "KCONFIG_CORE.md",
-            "type": "readme",
-            "dst_path": ""
-        },
-        {
-            "src": "components/esp_iot_framework_device/README.md",
-            "name": "README_DEVICE.md",
-            "type": "readme",
-            "dst_path": ""
-        },
-        {
-            "src": "components/esp_iot_framework_device/KCONFIG.md",
-            "name": "KCONFIG_DEVICE.md",
-            "type": "readme",
-            "dst_path": ""
-        },
-        {
-            "src": "components/esp_iot_framework_device/REST_API.md",
-            "name": "REST_API_DEVICE.md",
-            "type": "readme",
-            "dst_path": ""
-        }
-    ]
-
+def formatted_files(project_root, docs_dir, html_dir):
     os.chdir(docs_dir)
     if os.path.exists(html_dir):
         shutil.rmtree(html_dir)
     os.makedirs(html_dir, exist_ok=True)
 
     print(">>> Formating files...")
-    for item in list_files:
+    for item in LIST_FILES:
         src_path = os.path.normpath(os.path.join(project_root, item["src"]))
        
         if item["type"] == "file":
@@ -170,7 +158,16 @@ def main():
             )
         elif item["type"] == "readme":
             item["dst_path"] = generate_readme(docs_dir, src_path, item["name"])
+# --------------------------------------------------------------------------------
+#                             END FILE PREPARATION
+# --------------------------------------------------------------------------------
 
+
+
+# --------------------------------------------------------------------------------
+#                                  LAUNCH DOXYGEN
+# --------------------------------------------------------------------------------
+def launch_doxygen():
     print(">>> Launching Doxygen...")
     process = subprocess.Popen(
         "doxygen doxygen/Doxyfile",
@@ -181,19 +178,100 @@ def main():
     )
     _, stderr_output = process.communicate()
 
-
     if stderr_output:
         for line in stderr_output.splitlines():
             if "Unexpected html tag <font>" not in line and "Unexpected html tag </font>" not in line:
                 print(line)
+# --------------------------------------------------------------------------------
+#                              END LAUNCH DOXYGEN
+# --------------------------------------------------------------------------------
 
+
+
+# --------------------------------------------------------------------------------
+#                                  FINAL GENERATE
+# --------------------------------------------------------------------------------
+def remove_formatted_files():
     print(">>> Removing formatted files...")
-    for item in list_files:
+    for item in LIST_FILES:
+        print(f"Delete file {item['dst_path']}")
         os.remove(item["dst_path"])
 
-    size = get_dir_size("html")
+        html_folder = os.path.dirname(item["dst_path"])
+        orig_name = os.path.basename(item["src"])
+        target_to_delete = os.path.normpath(os.path.join(html_folder, orig_name))
+        
+        if os.path.exists(target_to_delete):
+            print(f"Delete file {target_to_delete}")
+            os.remove(target_to_delete)
 
-    print(f"\n>>> Done, size website: {size/1024:.1f} KB")
+def website_simplification(html_dir):
+    print(">>> Website simplification...")
+
+    dir_file_pattern = re.compile(r"^dir_[a-fA-F0-9]{32}\.html$")
+
+    pattern_comment_html = re.compile(r"<!--(?:[^-]|-(?!->))*-->\n|<!--(?:[^-]|-(?!->))*-->")
+    pattern_comment_js = re.compile(r"/\*(?:[^*]|\*(?!/))*\*/\r?\n?|/\*(?:[^*]|\*(?!/))*\*/")
+    
+    pattern_single = re.compile(r"//(?![^\r\n]*[^a-zA-Z0-9\s\"'\"()\[\]{}])[^\r\n]*\r?\n?")
+    pattern_empty_lines = re.compile(r"(\r?\n)\s*\r?\n")
+    pattern_indent = re.compile(r"^\s+", re.MULTILINE)
+
+    for root, _, files in os.walk(html_dir):
+        for file in files:
+            if dir_file_pattern.match(file):
+                path = os.path.join(root, file)
+                os.remove(path)
+                continue
+
+            if file.endswith((".html", ".js", ".css")):
+                path = os.path.join(root, file)
+                with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+
+                cleaned = pattern_comment_html.sub("", content)
+                cleaned = pattern_comment_js.sub("", cleaned)
+
+                cleaned = pattern_single.sub("", cleaned)
+                cleaned = pattern_empty_lines.sub(r"\1", cleaned)
+                cleaned = pattern_indent.sub("", cleaned)
+
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(cleaned)
+
+def print_size_website(path):
+    total = 0
+    if not os.path.exists(path): return 0
+    for root, _, files in os.walk(path):
+        for f in files:
+            total += os.path.getsize(os.path.join(root, f))
+
+    print(f"\n>>> Done, size website: {total/1024:.1f} KB")
+# --------------------------------------------------------------------------------
+#                              END FINAL GENERATE
+# --------------------------------------------------------------------------------
+
+
+
+# --------------------------------------------------------------------------------
+#                                       MAIN
+# --------------------------------------------------------------------------------
+def main():
+    print(">>> Init script...")
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.normpath(os.path.join(script_dir, ".."))
+    docs_dir = os.path.normpath(os.path.join(project_root, "docs"))
+    html_dir = os.path.normpath(os.path.join(docs_dir, "html"))
+
+    formatted_files(project_root, docs_dir, html_dir)
+    launch_doxygen()
+    remove_formatted_files()
+    website_simplification(html_dir)
+    print_size_website(docs_dir)
 
 if __name__ == "__main__":
     main()
+# --------------------------------------------------------------------------------
+#                                   END MAIN
+# --------------------------------------------------------------------------------

@@ -6,7 +6,7 @@
  * Relative folder: ./src
  * Original Author: Piyush Shah
  * Version: 1.2.0
- * Source: https://github.com/espressif/json_generator
+ * Source: https://github.com/shahpiyushv/json_generator
  * 
  * Copyright 2020 Piyush Shah <shahpiyushv@gmail.com>
  * 
@@ -27,12 +27,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-#include <inttypes.h>
 
 #include <json_generator.h>
 
 #define MAX_INT_IN_STR      24
-#define MAX_INT64_IN_STR    24
 #define MAX_FLOAT_IN_STR    30
 
 static inline int json_gen_get_empty_len(json_gen_str_t *jstr)
@@ -82,7 +80,7 @@ static int json_gen_add_to_str(json_gen_str_t *jstr, const char *str)
 
 
 void json_gen_str_start(json_gen_str_t *jstr, char *buf, int buf_size,
-                        json_gen_flush_cb_t flush_cb, void *priv)
+        json_gen_flush_cb_t flush_cb, void *priv)
 {
     memset(jstr, 0, sizeof(json_gen_str_t));
     jstr->buf = buf;
@@ -97,9 +95,8 @@ int json_gen_str_end(json_gen_str_t *jstr)
     int total_len = jstr->total_len;
     if (jstr->buf) {
         *jstr->free_ptr = '\0';
-        if (jstr->flush_cb) {
+        if (jstr->flush_cb)
             jstr->flush_cb(jstr->buf, jstr->priv);
-        }
     }
     memset(jstr, 0, sizeof(json_gen_str_t));
     return total_len + 1; /* +1 for the NULL termination */
@@ -237,8 +234,8 @@ int json_gen_arr_set_int(json_gen_str_t *jstr, int val)
 static int json_gen_set_int64(json_gen_str_t *jstr, int64_t val)
 {
     jstr->comma_req = true;
-    char str[MAX_INT64_IN_STR];
-    snprintf(str, MAX_INT64_IN_STR, "%" PRId64, val);
+    char str[MAX_INT_IN_STR];
+    snprintf(str, MAX_INT_IN_STR, "%lld", val);
     return json_gen_add_to_str(jstr, str);
 }
 

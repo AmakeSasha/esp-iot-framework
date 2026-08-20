@@ -1,8 +1,8 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Folder: ./docs
-  File: authors_notes.md
+  Folder: .
+  File: AUTHOR_NOTES.md
   
   Copyright 2026 AmakeSasha
   
@@ -51,6 +51,8 @@ Here are the answers that I considered important, at least for me. I think it wi
 
 ---
 
+## Reliability
+
 * **Has the project been officially audited, certified, or checked for MISRA C compliance?**
 
   No official audit or commercial certification has been conducted (I don't have the budget for this). However, the code is checked through the `cppcheck` static analyzer. This reduces risks, eliminates known patterns of undefined behavior, and improves overall code reliability, although it does not replace a full-fledged industrial certification.
@@ -69,6 +71,24 @@ Here are the answers that I considered important, at least for me. I think it wi
 
 ---
 
+## Motivation
+
+* **How did this project start?**
+
+  On `January 15, 2026`, I needed a way to remotely control a stepper motor. Since I already had a smart speaker, I initially looked for ready-made firmware or libraries to emulate devices from other ecosystems. However, I couldn't find anything that satisfied me, so I decided to write my own solution-right when I had just started learning `C`. I wrote what I now consider a very crude piece of code. My original plan was to create a simple repository with the code and soldering instructions for the control board. But I struggled with drawing the electrical schematic and even thought about dropping the idea of publishing the project online altogether, since it had already solved my personal problem. Then, on `March 3, 2026`, I realized that only 5% of the code was actually controlling the stepper motor (yes, it took me that long, but learning how to solder ate up a massive amount of time). The remaining 95% could be completely reused for other projects. That is exactly when I decided to turn it into this framework. Of course, after this realization, I heavily modernized the code, so you won't get to see the very first version `0.0.0` :)
+
+---
+
+* **What is the philosophy behind this project?**
+
+  For the most part, the philosophy of this project was shaped by its history. Since there was absolutely no thought of a hub when writing version `0.0.0`, the following core principles were established:
+
+  * `Separation of concerns` - The framework does not handle business logic or try to be a ready-made ecosystem. It completely offloads the routine infrastructure, allowing the developer to focus exclusively on writing the logic for the specific device without being distracted by low-level services.
+  * `Direct interaction` - Interaction with the device must happen directly without unnecessary layers. Whether through a standard web browser, `curl`, or similar CLI tools, it eliminates the need to install specialized applications or maintain heavy software.
+  * `Absolute autonomy without a hub` - The device must be 100% self-sufficient and fully operational without any internet access or the presence of a dedicated hub. In view of the `Direct interaction` principle, the `HTTP(S)` protocol is the best fit for this criterion. In this architecture, the end devices act as standalone servers, while a potential hub becomes merely one of many clients. This approach guarantees that even a single smart relay remains completely functional on its own.
+
+---
+
 * **What is the purpose of this project? What is its future?**
  
   This project is being created as the main (perhaps the only) part of my portfolio. I develop it when I feel like it. Since I really liked this project myself, I will continue to develop it in the future.
@@ -78,6 +98,20 @@ Here are the answers that I considered important, at least for me. I think it wi
 * **Where did the name of this project come from?**
 
   I just didn't want to waste time overthinking an overly fancy or complicated name. `ESP IoT Framework` describes exactly what this project is and does, so I went with it. It is straightforward, clean, and tells you its purpose right away.
+
+---
+
+## Architecture
+
+* **Will this framework support other popular IoT protocols in the future?**
+
+  No. All popular alternatives have been carefully evaluated and intentionally rejected because they completely contradict the core principles of this project:
+
+  * `MQTT` - These require a dedicated central server (broker) to route messages between devices. This directly violates the `Absolute Autonomy Without a Hub` principle. The framework will not force the user to deploy and maintain heavy third-party infrastructure just to make a single device work.
+  * `CoAP` - Although it shares a similar request-response model with `HTTP`, it runs over `UDP` and requires specialized gateways or proxy servers. Standard web browsers and common utilities like `curl` cannot interact with `CoAP` natively out of the box. This completely destroys the `Direct Interaction` principle by forcing the user to install additional software.
+  * `WebSockets` - This protocol is completely redundant. A standard REST API approach is more than enough to handle any device control or data retrieval tasks implemented in the development of the business logic. Personally, I see no real-world scenarios within the scope of this framework where `WebSockets` would perform better than standard `HTTP(S)`.
+
+  Standard, pure `HTTP(S)` is the only protocol that perfectly satisfies all requirements of this framework, allowing the end device to remain a truly self-sufficient server.
 
 ---
 

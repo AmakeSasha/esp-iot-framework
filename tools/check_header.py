@@ -289,14 +289,14 @@ def get_comment_type(path):
     else:
         return ""
 
-def scan_directory(root_dir, ban_list):
-    base_path = Path(root_dir)
+def main():
+    base_path = Path(START_DIR)
 
     for path in base_path.rglob("*"):
         if path.is_file():
             posix_path = path.as_posix()
 
-            if any(ban_item in posix_path for ban_item in ban_list):
+            if any(ban_item in posix_path for ban_item in BAN_LIST):
                 continue
 
             print(f"Opening file: {posix_path}")
@@ -314,4 +314,4 @@ def scan_directory(root_dir, ban_list):
 # ---------- END PARSERS ----------
 
 if __name__ == "__main__":
-    scan_directory(START_DIR, BAN_LIST)
+    main()

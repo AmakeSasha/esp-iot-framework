@@ -6,7 +6,7 @@
  * Relative folder: ./include
  * Original Author: Piyush Shah
  * Version: 1.2.0
- * Source: https://github.com/espressif/json_generator
+ * Source: https://github.com/shahpiyushv/json_generator
  * 
  * Copyright 2020 Piyush Shah <shahpiyushv@gmail.com>
  * 
@@ -23,14 +23,6 @@
  * limitations under the License.
  */
 
-/*
- * JSON String Generator
- *
- * This module can be used to create JSON strings with a facility
- * to flush out data if the destination buffer is full. All commas
- * and colons as required are automatically added by the APIs
- *
- */
 #ifndef _JSON_GENERATOR_H
 #define _JSON_GENERATOR_H
 
@@ -100,7 +92,7 @@ typedef struct {
  * Can be something like a session identifier (Eg. socket). Can be left NULL.
  */
 void json_gen_str_start(json_gen_str_t *jstr, char *buf, int buf_size,
-                        json_gen_flush_cb_t flush_cb, void *priv);
+        json_gen_flush_cb_t flush_cb, void *priv);
 
 /** End JSON string
  *
@@ -306,7 +298,9 @@ int json_gen_obj_set_bool(json_gen_str_t *jstr, const char *name, bool val);
  */
 int json_gen_obj_set_int(json_gen_str_t *jstr, const char *name, int val);
 
-/** Add a 64 bit integer element to an object
+/** Add an int64 (long long integer) element to an object
+ *
+ * This adds an integer element to an object. Eg. "int64_val":28
  *
  * \note This must be called between json_gen_start_object()/json_gen_push_object()
  * and json_gen_end_object()/json_gen_pop_object()
@@ -314,7 +308,7 @@ int json_gen_obj_set_int(json_gen_str_t *jstr, const char *name, int val);
  * \param[in] jstr Pointer to the \ref json_gen_str_t structure initialised by
  * json_gen_str_start()
  * \param[in] name Name of the element
- * \param[in] val 64 bit integer value of the element
+ * \param[in] val int64 (long long integer) value of the element
  *
  * \return 0 on Success
  * \return -1 if buffer is out of space (possible only if no callback function
@@ -411,14 +405,14 @@ int json_gen_arr_set_bool(json_gen_str_t *jstr, bool val);
  */
 int json_gen_arr_set_int(json_gen_str_t *jstr, int val);
 
-/** Add a 64 bit integer element to an array
+/** Add a int64 (long long integer) element to an array
  *
  * \note This must be called between json_gen_start_array()/json_gen_push_array()
  * and json_gen_end_array()/json_gen_pop_array()
  *
  * \param[in] jstr Pointer to the \ref json_gen_str_t structure initialised by
  * json_gen_str_start()
- * \param[in] val 64 bit integer value of the element
+ * \param[in] val int64 (long long integer) value of the element
  *
  * \return 0 on Success
  * \return -1 if buffer is out of space (possible only if no callback function
