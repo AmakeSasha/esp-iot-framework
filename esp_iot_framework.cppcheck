@@ -11,8 +11,8 @@
         <dir name="examples/hello_world/build/config"/>
         <dir name="components/esp_iot_framework_core/include"/>
         <dir name="components/esp_iot_framework_core/private_include"/>
-        <dir name="components/esp_iot_framework_device/include"/>
-        <dir name="components/esp_iot_framework_device/private_include"/>
+        <dir name="components/esp_iot_framework_server/include"/>
+        <dir name="components/esp_iot_framework_server/private_include"/>
         <dir name="components/jsmn/include"/>
         <dir name="components/json_generator/include"/>
         <dir name="D:/embedded/esp-idf-v4.4.8/components/esp_common/include"/>
@@ -30,7 +30,7 @@
     </defines>
     <paths>
         <dir name="components/esp_iot_framework_core"/>
-        <dir name="components/esp_iot_framework_device"/>
+        <dir name="components/esp_iot_framework_server"/>
     </paths>
     <libraries>
         <library>gnu</library>

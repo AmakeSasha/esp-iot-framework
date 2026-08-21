@@ -12,11 +12,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { target: esp32,   dir: "hello_world" }
-          - { target: esp32s3, dir: "hello_world_cpp" }
-          - { target: esp32s2, dir: "hello_world" }
-          - { target: esp32c3, dir: "hello_world" }
-          - { target: esp32c3, dir: "hello_world_cpp" }
+          - { target: esp32,   dir: "hello_world_server" }
+          - { target: esp32s3, dir: "hello_world_cpp_server" }
+          - { target: esp32s2, dir: "hello_world_server" }
+          - { target: esp32c3, dir: "hello_world_server" }
+          - { target: esp32c3, dir: "hello_world_cpp_server" }
     container:
       image: espressif/idf:release-v4.4
     steps:

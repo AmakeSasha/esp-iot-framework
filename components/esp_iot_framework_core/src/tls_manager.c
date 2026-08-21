@@ -20,6 +20,10 @@
  * limitations under the License.
  */
 
+#include "sdkconfig.h"
+
+#ifdef CONFIG_EIF_CORE_ENABLE_TLS
+
 #include <stdio.h>
 #include <string.h>
 #include <esp_log.h>
@@ -32,9 +36,10 @@
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/x509_crt.h>
 
-#include "esp_iot_framework_core_macros.h"
+#include "core_macros.h"
 #include "core_internal.h"
 #include "esp_iot_framework_core.h"
+#include "esp_iot_framework_core_macros.h"
 
 /* --- */
 
@@ -361,3 +366,5 @@ esp_err_t eif_tls_create_creds_and_nvs_save(void) {
     }
     return ret;
 }
+
+#endif

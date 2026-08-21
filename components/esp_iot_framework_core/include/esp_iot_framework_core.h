@@ -190,8 +190,8 @@ typedef esp_err_t (*eif_handler_system_t)(void);
  *
  * @warning The handler runs within a dedicated reboot task with a limited
  *          stack size (<code>
- *              <a href="group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">
- *                  CONFIG_EIF_REBOOT_TASK_STACK_SIZE
+ *              <a href="group__core__kconfig.html#CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE">
+ *                  CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE
  *              </a>
  *          </code>). Avoid deep recursion or allocation of a large amount of
  *          memory (stack or heap).

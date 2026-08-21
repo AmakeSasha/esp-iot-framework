@@ -27,7 +27,7 @@
 
 #include <string.h>
 #include <esp_wifi.h>
-#ifdef CONFIG_EIF_ENABLE_MDNS
+#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
     #include <mdns.h>
 #endif
 
@@ -37,13 +37,13 @@
 
 /* config.c */
 
-#if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
+#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
     /* esp32-divece-aaccbb */
     #define MDNS_HOSTNAME_FULL_MAX_LEN 64U
     /* -aaccbb */
     #define MDNS_SUFFIX_MAC_LEN 7U
 
-    #if (MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN != EIF_MDNS_HOSTNAME_MAX_LEN)
+    #if (MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN) != EIF_MDNS_HOSTNAME_MAX_LEN
         #error "Invalid value `EIF_MDNS_HOSTNAME_MAX_LEN`"
     #endif
 #endif
@@ -58,10 +58,10 @@ typedef struct {
     size_t wifi_profiles_count;
     eif_wifi_test_result wifi_test_results[EIF_WIFI_PROFILES_MAX_COUNT];
 
-    #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
+    #if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
         char mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN];
     #endif
-    #ifdef CONFIG_EIF_ENABLE_MDNS
+    #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
         /* eif_set_mdns */
         char mdns_instance_name[EIF_MDNS_INSTANCE_NAME_MAX_LEN];
         /* eif_set_mdns_records */
@@ -88,13 +88,13 @@ esp_err_t eif_set_current_wifi_profile_index(uint8_t index);
 esp_err_t eif_set_wifi_result_test(uint8_t index, eif_wifi_test_result result);
 void eif_wifi_handler_stop_set(bool stop);
 
-#if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
+#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
     esp_err_t eif_format_mdns_hostname(void);
 #endif
 
 /* tls_maneger.c */
 
-#ifdef CONFIG_EIF_ENABLE_TLS
+#ifdef CONFIG_EIF_CORE_ENABLE_TLS
     esp_err_t eif_tls_create_creds_and_nvs_save(void);
 #endif
 
@@ -105,13 +105,13 @@ esp_err_t eif_wifi_deinitialize(void);
 
 /* system.c */
 
-#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+#ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
     void eif_core_log_init(void);
 #endif
 esp_err_t eif_task_reboot_launch(void);
 esp_err_t eif_task_memory_monitor_launch(void);
 esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);
-#ifdef CONFIG_EIF_ENABLE_TLS
+#ifdef CONFIG_EIF_CORE_ENABLE_TLS
     esp_err_t eif_task_tls_recreate_launch(void);
 #endif
 esp_err_t eif_task_rollback_and_reboot_launch(void);

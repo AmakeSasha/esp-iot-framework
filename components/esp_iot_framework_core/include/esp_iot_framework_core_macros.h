@@ -24,7 +24,7 @@
 #define ESP_IOT_FRAMEWORK_CORE_MACROS_H
 
 #include "sdkconfig.h"
-#if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
+#if defined(CONFIG_EIF_CORE_ENABLE_TLS) || defined(DOXYGEN)
     #include <mbedtls/error.h>
 #endif
 
@@ -59,7 +59,7 @@
  * @brief Helper to define a local logging 'TAG' identifier.
  *
  * This macro declares a string named `TAG`. It automatically adds an unused
- * attribute (`[[maybe_unused]]` for C++, `__attribute__((unused))` for C or
+ * attribute (`[[maybe_unused]]` for C++, `__attribute__((unused))` for C,
  * nothing if the compiler does not support it) to suppress compiler warnings
  * and satisfy MISRA C requirements when all logging macros in the scope are
  * stripped out by the preprocessor.
@@ -98,8 +98,11 @@
  * uses the local `TAG` variable, which must be defined in the current scope.
  *
  * @note This macro implicitly relies on a `TAG` identifier being defined and
- *       accessible within the current scope. Behavior depends on the
- *       `CONFIG_EIF_LOG_SHOW_METADATA` configuration:
+ *       accessible within the current scope. Behavior depends on the <code>
+ *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_SHOW_METADATA">
+ *           CONFIG_EIF_CORE_LOG_SHOW_METADATA
+ *         </a>
+ *       </code> configuration:
  *       - **Enabled:** Automatically injects source metadata (file name, line
  *         number, and function name) at the beginning of the log message.
  *         Example of output to the console:
@@ -146,11 +149,11 @@
  * enforced at compile-time via the underlying
  * '__attribute__((format(printf, ...)))' integrated into the ESP-IDF logging
  * subsystem, supplemented by peer code reviews. */
-#if (defined(CONFIG_EIF_LOG_SHOW_METADATA) || defined(DOXYGEN))
+#if defined(CONFIG_EIF_CORE_LOG_SHOW_METADATA) || defined(DOXYGEN)
     /* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, "%s:%d (%s) " m_format, __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 #endif
-#if (!defined(CONFIG_EIF_LOG_SHOW_METADATA) && !defined(DOXYGEN))
+#if !defined(CONFIG_EIF_CORE_LOG_SHOW_METADATA) && !defined(DOXYGEN)
     /* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, m_format, ##__VA_ARGS__)
 #endif
@@ -176,12 +179,12 @@
  *
  * Use these macros to print logs to the console. Which logs actually
  * get compiled into the firmware depends on the <code>
- *   <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">
- *     CONFIG_EIF_LOG_LEVEL
+ *   <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_LEVEL">
+ *     CONFIG_EIF_CORE_LOG_LEVEL
  *   </a>
  * </code> value. A logging macro works only if <code>
- *   <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">
- *     CONFIG_EIF_LOG_LEVEL
+ *   <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_LEVEL">
+ *     CONFIG_EIF_CORE_LOG_LEVEL
  *   </a>
  * </code> is equal to or higher than its corresponding severity level constant
  * (from `1` to `4`):
@@ -234,25 +237,25 @@
  * printf compiler attributes, completely eliminating runtime type mismatch
  * risks. */
 /** @brief Logs an error message using the `ESP_LOGE` severity, is level `Error`. */
-#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_E || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_E || defined(DOXYGEN)
     #define EIF_LOG_E(...) EIF_PRINT(ESP_LOGE, __VA_ARGS__)
 #else
     #define EIF_LOG_E(...) ((void)0U)
 #endif
 /** @brief Logs a warning message using the `ESP_LOGW` severity, is level `Warning`. */
-#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_W || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_W || defined(DOXYGEN)
     #define EIF_LOG_W(...) EIF_PRINT(ESP_LOGW, __VA_ARGS__)
 #else
     #define EIF_LOG_W(...) ((void)0U)
 #endif
 /** @brief Logs an informational message using the `ESP_LOGI` severity, is level `Info`. */
-#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_I || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_I || defined(DOXYGEN)
     #define EIF_LOG_I(...) EIF_PRINT(ESP_LOGI, __VA_ARGS__)
 #else
     #define EIF_LOG_I(...) ((void)0U)
 #endif
 /** @brief Logs a debug message using the `ESP_LOGD` severity, is level `Debug`. */
-#if (CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_D || defined(DOXYGEN)
     #define EIF_LOG_D(...) EIF_PRINT(ESP_LOGD, __VA_ARGS__)
 #else
     #define EIF_LOG_D(...) ((void)0U)
@@ -300,7 +303,7 @@
  * }
  * @endcode
  */
-#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN)
     #define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format, ...) \
 do { \
     (m_result) = (m_expr); \
@@ -375,7 +378,7 @@ do { \
  * }
  * @endcode
  */
-#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN)
     #define EIF_IF_OK_CHECK_NOT_NULL(m_result, m_ptr, m_error) \
 do { \
     if ((m_result) == (ESP_OK)) { \
@@ -442,7 +445,7 @@ do { \
  * }
  * @endcode
  */
-#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN)
     #define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format, ...) \
 do { \
     if ((m_result) == (ESP_OK)) { \
@@ -520,7 +523,7 @@ do { \
  * }
  * @endcode
  */
-#if (CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN))
+#if CONFIG_EIF_CORE_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN)
     #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
 do { \
     if ((m_ret) == ESP_OK) { \
@@ -549,67 +552,6 @@ do { \
     if ((m_ret) == ESP_OK) { \
         if ((m_cond)) { \
             (m_ret) = (m_err); \
-        } \
-    } \
-} while(false)
-#endif
-
-#if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
-    /**
-     * @brief Executes and validates an MbedTLS expression sequentially.
-     *
-     * @note Only available if the `Kconfig` option <code>
-     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
-     *           CONFIG_EIF_ENABLE_TLS
-     *         </a>
-     *       </code> is enabled.
-     *
-     * This macro operates similarly to `EIF_IF_OK_CHECK_ESP_ERR_T()`, but is
-     * specifically designed for the MbedTLS library, which uses `int` (where
-     * `0` is success and negative values are errors) instead of `esp_err_t`.
-     *
-     * If `m_ret` equals `0`, it executes `m_expr` and stores the result back in
-     * `m_ret`. On failure, it converts the MbedTLS error code into a
-     * human-readable string using `mbedtls_strerror()` and logs it along with
-     * the absolute hex value and `func_name`.
-     *
-     * @note The variable passed to `m_ret` must be of type `int`, NOT
-     *       `esp_err_t`. Additionally, human-readable error strings require
-     *       `CONFIG_MBEDTLS_ERROR_C` to be enabled in the project configuration.
-     *       Otherwise, `mbedtls_strerror` might output a generic or empty string.
-     *
-     * @param[in,out] m_ret     Status variable (`int`). Checked before execution;
-     *                          overwritten with the return value of `m_expr`.
-     * @param[in]     m_expr    The MbedTLS function call returning an `int`.
-     * @param[in]     func_name String literal representing the operation name
-     *                          (for logging).
-     *
-     * Example of use:
-     * @code{c}
-     * #include <esp_log.h>
-     * #include <mbedtls/ssl.h>
-     * #include <esp_iot_framework_core_macros.h>
-     *
-     * int open_secure_socket(mbedtls_ssl_context *ssl) {
-     *     EIF_TAG_WITH_UNUSED "TLS_WRAP";
-     *     int ret = 0; // MbedTLS uses int
-     *
-     *     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret, mbedtls_ssl_session_reset(ssl), "Session reset");
-     *     EIF_IF_OK_CHECK_MBEDTLS_ERR(ret, mbedtls_ssl_handshake(ssl), "Handshake");
-     *
-     *     return ret;
-     * }
-     * @endcode
-     */
-    #define EIF_IF_OK_CHECK_MBEDTLS_ERR(m_ret, m_expr, func_name) \
-do { \
-    if ((m_ret) == (0)) { \
-        (m_ret) = (m_expr); \
-        if ((m_ret) != 0) { \
-            char err_buf[100] = {0}; \
-            mbedtls_strerror((m_ret), err_buf, sizeof(err_buf)); \
-            EIF_LOG_E("MbedTLS %s failed: %s (-0x%04x)", \
-                (func_name), err_buf, -(m_ret)); \
         } \
     } \
 } while(false)

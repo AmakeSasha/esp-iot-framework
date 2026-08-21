@@ -1,0 +1,235 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Example: stepper_control_server
+  Folder: ./examples/stepper_control_server/web_src
+  File: index.html
+  
+  Copyright 2026 AmakeSasha
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html lang="ru" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Stepper Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="referrer" content="no-referrer">
+  <style>
+    body {
+      background-color: #d4d0c8;
+      font-family: "MS Sans Serif", Geneva, sans-serif;
+      font-size: 12px;
+      color: #000000;
+      margin: 20px;
+    }
+    .panel {
+      background-color: #d4d0c8;
+      border: 2px solid;
+      border-color: #fff #808080 #808080 #fff;
+      padding: 15px;
+      width: 180px;
+    }
+    .panel-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #808080;
+      padding-bottom: 3px;
+    }
+    .ctrl-btn {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px 0;
+      font-family: "MS Sans Serif", sans-serif;
+      font-size: 11px;
+      background-color: #d4d0c8;
+      border: 1px solid;
+      border-color: #fff #555 #555 #fff;
+      cursor: pointer;
+    }
+    .status-box {
+      background-color: #ffffff;
+      border: 1px solid;
+      border-color: #808080 #808080 #fff #fff;
+      padding: 3px;
+      font-family: monospace;
+      font-size: 11px;
+      margin-top: 10px;
+      text-align: left;
+      overflow: hidden;
+    }
+    .field-group {
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .field-label {
+      float: left;
+      line-height: 20px;
+      font-family: "MS Sans Serif", sans-serif;
+      font-size: 11px;
+    }
+    .win-input {
+      padding: 5px;
+      background-color: #fff;
+      color: #000;
+      border: 1px solid;
+      border-color: #808080 #fff #fff #808080;
+      box-shadow: inset 1px 1px 0 0 #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <div class="panel-title">STEPPER REMOTE</div>
+
+    <button id="pwrBtn"  class="ctrl-btn"
+      onclick="handlePower()">POWER: ON</button>
+
+    <input type="text" id="stepCount" class="win-input"
+      style="color: #808080;" value="Steps"
+      onfocus="if(this.value=='Steps'){this.value='';this.style.color='#000';}"
+      onblur="if(this.value==''){this.value='Steps';this.style.color='#808080';}"/>
+
+    
+    <button id="upBtn"   class="ctrl-btn"
+      onclick="handleMove('up')">MOVE UP</button>
+    <button id="downBtn" class="ctrl-btn"
+      onclick="handleMove('down')">MOVE DOWN</button>
+    <button id="stopBtn" class="ctrl-btn"
+      style="font-weight: bold; color: #800000;"
+      onclick="handleStop()">STOP</button>
+
+    <pre class="status-box" id="statusLabel">EMPTY</pre>
+  </div>
+
+  <script>
+    var isPowered = false;
+
+    function sendHttpRequest(method, targetUrl, callback, headers) {
+      var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+      if (callback) {
+        xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState === 4) {
+            callback(xmlhttp);
+          }
+        };
+      }
+
+      xmlhttp.open(method, targetUrl + "?t=" + new Date().getTime(), true);
+
+      if (headers) {
+        for (var key in headers) {
+          if (headers.hasOwnProperty(key)) {
+            xmlhttp.setRequestHeader(key, headers[key]);
+          }
+        }
+      }
+
+      xmlhttp.send();
+    }
+
+    function handlePower() {
+      var upBtn = document.getElementById("upBtn");
+      var pwrBtn = document.getElementById("pwrBtn");
+      var downBtn = document.getElementById("downBtn");
+      var stopBtn = document.getElementById("stopBtn");
+      var stepCount = document.getElementById("stepCount");
+
+      isPowered = !isPowered;
+
+      if (isPowered) {
+        sendHttpRequest("POST", "/api/stepper/power/on.do");
+      } else {
+        sendHttpRequest("POST", "/api/stepper/dir/stop.do");
+        sendHttpRequest("POST", "/api/stepper/power/off.do");
+      }
+
+      pwrBtn.innerHTML = isPowered ? "POWER: ON" : "POWER: OFF";
+      var displayStyle = isPowered ? "block" : "none";
+      
+      upBtn.style.display = displayStyle;
+      downBtn.style.display = displayStyle;
+      stopBtn.style.display = displayStyle;
+      stepCount.style.display = displayStyle;
+    }
+
+    function handleMove(dir) {
+      if (!isPowered) return;
+      var stepCount = document.getElementById("stepCount");
+      var stepsValue = stepCount.value;
+      var headers = null;
+
+      if (stepsValue !== "" && stepsValue !== "Steps" && !isNaN(stepsValue)) {
+        headers = { "X-Steps": stepsValue };
+      }
+
+      sendHttpRequest("POST", "/api/stepper/dir/" + dir + ".do", null, headers);
+
+      stepCount.style.display = "none";
+      stepCount.value = "Steps";
+    }
+
+    function handleStop() {
+      if (!isPowered) return;
+      sendHttpRequest("POST", "/api/stepper/dir/stop.do");
+
+      var stepCount = document.getElementById("stepCount");
+
+      stepCount.style.display = "block";
+      stepCount.value = "Steps";
+    }
+
+    function checkStepperStatus() {
+      sendHttpRequest("GET", "/api/stepper/status.json", function(xmlhttp) {
+        if (xmlhttp.status === 200) {
+          try {
+            var data = JSON.parse(xmlhttp.responseText);
+            document.getElementById("statusLabel").textContent = JSON.stringify(data, null, 2);
+
+            var stepCount = document.getElementById("stepCount");
+            var isFocused = (document.activeElement === stepCount);
+
+            if (data.current_dir && data.current_dir === "STOP" && data.is_powered) {
+              if (stepCount.style.display !== "block") stepCount.style.display = "block";
+            } else {
+              if (stepCount.style.display !== "none") {
+                stepCount.style.display = "none";
+                if (isFocused) stepCount.blur();
+              }
+            }
+            
+            if (!isFocused && stepCount.style.display === "block" && stepCount.value === "") {
+              stepCount.value = "Steps";
+              stepCount.style.color = "#808080";
+            }
+          } catch (e) {
+            document.getElementById("statusLabel").innerHTML = "JSON_PARSE_ERROR";
+          }
+        } else {
+          document.getElementById("statusLabel").innerHTML = "SERVER_ERROR: " + xmlhttp.status;
+        }
+      });
+    }
+
+    window.onload = function() {
+      handlePower();
+      handlePower();
+      setInterval(checkStepperStatus, 500);
+    };
+  </script>
+</body>
+</html>

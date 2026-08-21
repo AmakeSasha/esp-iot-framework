@@ -24,7 +24,7 @@
 #define ESP_IOT_FRAMEWORK_CORE_MDNS_H
 
 #include "sdkconfig.h"
-#if defined(CONFIG_EIF_ENABLE_MDNS) || defined(DOXYGEN)
+#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(DOXYGEN)
     #include <mdns.h>
 #endif
 
@@ -32,7 +32,7 @@
     extern "C" {
 #endif
 
-#if defined(CONFIG_EIF_ENABLE_MDNS) || defined(DOXYGEN)
+#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(DOXYGEN)
     /**
      * @addtogroup core_group CORE
      * @{
@@ -43,8 +43,8 @@
      * @brief Network discovery and mDNS management
      *
      * @note This module is available when `Kconfig` option <code>
-     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
-     *           CONFIG_EIF_ENABLE_MDNS
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">
+     *           CONFIG_EIF_CORE_ENABLE_MDNS
      *         </a>
      *       </code> is enabled and you include this line at the beginning of the file.:
      *       @code{c}
@@ -62,8 +62,8 @@
      *
      * @note In case the mDNS hostname is not set, `device` will be used as the
      *       common hostname. To disable mDNS, turn off `Kconfig` option <code>
-     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
-     *           CONFIG_EIF_ENABLE_MDNS
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">
+     *           CONFIG_EIF_CORE_ENABLE_MDNS
      *         </a>
      *       </code>.
      *
@@ -73,12 +73,12 @@
      * #include <mdns.h>
      * #include <esp_err.h>
      * #include <esp_iot_framework_core.h>
-     * #ifdef CONFIG_EIF_ENABLE_MDNS
+     * #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
      *     #include <esp_iot_framework_core_mdns.h>
      * #endif
      *
      * // Not necessary, but nice :)
-     * #ifdef CONFIG_EIF_ENABLE_MDNS
+     * #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
      *     static const mdns_txt_item_t my_txt_records[] = {
      *         {"friendly_name", "Kitchen Main Light"},
      *         {"room",          "Kitchen"},
@@ -91,7 +91,7 @@
      *     ESP_ERROR_CHECK(eif_core_initialize());
      *     ESP_ERROR_CHECK(eif_nvs_initialize());
      *
-     *     #ifdef CONFIG_EIF_ENABLE_MDNS
+     *     #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
      *         ESP_ERROR_CHECK(eif_set_mdns("my-esp", "Smart Controller"));
      *         ESP_ERROR_CHECK(eif_set_mdns_records(my_txt_records, 4));
      *     #endif
@@ -232,8 +232,8 @@
      * @brief Network discovery and mDNS management
      *
      * @note This module is available when `Kconfig` option <code>
-     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
-     *           CONFIG_EIF_ENABLE_MDNS
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">
+     *           CONFIG_EIF_CORE_ENABLE_MDNS
      *         </a>
      *       </code> is enabled and you include this line at the beginning of the file.:
      *       @code{c}
@@ -258,8 +258,8 @@
      * @return
      *    - `const char*`: Pointer to the null-terminated hostname string.
      *    - `NULL`:        mDNS is disabled via <code>
-     *                       <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">
-     *                         CONFIG_EIF_ENABLE_MDNS
+     *                       <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">
+     *                         CONFIG_EIF_CORE_ENABLE_MDNS
      *                       </a>
      *                     </code>.
      * 
@@ -280,7 +280,7 @@
     const char* eif_get_mdns_hostname(void);
     /** @} */
     /** @} */
-#elif defined(CONFIG_EIF_ENABLE_TLS)
+#elif defined(CONFIG_EIF_CORE_ENABLE_TLS)
     /* esp32-divece */
     #define MDNS_HOSTNAME_PREFIX_MAX_LEN MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN
 #endif

@@ -26,22 +26,14 @@ set(requires_components
     app_update
 )
 
-set(code_files
-    "src/nvs.c"
-    "src/system.c"
-    "src/config.c"
-    "src/network.c"
-)
-
-if(CONFIG_EIF_ENABLE_TLS)
+if(CONFIG_EIF_CORE_ENABLE_TLS)
     list(APPEND requires_components mbedtls)
-    list(APPEND code_files "src/tls_manager.c")
     message(STATUS "EIF-CORE: component 'mbedTLS' included")
 else()
     message(STATUS "EIF-CORE: component 'mbedTLS' excluded")
 endif()
 
-if(CONFIG_EIF_ENABLE_MDNS)
+if(CONFIG_EIF_CORE_ENABLE_MDNS)
     list(APPEND requires_components mdns)
     message(STATUS "EIF-CORE: component 'mDNS' included")
 else()
@@ -50,7 +42,11 @@ endif()
 
 set(COMPONENT_NAME esp_iot_framework_core)
 idf_component_register(
-    SRCS ${code_files}
+    SRCS "src/nvs.c"
+         "src/system.c"
+         "src/config.c"
+         "src/network.c"
+         "src/tls_manager.c"
     INCLUDE_DIRS "include"
     PRIV_INCLUDE_DIRS "src" "private_include"
     PRIV_REQUIRES ${requires_components}
@@ -60,11 +56,11 @@ set(comp_target "__idf_${COMPONENT_NAME}")
 target_compile_options(${comp_target} PRIVATE "-fmacro-prefix-map=${CMAKE_CURRENT_LIST_DIR}=.")
 
 if(TARGET ${comp_target})
-    if(CONFIG_EIF_ENABLE_TLS)
+    if(CONFIG_EIF_CORE_ENABLE_TLS)
         target_link_libraries(${comp_target} PRIVATE idf::mbedtls)
     else()
     endif()
-    if(CONFIG_EIF_ENABLE_MDNS)
+    if(CONFIG_EIF_CORE_ENABLE_MDNS)
         if(TARGET idf::espressif__mdns)
             target_link_libraries(${comp_target} PRIVATE idf::espressif__mdns)
             message(STATUS "Linking mDNS via espressif__mdns (Registry)")

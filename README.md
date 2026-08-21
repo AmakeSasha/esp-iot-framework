@@ -40,27 +40,29 @@ The framework is built around three fundamental concepts, decoupling the infrast
 
 ---
 
-* **Nodes** - The abstraction of a network unit built on top of *CORE*. A Node implements a specific interaction pattern with the outside world — whether it is a web interface, an industrial protocol, or a cloud bridge. It hides the complexity of network interaction and provides a clean layer for business logic development.
- 
+* **Nodes** – Architectural components built on top of *CORE*. A Node encapsulates a specific environment or interaction model for the device-such as hosting a server, initiating client requests, or executing isolated scripts. It offloads all low-level routine and routing, providing a clean interface for business logic development.
+
   Examples of nodes:
  
-  * <b>DEVICE (<code>[esp_iot_framework_device](./components/esp_iot_framework_device/README.md)</code>)</b> - A foundational network node, designed for building fully manageable end IoT products using the HTTP(S) protocol.
+  * <b>SERVER (<code>[esp_iot_framework_server](./components/esp_iot_framework_server/README.md)</code>)</b> - A framework node for deploying a standalone HTTP(S) server directly on the device to handle incoming requests.
+
+  * <b>CLIENT (<code>[esp_iot_framework_client](./components/esp_iot_framework_client/README.md)</code>)</b> - A framework node for enabling the device to initiate outbound HTTP(S) connections and send requests to other devices.
 
 ---
 
-* **End Devices** - A Node augmented with your product's business logic. Smart bulbs, relays, sensors, actuators — any target scenario boils down to implementing that single, unique logic on top of the chosen Node.
+* **End Devices** – The final products built by combining *CORE* with one or multiple *Nodes* and your specific business logic. Smart bulbs, relays, or complex controllers - any target scenario boils down to implementing unique product logic on top of the selected node stack.
 
   You can see examples of end devices in the [`examples`](./examples) folder.
  
 ---
 
-<h1> Example of use</h1>
+<h1>Example of use</h1>
 
 ```C
 #include <esp_err.h>
 #include <esp_http_server.h>
 #include <esp_iot_framework_core.h>
-#include <esp_iot_framework_device.h>
+#include <esp_iot_framework_server.h>
 
 esp_err_t hello_world(httpd_req_t *req) {
     const char *resp = "Hello World, from esp_iot_framework!";
@@ -74,7 +76,7 @@ static const httpd_uri_t my_uris[] = {
 
 void app_main(void) {
     ESP_ERROR_CHECK(eif_core_initialize());
-    ESP_ERROR_CHECK(eif_device_initialize());
+    ESP_ERROR_CHECK(eif_server_initialize());
     ESP_ERROR_CHECK(eif_nvs_initialize());
     ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, 1));
     ESP_ERROR_CHECK(eif_wifi_initialize());

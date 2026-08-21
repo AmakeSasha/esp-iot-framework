@@ -66,7 +66,8 @@ WARN_FORMAT            = "$file:$line: $text"
 #---------------------------------------------------------------------------
 STRIP_FROM_PATH        = ..
 INPUT                  = ../components/esp_iot_framework_core/include \
-                         ../components/esp_iot_framework_device/include \
+                         ../components/esp_iot_framework_server/include \
+                         ../components/esp_iot_framework_client/include \
                          ../AUTHOR_NOTES.md html
 LAYOUT_FILE            = doxygen/DoxygenLayout.xml
 HTML_HEADER            = doxygen/header.html

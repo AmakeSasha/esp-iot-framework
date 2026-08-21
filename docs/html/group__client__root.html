@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+<meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
+<title>esp_iot_framework: Node: CLIENT</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="styles.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/png" href="logo.png" />
+</head>
+<body>
+<div id="top"><div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr style="height: 56px;">
+<td id="projectalign" style="padding-left: 0.5em;">
+<div id="projectname">esp_iot_framework
+&#160;<span id="projectnumber">v0.2.1</span>
+</div>
+<div id="projectbrief">© 2026 AmakeSasha, distributed under a license Apache-2.0</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div><div id="side-nav" class="ui-resizable side-nav-resizable">
+<div id="nav-tree">
+<div id="nav-tree-contents">
+<div id="nav-sync" class="sync"></div>
+</div>
+</div>
+<div id="splitbar" style="-moz-user-select:none;" 
+class="ui-resizable-handle">
+</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('group__client__root.html',''); initResizable(); });
+</script>
+<div id="doc-content">
+<div class="header">
+<div class="headertitle">
+<div class="title">Node: CLIENT</div>  </div>
+</div><div class="contents">
+<div align="center"> <h1>esp_iot_framework_client <small>v0.0.0</small></h1>
+</div><div align="center"> <h3>A framework node for enabling the device to initiate outbound HTTP(S) connections and send requests to other devices</h3>
+</div><div align="center"> </div><div align="center"> <code>esp32</code> &bull; <code>esp32s2</code> &bull; <code>esp32s3</code> &bull; <code>esp32c2</code> &bull; <code>esp32c3</code> &bull; <code>esp32c6</code> </div><div align="center"> </div><p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<p><b>THIS MODULE IS UNDER DEVELOPMENT AND IS NOT YET AVAILABLE FOR USE</b></p>
+<h1>Usage for creating end devices</h1>
+<p>To start using this framework, you must apply the appropriate configuration files (from both the <code>CORE</code> and <code>CLIENT</code> components) and connect it to your project. Configure your project's main <code>CMakeLists.txt</code> like this (replace <code>&lt;TEXT&gt;</code> with the desired values, without the <code>&lt;&gt;</code>s themselves): </p><div class="fragment"><div class="line">cmake_minimum_required(VERSION 3.16)</div>
+<div class="line"> </div>
+<div class="line">list(APPEND SDKCONFIG_DEFAULTS </div>
+<div class="line">    &quot;&lt;PATH_TO_FRAMEWORK&gt;/components/esp_iot_framework_core/sdkconfig.defaults&quot;</div>
+<div class="line">    &quot;&lt;PATH_TO_FRAMEWORK&gt;/components/esp_iot_framework_client/sdkconfig.client&quot;</div>
+<div class="line">)</div>
+<div class="line"># If you are using your own FILE, add this line:</div>
+<div class="line"># list(APPEND SDKCONFIG_DEFAULTS &quot;sdkconfig.defaults&quot;)</div>
+<div class="line">list(APPEND EXTRA_COMPONENT_DIRS &quot;&lt;PATH_TO_FRAMEWORK&gt;/components&quot;)</div>
+<div class="line"> </div>
+<div class="line">include($ENV{IDF_PATH}/tools/cmake/project.cmake)</div>
+<div class="line">project(&lt;NAME_PROJECT&gt;)</div>
+</div> </div></div><div id="nav-path" class="navpath">  <ul>
+<li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+</ul>
+</div>
+</body>
+</html>

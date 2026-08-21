@@ -1,0 +1,5 @@
+name: "esp_iot_framework_server"
+description: "A framework node for deploying a standalone HTTP(S) server directly on the device to handle incoming requests"
+version: "0.1.0"
+dependencies:
+  idf: ">=4.4.0"

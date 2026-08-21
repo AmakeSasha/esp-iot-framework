@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: Apache-2.0
+# Project: esp-iot-framework
+# Folder: ./components/esp_iot_framework_server
+# File: sdkconfig.defaults
+# Library: esp_iot_framework_server
+# 
+# Copyright 2026 AmakeSasha
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#
+# ESP-TLS Server Activation
+#
+CONFIG_ESP_HTTPS_SERVER_ENABLE=y
+CONFIG_ESP_TLS_SERVER=y
+
+#
+# HTTP Server (HTTPD) Configuration
+#
+CONFIG_HTTPD_MAX_REQ_HDR_LEN=1024
+CONFIG_HTTPD_MAX_URI_LEN=512
+CONFIG_HTTPD_WS_SUPPORT=n
+CONFIG_HTTPD_IDLE_CTRL_SUPPORT=n

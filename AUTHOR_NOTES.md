@@ -22,13 +22,16 @@
 <!--
                         FOR THE FUTURE:
  * [Project]
+      Add a script engine node
+      
+ * [Project]
       Add unity-based tests
 
- * [Components]
-      Create a 'HUB' node
+ * [CLIENT]
+      Make it
 
  * [Examples]
-      Add example `relay_controler`
+      Create a 'HUB' node
 
  * [CORE, include/esp_iot_framework_core_ext.c, Task Management]
       Create proper documentation
@@ -84,9 +87,11 @@ Here are the answers that I considered important, at least for me. I think it wi
   For the most part, the philosophy of this project was shaped by its history. Since there was absolutely no thought of a hub when writing version `0.0.0`, the following core principles were established:
 
   * `Separation of concerns` - The framework does not handle business logic or try to be a ready-made ecosystem. It completely offloads the routine infrastructure, allowing the developer to focus exclusively on writing the logic for the specific device without being distracted by low-level services.
-  * `Direct interaction` - Interaction with the device must happen directly without unnecessary layers. Whether through a standard web browser, `curl`, or similar CLI tools, it eliminates the need to install specialized applications or maintain heavy software.
+  * `Direct interaction` - Interaction with the device must happen directly without unnecessary layers. Whether through a standard web browser, <code>[curl](https://curl.se/)</code>, or similar CLI tools, it eliminates the need to install specialized applications or maintain heavy software.
   * `Absolute autonomy without a hub` - The device must be 100% self-sufficient and fully operational without any internet access or the presence of a dedicated hub. In view of the `Direct interaction` principle, the `HTTP(S)` protocol is the best fit for this criterion. In this architecture, the end devices act as standalone servers, while a potential hub becomes merely one of many clients. This approach guarantees that even a single smart relay remains completely functional on its own.
 
+  Of course, while this departs from the original philosophy of the project, the framework's architecture also supports the traditional layout where the device acts as a client and the hub (or external server) acts as the server.
+  
 ---
 
 * **What is the purpose of this project? What is its future?**
@@ -108,7 +113,7 @@ Here are the answers that I considered important, at least for me. I think it wi
   No. All popular alternatives have been carefully evaluated and intentionally rejected because they completely contradict the core principles of this project:
 
   * `MQTT` - These require a dedicated central server (broker) to route messages between devices. This directly violates the `Absolute Autonomy Without a Hub` principle. The framework will not force the user to deploy and maintain heavy third-party infrastructure just to make a single device work.
-  * `CoAP` - Although it shares a similar request-response model with `HTTP`, it runs over `UDP` and requires specialized gateways or proxy servers. Standard web browsers and common utilities like `curl` cannot interact with `CoAP` natively out of the box. This completely destroys the `Direct Interaction` principle by forcing the user to install additional software.
+  * `CoAP` - Although it shares a similar request-response model with `HTTP`, it runs over `UDP` and requires specialized gateways or proxy servers. Standard web browsers and common utilities like <code>[curl](https://curl.se/)</code> cannot interact with `CoAP` natively out of the box. This completely destroys the `Direct Interaction` principle by forcing the user to install additional software.
   * `WebSockets` - This protocol is completely redundant. A standard REST API approach is more than enough to handle any device control or data retrieval tasks implemented in the development of the business logic. Personally, I see no real-world scenarios within the scope of this framework where `WebSockets` would perform better than standard `HTTP(S)`.
 
   Standard, pure `HTTP(S)` is the only protocol that perfectly satisfies all requirements of this framework, allowing the end device to remain a truly self-sufficient server.

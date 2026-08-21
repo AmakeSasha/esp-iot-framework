@@ -324,7 +324,7 @@ esp_err_t eif_nvs_wifi_profile_load(
     return ret;
 }
 
-#ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
+#ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
     /* Decryption:
      * - Login:    'admin'
      * - Password: ''      (yes, without password) */
@@ -462,11 +462,11 @@ esp_err_t eif_nvs_initialize(void) {
     esp_err_t ret = ESP_OK;
     char wifi_ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
     char wifi_pass[EIF_WIFI_PASS_MAX_LEN] = {0};
-    #ifdef CONFIG_EIF_ENABLE_TLS
+    #ifdef CONFIG_EIF_CORE_ENABLE_TLS
         char *tls_buffer_out = NULL;
         size_t tls_buffer_len = 0U;
     #endif
-    #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
+    #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
         char basic_auth_buffer[EIF_BASIC_AUTH_LINE_MAX_LEN] = {0};
     #endif
     const eif_core_t * const cfg = eif_core_get();
@@ -516,7 +516,7 @@ esp_err_t eif_nvs_initialize(void) {
         }
     }
 
-    #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
+    #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
         if (ret == ESP_OK) {
             ret = eif_nvs_basic_auth_line_load(basic_auth_buffer);
 
@@ -534,7 +534,7 @@ esp_err_t eif_nvs_initialize(void) {
         }
     #endif
 
-    #ifdef CONFIG_EIF_ENABLE_TLS
+    #ifdef CONFIG_EIF_CORE_ENABLE_TLS
         if (ret == ESP_OK) {
             ret = eif_nvs_value_load_malloc(
                 EIF_NVS_KEY_TLS_CERT, &tls_buffer_out, &tls_buffer_len);

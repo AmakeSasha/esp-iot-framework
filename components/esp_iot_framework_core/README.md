@@ -45,10 +45,7 @@
 * Periodically checks heap fragmentation and triggers a preventive auto-reboot if memory degradation hits a critical threshold.
 * Log capture layer that hooks into the ESP-IDF logging system, buffers all runtime logs into a ring buffer, and exposes them for any Node to fetch and transmit to the outside world.
 
-For an in-depth look, check out the documentation for each section:
-* [Public Core](../../docs/invalid_link.md#group__core__group.html)
-* [Core Extensions](../../docs/invalid_link.md#group__core__ext__group.html)
-* [Core Macros](../../docs/invalid_link.md#group__core__macros__group.html)
+For an in-depth look, check out the documentation.
 
 <h1>Usage for creating nodes</h1>
 
@@ -77,7 +74,7 @@ In the destination device, you will need to specify the path to the component. Y
   cmake_minimum_required(VERSION 3.16)
  
   # Necessary for correct operation
-  list(APPEND SDKCONFIG_DEFAULTS "<PATH_TO_FRAMEWORK>/components/esp_iot_framework_device/sdkconfig.defaults")
+  list(APPEND SDKCONFIG_DEFAULTS "<PATH_TO_FRAMEWORK>/components/esp_iot_framework_core/sdkconfig.defaults")
   list(APPEND EXTRA_COMPONENT_DIRS "<PATH_TO_FRAMEWORK>/components")
  
   include($ENV{IDF_PATH}/tools/cmake/project.cmake)
@@ -91,4 +88,4 @@ In the destination device, you will need to specify the path to the component. Y
       path: "<PATH_TO_FRAMEWORK>/components/esp_iot_framework_core"
   ```
 
-* Alternatively, add the framework as a Git submodule inside your project's `components` directory. ESP-IDF will detect it automatically, and the code will work without any extra configuration.
+* Alternatively, add the framework as a Git submodule inside your project's `components` directory. This approach requires no configuration and is ideal for tightly integrated projects.

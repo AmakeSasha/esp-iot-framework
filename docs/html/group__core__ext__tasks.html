@@ -180,7 +180,7 @@ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#in
 <div class="line">}</div>
 <div class="ttc" id="agroup__core__ext__tasks_html_gae6a7dc06d3fc028a7d226099e562d012"><div class="ttname"><a href="group__core__ext__tasks.html#gae6a7dc06d3fc028a7d226099e562d012">eif_task_common_spawn</a></div><div class="ttdeci">esp_err_t eif_task_common_spawn(TaskHandle_t *const p_handle, const TaskFunction_t f_worker, const char *const p_name, const uint32_t u32_stack, const UBaseType_t u_prio)</div><div class="ttdoc">Common helper for secure FreeRTOS task spawning.</div></div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:89</div></div>
-<div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity, is level Error.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:238</div></div>
+<div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity, is level Error.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:241</div></div>
 </div><dl class="section note"><dt>Note</dt><dd>If double-spawn restrictions are not required (e.g., creating multiple instances of the same task), pass a pointer to a temporary standalone task handle variable instead of the main module handle.</dd></dl>
 <p>Example of use (without double-call protection, but it's better to use <code><a class="el" href="group__macros__other.html#ga31d11fee3617e9ff49becee84a1feaaf" title="Spawns a system task using standardized, auto-resolved configuration macros.">EIF_TASK_LAUNCH()</a></code> macro): </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;freertos/FreeRTOS.h&gt;</span></div>
@@ -279,7 +279,7 @@ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#in
 </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">CONFIG_EIF_ENABLE_TLS </a> </code> is enabled.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS </a> </code> is enabled.</dd></dl>
 <p>Spawns an asynchronous task to regenerate TLS credentials.</p>
 <dl class="section return"><dt>Returns</dt><dd><ul>
 <li><code>ESP_OK</code>: Task created successfully and added to the FreeRTOS scheduler.</li>

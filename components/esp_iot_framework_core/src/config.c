@@ -28,7 +28,7 @@
 #include <esp_err.h>
 #include <esp_wifi.h>
 #include <esp_ota_ops.h>
-#ifdef CONFIG_EIF_ENABLE_MDNS
+#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
     #include <mdns.h>
 #endif
 
@@ -42,7 +42,7 @@
 #define CFG_ERR_ALLOCATE    "Failed to allocate %d bytes for '%s'"
 #define CFG_ERR_INVALID_LEN "Invalid '%s' length: %u (allowed range: %u-%u)"
 
-#if CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D
+#if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_D
     #define CFG_MSG_CALL_SETTER  "Calling the setter `%s`"
     #define CFG_MSG_CALL_UPDATER "Calling the setter `%s`"
     #define CFG_MSG_REPLACED     "`%s` with %d replaced by %d"
@@ -60,7 +60,7 @@ esp_err_t eif_core_initialize(void) {
 
     EIF_LOG_D(MSG_CALL_SETTER, __func__);
 
-    #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+    #ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
         eif_core_log_init();
     #endif
     
@@ -237,13 +237,13 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 /* ======================== */
 /*    mDNS Configuration    */
 /* ======================== */
-#ifdef CONFIG_EIF_ENABLE_MDNS
+#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
     const char* eif_get_mdns_hostname(void) {
         const char *mdns_name = NULL;
 
         EIF_LOG_D(CFG_MSG_CALL_GETTER, __func__);
 
-        #ifdef CONFIG_EIF_ENABLE_MDNS
+        #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
             if (cfg.mdns_hostname[0] != '\0') {
                 mdns_name = (const char *)cfg.mdns_hostname;
             }
@@ -330,7 +330,7 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 /* end mDNS Configuration */
 
 /* Private setters */
-#if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
+#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
     esp_err_t eif_format_mdns_hostname(void) {
         esp_err_t ret = ESP_OK;
 

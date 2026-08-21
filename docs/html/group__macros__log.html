@@ -89,7 +89,7 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">Application Logging Interface</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp7f92eb2eb6bb439ab12c9a4a2190fbdc"></a>Main logging macros with global compile-time filtering.</p>
-<p>Use these macros to print logs to the console. Which logs actually get compiled into the firmware depends on the <code> <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">CONFIG_EIF_LOG_LEVEL </a> </code> value. A logging macro works only if <code> <a href="group__core__kconfig.html#CONFIG_EIF_LOG_LEVEL">CONFIG_EIF_LOG_LEVEL </a> </code> is equal to or higher than its corresponding severity level constant (from <code>1</code> to <code>4</code>):</p>
+<p>Use these macros to print logs to the console. Which logs actually get compiled into the firmware depends on the <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_LEVEL">CONFIG_EIF_CORE_LOG_LEVEL </a> </code> value. A logging macro works only if <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_LEVEL">CONFIG_EIF_CORE_LOG_LEVEL </a> </code> is equal to or higher than its corresponding severity level constant (from <code>1</code> to <code>4</code>):</p>
 <ul>
 <li><code>0</code>: <code>None</code><ul>
 <li>Turns off absolutely everything. No errors, warnings, or system logs will be printed to the console.</li>
@@ -135,9 +135,9 @@ Macros</h2></td></tr>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:89</div></div>
-<div class="ttc" id="agroup__macros__log_html_ga303a7bc42f0b2f9f7f4aae320df28faf"><div class="ttname"><a href="group__macros__log.html#ga303a7bc42f0b2f9f7f4aae320df28faf">EIF_LOG_W</a></div><div class="ttdeci">#define EIF_LOG_W(...)</div><div class="ttdoc">Logs a warning message using the ESP_LOGW severity, is level Warning.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:244</div></div>
-<div class="ttc" id="agroup__macros__log_html_ga33642c84ee1bcb3c74be76f8fd57e8e4"><div class="ttname"><a href="group__macros__log.html#ga33642c84ee1bcb3c74be76f8fd57e8e4">EIF_LOG_I</a></div><div class="ttdeci">#define EIF_LOG_I(...)</div><div class="ttdoc">Logs an informational message using the ESP_LOGI severity, is level Info.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:250</div></div>
-<div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity, is level Error.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:238</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga303a7bc42f0b2f9f7f4aae320df28faf"><div class="ttname"><a href="group__macros__log.html#ga303a7bc42f0b2f9f7f4aae320df28faf">EIF_LOG_W</a></div><div class="ttdeci">#define EIF_LOG_W(...)</div><div class="ttdoc">Logs a warning message using the ESP_LOGW severity, is level Warning.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:247</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga33642c84ee1bcb3c74be76f8fd57e8e4"><div class="ttname"><a href="group__macros__log.html#ga33642c84ee1bcb3c74be76f8fd57e8e4">EIF_LOG_I</a></div><div class="ttdeci">#define EIF_LOG_I(...)</div><div class="ttdoc">Logs an informational message using the ESP_LOGI severity, is level Info.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:253</div></div>
+<div class="ttc" id="agroup__macros__log_html_gac7d67dbda8de3524715e3e6a7abe46b4"><div class="ttname"><a href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a></div><div class="ttdeci">#define EIF_LOG_E(...)</div><div class="ttdoc">Logs an error message using the ESP_LOGE severity, is level Error.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:241</div></div>
 </div> </td></tr>
 <tr class="memitem:gac7d67dbda8de3524715e3e6a7abe46b4"><td class="memItemLeft" align="right" valign="top"><a id="gac7d67dbda8de3524715e3e6a7abe46b4"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__macros__log.html#gac7d67dbda8de3524715e3e6a7abe46b4">EIF_LOG_E</a>(...)&#160;&#160;&#160;<a class="el" href="group__macros__log.html#ga5b15122d0bf92c296d14625e137d199c">EIF_PRINT</a>(ESP_LOGE, __VA_ARGS__)</td></tr>
@@ -169,7 +169,7 @@ Macros</h2></td></tr>
 </tr>
 </table>
 </div><div class="memdoc">
-<p>This macro declares a string named <code>TAG</code>. It automatically adds an unused attribute (<code>[[maybe_unused]]</code> for C++, <code>__attribute__((unused))</code> for C or nothing if the compiler does not support it) to suppress compiler warnings and satisfy MISRA C requirements when all logging macros in the scope are stripped out by the preprocessor.</p>
+<p>This macro declares a string named <code>TAG</code>. It automatically adds an unused attribute (<code>[[maybe_unused]]</code> for C++, <code>__attribute__((unused))</code> for C, nothing if the compiler does not support it) to suppress compiler warnings and satisfy MISRA C requirements when all logging macros in the scope are stripped out by the preprocessor.</p>
 <dl class="section note"><dt>Note</dt><dd>This macro is intended for use inside functions (within local scopes). It allows defining a local logging context within a specific scope, fully complying with the MISRA C rule that strictly forbids the use of <code>#undef</code>.</dd></dl>
 <p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_log.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_macros.h&gt;</span></div>
@@ -181,7 +181,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <a class="code" href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">EIF_LOG_D</a>(<span class="stringliteral">&quot;Data processed&quot;</span>);</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__log_html_ga4879eece848a8081e2fd6afdab97d0c1"><div class="ttname"><a href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">EIF_LOG_D</a></div><div class="ttdeci">#define EIF_LOG_D(...)</div><div class="ttdoc">Logs a debug message using the ESP_LOGD severity, is level Debug.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:256</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga4879eece848a8081e2fd6afdab97d0c1"><div class="ttname"><a href="group__macros__log.html#ga4879eece848a8081e2fd6afdab97d0c1">EIF_LOG_D</a></div><div class="ttdeci">#define EIF_LOG_D(...)</div><div class="ttdoc">Logs a debug message using the ESP_LOGD severity, is level Debug.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:259</div></div>
 </div> 
 </div>
 </div>
@@ -216,7 +216,7 @@ Macros</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>This macro forwards messages directly to the ESP logging system. It implicitly uses the local <code>TAG</code> variable, which must be defined in the current scope.</p>
-<dl class="section note"><dt>Note</dt><dd>This macro implicitly relies on a <code>TAG</code> identifier being defined and accessible within the current scope. Behavior depends on the <code>CONFIG_EIF_LOG_SHOW_METADATA</code> configuration:<ul>
+<dl class="section note"><dt>Note</dt><dd>This macro implicitly relies on a <code>TAG</code> identifier being defined and accessible within the current scope. Behavior depends on the <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_SHOW_METADATA">CONFIG_EIF_CORE_LOG_SHOW_METADATA </a> </code> configuration:<ul>
 <li><b>Enabled:</b> Automatically injects source metadata (file name, line number, and function name) at the beginning of the log message. Example of output to the console: <div class="fragment"><div class="line">I (8536) HTTPS server: src/network.c:79 (mdns_initialize) mDNS started. Link: https://device-aabbcc.local</div>
 </div></li>
 <li><b>Disabled:</b> Outputs the pure log message without any metadata. Example of output to the console: <div class="fragment"><div class="line">I (8536) HTTPS server: mDNS started. Link: https://device-aabbcc.local</div>
@@ -243,7 +243,7 @@ Macros</h2></td></tr>
 <div class="line">        <a class="code" href="group__macros__log.html#ga5b15122d0bf92c296d14625e137d199c">EIF_PRINT</a>(ESP_LOGW, <span class="stringliteral">&quot;Critical memory level: %u bytes remaining!&quot;</span>, free_heap);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__log_html_ga5b15122d0bf92c296d14625e137d199c"><div class="ttname"><a href="group__macros__log.html#ga5b15122d0bf92c296d14625e137d199c">EIF_PRINT</a></div><div class="ttdeci">#define EIF_PRINT(m_macro, m_format,...)</div><div class="ttdoc">Low-level macro to format and output messages to the ESP log system.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:151</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga5b15122d0bf92c296d14625e137d199c"><div class="ttname"><a href="group__macros__log.html#ga5b15122d0bf92c296d14625e137d199c">EIF_PRINT</a></div><div class="ttdeci">#define EIF_PRINT(m_macro, m_format,...)</div><div class="ttdoc">Low-level macro to format and output messages to the ESP log system.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:154</div></div>
 </div> 
 </div>
 </div>
@@ -289,7 +289,11 @@ Macros</h2></td></tr>
 <div class="line">        const <span class="keywordtype">char</span>* l_err_name = esp_err_to_name((m_result)); \</div>
 <div class="line">        EIF_LOG_W(<span class="stringliteral">&quot;%s: &quot;</span> m_format, \</div>
 <div class="line">            ((l_err_name != NULL) ? l_err_name : <span class="stringliteral">&quot;UNKNOWN_ERROR&quot;</span>) \</div>
-<div class="line">            <span class="comment"></span> \</div>
+<div class="line">            <span class="comment">/* @deviation [Rule 20.10] The &#39;##&#39; token pasting operator is</span></div>
+<div class="line"><span class="comment">             * utilized strictly for the compiler-specific comma deletion</span></div>
+<div class="line"><span class="comment">             * extension. The expansion is completely deterministic and</span></div>
+<div class="line"><span class="comment">             * guaranteed to yield valid, predictable syntax without risk of</span></div>
+<div class="line"><span class="comment">             * expression corruption. */</span> \</div>
 <div class="line">            , ##__VA_ARGS__); \</div>
 <div class="line">    } \</div>
 <div class="line">} <span class="keywordflow">while</span> (<span class="keyword">false</span>)</div>
@@ -320,7 +324,7 @@ Macros</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    esp_restart();</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__macros__log_html_ga54f4350b639170b9abdcdf9144c77b18"><div class="ttname"><a href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">EIF_SHOW_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Unconditionally executes an expression and logs warning details on failure.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:304</div></div>
+<div class="ttc" id="agroup__macros__log_html_ga54f4350b639170b9abdcdf9144c77b18"><div class="ttname"><a href="group__macros__log.html#ga54f4350b639170b9abdcdf9144c77b18">EIF_SHOW_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_SHOW_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Unconditionally executes an expression and logs warning details on failure.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:307</div></div>
 </div> 
 </div>
 </div>

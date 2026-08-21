@@ -26,8 +26,8 @@ This section describes the `esp_iot_framework_core` configuration parameters. Al
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_ENABLE_MDNS">
-  <code>EIF_ENABLE_MDNS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_MDNS">
+  <code>EIF_CORE_ENABLE_MDNS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
 </div>
 
 Name in the `menuconfig`: `Enable mDNS Support (Multicast DNS)`
@@ -39,8 +39,8 @@ Enables the Multicast DNS (`mDNS`) responder service.
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_ENABLE_TLS">
-  <code>EIF_ENABLE_TLS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_TLS">
+  <code>EIF_CORE_ENABLE_TLS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
 </div>
 
 Name in the `menuconfig`: `Enable HTTPS (TLS/SSL) Support`
@@ -64,8 +64,26 @@ Switch the web server from insecure `HTTP` to encrypted `HTTPS` (Port `443`).
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_LOG_LEVEL">
-  <code>Logging Settings</code> -> <code>EIF_LOG_LEVEL</code> - <code>int</code> (<em>range</em>: <code>0</code> - <code>4</code>, <em>default</em>: <code>3</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">
+  <code>EIF_CORE_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
+</div>
+
+Name in the `menuconfig`: `Enable Basic Authentication for systemic resources`
+
+Enables mandatory HTTP Basic Authentication for secure system-level resources, administrative endpoints, and protected infrastructure nodes.
+
+- If `y`: Any access to system REST APIs, administrative paths, or managed assets requires a valid username (`admin`) and password verified against NVS storage.
+- If `n`: Access control for infrastructure layers is completely bypassed. Anyone on the local network can view telemetry, modify configurations, read logs, or trigger reboots.
+
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
+    <strong>Warning</strong><br>
+    Disabling authentication is highly dangerous for production. If <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">EIF_CORE_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air.
+</div>
+
+---
+
+<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_LEVEL">
+  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_LEVEL</code> - <code>int</code> (<em>range</em>: <code>0</code> - <code>4</code>, <em>default</em>: <code>3</code>)
 </div>
 
 Name in the `menuconfig`: `Framework log verbosity`
@@ -85,8 +103,8 @@ Global logging level for all `esp_iot_framework` modules. Choosing a level enabl
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_LOG_SHOW_METADATA">
-  <code>Logging Settings</code> -> <code>EIF_LOG_SHOW_METADATA</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_SHOW_METADATA">
+  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_SHOW_METADATA</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
 </div>
 
 Name in the `menuconfig`: `Show metadata in logs (path, line, function)`
@@ -104,25 +122,25 @@ Show metadata in logs (path, line, function).
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_LOG_ENABLE_MEM_MONITOR">
-  <code>Logging Settings</code> -> <code>EIF_LOG_ENABLE_MEM_MONITOR</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_ENABLE_MEM_MONITOR">
+  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_ENABLE_MEM_MONITOR</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
 </div>
 
 Name in the `menuconfig`: `Enable memory status logging`
 
--  If `y`: The monitor task dumps the total free heap, the largest free block, and the critical status flag to the console. This allows tracking memory leaks and fragmentation every <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> ms.
+-  If `y`: The monitor task dumps the total free heap, the largest free block, and the critical status flag to the console. This allows tracking memory leaks and fragmentation every <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL">EIF_CORE_MEM_MONITOR_CHECK_INTERVAL</a></code> ms.
   
   Example output:
   ```
   I (34456) memory_monitor: free=184320, largest=96240, critical=NO
   ```
 
-- If `n`: Statistics are not printed. Only warnings (`EIF_LOG_W()`) and critical errors (`EIF_LOG_E()`) will be logged if memory pressure is detected.
+- If `n`: Statistics are not printed. Only warnings (`EIF_CORE_LOG_W()`) and critical errors (`EIF_CORE_LOG_E()`) will be logged if memory pressure is detected.
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">
-  <code>Logging Settings</code> -> <code>EIF_LOG_ENABLE_REMOTE_DEBUG</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG">
+  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_ENABLE_REMOTE_DEBUG</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
 </div>
 
 Name in the `menuconfig`: `Enable remote diagnostic logging engine`
@@ -135,13 +153,13 @@ Intercepts all system and application logs into an internal RAM ring buffer for 
 
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
     <strong>Warning</strong><br>
-    Enabling this feature requires additional heap memory allocated for the buffer. The buffer size must be configured via <code>EIF_LOG_REMOTE_BUFFER_SIZE</code>.
+    Enabling this feature requires additional heap memory allocated for the buffer. The buffer size must be configured via <code>EIF_CORE_LOG_REMOTE_BUFFER_SIZE</code>.
 </div>
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_LOG_REMOTE_BUFFER_SIZE">
-  <code>Logging Settings</code> -> <code>EIF_LOG_REMOTE_BUFFER_SIZE</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>51200</code>, <em>default</em>: <code>4096</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_REMOTE_BUFFER_SIZE">
+  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_REMOTE_BUFFER_SIZE</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>51200</code>, <em>default</em>: <code>4096</code>)
 </div>
 
 Name in the `menuconfig`: `Remote log ring buffer size (bytes)`
@@ -150,8 +168,8 @@ Size of the internal FreeRTOS ring buffer in RAM. `4096` bytes can store around 
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">
-  <code>Memory Monitor Settings</code> -> <code>EIF_MEM_MONITOR_CRITICAL_SIZE</code> - <code>int</code> (<em>range</em>: <code>12288</code> - <code>65536</code>, <em>default</em>: <code>12288</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE">
+  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_MEM_MONITOR_CRITICAL_SIZE</code> - <code>int</code> (<em>range</em>: <code>12288</code> - <code>65536</code>, <em>default</em>: <code>12288</code>)
 </div>
 
 Name in the `menuconfig`: `The minimum allowed size of the largest block`
@@ -160,40 +178,40 @@ Minimum free block size (in bytes) that must be available for stable operation. 
 
 <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
     <strong>Warning</strong><br>
-    To ensure the reboot task can be created, this value <b>MUST</b> be at least <code>8</code> times larger than <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">EIF_REBOOT_TASK_STACK_SIZE</a></code> (which is measured in 4-byte words).<br><br>
-    Formula: <code>CRITICAL_SIZE >= <a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_REBOOT_TASK_STACK_SIZE">EIF_REBOOT_TASK_STACK_SIZE</a> * 8</code>.
+    To ensure the reboot task can be created, this value <b>MUST</b> be at least <code>8</code> times larger than <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE">EIF_CORE_REBOOT_TASK_STACK_SIZE</a></code> (which is measured in 4-byte words).<br><br>
+    Formula: <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE">EIF_CORE_MEM_MONITOR_CRITICAL_SIZE</a> >= <a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE">EIF_CORE_REBOOT_TASK_STACK_SIZE</a> * 8</code>.
 </div>
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">
-  <code>Memory Monitor Settings</code> -> <code>EIF_MEM_MONITOR_CHECK_INTERVAL</code> - <code>int</code> (<em>range</em>: <code>1000</code> - <code>3600000</code>, <em>default</em>: <code>30000</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL">
+  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_MEM_MONITOR_CHECK_INTERVAL</code> - <code>int</code> (<em>range</em>: <code>1000</code> - <code>3600000</code>, <em>default</em>: <code>30000</code>)
 </div>
 
 Name in the `menuconfig`: `Memory check interval (ms)`
 
-How often to check memory fragmentation (in milliseconds). This parameter defines the time interval between consecutive memory fragmentation checks performed by the memory monitor task. The actual time to reboot = <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> × <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code>.
+How often to check memory fragmentation (in milliseconds). This parameter defines the time interval between consecutive memory fragmentation checks performed by the memory monitor task. The actual time to reboot = <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL">EIF_CORE_MEM_MONITOR_CHECK_INTERVAL</a></code> × <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS">EIF_CORE_MEM_MONITOR_NUMBER_CHECKS</a></code>.
 
 Examples (when memory is fragmented):
-- <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> = `30000` (30 s) with <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code> = `3` -> reboot after `90` seconds (1.5 min).
-- <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL">EIF_MEM_MONITOR_CHECK_INTERVAL</a></code> = `60000` (60 s) with <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">EIF_MEM_MONITOR_NUMBER_CHECKS</a></code> = `5` -> reboot after `300` seconds (5 min).
+- <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL">EIF_CORE_MEM_MONITOR_CHECK_INTERVAL</a></code> = `30000` (30 s) with <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS">EIF_CORE_MEM_MONITOR_NUMBER_CHECKS</a></code> = `3` -> reboot after `90` seconds (1.5 min).
+- <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL">EIF_CORE_MEM_MONITOR_CHECK_INTERVAL</a></code> = `60000` (60 s) with <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS">EIF_CORE_MEM_MONITOR_NUMBER_CHECKS</a></code> = `5` -> reboot after `300` seconds (5 min).
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS">
-  <code>Memory Monitor Settings</code> -> <code>EIF_MEM_MONITOR_NUMBER_CHECKS</code> - <code>int</code> (<em>range</em>: <code>2</code> - <code>60</code>, <em>default</em>: <code>3</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS">
+  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_MEM_MONITOR_NUMBER_CHECKS</code> - <code>int</code> (<em>range</em>: <code>2</code> - <code>60</code>, <em>default</em>: <code>3</code>)
 </div>
 
 Name in the `menuconfig`: `Number of fragmentation confirmations before reboot`
 
 Number of consecutive memory fragmentation checks that must detect a critical condition before the system initiates a safe reboot.
 
-This parameter prevents false reboots due to temporary memory spikes. The system will only trigger a reboot if the largest free memory block remains below the critical threshold (<code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">EIF_MEM_MONITOR_CRITICAL_SIZE</a></code>) for the specified number of consecutive checks.
+This parameter prevents false reboots due to temporary memory spikes. The system will only trigger a reboot if the largest free memory block remains below the critical threshold (<code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE">EIF_CORE_MEM_MONITOR_CRITICAL_SIZE</a></code>) for the specified number of consecutive checks.
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_REBOOT_TASK_STACK_SIZE">
-  <code>Memory Monitor Settings</code> -> <code>EIF_REBOOT_TASK_STACK_SIZE</code> - <code>int</code> (<em>range</em>: <code>1536</code> - <code>16384</code>, <em>default</em>: <code>1536</code>)
+<div class="highlight-block" id="CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE">
+  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_REBOOT_TASK_STACK_SIZE</code> - <code>int</code> (<em>range</em>: <code>1536</code> - <code>16384</code>, <em>default</em>: <code>1536</code>)
 </div>
 
 Name in the `menuconfig`: `Reboot task stack size (words - 4 bytes)`
@@ -202,4 +220,4 @@ Stack size for the task that manages the system shutdown sequence.
    
 The task stops the Wi-Fi driver halts the HTTP server, and executes the `user_pre_reboot_cb` (registered using the `eif_register_handler_system_reboot()`) before calling `esp_restart()`. Increase this value if `user_pre_reboot_cb` performs stack-heavy operations like NVS writes or complex logging.
 
-Defined in 4-byte words. To ensure the task can be successfully created in low-memory conditions, <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE">EIF_MEM_MONITOR_CRITICAL_SIZE</a></code> must be at least `8` times larger than this value.
+Defined in 4-byte words. To ensure the task can be successfully created in low-memory conditions, <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE">EIF_CORE_MEM_MONITOR_CRITICAL_SIZE</a></code> must be at least `8` times larger than this value.

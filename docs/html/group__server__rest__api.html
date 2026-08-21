@@ -1,0 +1,493 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+<meta name="description" content="A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices. Suitable for both beginners and professionals."/>
+<title>esp_iot_framework: REST API</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="styles.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/png" href="logo.png" />
+</head>
+<body>
+<div id="top"><div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr style="height: 56px;">
+<td id="projectalign" style="padding-left: 0.5em;">
+<div id="projectname">esp_iot_framework
+&#160;<span id="projectnumber">v0.2.1</span>
+</div>
+<div id="projectbrief">© 2026 AmakeSasha, distributed under a license Apache-2.0</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div><div id="side-nav" class="ui-resizable side-nav-resizable">
+<div id="nav-tree">
+<div id="nav-tree-contents">
+<div id="nav-sync" class="sync"></div>
+</div>
+</div>
+<div id="splitbar" style="-moz-user-select:none;" 
+class="ui-resizable-handle">
+</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('group__server__rest__api.html',''); initResizable(); });
+</script>
+<div id="doc-content">
+<div class="header">
+<div class="headertitle">
+<div class="title">REST API<div class="ingroups"><a class="el" href="group__server__root.html">Node: SERVER</a></div></div>  </div>
+</div><div class="contents">
+<p>SERVER REST API documentation.  
+</p>
+<p>The <code>esp_iot_framework_server</code> provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with <code>/_/</code> and support JSON format for requests and responses.</p>
+<h2><a class="anchor" id="autotoc_md39"></a>
+Authentication</h2>
+<p>When Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in <code>MAP URIs</code>) require HTTP Basic Authentication.</p>
+<p>To authenticate, include the following HTTP header in each of your requests: </p><div class="fragment"><div class="line">Authorization: Basic &lt;base64_encoded_credentials&gt;</div>
+</div><div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
+Replace the <code>&lt;base64_encoded_credentials&gt;</code> above with your Base64-encoded <code>admin:&lt;your_password&gt;</code>. <code>&lt;your_password&gt;</code> set via web interface or API (default: empty string). </div><p>Example of use: </p><div class="fragment"><div class="line">GET /_/wifi/result.json HTTP/1.1</div>
+<div class="line">Host: 192.168.4.1</div>
+<div class="line">Authorization: Basic YWRtaW46</div>
+<div class="line">Content-Length: 20</div>
+<div class="line"> </div>
+<div class="line">{&quot;profile_index&quot;: 1}</div>
+</div><h2><a class="anchor" id="autotoc_md40"></a>
+Map URIs</h2>
+<ul>
+<li><code>/_</code><ul>
+<li><code>/files</code> - only if the Kconfig option <code><a href="group__server__kconfig.html#CONFIG_EIF_SERVER_ENABLE_WEB_ADMIN_GUI">CONFIG_EIF_SERVER_ENABLE_WEB_ADMIN_GUI</a></code> is enabled<ul>
+<li><p class="startli"><code>/favicon.ico</code> - Project logo</p>
+<p class="startli">Only if the Kconfig option <code><a href="group__server__kconfig.html#CONFIG_EIF_SERVER_ENABLE_WEB_FAVICON">CONFIG_EIF_SERVER_ENABLE_WEB_FAVICON</a></code> is enabled</p>
+</li>
+<li><p class="startli"><code>/logs.html</code> - The page for viewing logs from the device</p>
+<p class="startli">Only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled</p>
+</li>
+<li><code>/api.js</code> - JavaScript API library</li>
+<li><code>/json2.js</code> - JSON utility library</li>
+<li><code>/style.css</code> - Stylesheet</li>
+<li><code>/license.txt</code> - License information</li>
+<li><code>/index.html</code> - Main interface container</li>
+<li><code>/system.html</code> - System management page</li>
+<li><code>/network.html</code> - Network management page</li>
+</ul>
+</li>
+<li><code>/wifi</code><ul>
+<li><code>/list.json</code> - <a href="#h_wifi_list_json">List Wi-Fi profiles</a></li>
+<li><code>/info.json</code> - <a href="#h_wifi_info_json">Get Wi-Fi and network information</a></li>
+<li><code>/update.do</code> - <a href="#h_wifi_update_do">Update Wi-Fi profile</a></li>
+<li><code>/clear.do</code> - <a href="#h_wifi_clear_do">Clear Wi-Fi profile</a></li>
+<li><code>/check.do</code> - <a href="#h_wifi_check_do">Wi-Fi network availability test</a></li>
+<li><code>/result.json</code> - <a href="#h_wifi_result_json">Get the results of the Wi-Fi test</a></li>
+</ul>
+</li>
+<li><code>/tls</code> - only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS</a></code> is enabled<ul>
+<li><code>/recreate.do</code> - <a href="#h_tls_recreate_do">Regenerate TLS keys and certificate</a></li>
+</ul>
+</li>
+<li><code>/sys</code><ul>
+<li><p class="startli"><code>/logs.txt</code> - <a href="#h_sys_logs_txt">Get logs from the device</a></p>
+<p class="startli">Only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled</p>
+</li>
+<li><code>/info.json</code> - <a href="#h_sys_info_json">Get system information</a></li>
+<li><code>/reboot.do</code> - <a href="#h_sys_reboot_do">Reboot system</a></li>
+</ul>
+</li>
+<li><code>/ota</code><ul>
+<li><code>/info.json</code> - <a href="#h_ota_info_json">Get firmware information</a></li>
+<li><code>/update.do</code> - <a href="#h_ota_update_do">Upload firmware</a></li>
+<li><code>/confirm.do</code> - <a href="#h_ota_confirm_do">Confirm successful update</a></li>
+<li><code>/rollback.do</code> - <a href="#h_ota_rollback_do">Rollback firmware</a></li>
+</ul>
+</li>
+<li><code>/apass</code> - only if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled<ul>
+<li><code>/update.do</code> - <a href="#h_apass_update_do">Update administrator password</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md41"></a>
+HTTP Status Codes</h2>
+<ul>
+<li><code>200 OK</code> - Successful GET request</li>
+<li><code>202 Accepted</code> - Action accepted and processing</li>
+<li><code>204 No Content</code> - Successful POST</li>
+<li><code>400 Bad Request</code> - Invalid request parameters</li>
+<li><code>401 Unauthorized</code> - Authentication required/failed</li>
+<li><code>404 Not Found</code> - Resource not found</li>
+<li><code>409 Conflict</code> - Resource conflict (e.g., OTA already in progress)</li>
+<li><code>500 Internal Server Error</code> - Server error</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md42"></a>
+API Endpoints</h2>
+<h3><a class="anchor" id="autotoc_md43"></a>
+Wi-Fi Management</h3>
+<p><a class="anchor" id="h_wifi_list_json"></a></p><ul>
+<li><p class="startli">List Wi-Fi profiles </p><div class="fragment"><div class="line">GET /_/wifi/list.json</div>
+</div><p class="startli">Returns all configured Wi-Fi profiles and current connection status.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;current_profile_index&quot;: 0,</div>
+<div class="line">  &quot;used_tls&quot;: true,</div>
+<div class="line">  &quot;rssi_now_profile&quot;: -65,</div>
+<div class="line">  &quot;profiles&quot;: [</div>
+<div class="line">    {</div>
+<div class="line">      &quot;ssid&quot;: &quot;ESP32_SETUP&quot;,</div>
+<div class="line">      &quot;password&quot;: &quot;12345678&quot;</div>
+<div class="line">    },</div>
+<div class="line">    {</div>
+<div class="line">      &quot;ssid&quot;: &quot;OfficeWiFi&quot;</div>
+<div class="line">    },</div>
+<div class="line">    {</div>
+<div class="line">      &quot;ssid&quot;: &quot;&quot;</div>
+<div class="line">    }</div>
+<div class="line">  ]</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>current_profile_index</code>: Currently active profile (<code>0</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>)</li>
+<li><code>used_tls</code>: Whether TLS is enabled on the server or not</li>
+<li><code>rssi_now_profile</code>: RSSI of current connection in dBm</li>
+<li><code>profiles</code>: Array of Wi-Fi profiles<ul>
+<li><code>ssid</code>: Network SSID (empty if not configured)</li>
+<li><code>password</code>: Password (only for profile <code>0</code>)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_wifi_info_json"></a></p><ul>
+<li><p class="startli">Get Wi-Fi and network information </p><div class="fragment"><div class="line">GET /_/wifi/info.json</div>
+</div><p class="startli">Returns detailed active network connection parameters.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;ssid&quot;: &quot;MyNetwork&quot;,</div>
+<div class="line">  &quot;rssi&quot;: -65,</div>
+<div class="line">  &quot;channel&quot;: 6,</div>
+<div class="line">  &quot;auth_mode&quot;: &quot;WPA2_PSK&quot;,</div>
+<div class="line">  &quot;bssid&quot;: &quot;00:11:22:33:44:55&quot;,</div>
+<div class="line">  &quot;ip&quot;: &quot;192.168.1.45&quot;,</div>
+<div class="line">  &quot;gateway&quot;: &quot;192.168.1.1&quot;,</div>
+<div class="line">  &quot;netmask&quot;: &quot;255.255.255.0&quot;,</div>
+<div class="line">  &quot;mac&quot;: &quot;AA:BB:CC:DD:EE:FF&quot;,</div>
+<div class="line">  &quot;proto&quot;: &quot;802.11n (Wi-Fi 4)&quot;,</div>
+<div class="line">  &quot;band&quot;: &quot;2.4 GHz&quot;,</div>
+<div class="line">  &quot;lwip_hostname&quot;: &quot;device-aabbcc&quot;,</div>
+<div class="line">  &quot;mdns_hostname&quot;: &quot;device-aabbcc&quot;,</div>
+<div class="line">  &quot;used_tls&quot;: true</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>ssid</code>: Network SSID of the current active connection</li>
+<li><code>rssi</code>: RSSI of current connection in dBm</li>
+<li><code>channel</code>: Radio channel used by the current network</li>
+<li><code>auth_mode</code>: Security type (string name mapped from <code>wifi_auth_mode_t</code>)</li>
+<li><code>bssid</code>: Physical MAC address of the connected router antenna</li>
+<li><code>ip</code>: Device IPv4 address assigned to the station interface</li>
+<li><code>gateway</code>: Default gateway IP address</li>
+<li><code>netmask</code>: Subnet mask</li>
+<li><code>mac</code>: Station hardware MAC address of the device (<code>ESP_MAC_WIFI_STA</code>)</li>
+<li><code>proto</code>: Wi-Fi protocol generation (mapped from <code>esp_wifi_get_protocol()</code>)</li>
+<li><code>band</code>: Active frequency band (<code>2.4 GHz</code> or <code>5 GHz</code>)</li>
+<li><code>lwip_hostname</code>: Device network name registered in the router DHCP client table (<code>null</code> if unassigned)</li>
+<li><code>mdns_hostname</code>: Local mDNS domain name (<code>null</code> if <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS</a></code> is disabled)</li>
+<li><code>used_tls</code>: Whether TLS is enabled on the server or not</li>
+</ul>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_wifi_update_do"></a></p><ul>
+<li><p class="startli">Update Wi-Fi profile </p><div class="fragment"><div class="line">POST /_/wifi/update.do</div>
+</div><p class="startli">Update the values of the existing profile</p>
+<p class="startli"><b>Request body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;profile_index&quot;: 1,</div>
+<div class="line">  &quot;ssid&quot;: &quot;MyNetwork&quot;,</div>
+<div class="line">  &quot;password&quot;: &quot;MyPassword123&quot;</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>profile_index</code>: Profile number (<code>1</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>, profile <code>0</code> cannot be changed)</li>
+<li><code>ssid</code>: Network SSID (<code><a class="el" href="group__core__ext__consts.html#ga26a797b8507c185ac48e27d966cd5f34" title="Minimum SSID length without null-terminator (\0). Example of the value: Q">EIF_WIFI_SSID_MIN_LEN</a></code> - <code><a class="el" href="group__core__ext__consts.html#ga1f91bceefd2a3f4bb0a459ed1050077d" title="Maximum SSID length including null-terminator (\0). Example of the value: My_Super_Long_Wifi_Network_...">EIF_WIFI_SSID_MAX_LEN</a> - 1</code> characters)</li>
+<li><code>password</code>: Network password (<code><a class="el" href="group__core__ext__consts.html#ga1eb7a99abb300a875c3ef4d93039541a" title="Minimum Password length for WPA2 without null-terminator (\0). Example of the value: 12345678">EIF_WIFI_PASS_MIN_LEN</a></code> - <code><a class="el" href="group__core__ext__consts.html#gaa665c1575a5eecebc48261147404af16" title="Maximum Password length including null-terminator (\0). Example of the value: this_is_a_very_long_pas...">EIF_WIFI_PASS_MAX_LEN</a> - 1</code> characters)</li>
+</ul>
+<p class="startli"><b>Response</b>: <code>HTTP 204 No Content</code></p>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_wifi_clear_do"></a></p><ul>
+<li><p class="startli">Clear Wi-Fi profile </p><div class="fragment"><div class="line">POST /_/wifi/clear.do</div>
+</div><p class="startli">Clear profile fields with empty values</p>
+<p class="startli"><b>Request Body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;profile_index&quot;: 1</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>profile_index</code>: Profile number (Profile number (<code>1</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>), profile #0 cannot be changed)</li>
+</ul>
+<p class="startli"><b>Response</b>: <code>HTTP 204 No Content</code></p>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_wifi_check_do"></a></p><ul>
+<li><p class="startli">Wi-Fi network availability test </p><div class="fragment"><div class="line">POST /_/wifi/check.do</div>
+</div><p class="startli">Checking the availability of a Wi-Fi network using profile</p>
+<p class="startli"><b>Request Body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;profile_index&quot;: 1</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>profile_index</code>: Profile number (<code>0</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>)</li>
+</ul>
+<p class="startli"><b>Response</b>: <code>HTTP 202 Accepted</code></p>
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
+This operation can take quite a long time (tens of seconds). During the test, the ESP also disconnects from the actual Wi-Fi network and attempts to connect to the network being tested. This is done due to the physical limitations of the ESP. </div></li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_wifi_result_json"></a></p><ul>
+<li><p class="startli">Get the results of the Wi-Fi test </p><div class="fragment"><div class="line">POST /_/wifi/result.json</div>
+</div> <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
+The use of <code>POST</code> is due to the fact that <code>Internet Explorer 8</code> does not support sending a <code>GET</code> request with a body. </div><p class="startli">Get the results of the Wi-Fi network availability test</p>
+<p class="startli"><b>Request Body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;profile_index&quot;: 1</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>profile_index</code>: Profile number (<code>0</code> - <code>X</code>, is set using <code><a class="el" href="group__eif__wifi__config.html#ga49c11ceaa41e1224cd0323f91a14d757" title="Set the number of additional user Wi-Fi profiles.">eif_set_wifi_profiles_count()</a></code>, otherwise it is <code><a class="el" href="group__core__consts.html#ga2dc61f429e93792ab9526d2e6a7cf5c7" title="Default number of custom Wi-Fi profiles.">EIF_WIFI_PROFILES_DEFAULT_COUNT</a></code>)</li>
+</ul>
+<p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;result&quot;: true,</div>
+<div class="line">  &quot;rssi&quot;: -72</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>result</code>: <code>true</code> if a connection was established and an IP address was obtained, <code>false</code> otherwise</li>
+<li><code>rssi</code>: Signal strength in dBm</li>
+</ul>
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
+Due to the change of Wi-Fi networks for the test, this request may be sent too early and the server may not even see it. To get the result, use a loop of requests after some time has passed since the test started (about 8 seconds) </div></li>
+</ul>
+<hr  />
+<h3><a class="anchor" id="autotoc_md50"></a>
+TLS Management</h3>
+<div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
+Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS</a></code> is enabled. </div><p><a class="anchor" id="h_tls_recreate_do"></a></p><ul>
+<li><p class="startli">Regenerate TLS keys and certificate </p><div class="fragment"><div class="line">POST /_/tls/recreate.do</div>
+</div><p class="startli">Generates a new self-signed TLS certificate and keys</p>
+<p class="startli"><b>Request Body</b>: <code>No body</code></p>
+<p class="startli"><b>Response</b>: <code>HTTP 202 Accepted</code></p>
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
+After regenerating TLS keys and certificate, the device will automatically restart to apply the new configuration. The entire process usually takes less than 5 seconds. </div></li>
+</ul>
+<hr  />
+<h3><a class="anchor" id="autotoc_md52"></a>
+System Management</h3>
+<p><a class="anchor" id="h_sys_logs_txt"></a></p><ul>
+<li><p class="startli">Get logs from the device </p><div class="fragment"><div class="line">GET /_/sys/logs.txt</div>
+</div><div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
+Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled. </div><p class="startli">Streams the system log buffer in plain text using HTTP chunked transfer encoding.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response body</b>: <code>Plain text (Log lines separated by \n)</code></p>
+<p class="startli"><b>HTTP Headers</b>:</p><ul>
+<li><code>Content-Type</code>: <code>text/plain</code></li>
+<li><code>Transfer-Encoding</code>: <code>chunked</code></li>
+</ul>
+<p class="startli"><b>Response behavior</b>: The device pops logs out of the internal cyclic buffer in chunks of <code>HTTP_LOGS_CHUNK_SIZE</code> bytes. Chunks are continuously sent to the client until the log buffer is completely empty. If a network write failure occurs mid-stream, transmission aborts immediately to protect system resources.</p>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_sys_info_json"></a></p><ul>
+<li><p class="startli">Get system information </p><div class="fragment"><div class="line">GET /_/sys/info.json</div>
+</div><p class="startli">Returns detailed system information.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;heap_free&quot;: 123456,</div>
+<div class="line">  &quot;heap_min&quot;: 120000,</div>
+<div class="line">  &quot;largest_block&quot;: 80000,</div>
+<div class="line">  &quot;uptime&quot;: 3600,</div>
+<div class="line">  &quot;cores&quot;: 2,</div>
+<div class="line">  &quot;chip_rev&quot;: 3,</div>
+<div class="line">  &quot;flash_size&quot;: 4,</div>
+<div class="line">  &quot;cpu_freq&quot;: 240,</div>
+<div class="line">  &quot;chip_model&quot;: &quot;ESP32&quot;,</div>
+<div class="line">  &quot;reset_reason&quot;: 1,</div>
+<div class="line">  &quot;reset_reason_str&quot;: &quot;Power-On Reset&quot;,</div>
+<div class="line">  &quot;features&quot;: {</div>
+<div class="line">    &quot;has_wifi&quot;: true,</div>
+<div class="line">    &quot;has_bluetooth&quot;: true,</div>
+<div class="line">    &quot;has_ble&quot;: true</div>
+<div class="line">  },</div>
+<div class="line">  &quot;mac&quot;: &quot;AA:BB:CC:DD:EE:FF&quot;</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>heap_free</code>: Current free heap in bytes</li>
+<li><code>heap_min</code>: Minimum free heap since boot</li>
+<li><code>largest_block</code>: Largest contiguous free memory block in heap</li>
+<li><code>uptime</code>: System uptime in seconds</li>
+<li><code>cores</code>: Number of CPU cores</li>
+<li><code>chip_rev</code>: Chip revision</li>
+<li><code>flash_size</code>: Flash size in MB</li>
+<li><code>cpu_freq</code>: CPU frequency in MHz</li>
+<li><code>chip_model</code>: ESP chip model</li>
+<li><code>reset_reason</code>: Last reset reason code</li>
+<li><code>reset_reason_str</code>: Last reset reason string</li>
+<li><code>features</code>: Object containing supported hardware features<ul>
+<li><code>has_wifi</code>: <code>true</code> if Wi-Fi (802.11 b/g/n) is supported</li>
+<li><code>has_bluetooth</code>: <code>true</code> if Bluetooth Classic is supported</li>
+<li><code>has_ble</code>: <code>true</code> if Bluetooth Low Energy (BLE) is supported</li>
+</ul>
+</li>
+<li><code>mac</code>: Device MAC address</li>
+</ul>
+<p class="startli"><br  />
+</p>
+<p class="startli"><b>Reset Reason Codes</b>: </p><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Code   </th><th class="markdownTableHeadNone">String    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>1</code>   </td><td class="markdownTableBodyNone"><code>Power-on reset</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>2</code>   </td><td class="markdownTableBodyNone"><code>External pin reset</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>3</code>   </td><td class="markdownTableBodyNone"><code>Software reset</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>4</code>   </td><td class="markdownTableBodyNone"><code>System panic reset</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>5</code>   </td><td class="markdownTableBodyNone"><code>Watchdog timer reset</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>6</code>   </td><td class="markdownTableBodyNone"><code>Task watchdog reset</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>7</code>   </td><td class="markdownTableBodyNone"><code>Interrupt watchdog reset</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>8</code>   </td><td class="markdownTableBodyNone"><code>Deep sleep wake-up reset</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>9</code>   </td><td class="markdownTableBodyNone"><code>SDIO reset</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>10</code>   </td><td class="markdownTableBodyNone"><code>USB reset</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>11</code>   </td><td class="markdownTableBodyNone"><code>JTAG reset</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>12</code>   </td><td class="markdownTableBodyNone"><code>RTC system reset</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>13</code>   </td><td class="markdownTableBodyNone"><code>RTC CPU reset</code>   </td></tr>
+</table>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_sys_reboot_do"></a></p><ul>
+<li><p class="startli">Reboot System </p><div class="fragment"><div class="line">POST /_/sys/reboot.do</div>
+</div><p class="startli">Gracefully reboot the device.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response</b>: <code>HTTP 202 Accepted</code></p>
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
+The device will reboot immediately after this request. All active connections will be closed. </div></li>
+</ul>
+<hr  />
+<h3><a class="anchor" id="autotoc_md56"></a>
+OTA Updates</h3>
+<p><a class="anchor" id="h_ota_info_json"></a></p><ul>
+<li><p class="startli">Get firmware information </p><div class="fragment"><div class="line">GET /_/ota/info.json</div>
+</div><p class="startli">Returns current firmware information.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;project&quot;: &quot;my_iot_project&quot;,</div>
+<div class="line">  &quot;version&quot;: &quot;1.0.0&quot;,</div>
+<div class="line">  &quot;elf_sha256&quot;: &quot;a1b2c3d4e5f6...&quot;,</div>
+<div class="line">  &quot;build_date&quot;: &quot;Jan 1 2026&quot;,</div>
+<div class="line">  &quot;build_time&quot;: &quot;12:00:00&quot;,</div>
+<div class="line">  &quot;idf_version&quot;: &quot;v4.4.6&quot;,</div>
+<div class="line">  &quot;compiler&quot;: &quot;gcc 8.4.0&quot;,</div>
+<div class="line">  &quot;target&quot;: &quot;esp32&quot;,</div>
+<div class="line">  &quot;partition&quot;: &quot;factory&quot;,</div>
+<div class="line">  &quot;ota_status&quot;: &quot;valid&quot;</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>project</code>: Project name</li>
+<li><code>version</code>: Firmware version</li>
+<li><code>elf_sha256</code>: SHA256 of ELF file</li>
+<li><code>build_date</code>: Build date</li>
+<li><code>build_time</code>: Build time</li>
+<li><code>idf_version</code>: ESP-IDF version</li>
+<li><code>compiler</code>: Compiler version</li>
+<li><code>target</code>: Target chip</li>
+<li><code>partition</code>: Current running partition</li>
+<li><code>ota_status</code>: OTA status. Possible values: <br  />
+<table class="doxtable">
+<tr>
+<th>Status</th><th>Description </th></tr>
+<tr>
+<td><code>new</code></td><td>Firmware uploaded, not booted yet. </td></tr>
+<tr>
+<td><code>pending_verify</code></td><td>First boot. Waiting for confirm.do. </td></tr>
+<tr>
+<td><code>valid</code></td><td>Firmware confirmed and stable. </td></tr>
+<tr>
+<td><code>invalid</code></td><td>Firmware failed checks. </td></tr>
+<tr>
+<td><code>aborted</code></td><td>Update interrupted. </td></tr>
+<tr>
+<td><code>factory</code></td><td>Running factory partition. </td></tr>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_ota_update_do"></a></p><ul>
+<li><p class="startli">Upload firmware </p><div class="fragment"><div class="line">POST /_/ota/update.do</div>
+</div><p class="startli">Uploads a new firmware binary to the device. Once the upload is complete and verified, the device will automatically reboot to apply the update.</p>
+<p class="startli"><b>Request</b>:</p><ul>
+<li>Header <code>Content-Type</code>: <code>application/octet-stream</code></li>
+<li>Body: Raw firmware binary (<code>.bin</code> file)</li>
+</ul>
+<p class="startli"><b>Response</b>: <code>HTTP 202 Accepted</code></p>
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
+The device will automatically restart after a successful upload. This process usually takes less than 5 seconds. </div></li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_ota_confirm_do"></a></p><ul>
+<li><p class="startli">Confirm successful update </p><div class="fragment"><div class="line">POST /_/ota/confirm.do</div>
+</div><p class="startli">Marks the current firmware as valid to prevent automatic rollback on the next boot.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response</b>: <code>HTTP 202 Accepted</code></p>
+</li>
+</ul>
+<hr  />
+<p><a class="anchor" id="h_ota_rollback_do"></a></p><ul>
+<li><p class="startli">Rollback firmware </p><div class="fragment"><div class="line">POST /_/ota/rollback.do</div>
+</div><p class="startli">Rolls back to the previous firmware version. The device will automatically reboot.</p>
+<p class="startli"><b>Request body</b>: <code>No body</code></p>
+<p class="startli"><b>Response</b>: <code>HTTP 202 Accepted</code></p>
+<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
+The device will automatically restart immediately after the rollback is initiated. This process usually takes less than 5 seconds. </div></li>
+</ul>
+<hr  />
+<h3><a class="anchor" id="autotoc_md61"></a>
+Authentication Management</h3>
+<div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
+Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled. </div><p><a class="anchor" id="h_apass_update_do"></a></p><ul>
+<li><p class="startli">Update administrator password </p><div class="fragment"><div class="line">POST /_/apass/update.do</div>
+</div><p class="startli">Changes the administrator password used for Basic Authentication.</p>
+<p class="startli"><b>Request body</b>: </p><div class="fragment"><div class="line">{</div>
+<div class="line">  &quot;password&quot;: &quot;NewSecurePassword123&quot;</div>
+<div class="line">}</div>
+</div><p> <b>Fields</b>:</p><ul>
+<li><code>password</code>: New password (<code><a class="el" href="group__core__ext__consts.html#ga48c047f9ef9f6f388bba5c45c7d1268e" title="Minimum Password length without null-terminator (\0). Example of the value: ㅤ">EIF_BASIC_AUTH_PASS_MIN_LEN</a></code> - <code><a class="el" href="group__core__ext__consts.html#ga7aa81b184d0ca114ee98d6d1a38b481e" title="Maximum Password length including null-terminator (\0). Example of the value: 1234567890qwerty0qwerty...">EIF_BASIC_AUTH_PASS_MAX_LEN</a> - 1</code> characters)</li>
+</ul>
+<p class="startli"><b>Response</b>: <code>HTTP 204 No Content</code> </p>
+</li>
+</ul>
+</div></div><div id="nav-path" class="navpath">  <ul>
+<li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+</ul>
+</div>
+</body>
+</html>

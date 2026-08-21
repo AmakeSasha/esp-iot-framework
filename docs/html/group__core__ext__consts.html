@@ -88,7 +88,9 @@ Example of the value: <code>this_is_a_very_long_password_that_exactly_reaches_63
 <tr class="separator:gaa665c1575a5eecebc48261147404af16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">Basic Auth Configuration</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpe5354ffb9dd373433ed253966a295cc7"></a>Validation limits for HTTP Basic Auth. </p>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpe5354ffb9dd373433ed253966a295cc7"></a>Validation limits for HTTP Basic Auth.<br  />
+</p>
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled. </dd></dl>
 </td></tr>
 <tr class="memitem:gad0464815b12b631c2e546ee7e7918a45"><td class="memItemLeft" align="right" valign="top"><a id="gad0464815b12b631c2e546ee7e7918a45"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#gad0464815b12b631c2e546ee7e7918a45">EIF_BASIC_AUTH_LINE_MIN_LEN</a>&#160;&#160;&#160;14U</td></tr>
@@ -111,8 +113,10 @@ Example of the value: <code>ㅤ</code> <br /></td></tr>
 Example of the value: <code>1234567890qwerty0qwerty0qwerty01</code> <br /></td></tr>
 <tr class="separator:ga7aa81b184d0ca114ee98d6d1a38b481e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader">NVS Storage Keys</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp988927dc437d244cf7be943c0c88dacf"></a>The keys used by the NVS module to access the values. </p>
+<tr class="heading"><td colspan="2"><h2 class="groupheader">TLS Storage Keys</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpcfa1052d4af501b6384ffe0819a7e1bf"></a>The keys used by the TLS module to access the values.<br  />
+</p>
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS</a></code> is enabled. </dd></dl>
 </td></tr>
 <tr class="memitem:ga60d35a93fa0f75375cfac0d7edafde58"><td class="memItemLeft" align="right" valign="top"><a id="ga60d35a93fa0f75375cfac0d7edafde58"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__consts.html#ga60d35a93fa0f75375cfac0d7edafde58">EIF_NVS_KEY_TLS_CERT</a>&#160;&#160;&#160;&quot;eif_tls_cert&quot;</td></tr>

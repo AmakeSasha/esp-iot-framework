@@ -26,7 +26,7 @@
 #include <esp_log.h>
 #include <esp_wifi.h>
 #include <esp_system.h>
-#ifdef CONFIG_EIF_ENABLE_MDNS
+#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
     #include <mdns.h>
 #endif
 
@@ -34,8 +34,8 @@
 #include "core_internal.h"
 #include "esp_iot_framework_core.h"
 
-#ifdef CONFIG_EIF_ENABLE_MDNS
-    #ifdef CONFIG_EIF_ENABLE_TLS
+#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
+    #ifdef CONFIG_EIF_CORE_ENABLE_TLS
         #define WEB_PROTOCOL  "https"
         #define MDNS_PROTOCOL "_https"
         #define MDNS_PORT     443
@@ -271,7 +271,7 @@ static void ip_event_handler(
                 (void)memcpy(&got_ip, event_data, sizeof(got_ip));
                 EIF_LOG_I("System got IP: " IPSTR, IP2STR(&got_ip.ip_info.ip));
 
-                #ifdef CONFIG_EIF_ENABLE_MDNS
+                #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
                     EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_initialize(),
                         "mDNS startup failed");
                     vTaskDelay(pdMS_TO_TICKS(100));
@@ -286,7 +286,7 @@ static void ip_event_handler(
             case IP_EVENT_STA_LOST_IP:
                 EIF_LOG_W("IP address lost, taking services offline...");
 
-                #ifdef CONFIG_EIF_ENABLE_MDNS
+                #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
                     (void)mdns_deinitialize();
                     vTaskDelay(pdMS_TO_TICKS(100));
                 #endif
@@ -320,7 +320,7 @@ esp_err_t eif_wifi_deinitialize(void) {
     }
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    #ifdef CONFIG_EIF_ENABLE_MDNS
+    #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
         EIF_SHOW_ESP_ERR_T(ret, mdns_deinitialize(),
             "mDNS deinitialization failed");
         vTaskDelay(pdMS_TO_TICKS(100));
@@ -393,7 +393,7 @@ esp_err_t eif_wifi_initialize(void) {
         }
     }
 
-    #if defined(CONFIG_EIF_ENABLE_MDNS) || defined(CONFIG_EIF_ENABLE_TLS)
+    #if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_format_mdns_hostname(),
             "Error formatting mDNS fields");
 

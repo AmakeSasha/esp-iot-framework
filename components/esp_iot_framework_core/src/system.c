@@ -29,7 +29,7 @@
 #include <esp_ota_ops.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+#ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
     #include <freertos/ringbuf.h>
 #endif
 
@@ -39,16 +39,16 @@
 #define ERR_SPAWN_TASK "Failed to spawn task [%s]. Free heap: %" PRIu32 " bytes"
 #define ERR_TWO_SPAWN  "Task [%s] has already been created earlier and is running"
 #define MSG_SPAWN_TASK "Spawn task [%s]"
-#if CONFIG_EIF_LOG_LEVEL >= EIF_LOG_LEVEL_D
+#if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_D
     #define MSG_CALL_FUNC "Calling the function '%s'"
 #endif
 
 #define TASK_REBOOT_NAME "t_reboot"
-#define TASK_REBOOT_SIZE (CONFIG_EIF_REBOOT_TASK_STACK_SIZE)
+#define TASK_REBOOT_SIZE (CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE)
 #define TASK_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
 
 #define TASK_MEMORY_MONITOR_NAME "t_memory_monitor"
-#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+#ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
 #define TASK_MEMORY_MONITOR_SIZE 1512
 #else
     #define TASK_MEMORY_MONITOR_SIZE 1108
@@ -60,7 +60,7 @@
 #define TASK_TLS_RECREATE_PRIORITY 5
 
 #define TASK_ROLLBACK_AND_REBOOT_NAME "t_rollback_reboot"
-#define TASK_ROLLBACK_AND_REBOOT_SIZE (CONFIG_EIF_REBOOT_TASK_STACK_SIZE + 512)
+#define TASK_ROLLBACK_AND_REBOOT_SIZE (CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE + 512)
 #define TASK_ROLLBACK_AND_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
 
 #define TASK_WIFI_TEST_NAME "t_wifi_tesr"
@@ -68,13 +68,13 @@
 #define TASK_WIFI_TEST_PRIORITY 5
 
 /* --- */
-#if CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE < (CONFIG_EIF_REBOOT_TASK_STACK_SIZE * 8)
+#if CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE < (CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE * 8)
     #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE!"
 #endif
 
 /* Logging */
 
-#ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+#ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
     static RingbufHandle_t core_log_buf = NULL;
 
     /* @deviation [Rule 17.1] The use of '<stdarg.h>' features within thisfunction 
@@ -157,7 +157,7 @@
 
     void eif_core_log_init(void) {
         core_log_buf = xRingbufferCreate(
-            CONFIG_EIF_LOG_REMOTE_BUFFER_SIZE, RINGBUF_TYPE_BYTEBUF
+            CONFIG_EIF_CORE_LOG_REMOTE_BUFFER_SIZE, RINGBUF_TYPE_BYTEBUF
         );
         if (core_log_buf) {
             esp_log_set_vprintf(core_global_log_vprintf);
@@ -311,7 +311,7 @@ esp_err_t eif_task_reboot_launch(void) {
 /* ======================= EXCLUSIVE SYS TASKS ======================= */
 static TaskHandle_t x_eif_exclusive_sys_handle = NULL;
 
-#ifdef CONFIG_EIF_ENABLE_TLS
+#ifdef CONFIG_EIF_CORE_ENABLE_TLS
     /* ------ tls_recreate ------ */
     static void eif_task_tls_recreate(void* arg) {
         EIF_TAG_WITH_UNUSED "tls_recreate";
@@ -484,15 +484,15 @@ static void eif_task_memory_monitor(void *arg) {
 
     EIF_LOG_I(MSG_SPAWN_TASK, __func__);
     EIF_LOG_I("Interval: %d ms, Critical size: %d bytes, Checks needed: %d",
-        (int)CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL,
-        (int)CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE,
-        (int)CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
+        (int)CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL,
+        (int)CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE,
+        (int)CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS);
 
     for (;;) {
         size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
-        bool is_critical = largest_block < (size_t)CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE;
+        bool is_critical = largest_block < (size_t)CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE;
 
-        #ifdef CONFIG_EIF_LOG_ENABLE_MEM_MONITOR
+        #ifdef CONFIG_EIF_CORE_LOG_ENABLE_MEM_MONITOR
             size_t heap_free = esp_get_free_heap_size();
             EIF_LOG_I("free=%u, largest=%u, critical=%s",
                 heap_free, largest_block, is_critical ? "YES" : "NO");
@@ -503,10 +503,10 @@ static void eif_task_memory_monitor(void *arg) {
 
             EIF_LOG_W(
                 "Memory pressure detected. Largest block %d < %d bytes, %d/%d checks",
-                largest_block, CONFIG_EIF_MEM_MONITOR_CRITICAL_SIZE,
-                count_critical_checks, CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS);
+                largest_block, CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE,
+                count_critical_checks, CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS);
 
-            if (count_critical_checks >= (uint8_t)CONFIG_EIF_MEM_MONITOR_NUMBER_CHECKS) {
+            if (count_critical_checks >= (uint8_t)CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS) {
                 EIF_LOG_E("CRITICAL MEMORY! Initiating reboot the system...");
 
                 x_eif_exclusive_sys_handle = NULL;
@@ -519,7 +519,7 @@ static void eif_task_memory_monitor(void *arg) {
             count_critical_checks = 0;
         }
 
-        vTaskDelay(pdMS_TO_TICKS(CONFIG_EIF_MEM_MONITOR_CHECK_INTERVAL));
+        vTaskDelay(pdMS_TO_TICKS(CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL));
     }
 }
 

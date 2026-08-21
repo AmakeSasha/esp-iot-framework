@@ -172,6 +172,7 @@ a.code {
   #nav-tree, .navpath ul, .groupheader {
     background-color: #121212 !important;
   }
+  
   a.el, .contents a:visited { color: #61afef !important; }
   #titlearea {
     border-bottom: 1px solid #333333;

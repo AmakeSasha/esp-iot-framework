@@ -64,7 +64,7 @@ Functions</h2></td></tr>
 <tr class="separator:gada9070733848e457b0232ffcedd18a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<dl class="section note"><dt>Note</dt><dd>This module is available when <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS </a> </code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
+<dl class="section note"><dt>Note</dt><dd>This module is available when <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS </a> </code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
 </div></dd></dl>
 <p>This module provides more advanced and low-level tools for working with mDNS. </p>
 <h2 class="groupheader">Function Documentation</h2>
@@ -86,7 +86,7 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>The returned pointer references the immutable internal configuration buffer owned by the core module. Do <b>NOT</b> attempt to explicitly <code>free()</code> this pointer, and do <b>NOT</b> modify its contents via type casting. Doing so will corrupt the core memory or cause an immediate hardfault.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd><ul>
 <li><code>const char*</code>: Pointer to the null-terminated hostname string.</li>
-<li><code>NULL</code>: mDNS is disabled via <code> <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_MDNS">CONFIG_EIF_ENABLE_MDNS </a> </code>.</li>
+<li><code>NULL</code>: mDNS is disabled via <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS </a> </code>.</li>
 </ul>
 </dd></dl>
 <p>Example of use: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>

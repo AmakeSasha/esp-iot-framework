@@ -19,10 +19,10 @@
 # limitations under the License.
 
 menu "ESP IoT framework, CORE"
-    config EIF_ENABLE_MDNS
+    config EIF_CORE_ENABLE_MDNS
         bool "Enable mDNS Support (Multicast DNS)"
         default y
-        select MDNS if EIF_ENABLE_MDNS
+        select MDNS if EIF_CORE_ENABLE_MDNS
         help
             Enables the Multicast DNS (mDNS) responder service.
            
@@ -33,12 +33,12 @@ menu "ESP IoT framework, CORE"
             - If `n`: The device is accessible only via its direct IP address
               (e.g., `http://192.168.1.45:80`).
 
-    config EIF_ENABLE_TLS
+    config EIF_CORE_ENABLE_TLS
         bool "Enable HTTPS (TLS/SSL) Support"
         default y
-        select HTTPD_SSL_SUPPORT if EIF_ENABLE_TLS
-        select MBEDTLS_CERTIFICATE_BUNDLE if EIF_ENABLE_TLS
-        select MBEDTLS_TLS_ENABLED if EIF_ENABLE_TLS
+        select HTTPD_SSL_SUPPORT if EIF_CORE_ENABLE_TLS
+        select MBEDTLS_CERTIFICATE_BUNDLE if EIF_CORE_ENABLE_TLS
+        select MBEDTLS_TLS_ENABLED if EIF_CORE_ENABLE_TLS
         help
             Switch the web server from insecure HTTP to encrypted HTTPS (Port 443).
 
@@ -62,8 +62,25 @@ menu "ESP IoT framework, CORE"
                      as "Not Secure" and may block access to critical web
                      features.
 
+    config EIF_CORE_ENABLE_BASIC_AUTH
+        bool "Enable Basic Authentication for systemic resources"
+        default y
+        help
+            Enables mandatory HTTP Basic Authentication for secure system-level resources,
+            administrative endpoints, and protected infrastructure nodes.
+
+            - If enabled: All administrative paths, system REST APIs, and managed assets 
+              require a valid username ('admin') and password securely stored in NVS.
+            - If disabled: Access control for infrastructure layers is completely bypassed. 
+              This may be useful for local debugging or isolated development, but is strongly
+              discouraged for deployment.
+
+            WARNING: Disabling authentication exposes system infrastructure endpoints,
+            allowing unauthorized access, environment manipulation, and full telemetry
+            retrieval.
+
     menu "Logging Settings"
-        config EIF_LOG_LEVEL
+        config EIF_CORE_LOG_LEVEL
             int "Framework log verbosity"
             range 0 4
             default 3
@@ -76,7 +93,7 @@ menu "ESP IoT framework, CORE"
                 3: Info
                 4: Debug
 
-        config EIF_LOG_SHOW_METADATA
+        config EIF_CORE_LOG_SHOW_METADATA
             bool "Show metadata in logs (path, line, function)"
             default n
             help
@@ -92,7 +109,7 @@ menu "ESP IoT framework, CORE"
                 I (8536) HTTPS server: HTTP Server started.
                 ```
 
-        config EIF_LOG_ENABLE_MEM_MONITOR
+        config EIF_CORE_LOG_ENABLE_MEM_MONITOR
             bool "Enable memory status logging"
             default n
             help
@@ -100,7 +117,7 @@ menu "ESP IoT framework, CORE"
                 console every time the monitor task performs a check
                 (defined by 'Memory check interval').
 
-        config EIF_LOG_ENABLE_REMOTE_DEBUG
+        config EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
             bool "Enable remote diagnostic logging engine"
             default n
             help
@@ -111,9 +128,9 @@ menu "ESP IoT framework, CORE"
                 using its own communication protocol (HTTP, MQTT, BLE) 
                 for remote diagnostics without a physical UART connection.
 
-        config EIF_LOG_REMOTE_BUFFER_SIZE
+        config EIF_CORE_LOG_REMOTE_BUFFER_SIZE
             int "Remote log ring buffer size (bytes)"
-            depends on EIF_LOG_ENABLE_REMOTE_DEBUG
+            depends on EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
             range 1024 51200
             default 4096
             help
@@ -123,7 +140,7 @@ menu "ESP IoT framework, CORE"
     endmenu
 
     menu "Memory Monitor Settings"
-        config EIF_MEM_MONITOR_CRITICAL_SIZE
+        config EIF_CORE_MEM_MONITOR_CRITICAL_SIZE
             int "The minimum allowed size of the largest block"
             range 12288 65536
             default 12288
@@ -133,7 +150,7 @@ menu "ESP IoT framework, CORE"
                 will reboot.
 
                 WARNING: To ensure the reboot task can be created, this value MUST be
-                         at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE
+                         at least 8 times larger than EIF_CORE_REBOOT_TASK_STACK_SIZE
                          (which is measured in 4-byte words).
 
                 Formula: CRITICAL_SIZE >= STACK_SIZE * 4 * 2.
@@ -141,7 +158,7 @@ menu "ESP IoT framework, CORE"
                 Note: Setting too low may cause missed fragmentation issues; too
                       high may lead to unnecessary reboots.
 
-        config EIF_MEM_MONITOR_CHECK_INTERVAL
+        config EIF_CORE_MEM_MONITOR_CHECK_INTERVAL
             int "Memory check interval (ms)"
             range 1000 3600000
             default 30000
@@ -164,7 +181,7 @@ menu "ESP IoT framework, CORE"
                          - Normal state: checks run every 30 seconds.
                          - Critical state: checks accelerate to every 15 seconds.
 
-        config EIF_MEM_MONITOR_NUMBER_CHECKS
+        config EIF_CORE_MEM_MONITOR_NUMBER_CHECKS
             int "Number of fragmentation confirmations before reboot"
             range 2 60
             default 3
@@ -174,10 +191,10 @@ menu "ESP IoT framework, CORE"
 
                 This parameter prevents false reboots due to temporary memory spikes.
                 The system will only trigger a reboot if the largest free memory
-                block remains below the critical threshold (EIF_MEM_MONITOR_CRITICAL_SIZE)
+                block remains below the critical threshold (EIF_CORE_MEM_MONITOR_CRITICAL_SIZE)
                 for the specified number of consecutive checks.
 
-        config EIF_REBOOT_TASK_STACK_SIZE
+        config EIF_CORE_REBOOT_TASK_STACK_SIZE
             int "Reboot task stack size (words - 4 bytes)"
             range 1536 16384
             default 1536
@@ -189,7 +206,7 @@ menu "ESP IoT framework, CORE"
                 Increase this value if 'user_pre_reboot_cb' performs stack-heavy
                 operations like NVS writes or complex logging.
 
-                Note: Defined in 4-byte words. EIF_MEM_MONITOR_CRITICAL_SIZE
+                Note: Defined in 4-byte words. EIF_CORE_MEM_MONITOR_CRITICAL_SIZE
                 must be at least twice this value (in bytes) to ensure the task
                 can be created in low-memory conditions.
     endmenu

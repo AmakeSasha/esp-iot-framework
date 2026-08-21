@@ -25,11 +25,19 @@ REPLACEMENT_DATA = [
         "converted": "(group__core__root.html)"
     },
     {
-        "original": r"\(./components/esp_iot_framework_device/README.md\)",
-        "converted": "(group__device__root.html)"
+        "original": r"\(./components/esp_iot_framework_server/README.md\)",
+        "converted": "(group__server__root.html)"
+    },
+    {
+        "original": r"\(./components/esp_iot_framework_client/README.md\)",
+        "converted": "(group__client__root.html)"
     },
     {
         "original": r"\(./examples\)",
+        "converted": "(index.html)"
+    },
+    {
+        "original": r"\(../../examples\)",
         "converted": "(index.html)"
     },
     {
@@ -76,23 +84,29 @@ LIST_FILES = [
         "dst_path": ""
     },
     {
-        "src": "components/esp_iot_framework_device/README.md",
-        "name": "README_DEVICE.md",
+        "src": "components/esp_iot_framework_server/README.md",
+        "name": "README_SERVER.md",
         "type": "readme",
         "dst_path": ""
     },
     {
-        "src": "components/esp_iot_framework_device/KCONFIG.md",
-        "name": "KCONFIG_DEVICE.md",
+        "src": "components/esp_iot_framework_server/KCONFIG.md",
+        "name": "KCONFIG_SERVER.md",
         "type": "readme",
         "dst_path": ""
     },
     {
-        "src": "components/esp_iot_framework_device/REST_API.md",
-        "name": "REST_API_DEVICE.md",
+        "src": "components/esp_iot_framework_server/REST_API.md",
+        "name": "REST_API_SERVER.md",
         "type": "readme",
         "dst_path": ""
-    }
+    },
+    {
+        "src": "components/esp_iot_framework_client/README.md",
+        "name": "README_CLIENT.md",
+        "type": "readme",
+        "dst_path": ""
+    },
 ]
 
 # --------------------------------------------------------------------------------
@@ -211,7 +225,7 @@ def website_simplification(html_dir):
     dir_file_pattern = re.compile(r"^dir_[a-fA-F0-9]{32}\.html$")
 
     pattern_comment_html = re.compile(r"<!--(?:[^-]|-(?!->))*-->\n|<!--(?:[^-]|-(?!->))*-->")
-    pattern_comment_js = re.compile(r"/\*(?:[^*]|\*(?!/))*\*/\r?\n?|/\*(?:[^*]|\*(?!/))*\*/")
+    pattern_comment_js = re.compile(r"/\*(?:[^*]|\*(?!/))*\*/(?![^\n\r]*?\\)\r?\n?")
     
     pattern_single = re.compile(r"//(?![^\r\n]*[^a-zA-Z0-9\s\"'\"()\[\]{}])[^\r\n]*\r?\n?")
     pattern_empty_lines = re.compile(r"(\r?\n)\s*\r?\n")

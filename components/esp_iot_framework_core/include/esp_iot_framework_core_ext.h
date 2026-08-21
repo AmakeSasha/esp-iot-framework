@@ -80,29 +80,33 @@
 #define EIF_WIFI_PASS_MAX_LEN 64U
 /** @} */
 
-/**
- * @name Basic Auth Configuration
- * @brief Validation limits for HTTP Basic Auth.
- * @{ */
-/** @brief Minimum `Line` length without null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46` */
-#define EIF_BASIC_AUTH_LINE_MIN_LEN 14U
-/** @brief Maximum `Line` length including null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46MTIzNDU2Nzg5MHF3ZXJ0eTBxd2VydHkwcXdlcnR5MDE=` */
-#define EIF_BASIC_AUTH_LINE_MAX_LEN 59U
-/** @brief Minimum `Password` length without null-terminator (`\0`).<br>Example of the value: <code>ㅤ</code>*/
-#define EIF_BASIC_AUTH_PASS_MIN_LEN 0U
-/** @brief Maximum `Password` length including null-terminator (`\0`).<br>Example of the value: `1234567890qwerty0qwerty0qwerty01` */
-#define EIF_BASIC_AUTH_PASS_MAX_LEN 33U
-/** @} */
+#if defined(CONFIG_EIF_CORE_ENABLE_BASIC_AUTH) || defined(DOXYGEN)
+    /**
+     * @name Basic Auth Configuration
+     * @brief Validation limits for HTTP Basic Auth.<br>@note Only available if the `Kconfig` option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled.
+     * @{ */
+    /** @brief Minimum `Line` length without null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46` */
+    #define EIF_BASIC_AUTH_LINE_MIN_LEN 14U
+    /** @brief Maximum `Line` length including null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46MTIzNDU2Nzg5MHF3ZXJ0eTBxd2VydHkwcXdlcnR5MDE=` */
+    #define EIF_BASIC_AUTH_LINE_MAX_LEN 59U
+    /** @brief Minimum `Password` length without null-terminator (`\0`).<br>Example of the value: <code>ㅤ</code>*/
+    #define EIF_BASIC_AUTH_PASS_MIN_LEN 0U
+    /** @brief Maximum `Password` length including null-terminator (`\0`).<br>Example of the value: `1234567890qwerty0qwerty0qwerty01` */
+    #define EIF_BASIC_AUTH_PASS_MAX_LEN 33U
+    /** @} */
+#endif
 
-/**
- * @name NVS Storage Keys
- * @brief The keys used by the NVS module to access the values.
- * @{ */
-/** @brief TLS certificate blob. */
-#define EIF_NVS_KEY_TLS_CERT "eif_tls_cert"
-/** @brief TLS private key blob. */
-#define EIF_NVS_KEY_TLS_PRIV_KEY "eif_tls_key"
-/** @} */
+#if defined(CONFIG_EIF_CORE_ENABLE_TLS) || defined(DOXYGEN)
+    /**
+     * @name TLS Storage Keys
+     * @brief The keys used by the TLS module to access the values.<br>@note Only available if the `Kconfig` option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS</a></code> is enabled.
+     * @{ */
+    /** @brief TLS certificate blob. */
+    #define EIF_NVS_KEY_TLS_CERT "eif_tls_cert"
+    /** @brief TLS private key blob. */
+    #define EIF_NVS_KEY_TLS_PRIV_KEY "eif_tls_key"
+    /** @} */
+#endif
 
 /** @} */
 
@@ -805,15 +809,15 @@ esp_err_t eif_nvs_wifi_profile_load(
 
 /**
  * @name HTTP Basic Authentication
- * @brief Functions for reading, encoding, and writing Basic Auth credentials to NVS.
+ * @brief Functions for reading, encoding, and writing Basic Auth credentials to NVS.<br>@note Only available if the `Kconfig` option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled.
  * @{
  */
 /**
  * @brief Encodes and saves the HTTP Basic Auth credentials to NVS.
  * 
  * @note Only available if the `Kconfig` option <code>
- *         <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">
- *           CONFIG_EIF_ENABLE_BASIC_AUTH
+ *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">
+ *           CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
  *         </a>
  *       </code> is enabled.
  * 
@@ -867,8 +871,8 @@ esp_err_t eif_nvs_basic_auth_line_save(const unsigned char * const pass);
  * @brief Loads the complete HTTP Basic Auth credentials from NVS.
  *
  * @note Only available if the `Kconfig` option <code>
- *         <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">
- *           CONFIG_EIF_ENABLE_BASIC_AUTH
+ *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">
+ *           CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
  *         </a>
  *       </code> is enabled.
  * 
@@ -1087,13 +1091,13 @@ esp_err_t eif_task_reboot_launch(void);
  *                               of an empty block of the required size.
  */
 esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);
-#if (defined(CONFIG_EIF_ENABLE_TLS) || defined(DOXYGEN))
+#if (defined(CONFIG_EIF_CORE_ENABLE_TLS) || defined(DOXYGEN))
     /**
      * @brief Spawns an asynchronous task to regenerate TLS credentials.
      * 
      * @note Only available if the `Kconfig` option <code>
-     *         <a href="group__core__kconfig.html#CONFIG_EIF_ENABLE_TLS">
-     *           CONFIG_EIF_ENABLE_TLS
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">
+     *           CONFIG_EIF_CORE_ENABLE_TLS
      *         </a>
      *       </code> is enabled.
      * 
@@ -1136,13 +1140,13 @@ esp_err_t eif_task_rollback_and_reboot_launch(void);
  *        part of a group large enough for a separate module.
  * @{
  */
-#if (defined(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG) || defined(DOXYGEN))
+#if (defined(CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG) || defined(DOXYGEN))
     /**
      * @brief Thread-safe extraction of diagnostic logs from the core ring buffer.
      *
      * @note Only available if the `Kconfig` option <code>
-     *         <a href="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">
-     *           CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
+     *         <a href="group__core__kconfig.html#CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG">
+     *           CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
      *         </a>
      *       </code> is enabled.
      * 

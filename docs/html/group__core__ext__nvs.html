@@ -79,7 +79,9 @@ $(document).ready(function(){initNavTree('group__core__ext__nvs.html',''); initR
 <tr class="separator:ga4a54f573191d1d0e3d2550bb0d5b689b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">HTTP Basic Authentication</h2></td></tr>
-<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpf9b0f402ca6a1aeca3b77c75766f959c"></a>Functions for reading, encoding, and writing Basic Auth credentials to NVS. </p>
+<tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrpf9b0f402ca6a1aeca3b77c75766f959c"></a>Functions for reading, encoding, and writing Basic Auth credentials to NVS.<br  />
+</p>
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled. </dd></dl>
 </td></tr>
 <tr class="memitem:ga73a4fd15dd672219f27ca6ea3fc5c22f"><td class="memItemLeft" align="right" valign="top">esp_err_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__core__ext__nvs.html#ga73a4fd15dd672219f27ca6ea3fc5c22f">eif_nvs_basic_auth_line_save</a> (const unsigned char *const pass)</td></tr>
 <tr class="memdesc:ga73a4fd15dd672219f27ca6ea3fc5c22f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encodes and saves the HTTP Basic Auth credentials to NVS.  <a href="group__core__ext__nvs.html#ga73a4fd15dd672219f27ca6ea3fc5c22f">More...</a><br /></td></tr>
@@ -491,7 +493,7 @@ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#in
 </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH </a> </code> is enabled.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH </a> </code> is enabled.</dd></dl>
 <p>Takes the raw password, combines it with the default username (<code>admin</code>), and encodes the <code>admin:password</code> combination into Base64. The final string is prefixed with <code>Basic&#160;</code> (e.g., <code>Basic YWRtaW46cGFzcw==</code>) and saved to NVS.</p>
 <p>If an empty password (length <code>0</code>) is provided, the function automatically generates and saves the default empty-password line (<code>Basic YWRtaW46</code>).</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -528,7 +530,7 @@ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#in
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="agroup__core__ext__nvs_html_ga73a4fd15dd672219f27ca6ea3fc5c22f"><div class="ttname"><a href="group__core__ext__nvs.html#ga73a4fd15dd672219f27ca6ea3fc5c22f">eif_nvs_basic_auth_line_save</a></div><div class="ttdeci">esp_err_t eif_nvs_basic_auth_line_save(const unsigned char *const pass)</div><div class="ttdoc">Encodes and saves the HTTP Basic Auth credentials to NVS.</div></div>
-<div class="ttc" id="agroup__macros__check_html_ga250094cf6087063911bd5fd75934e8b6"><div class="ttname"><a href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Executes and validates an ESP-IDF expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:438</div></div>
+<div class="ttc" id="agroup__macros__check_html_ga250094cf6087063911bd5fd75934e8b6"><div class="ttname"><a href="group__macros__check.html#ga250094cf6087063911bd5fd75934e8b6">EIF_IF_OK_CHECK_ESP_ERR_T</a></div><div class="ttdeci">#define EIF_IF_OK_CHECK_ESP_ERR_T(m_result, m_expr, m_format,...)</div><div class="ttdoc">Executes and validates an ESP-IDF expression sequentially.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:441</div></div>
 <div class="ttc" id="agroup__macros__log_html_ga1152d3737810f5abea47783393d8b147"><div class="ttname"><a href="group__macros__log.html#ga1152d3737810f5abea47783393d8b147">EIF_TAG_WITH_UNUSED</a></div><div class="ttdeci">#define EIF_TAG_WITH_UNUSED</div><div class="ttdoc">Helper to define a local logging 'TAG' identifier.</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_macros.h:89</div></div>
 </div> 
 </div>
@@ -547,7 +549,7 @@ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#in
 </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__device__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH </a> </code> is enabled.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only available if the <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH </a> </code> is enabled.</dd></dl>
 <p>Reads the stored authorization string from NVS into a pre-allocated buffer. The output string contains the configuration prefix, username, and password.</p>
 <p>Example of output written to <code>buf_out</code>: </p><div class="fragment"><div class="line">Basic YWRtaW46bXlfcGFzcw==</div>
 </div><dl class="params"><dt>Parameters</dt><dd>
@@ -582,7 +584,7 @@ Examples: <div class="fragment"><div class="line"><span class="preprocessor">#in
 <div class="line">        <span class="comment">// Pass auth_line to HTTP client configuration here</span></div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__core__ext__consts_html_ga5a98d6f44868c5d521060879df2fb6b9"><div class="ttname"><a href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9">EIF_BASIC_AUTH_LINE_MAX_LEN</a></div><div class="ttdeci">#define EIF_BASIC_AUTH_LINE_MAX_LEN</div><div class="ttdoc">Maximum Line length including null-terminator (\0). Example of the value: Basic YWRtaW46MTIzNDU2Nzg5M...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:90</div></div>
+<div class="ttc" id="agroup__core__ext__consts_html_ga5a98d6f44868c5d521060879df2fb6b9"><div class="ttname"><a href="group__core__ext__consts.html#ga5a98d6f44868c5d521060879df2fb6b9">EIF_BASIC_AUTH_LINE_MAX_LEN</a></div><div class="ttdeci">#define EIF_BASIC_AUTH_LINE_MAX_LEN</div><div class="ttdoc">Maximum Line length including null-terminator (\0). Example of the value: Basic YWRtaW46MTIzNDU2Nzg5M...</div><div class="ttdef"><b>Definition:</b> esp_iot_framework_core_ext.h:91</div></div>
 <div class="ttc" id="agroup__core__ext__nvs_html_gaae1c90eeb60dbc587c9b57d1c70049ec"><div class="ttname"><a href="group__core__ext__nvs.html#gaae1c90eeb60dbc587c9b57d1c70049ec">eif_nvs_basic_auth_line_load</a></div><div class="ttdeci">esp_err_t eif_nvs_basic_auth_line_load(char *const buf_out)</div><div class="ttdoc">Loads the complete HTTP Basic Auth credentials from NVS.</div></div>
 </div> 
 </div>

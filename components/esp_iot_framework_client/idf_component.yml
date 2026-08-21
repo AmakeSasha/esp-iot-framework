@@ -1,0 +1,5 @@
+name: "esp_iot_framework_client"
+description: "A framework node for enabling the device to initiate outbound HTTP(S) connections and send requests to other devices"
+version: "0.1.0"
+dependencies:
+  idf: ">=4.4.0"
