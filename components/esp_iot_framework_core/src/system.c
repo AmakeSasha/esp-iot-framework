@@ -63,7 +63,7 @@
 #define TASK_ROLLBACK_AND_REBOOT_SIZE (CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE + 512)
 #define TASK_ROLLBACK_AND_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
 
-#define TASK_WIFI_TEST_NAME "t_wifi_tesr"
+#define TASK_WIFI_TEST_NAME "t_wifi_test"
 #define TASK_WIFI_TEST_SIZE 2048
 #define TASK_WIFI_TEST_PRIORITY 5
 
@@ -322,7 +322,8 @@ static TaskHandle_t x_eif_exclusive_sys_handle = NULL;
         EIF_LOG_I(MSG_SPAWN_TASK, __func__);
         vTaskDelay(pdMS_TO_TICKS(500));
 
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds_and_nvs_save(), "qwe");
+        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_tls_create_creds_and_nvs_save(),
+            "Error creating TLS credentials or its saving to NVS");
         if (ret == ESP_OK) {
             EIF_LOG_I("TLS credentials recreated. System will restart...");
             vTaskDelay(pdMS_TO_TICKS(500));
@@ -494,7 +495,7 @@ static void eif_task_memory_monitor(void *arg) {
 
         #ifdef CONFIG_EIF_CORE_LOG_ENABLE_MEM_MONITOR
             size_t heap_free = esp_get_free_heap_size();
-            EIF_LOG_I("free=%u, largest=%u, critical=%s",
+            EIF_LOG_I("free=%zu, largest=%zu, critical=%s",
                 heap_free, largest_block, is_critical ? "YES" : "NO");
         #endif
 

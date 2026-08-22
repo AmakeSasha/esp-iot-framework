@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
 # Folder: ./components/esp_iot_framework_core
-# File: CmakeLists.txt
+# File: CMakeLists.txt
 # Library: esp_iot_framework_core
 # 
 # Copyright 2026 AmakeSasha
@@ -19,6 +19,7 @@
 # limitations under the License.
 
 set(requires_components
+    mdns
     driver
     esp_wifi
     nvs_flash
@@ -31,13 +32,6 @@ if(CONFIG_EIF_CORE_ENABLE_TLS)
     message(STATUS "EIF-CORE: component 'mbedTLS' included")
 else()
     message(STATUS "EIF-CORE: component 'mbedTLS' excluded")
-endif()
-
-if(CONFIG_EIF_CORE_ENABLE_MDNS)
-    list(APPEND requires_components mdns)
-    message(STATUS "EIF-CORE: component 'mDNS' included")
-else()
-    message(STATUS "EIF-CORE: component 'mDNS' excluded.")
 endif()
 
 set(COMPONENT_NAME esp_iot_framework_core)
@@ -60,15 +54,13 @@ if(TARGET ${comp_target})
         target_link_libraries(${comp_target} PRIVATE idf::mbedtls)
     else()
     endif()
-    if(CONFIG_EIF_CORE_ENABLE_MDNS)
-        if(TARGET idf::espressif__mdns)
-            target_link_libraries(${comp_target} PRIVATE idf::espressif__mdns)
-            message(STATUS "Linking mDNS via espressif__mdns (Registry)")
-        elseif(TARGET idf::mdns)
-            target_link_libraries(${comp_target} PRIVATE idf::mdns)
-            message(STATUS "Linking mDNS via idf::mdns (Built-in)")
-        else()
-            message(FATAL_ERROR "mDNS component enabled but not found!")
-        endif()
+    if(TARGET idf::espressif__mdns)
+        target_link_libraries(${comp_target} PRIVATE idf::espressif__mdns)
+        message(STATUS "Linking mDNS via espressif__mdns (Registry)")
+    elseif(TARGET idf::mdns)
+        target_link_libraries(${comp_target} PRIVATE idf::mdns)
+        message(STATUS "Linking mDNS via idf::mdns (Built-in)")
+    else()
+        message(FATAL_ERROR "mDNS component enabled but not found!")
     endif()
 endif()

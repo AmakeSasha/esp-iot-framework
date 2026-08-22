@@ -85,7 +85,7 @@ void app_main(void) {
     ESP_ERROR_CHECK(eif_core_initialize());
     ESP_ERROR_CHECK(eif_server_initialize());
     ESP_ERROR_CHECK(eif_nvs_initialize());
-    ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, 1));
+    ESP_ERROR_CHECK(eif_server_set_uri_handlers(my_uris, 1));
     ESP_ERROR_CHECK(eif_wifi_initialize());
 
     while (1) {

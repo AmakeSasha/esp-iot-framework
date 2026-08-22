@@ -341,7 +341,7 @@ do { \
 /**
  * @brief Validates a pointer variable if the current execution state is successful.
  *
-  * This macro performs a conditional validation check. It verifies whether the
+ * This macro performs a conditional validation check. It verifies whether the
  * provided pointer `m_ptr` is `NULL`, but only if `m_result` currently equals
  * `ESP_OK`. If the pointer is `NULL`, the status variable `m_result` is set to
  * `m_error`, and it logs a critical error containing the stringified name of

@@ -72,24 +72,6 @@ Sets the `max-age` value (in seconds) for the HTTP `Cache-Control` header. Durin
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_SERVER_ENABLE_BASIC_AUTH">
-  <code>EIF_SERVER_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
-</div>
-
-Name in the `menuconfig`: `Enable Basic Auth for the core URL (/_/*)`
-
-Enables mandatory HTTP Basic Authentication for all administrative paths.
-
-- If `y`: Any access to the Web GUI or the core JSON REST API requires a valid username (`admin`) and password verified against NVS storage.
-- If `n`: Access control is bypassed. Anyone on the local network can change configuration, read logs, or trigger reboots.
-
-<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
-    <strong>Warning</strong><br>
-    Disabling authentication is highly dangerous for production. If <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">EIF_CORE_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air.
-</div>
-
----
-
 <div class="highlight-block" id="CONFIG_EIF_SERVER_WEB_SIZE_OTA_BUFFER">
   <code>EIF_SERVER_WEB_SIZE_OTA_BUFFER</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>65536</code>, <em>default</em>: <code>4096</code>)
 </div>

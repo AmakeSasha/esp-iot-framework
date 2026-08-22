@@ -25,11 +25,9 @@
 
 #include "sdkconfig.h"
 
+#include <mdns.h>
 #include <string.h>
 #include <esp_wifi.h>
-#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-    #include <mdns.h>
-#endif
 
 #include "esp_iot_framework_core.h"
 #include "esp_iot_framework_core_ext.h"
@@ -37,15 +35,13 @@
 
 /* config.c */
 
-#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
-    /* esp32-divece-aaccbb */
-    #define MDNS_HOSTNAME_FULL_MAX_LEN 64U
-    /* -aaccbb */
-    #define MDNS_SUFFIX_MAC_LEN 7U
+/* esp32-device-aaccbb */
+#define MDNS_HOSTNAME_FULL_MAX_LEN 64U
+/* -aaccbb */
+#define MDNS_SUFFIX_MAC_LEN 7U
 
-    #if (MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN) != EIF_MDNS_HOSTNAME_MAX_LEN
-        #error "Invalid value `EIF_MDNS_HOSTNAME_MAX_LEN`"
-    #endif
+#if (MDNS_HOSTNAME_FULL_MAX_LEN - MDNS_SUFFIX_MAC_LEN) != EIF_MDNS_HOSTNAME_MAX_LEN
+    #error "Invalid value `EIF_MDNS_HOSTNAME_MAX_LEN`"
 #endif
 
 /* ESP IoT Framework - eif */
@@ -58,16 +54,12 @@ typedef struct {
     size_t wifi_profiles_count;
     eif_wifi_test_result wifi_test_results[EIF_WIFI_PROFILES_MAX_COUNT];
 
-    #if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
-        char mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN];
-    #endif
-    #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-        /* eif_set_mdns */
-        char mdns_instance_name[EIF_MDNS_INSTANCE_NAME_MAX_LEN];
-        /* eif_set_mdns_records */
-        mdns_txt_item_t mdns_txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT];
-        size_t mdns_txt_records_count;
-    #endif
+    char mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN];
+    /* eif_set_mdns */
+    char mdns_instance_name[EIF_MDNS_INSTANCE_NAME_MAX_LEN];
+    /* eif_set_mdns_records */
+    mdns_txt_item_t mdns_txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT];
+    size_t mdns_txt_records_count;
 
     /* eif_register_event_handler_ip_got */
     eif_handler_ip_t handler_ip_got;
@@ -88,11 +80,9 @@ esp_err_t eif_set_current_wifi_profile_index(uint8_t index);
 esp_err_t eif_set_wifi_result_test(uint8_t index, eif_wifi_test_result result);
 void eif_wifi_handler_stop_set(bool stop);
 
-#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
-    esp_err_t eif_format_mdns_hostname(void);
-#endif
+esp_err_t eif_format_mdns_hostname(void);
 
-/* tls_maneger.c */
+/* tls_manager.c */
 
 #ifdef CONFIG_EIF_CORE_ENABLE_TLS
     esp_err_t eif_tls_create_creds_and_nvs_save(void);

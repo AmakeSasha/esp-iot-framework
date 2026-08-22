@@ -83,44 +83,10 @@ Functions</h2></td></tr>
 <tr class="separator:gaebd461482bdf91710b7b63c3613bdbd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<dl class="section note"><dt>Note</dt><dd>This module is available when <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS </a> </code> is enabled and you include this line at the beginning of the file.: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
-</div></dd></dl>
 <p>This module allows you to configure mDNS. mDNS enables the device to be discovered via a human-readable name (e.g., <code>my-device.local</code>) instead of an IP address.</p>
 <p>The framework automatically appends a unique identifier based on the MAC address to prevent network collisions (e.g., common hostname set: <code>esp32.local</code>, the framework turns this into <code>esp32-1a2b3c.local</code> on a device with MAC <code>XX:XX:XX:1A:2B:3C</code>).</p>
-<dl class="section note"><dt>Note</dt><dd>In case the mDNS hostname is not set, <code>device</code> will be used as the common hostname. To disable mDNS, turn off <code>Kconfig</code> option <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS </a> </code>.</dd></dl>
-<p>If you frequently need to enable and disable mDNS during development, you can use the following construct: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;mdns.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#ifdef CONFIG_EIF_CORE_ENABLE_MDNS</span></div>
-<div class="line"><span class="preprocessor">    #include &lt;esp_iot_framework_core_mdns.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// Not necessary, but nice :)</span></div>
-<div class="line"><span class="preprocessor">#ifdef CONFIG_EIF_CORE_ENABLE_MDNS</span></div>
-<div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> mdns_txt_item_t my_txt_records[] = {</div>
-<div class="line">        {<span class="stringliteral">&quot;friendly_name&quot;</span>, <span class="stringliteral">&quot;Kitchen Main Light&quot;</span>},</div>
-<div class="line">        {<span class="stringliteral">&quot;room&quot;</span>,          <span class="stringliteral">&quot;Kitchen&quot;</span>},</div>
-<div class="line">        {<span class="stringliteral">&quot;hardware&quot;</span>,      <span class="stringliteral">&quot;ESP32-S3-DevKit&quot;</span>},</div>
-<div class="line">        {<span class="stringliteral">&quot;v&quot;</span>,             <span class="stringliteral">&quot;1.0.4&quot;</span>}</div>
-<div class="line">    };</div>
-<div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
-<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
-<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a>());</div>
-<div class="line"> </div>
-<div class="line"><span class="preprocessor">    #ifdef CONFIG_EIF_CORE_ENABLE_MDNS</span></div>
-<div class="line">        ESP_ERROR_CHECK(<a class="code" href="group__eif__mdns.html#ga86dcb4131783579448c1578489f1f571">eif_set_mdns</a>(<span class="stringliteral">&quot;my-esp&quot;</span>, <span class="stringliteral">&quot;Smart Controller&quot;</span>));</div>
-<div class="line">        ESP_ERROR_CHECK(<a class="code" href="group__eif__mdns.html#gaebd461482bdf91710b7b63c3613bdbd5">eif_set_mdns_records</a>(my_txt_records, 4));</div>
-<div class="line"><span class="preprocessor">    #endif</span></div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Further code...</span></div>
-<div class="line">}</div>
-<div class="ttc" id="agroup__config__c_html_gae24819dbf0c169ad7e418a5d3a978350"><div class="ttname"><a href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a></div><div class="ttdeci">esp_err_t eif_nvs_initialize(void)</div><div class="ttdoc">Initialize Non-Volatile Storage (NVS) and framework data.</div></div>
-<div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
-<div class="ttc" id="agroup__eif__mdns_html_ga86dcb4131783579448c1578489f1f571"><div class="ttname"><a href="group__eif__mdns.html#ga86dcb4131783579448c1578489f1f571">eif_set_mdns</a></div><div class="ttdeci">esp_err_t eif_set_mdns(const char *const hostname, const char *const instance_name)</div><div class="ttdoc">Configure the mDNS hostname and instance name.</div></div>
-<div class="ttc" id="agroup__eif__mdns_html_gaebd461482bdf91710b7b63c3613bdbd5"><div class="ttname"><a href="group__eif__mdns.html#gaebd461482bdf91710b7b63c3613bdbd5">eif_set_mdns_records</a></div><div class="ttdeci">esp_err_t eif_set_mdns_records(const mdns_txt_item_t txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT], size_t txt_records_count)</div><div class="ttdoc">Set custom TXT records for mDNS service discovery.</div></div>
-</div> <h2 class="groupheader">Function Documentation</h2>
+<dl class="section note"><dt>Note</dt><dd>In case the mDNS hostname is not set, <code>device</code> will be used as the common hostname. </dd></dl>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="ga86dcb4131783579448c1578489f1f571"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga86dcb4131783579448c1578489f1f571">&#9670;&nbsp;</a></span>eif_set_mdns()</h2>
 <div class="memitem">
@@ -171,6 +137,9 @@ Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line">}  </div>
+<div class="ttc" id="agroup__config__c_html_gae24819dbf0c169ad7e418a5d3a978350"><div class="ttname"><a href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a></div><div class="ttdeci">esp_err_t eif_nvs_initialize(void)</div><div class="ttdoc">Initialize Non-Volatile Storage (NVS) and framework data.</div></div>
+<div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
+<div class="ttc" id="agroup__eif__mdns_html_ga86dcb4131783579448c1578489f1f571"><div class="ttname"><a href="group__eif__mdns.html#ga86dcb4131783579448c1578489f1f571">eif_set_mdns</a></div><div class="ttdeci">esp_err_t eif_set_mdns(const char *const hostname, const char *const instance_name)</div><div class="ttdoc">Configure the mDNS hostname and instance name.</div></div>
 </div> 
 </div>
 </div>
@@ -235,6 +204,7 @@ If the array is accessible by value at the function call site, you can use the f
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Further code...</span></div>
 <div class="line">}</div>
+<div class="ttc" id="agroup__eif__mdns_html_gaebd461482bdf91710b7b63c3613bdbd5"><div class="ttname"><a href="group__eif__mdns.html#gaebd461482bdf91710b7b63c3613bdbd5">eif_set_mdns_records</a></div><div class="ttdeci">esp_err_t eif_set_mdns_records(const mdns_txt_item_t txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT], size_t txt_records_count)</div><div class="ttdoc">Set custom TXT records for mDNS service discovery.</div></div>
 </div> 
 </div>
 </div>

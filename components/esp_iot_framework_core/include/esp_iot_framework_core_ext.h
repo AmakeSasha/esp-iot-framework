@@ -85,7 +85,7 @@
      * @name Basic Auth Configuration
      * @brief Validation limits for HTTP Basic Auth.<br>@note Only available if the `Kconfig` option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled.
      * @{ */
-    /** @brief Minimum `Line` length without null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46` */
+    /** @brief Minimum `Line` length without null-terminator (`\0`).Example of the value: `Basic YWRtaW46` */
     #define EIF_BASIC_AUTH_LINE_MIN_LEN 14U
     /** @brief Maximum `Line` length including null-terminator (`\0`).<br>Example of the value: `Basic YWRtaW46MTIzNDU2Nzg5MHF3ZXJ0eTBxd2VydHkwcXdlcnR5MDE=` */
     #define EIF_BASIC_AUTH_LINE_MAX_LEN 59U

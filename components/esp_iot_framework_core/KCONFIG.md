@@ -26,19 +26,6 @@ This section describes the `esp_iot_framework_core` configuration parameters. Al
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_MDNS">
-  <code>EIF_CORE_ENABLE_MDNS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
-</div>
-
-Name in the `menuconfig`: `Enable mDNS Support (Multicast DNS)`
-
-Enables the Multicast DNS (`mDNS`) responder service. 
-
-- If `y`: The device can be accessed via both a friendly local name (e.g., `http://device-aabbcc.local`) and its IP (e.g., `http://192.168.1.45`). This makes it easier to find the device without checking the router's DHCP list.
-- If `n`: The device is accessible only via its direct IP address (e.g., `http://192.168.1.45`).
-
----
-
 <div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_TLS">
   <code>EIF_CORE_ENABLE_TLS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
 </div>
@@ -218,6 +205,6 @@ Name in the `menuconfig`: `Reboot task stack size (words - 4 bytes)`
 
 Stack size for the task that manages the system shutdown sequence.
    
-The task stops the Wi-Fi driver halts the HTTP server, and executes the `user_pre_reboot_cb` (registered using the `eif_register_handler_system_reboot()`) before calling `esp_restart()`. Increase this value if `user_pre_reboot_cb` performs stack-heavy operations like NVS writes or complex logging.
+The task stops the Wi-Fi driver halts the HTTP server, and executes the `handler_system_reboot` (registered using the `eif_register_handler_system_reboot()`) before calling `esp_restart()`. Increase this value if `handler_system_reboot` performs stack-heavy operations like NVS writes or complex logging.
 
 Defined in 4-byte words. To ensure the task can be successfully created in low-memory conditions, <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE">EIF_CORE_MEM_MONITOR_CRITICAL_SIZE</a></code> must be at least `8` times larger than this value.

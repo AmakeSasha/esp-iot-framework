@@ -48,7 +48,7 @@
  */
 /**
  * @defgroup server_group SERVER
- * @brief Public API for application development. Provides framework initialization, Wi-Fi configuration, network profile management, and system lifecycle hooks.
+ * @brief Public API for the HTTP(S) server node. Provides server initialization, HTTP/HTTPS server tuning, and registration of custom URI handlers for application endpoints.
  */
 /**
  * @defgroup server_rest_api REST API
@@ -133,7 +133,7 @@ esp_err_t eif_server_initialize(void);
  *       or HTTPS mode, and the corresponding configuration functions will
  *       be available.
  *
- * If you frequently intersect between HTTP and HTTPS during development and need
+ * If you frequently switch between HTTP and HTTPS during development and need
  * custom server settings, you can use the following construct:
  * @code{c}
  * #include <esp_err.h>

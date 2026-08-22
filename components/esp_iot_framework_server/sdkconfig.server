@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
 # Folder: ./components/esp_iot_framework_server
-# File: sdkconfig.defaults
+# File: sdkconfig.server
 # Library: esp_iot_framework_server
 # 
 # Copyright 2026 AmakeSasha

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-# Example: hello_world_cpp_server
-# Folder: ./examples/hello_world_cpp_server
+# Example: hello_world_client
+# Folder: ./examples/hello_world_client
 # File: CmakeLists.txt
 # 
 # Copyright 2026 AmakeSasha
@@ -21,9 +21,9 @@ cmake_minimum_required(VERSION 3.16)
 
 list(APPEND SDKCONFIG_DEFAULTS 
     "../../components/esp_iot_framework_core/sdkconfig.defaults"
-    "../../components/esp_iot_framework_server/sdkconfig.server"
+    "../../components/esp_iot_framework_client/sdkconfig.client"
 )
 list(APPEND EXTRA_COMPONENT_DIRS "../../components")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(example_hello_world_cpp_server)
+project(example_hello_world_client)

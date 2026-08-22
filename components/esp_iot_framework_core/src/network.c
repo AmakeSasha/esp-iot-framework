@@ -22,89 +22,84 @@
 
 #include "sdkconfig.h"
 
+#include <mdns.h>
 #include <string.h>
 #include <esp_log.h>
 #include <esp_wifi.h>
 #include <esp_system.h>
-#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-    #include <mdns.h>
-#endif
 
 #include "esp_iot_framework_core_macros.h"
 #include "core_internal.h"
 #include "esp_iot_framework_core.h"
 
-#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-    #ifdef CONFIG_EIF_CORE_ENABLE_TLS
-        #define WEB_PROTOCOL  "https"
-        #define MDNS_PROTOCOL "_https"
-        #define MDNS_PORT     443
-    #else
-        #define WEB_PROTOCOL  "http"
-        #define MDNS_PROTOCOL "_http"
-        #define MDNS_PORT     80
-    #endif
-
-    static esp_err_t mdns_initialize(void) {
-        EIF_TAG_WITH_UNUSED "mDNS";
-
-        esp_err_t ret = ESP_OK;
-        const eif_core_t * const cfg = eif_core_get();
-
-        /* @note Testing revealed that omitting this call triggers hard kernel
-         * panic (IllegalInstruction). Forcing an explicit cleanup here prevents
-         * the crash and ensures stability. This error is presumably caused by
-         * asynchronous cleanup of mDNS services.*/
-        (void)mdns_service_remove_all();
-
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_init(), "Failed to initialize mDNS");
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_hostname_set(cfg->mdns_hostname),
-            "Could not set hostname to '%s'", cfg->mdns_hostname);
-
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret,
-            mdns_instance_name_set(cfg->mdns_instance_name),
-            "Failed to set instance name: %s", cfg->mdns_instance_name);
-
-        /* @deviation [Rule 11.8] eif_core_get() intentionally returns a const pointer 
-         * to protect core configuration data from accidental modification, enforcing 
-         * changes strictly through dedicated setters. The explicit cast is required 
-         * only because the third-party ESP-IDF 'mdns_service_add()' function misses 
-         * 'const' in its signature for the TXT items argument. Making core data 
-         * non-const would break the system data protection model. Code review of the 
-         * ESP-IDF source confirms that 'mdns_service_add()' operates in read-only 
-         * mode and does not modify the buffer, making this cast completely safe. */
-        /* cppcheck-suppress misra-c2012-11.8 */
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_service_add(
-            cfg->mdns_instance_name, MDNS_PROTOCOL, "_tcp", MDNS_PORT,
-            (mdns_txt_item_t *)cfg->mdns_txt_records,
-            cfg->mdns_txt_records_count
-        ), "Could not register mDNS txt records");
-
-        if (ret == ESP_OK) {
-            EIF_LOG_I("mDNS started. Link: %s://%s.local",
-                WEB_PROTOCOL, cfg->mdns_hostname);
-        }
-
-        /* Cleanup */
-        if (ret != ESP_OK) {
-            mdns_free();
-        }
-        return ret;
-    }
-
-    static esp_err_t mdns_deinitialize(void) {
-        EIF_TAG_WITH_UNUSED "mDNS";
-
-        EIF_LOG_I("Stopping mDNS...");
-
-        (void)mdns_service_remove_all();
-        vTaskDelay(pdMS_TO_TICKS(100));
-        mdns_free();
-
-        EIF_LOG_I("mDNS deinitialized");
-        return ESP_OK;
-    }
+#ifdef CONFIG_EIF_CORE_ENABLE_TLS
+    #define WEB_PROTOCOL  "https"
+    #define MDNS_PROTOCOL "_eif_https"
+    #define MDNS_PORT     443
+#else
+    #define WEB_PROTOCOL  "http"
+    #define MDNS_PROTOCOL "_eif_http"
+    #define MDNS_PORT     80
 #endif
+
+static esp_err_t mdns_deinitialize(void) {
+    EIF_TAG_WITH_UNUSED "mDNS";
+
+    EIF_LOG_I("Stopping mDNS...");
+
+    (void)mdns_service_remove_all();
+    vTaskDelay(pdMS_TO_TICKS(100));
+    mdns_free();
+
+    EIF_LOG_I("mDNS deinitialized");
+    return ESP_OK;
+}
+
+static esp_err_t mdns_initialize(void) {
+    EIF_TAG_WITH_UNUSED "mDNS";
+
+    esp_err_t ret = ESP_OK;
+    const eif_core_t * const cfg = eif_core_get();
+
+    /* @note Testing revealed that omitting this call triggers hard kernel
+     * panic (IllegalInstruction). Forcing an explicit cleanup here prevents
+     * the crash and ensures stability. This error is presumably caused by
+     * asynchronous cleanup of mDNS services.*/
+    (void)mdns_service_remove_all();
+
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_init(), "Failed to initialize mDNS");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_hostname_set(cfg->mdns_hostname),
+        "Could not set hostname to '%s'", cfg->mdns_hostname);
+
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        mdns_instance_name_set(cfg->mdns_instance_name),
+        "Failed to set instance name: %s", cfg->mdns_instance_name);
+
+    /* @deviation [Rule 11.8] eif_core_get() intentionally returns a const pointer 
+     * to protect core configuration data from accidental modification, enforcing 
+     * changes strictly through dedicated setters. The explicit cast is required 
+     * only because the third-party ESP-IDF 'mdns_service_add()' function misses 
+     * 'const' in its signature for the TXT items argument. Making core data 
+     * non-const would break the system data protection model. Code review of the 
+     * ESP-IDF source confirms that 'mdns_service_add()' operates in read-only 
+     * mode and does not modify the buffer, making this cast completely safe. */
+    /* cppcheck-suppress misra-c2012-11.8 */
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_service_add(
+        cfg->mdns_instance_name, MDNS_PROTOCOL, "_tcp", MDNS_PORT,
+        (mdns_txt_item_t *)cfg->mdns_txt_records,
+        cfg->mdns_txt_records_count
+    ), "Could not register mDNS txt records");
+
+    if (ret == ESP_OK) {
+        EIF_LOG_I("mDNS started. Link: %s://%s.local", WEB_PROTOCOL, cfg->mdns_hostname);
+    }
+
+    /* Cleanup */
+    if (ret != ESP_OK) {
+        (void)mdns_deinitialize();
+    }
+    return ret;
+}
 
 /* --- */
 
@@ -211,8 +206,10 @@ static void wifi_event_handler(
 
                 bool is_wifi_set_config = false;
                 while (!is_wifi_set_config) {
-                    uint8_t next_index = (cfg->current_wifi_profile_index + 1U)
-                        % cfg->wifi_profiles_count;
+                    const uint8_t profile_count = cfg->wifi_profiles_count;
+                    const uint8_t next_index = (profile_count > 0U)
+                        ? ((cfg->current_wifi_profile_index + 1U) % profile_count)
+                        : 0U;
 
                     EIF_SHOW_ESP_ERR_T(ret,
                         eif_wifi_set_config_from_profile(next_index),
@@ -271,11 +268,9 @@ static void ip_event_handler(
                 (void)memcpy(&got_ip, event_data, sizeof(got_ip));
                 EIF_LOG_I("System got IP: " IPSTR, IP2STR(&got_ip.ip_info.ip));
 
-                #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-                    EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_initialize(),
-                        "mDNS startup failed");
-                    vTaskDelay(pdMS_TO_TICKS(100));
-                #endif
+                EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_initialize(), "mDNS startup failed");
+                vTaskDelay(pdMS_TO_TICKS(100));
+
                 if (cfg->handler_ip_got != NULL) {
                     EIF_IF_OK_CHECK_ESP_ERR_T(ret, cfg->handler_ip_got(),
                         "Failed to execute 'IP_EVENT_STA_GOT_IP' handler");
@@ -286,10 +281,9 @@ static void ip_event_handler(
             case IP_EVENT_STA_LOST_IP:
                 EIF_LOG_W("IP address lost, taking services offline...");
 
-                #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-                    (void)mdns_deinitialize();
-                    vTaskDelay(pdMS_TO_TICKS(100));
-                #endif
+                (void)mdns_deinitialize();
+                vTaskDelay(pdMS_TO_TICKS(100));
+
                 if (cfg->handler_ip_lost != NULL) {
                     EIF_IF_OK_CHECK_ESP_ERR_T(ret, cfg->handler_ip_lost(),
                         "Failed to execute 'IP_EVENT_STA_LOST_IP' handler");
@@ -320,11 +314,8 @@ esp_err_t eif_wifi_deinitialize(void) {
     }
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-        EIF_SHOW_ESP_ERR_T(ret, mdns_deinitialize(),
-            "mDNS deinitialization failed");
-        vTaskDelay(pdMS_TO_TICKS(100));
-    #endif
+    EIF_SHOW_ESP_ERR_T(ret, mdns_deinitialize(), "mDNS deinitialization failed");
+    vTaskDelay(pdMS_TO_TICKS(100));
 
     EIF_SHOW_ESP_ERR_T(ret, esp_event_handler_unregister(
         WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler
@@ -393,18 +384,16 @@ esp_err_t eif_wifi_initialize(void) {
         }
     }
 
-    #if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
-        EIF_IF_OK_CHECK_ESP_ERR_T(ret, eif_format_mdns_hostname(),
-            "Error formatting mDNS fields");
+    EIF_IF_OK_CHECK_ESP_ERR_T(ret,
+        eif_format_mdns_hostname(), "Error formatting mDNS fields");
 
-        if (ret == ESP_OK) {
-            EIF_SHOW_ESP_ERR_T(ret,
-                esp_netif_set_hostname(sta_netif, cfg->mdns_hostname),
-                "Failed to set Wi-Fi DHCP hostname");
+    if (ret == ESP_OK) {
+        EIF_SHOW_ESP_ERR_T(ret,
+            esp_netif_set_hostname(sta_netif, cfg->mdns_hostname),
+            "Failed to set Wi-Fi DHCP hostname");
 
-            ret = ESP_OK;
-        }
-    #endif
+        ret = ESP_OK;
+    }
 
     if (ret == ESP_OK) {
         (void)eif_wifi_handler_stop_set(false);

@@ -48,7 +48,8 @@
 
 #if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_D
     #define MSG_CALL_SETTER  "Calling the setter `%s`"
-    #define MSG_CALL_UPDATER "Calling the setter `%s`"
+    #define MSG_CALL_GETTER  "Calling the getter `%s`"
+    #define MSG_CALL_UPDATER "Calling the updater `%s`"
 #endif
 
 /* --- */

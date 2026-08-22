@@ -72,7 +72,7 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>This module allows registering custom routes and fine-tuning server. The framework automatically manages the server lifecycle, starting it only when a valid IP is obtained and stopping it upon disconnection.</p>
 <dl class="section note"><dt>Note</dt><dd>To enable or disable encryption (TLS/HTTPS), use the <code> <a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS </a> </code> flag from <code>Kconfig</code> via <code>idf.py menuconfig</code>. Depending on this setting, the server will operate in either HTTP or HTTPS mode, and the corresponding configuration functions will be available.</dd></dl>
-<p>If you frequently intersect between HTTP and HTTPS during development and need custom server settings, you can use the following construct: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
+<p>If you frequently switch between HTTP and HTTPS during development and need custom server settings, you can use the following construct: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;esp_err.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;esp_https_server.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_core.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;esp_iot_framework_server.h&gt;</span></div>

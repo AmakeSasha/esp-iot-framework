@@ -26,4 +26,4 @@ list(APPEND SDKCONFIG_DEFAULTS
 list(APPEND EXTRA_COMPONENT_DIRS "../../components")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(example_hello_world)
+project(example_hello_world_server)

@@ -22,15 +22,13 @@
 
 #include "sdkconfig.h"
 
+#include <mdns.h>
 #include <stdlib.h>
 #include <esp_mac.h>
 #include <esp_log.h>
 #include <esp_err.h>
 #include <esp_wifi.h>
 #include <esp_ota_ops.h>
-#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-    #include <mdns.h>
-#endif
 
 #include "esp_iot_framework_core_macros.h"
 #include "core_internal.h"
@@ -44,6 +42,7 @@
 
 #if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_D
     #define CFG_MSG_CALL_SETTER  "Calling the setter `%s`"
+    #define CFG_MSG_CALL_GETTER  "Calling the getter `%s`"
     #define CFG_MSG_CALL_UPDATER "Calling the setter `%s`"
     #define CFG_MSG_REPLACED     "`%s` with %d replaced by %d"
 #endif
@@ -58,7 +57,7 @@ static eif_core_t cfg = {0};
 esp_err_t eif_core_initialize(void) {
     esp_err_t ret = ESP_OK;
 
-    EIF_LOG_D(MSG_CALL_SETTER, __func__);
+    EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
 
     #ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
         eif_core_log_init();
@@ -177,7 +176,7 @@ esp_err_t eif_wifi_get_test_result(
     if (index > cfg.wifi_profiles_count) {
         EIF_LOG_E("Index (%d) is too long (should be up to %d)",
             index, cfg.wifi_profiles_count);
-        ret = ESP_ERR_INVALID_ARG;
+        ret = ESP_ERR_INVALID_SIZE;
     }
     if (ret == ESP_OK) {
         (void)memcpy(out_result, &cfg.wifi_test_results[index],
@@ -237,162 +236,158 @@ esp_err_t eif_set_wifi_profiles_count(uint8_t wifi_profiles_count) {
 /* ======================== */
 /*    mDNS Configuration    */
 /* ======================== */
-#ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-    const char* eif_get_mdns_hostname(void) {
-        const char *mdns_name = NULL;
+const char* eif_get_mdns_hostname(void) {
+    const char *mdns_name = NULL;
 
-        EIF_LOG_D(CFG_MSG_CALL_GETTER, __func__);
-
-        #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-            if (cfg.mdns_hostname[0] != '\0') {
-                mdns_name = (const char *)cfg.mdns_hostname;
-            }
-        #endif
-
-        return mdns_name;
+    EIF_LOG_D(CFG_MSG_CALL_GETTER, __func__);
+    
+    if (cfg.mdns_hostname[0] != '\0') {
+        mdns_name = (const char *)cfg.mdns_hostname;
     }
 
-    esp_err_t eif_set_mdns(
-        const char * const hostname, const char * const instance_name
-    ) {
-        esp_err_t ret = ESP_OK;
+    return mdns_name;
+}
 
-        EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
+esp_err_t eif_set_mdns(
+    const char * const hostname, const char * const instance_name
+) {
+    esp_err_t ret = ESP_OK;
 
-        EIF_IF_OK_CHECK_NOT_NULL(ret, hostname, ESP_ERR_INVALID_ARG);
-        EIF_IF_OK_CHECK_NOT_NULL(ret, instance_name, ESP_ERR_INVALID_ARG);
+    EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
 
-        size_t hostname_len = eif_strnlen(hostname, EIF_MDNS_HOSTNAME_MAX_LEN);
-        if (hostname_len >= (size_t)EIF_MDNS_HOSTNAME_MAX_LEN) {
-            EIF_LOG_E(CFG_ERR_INVALID_LEN, "hostname",
-                hostname_len, 0, EIF_MDNS_HOSTNAME_MAX_LEN);
-            ret = ESP_ERR_INVALID_SIZE;
-        }
+    EIF_IF_OK_CHECK_NOT_NULL(ret, hostname, ESP_ERR_INVALID_ARG);
+    EIF_IF_OK_CHECK_NOT_NULL(ret, instance_name, ESP_ERR_INVALID_ARG);
 
-        size_t instance_len = eif_strnlen(instance_name, EIF_MDNS_INSTANCE_NAME_MAX_LEN);
-        if (instance_len >= (size_t)EIF_MDNS_INSTANCE_NAME_MAX_LEN) {
-            EIF_LOG_E(CFG_ERR_INVALID_LEN, "instance_name",
-                instance_len, 0, EIF_MDNS_INSTANCE_NAME_MAX_LEN);
-            ret = ESP_ERR_INVALID_SIZE;
-        }
+    size_t hostname_len = eif_strnlen(hostname, EIF_MDNS_HOSTNAME_MAX_LEN);
+    if (hostname_len >= (size_t)EIF_MDNS_HOSTNAME_MAX_LEN) {
+        EIF_LOG_E(CFG_ERR_INVALID_LEN, "hostname",
+            hostname_len, 0, EIF_MDNS_HOSTNAME_MAX_LEN);
+        ret = ESP_ERR_INVALID_SIZE;
+    }
+
+    size_t instance_len = eif_strnlen(instance_name, EIF_MDNS_INSTANCE_NAME_MAX_LEN);
+    if (instance_len >= (size_t)EIF_MDNS_INSTANCE_NAME_MAX_LEN) {
+        EIF_LOG_E(CFG_ERR_INVALID_LEN, "instance_name",
+            instance_len, 0, EIF_MDNS_INSTANCE_NAME_MAX_LEN);
+        ret = ESP_ERR_INVALID_SIZE;
+    }
+
+    if (ret == ESP_OK) {
+        (void)memcpy(cfg.mdns_hostname, hostname, hostname_len);
+        cfg.mdns_hostname[hostname_len] = '\0';
+
+        (void)memcpy(cfg.mdns_instance_name, instance_name, instance_len);
+        cfg.mdns_instance_name[instance_len] = '\0';
+    }
+
+    /* Cleanup */
+    return ret;
+}
+
+esp_err_t eif_set_mdns_records(
+    const mdns_txt_item_t txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT],
+    size_t txt_records_count
+) {
+    esp_err_t ret = ESP_OK;
+
+    EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
+
+    cfg.mdns_txt_records_count = 0U;
+    (void)memset((void *)cfg.mdns_txt_records, 0U, sizeof(cfg.mdns_txt_records));
+
+    if (txt_records_count > (size_t)EIF_MDNS_TXT_RECORDS_MAX_COUNT) {
+        EIF_LOG_E(CFG_ERR_INVALID_LEN, "txt_records_count",
+            txt_records_count, 0, EIF_MDNS_TXT_RECORDS_MAX_COUNT);
+        ret = ESP_ERR_INVALID_ARG;
+    }
+    if (txt_records_count > 0U) {
+        EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records, ESP_ERR_INVALID_ARG);
+    }
+
+    for (size_t i = 0; i < txt_records_count; i++) {
+        EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].key, ESP_ERR_INVALID_SIZE);
+        EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].value, ESP_ERR_INVALID_SIZE);
 
         if (ret == ESP_OK) {
-            (void)memcpy(cfg.mdns_hostname, hostname, hostname_len);
-            cfg.mdns_hostname[hostname_len] = '\0';
-
-            (void)memcpy(cfg.mdns_instance_name, instance_name, instance_len);
-            cfg.mdns_instance_name[instance_len] = '\0';
+            cfg.mdns_txt_records[i] = txt_records[i];
+        } else {
+            EIF_LOG_E("Invalid MDNS record at index %zu", i);
         }
-
-        /* Cleanup */
-        return ret;
+    }
+    if (ret == ESP_OK) {
+        EIF_LOG_I("Successfully set %d 'mDNS TXT records'", txt_records_count);
     }
 
-    esp_err_t eif_set_mdns_records(
-        const mdns_txt_item_t txt_records[EIF_MDNS_TXT_RECORDS_MAX_COUNT],
-        size_t txt_records_count
-    ) {
-        esp_err_t ret = ESP_OK;
-
-        EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
-
-        cfg.mdns_txt_records_count = 0U;
-        (void)memset((void *)cfg.mdns_txt_records, 0U,
-            sizeof(cfg.mdns_txt_records));
-
-        if (txt_records_count > (size_t)EIF_MDNS_TXT_RECORDS_MAX_COUNT) {
-            EIF_LOG_E(CFG_ERR_INVALID_LEN, "txt_records_count",
-                txt_records_count, 0, EIF_MDNS_TXT_RECORDS_MAX_COUNT);
-            ret = ESP_ERR_INVALID_ARG;
-        }
-        if (txt_records_count > 0U) {
-            EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records, ESP_ERR_INVALID_ARG);
-        }
-
-        for (size_t i = 0; i < txt_records_count; i++) {
-            EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].key, ESP_ERR_INVALID_SIZE);
-            EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].value, ESP_ERR_INVALID_SIZE);
-
-            if (ret == ESP_OK) {
-                cfg.mdns_txt_records[i] = txt_records[i];
-            } else {
-                EIF_LOG_E("Invalid MDNS record at index %zu", i);
-            }
-        }
-        if (ret == ESP_OK) {
-            EIF_LOG_I("Successfully set %d 'mDNS TXT records'", txt_records_count);
-        }
-
-        /* Cleanup */
-        return ret;
-    }
-#endif
+    /* Cleanup */
+    return ret;
+}
 /* end mDNS Configuration */
 
 /* Private setters */
-#if defined(CONFIG_EIF_CORE_ENABLE_MDNS) || defined(CONFIG_EIF_CORE_ENABLE_TLS)
-    esp_err_t eif_format_mdns_hostname(void) {
-        esp_err_t ret = ESP_OK;
+esp_err_t eif_format_mdns_hostname(void) {
+    esp_err_t ret = ESP_OK;
 
-        uint8_t mac[6] = {0};
-        const char * hostname = cfg.mdns_hostname;
-        const char hex_chars[] = "0123456789abcdef";
-        char final_name[MDNS_HOSTNAME_FULL_MAX_LEN] = {0};
+    uint8_t mac[6] = {0};
+    const char * hostname = cfg.mdns_hostname;
+    const char hex_chars[] = "0123456789abcdef";
+    char final_name[MDNS_HOSTNAME_FULL_MAX_LEN] = {0};
 
-        EIF_LOG_D(CFG_MSG_CALL_UPDATER, __func__);
+    EIF_LOG_D(CFG_MSG_CALL_UPDATER, __func__);
 
-        ret = esp_read_mac(mac, ESP_MAC_WIFI_STA);
-        if (ret == ESP_OK) {
-            if (eif_strempty(cfg.mdns_hostname)) {
-                hostname = "device";
-            }
+    ret = esp_read_mac(mac, ESP_MAC_WIFI_STA);
+    if (ret == ESP_OK) {
+        if (eif_strempty(cfg.mdns_hostname)) {
+            hostname = "device";
+        }
 
-            size_t base_len = eif_strnlen(hostname, MDNS_HOSTNAME_FULL_MAX_LEN);
-            size_t total_len = base_len + 7U;
+        size_t base_len = eif_strnlen(hostname, EIF_MDNS_HOSTNAME_MAX_LEN);
+        size_t total_len = base_len + 7U;
 
-            if (total_len >= (size_t)MDNS_HOSTNAME_FULL_MAX_LEN) {
-                ret = ESP_ERR_INVALID_SIZE;
-            } else {
-                (void)memcpy(final_name, hostname, base_len);
+        if (total_len >= (size_t)EIF_MDNS_HOSTNAME_MAX_LEN) {
+            ret = ESP_ERR_INVALID_SIZE;
+        } else {
+            (void)memcpy(final_name, hostname, base_len);
 
-                size_t pos = base_len;
-                final_name[pos] = '-';
+            size_t pos = base_len;
+            final_name[pos] = '-';
+            pos++;
+
+            for (size_t i = 3U; i < 6U; i++) {
+                size_t hi = ((size_t)mac[i] >> 4U) & 0x0FU;
+                size_t lo = (size_t)mac[i] & 0x0FU;
+
+                final_name[pos] = hex_chars[hi];
                 pos++;
-
-                for (size_t i = 3U; i < 6U; i++) {
-                    size_t hi = ((size_t)mac[i] >> 4U) & 0x0FU;
-                    size_t lo = (size_t)mac[i] & 0x0FU;
-
-                    final_name[pos] = hex_chars[hi];
-                    pos++;
-                    final_name[pos] = hex_chars[lo];
-                    pos++;
-                }
-                final_name[pos] = '\0';
+                final_name[pos] = hex_chars[lo];
+                pos++;
             }
+            final_name[pos] = '\0';
         }
-
-        if (ret == ESP_OK) {
-            (void)memcpy((void *)cfg.mdns_hostname, (const void *)final_name,
-                (size_t)MDNS_HOSTNAME_FULL_MAX_LEN);
-            cfg.mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN - 1U] = '\0';
-
-            if (eif_strempty(cfg.mdns_instance_name)) {
-                (void)memcpy(
-                    (void *)cfg.mdns_instance_name, 
-                    (const void *)cfg.mdns_hostname,
-                    sizeof(cfg.mdns_instance_name)
-                );
-                cfg.mdns_instance_name[sizeof(cfg.mdns_instance_name) - 1U]='\0';
-            }
-
-            EIF_LOG_I("Full mDNS hostname: %s", cfg.mdns_hostname);
-            EIF_LOG_I("mDNS instance name: %s", cfg.mdns_instance_name);
-        }
-
-        return ret;
     }
-#endif
+
+    if (ret == ESP_OK) {
+        (void)memcpy(
+            (void *)cfg.mdns_hostname,
+            (const void *)final_name,
+            (size_t)MDNS_HOSTNAME_FULL_MAX_LEN
+        );
+        cfg.mdns_hostname[MDNS_HOSTNAME_FULL_MAX_LEN - 1U] = '\0';
+
+        if (eif_strempty(cfg.mdns_instance_name)) {
+            (void)memcpy(
+                (void *)cfg.mdns_instance_name, 
+                (const void *)cfg.mdns_hostname,
+                sizeof(cfg.mdns_instance_name)
+            );
+            cfg.mdns_instance_name[sizeof(cfg.mdns_instance_name) - 1U]='\0';
+        }
+
+        EIF_LOG_I("Full mDNS hostname: %s", cfg.mdns_hostname);
+        EIF_LOG_I("mDNS instance name: %s", cfg.mdns_instance_name);
+    }
+
+    return ret;
+}
 
 esp_err_t eif_set_current_wifi_profile_index(uint8_t index) {
     esp_err_t ret = ESP_OK;
@@ -415,7 +410,7 @@ esp_err_t eif_set_current_wifi_profile_index(uint8_t index) {
 esp_err_t eif_set_wifi_result_test(uint8_t index, eif_wifi_test_result result) {
     esp_err_t ret = ESP_OK;
 
-    EIF_LOG_D(_MSG_CALL_SETTER, __func__);
+    EIF_LOG_D(CFG_MSG_CALL_SETTER, __func__);
 
     if (index > cfg.wifi_profiles_count) {
         EIF_LOG_E("Index (%d) is too long (should be up to %d)",

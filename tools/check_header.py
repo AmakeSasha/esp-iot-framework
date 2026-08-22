@@ -272,8 +272,10 @@ def get_comment_type(path):
         "kconfig", 
         "doxyfile", 
         "cmakelists.txt", 
-        "kconfig.projbuild", 
-        "sdkconfig.defaults"
+        "kconfig.projbuild",
+        "sdkconfig.defaults",
+        "sdkconfig.server",
+        "sdkconfig.client"
     }
     HASH_EXTENSIONS  = { ".py" }
 

@@ -82,8 +82,8 @@ esp_err_t relay_status_handler(httpd_req_t *req) {
     json_gen_str_start(&jgen, json_buffer, JSON_BUF_LEN, NULL, NULL);
     /* { */
     json_gen_start_object(&jgen);
-    /*   "ligoc_str": "INVERTED", */
-    json_gen_obj_set_string(&jgen, "ligoc_str", cfg->is_inversed ? "INVERTED" : "DIRECT");
+    /*   "logic_str": "INVERTED", */
+    json_gen_obj_set_string(&jgen, "logic_str", cfg->is_inversed ? "INVERTED" : "DIRECT");
     /*   "state_str": "PIN_ON", */
     json_gen_obj_set_string(&jgen, "state_str", state);
     /*   "number_of_changes": 24 */

@@ -19,20 +19,6 @@
 # limitations under the License.
 
 menu "ESP IoT framework, CORE"
-    config EIF_CORE_ENABLE_MDNS
-        bool "Enable mDNS Support (Multicast DNS)"
-        default y
-        select MDNS if EIF_CORE_ENABLE_MDNS
-        help
-            Enables the Multicast DNS (mDNS) responder service.
-           
-            - If `y`: The device can be accessed via both a friendly local name
-              (e.g., `http://device-aabbcc.local`) and its IP
-              (e.g., `http://192.168.1.45:80`). This makes it easier to find the device
-              without checking the router's DHCP list.
-            - If `n`: The device is accessible only via its direct IP address
-              (e.g., `http://192.168.1.45:80`).
-
     config EIF_CORE_ENABLE_TLS
         bool "Enable HTTPS (TLS/SSL) Support"
         default y
@@ -168,11 +154,11 @@ menu "ESP IoT framework, CORE"
                 This parameter defines the time interval between consecutive memory fragmentation
                 checks performed by the memory monitor task.
 
-                The actual time to reboot = (CHECK_INTERVAL / 2) × NUMBER_CHECKS.
+                The actual time to reboot = CHECK_INTERVAL × NUMBER_CHECKS.
 
                 Examples:
-                - 30 000 ms (30 s) + NUMBER_CHECKS=3 → reboot after 45 seconds.
-                - 60 000 ms (60 s) + NUMBER_CHECKS=5 → reboot after 150 seconds (2.5 min).
+                - 30 000 ms (30 s) + NUMBER_CHECKS=3 → reboot after 90 seconds (1.5 min).
+                - 60 000 ms (60 s) + NUMBER_CHECKS=5 → reboot after 300 seconds (5 min).
 
                 WARNING: If the monitor detects fragmentation or low RAM, the scan
                          time is cut in half for more reliable monitoring of the situation.
@@ -202,12 +188,15 @@ menu "ESP IoT framework, CORE"
                 Stack size for the task that manages the system shutdown sequence.
                
                 The task stops the Wi-Fi driver halts the HTTP server, and
-                executes the 'user_pre_reboot_cb' before calling esp_restart().
-                Increase this value if 'user_pre_reboot_cb' performs stack-heavy
+                executes the 'handler_system_reboot' before calling esp_restart().
+                Increase this value if 'handler_system_reboot' performs stack-heavy
                 operations like NVS writes or complex logging.
 
-                Note: Defined in 4-byte words. EIF_CORE_MEM_MONITOR_CRITICAL_SIZE
-                must be at least twice this value (in bytes) to ensure the task
-                can be created in low-memory conditions.
+                Note: Defined in 4-byte words. The critical block threshold
+                     (EIF_CORE_MEM_MONITOR_CRITICAL_SIZE) must be at least 8 times
+                     the reboot task stack (or, equivalently, twice the stack size
+                     expressed in bytes) so the reboot task can be created in low-memory
+                     conditions.
+
     endmenu
 endmenu

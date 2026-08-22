@@ -23,6 +23,9 @@
 #ifndef ESP_IOT_FRAMEWORK_CLIENT_H
 #define ESP_IOT_FRAMEWORK_CLIENT_H
 
+#include <stdint.h>
+#include "lwip/ip_addr.h"
+
 #ifdef __cplusplus
     extern "C" {
 #endif
@@ -32,6 +35,10 @@
  * @copydoc md_docs_html_README_CLIENT
  * @{
  */
+
+typedef void (*scan_callback_t)(ip4_addr_t *ip);
+
+void network_scan_ping(uint32_t timeout_ms, scan_callback_t callback);
 
 /** @} */
 

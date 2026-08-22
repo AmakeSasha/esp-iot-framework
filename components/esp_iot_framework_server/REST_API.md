@@ -182,7 +182,7 @@ Content-Length: 20
   - `proto`: Wi-Fi protocol generation (mapped from `esp_wifi_get_protocol()`)
   - `band`: Active frequency band (`2.4 GHz` or `5 GHz`)
   - `lwip_hostname`: Device network name registered in the router DHCP client table (`null` if unassigned)
-  - `mdns_hostname`: Local mDNS domain name (`null` if <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS</a></code> is disabled)
+  - `mdns_hostname`: Local mDNS domain name
   - `used_tls`: Whether TLS is enabled on the server or not
 
 ---
@@ -404,21 +404,20 @@ Content-Length: 20
   <br>
 
   **Reset Reason Codes**:
-  | Code | String                     |
-  |------|----------------------------|
-  | `1`  | `Power-on reset`           |
-  | `2`  | `External pin reset`       |
-  | `3`  | `Software reset`           |
-  | `4`  | `System panic reset`       |
-  | `5`  | `Watchdog timer reset`     |
-  | `6`  | `Task watchdog reset`      |
-  | `7`  | `Interrupt watchdog reset` |
-  | `8`  | `Deep sleep wake-up reset` |
-  | `9`  | `SDIO reset`               |
-  | `10` | `USB reset`                |
-  | `11` | `JTAG reset`               |
-  | `12` | `RTC system reset`         |
-  | `13` | `RTC CPU reset`            |
+  | Code | String                   |
+  |------|--------------------------|
+  | 1    | Power-on reset           |
+  | 2    | External pin reset       |
+  | 3    | Software reset           |
+  | 4    | System panic reset       |
+  | 5    | Watchdog timer reset     |
+  | 6    | Task watchdog reset      |
+  | 7    | Interrupt watchdog reset |
+  | 8    | Deep sleep wake-up reset |
+  | 9    | SDIO reset               |
+  | 10   | USB reset                |
+  | 11   | JTAG reset               |
+  | 12   | RTC system reset         |
 
 ---
 

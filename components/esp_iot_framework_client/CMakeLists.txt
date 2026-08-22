@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
-# Folder: ./components/esp_iot_framework_server
+# Folder: ./components/esp_iot_framework_client
 # File: CMakeLists.txt
-# Library: esp_iot_framework_server
+# Library: esp_iot_framework_client
 # 
 # Copyright 2026 AmakeSasha
 # 
@@ -18,32 +18,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if(CONFIG_EIF_SERVER_ENABLE_WEB_ADMIN_GUI)
-    set(embed_files
-        "web/api.js.gz"
-        "web/LICENSE.gz"
-        "web/json2.js.gz"
-        "web/e404.html.gz"
-        "web/style.css.gz"
-        "web/index.html.gz"
-        "web/system.html.gz"
-        "web/network.html.gz"
-    )
-    message(STATUS "EIF-SERVER: component 'Web GUI' included")
-    if(CONFIG_EIF_CORE_ENABLE_BASIC_AUTH)
-        list(APPEND embed_files "web/e401.html.gz")
-    endif()
-    if(CONFIG_EIF_SERVER_ENABLE_WEB_FAVICON)
-        list(APPEND embed_files "web/logo.png.gz")
-    endif()
-    if(CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG)
-        list(APPEND embed_files "web/logs.html.gz")
-    endif()
-else()
-    set(embed_files "")
-    message(STATUS "EIF-SERVER: component 'Web GUI' excluded")
-endif()
-
 set(requires_components
     jsmn
     mdns
@@ -53,7 +27,7 @@ set(requires_components
     app_update
     json_generator
     esp_iot_framework_core
-)    
+)
 
 if(CONFIG_EIF_CORE_ENABLE_TLS)
     list(APPEND requires_components esp_https_server esp_https_ota)
@@ -63,14 +37,12 @@ else()
     message(STATUS "EIF-SERVER: component 'TLS' excluded, using 'HTTP'")
 endif()
 
-set(COMPONENT_NAME esp_iot_framework_server)
+set(COMPONENT_NAME esp_iot_framework_client)
 idf_component_register(
-    SRCS "src/web.c"
-         "src/config.c"
+    SRCS "src/test.c"
     INCLUDE_DIRS "include"
     PRIV_INCLUDE_DIRS "src" "private_include"
     PRIV_REQUIRES ${requires_components}
-    EMBED_FILES ${embed_files}
 )
 
 set(comp_target "__idf_${COMPONENT_NAME}")

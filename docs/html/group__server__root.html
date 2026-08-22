@@ -58,7 +58,7 @@ $(document).ready(function(){initNavTree('group__server__root.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="groups"></a>
 Modules</h2></td></tr>
 <tr class="memitem:group__server__group"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__server__group.html">SERVER</a></td></tr>
-<tr class="memdesc:group__server__group"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for application development. Provides framework initialization, Wi-Fi configuration, network profile management, and system lifecycle hooks. <br /></td></tr>
+<tr class="memdesc:group__server__group"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for the HTTP(S) server node. Provides server initialization, HTTP/HTTPS server tuning, and registration of custom URI handlers for application endpoints. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__server__rest__api"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__server__rest__api.html">REST API</a></td></tr>
 <tr class="memdesc:group__server__rest__api"><td class="mdescLeft">&#160;</td><td class="mdescRight">SERVER REST API documentation. <br /></td></tr>
@@ -109,7 +109,7 @@ Modules</h2></td></tr>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a>());</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__server__c.html#gad7cc3a063f611ce30b3900c839042b0d">eif_server_initialize</a>());</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a>());</div>
-<div class="line">    ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, 1));</div>
+<div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__eif__server.html#ga4946e101289cab31c127db1dcaa262e5">eif_server_set_uri_handlers</a>(my_uris, 1));</div>
 <div class="line">    ESP_ERROR_CHECK(<a class="code" href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a>());</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">while</span> (1) {</div>
@@ -118,6 +118,7 @@ Modules</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="agroup__config__c_html_gae24819dbf0c169ad7e418a5d3a978350"><div class="ttname"><a href="group__config__c.html#gae24819dbf0c169ad7e418a5d3a978350">eif_nvs_initialize</a></div><div class="ttdeci">esp_err_t eif_nvs_initialize(void)</div><div class="ttdoc">Initialize Non-Volatile Storage (NVS) and framework data.</div></div>
 <div class="ttc" id="agroup__config__c_html_gae5b882df2fa7cfb222ffda0cf4c70ba6"><div class="ttname"><a href="group__config__c.html#gae5b882df2fa7cfb222ffda0cf4c70ba6">eif_core_initialize</a></div><div class="ttdeci">esp_err_t eif_core_initialize(void)</div><div class="ttdoc">Initializes the CORE of the framework.</div></div>
+<div class="ttc" id="agroup__eif__server_html_ga4946e101289cab31c127db1dcaa262e5"><div class="ttname"><a href="group__eif__server.html#ga4946e101289cab31c127db1dcaa262e5">eif_server_set_uri_handlers</a></div><div class="ttdeci">esp_err_t eif_server_set_uri_handlers(const httpd_uri_t *const uri_handlers, size_t uri_handlers_count)</div><div class="ttdoc">Register custom URI handlers (endpoints).</div></div>
 <div class="ttc" id="agroup__eif__wifi__config_html_ga46875c7d8c6588027981c2659a1d1240"><div class="ttname"><a href="group__eif__wifi__config.html#ga46875c7d8c6588027981c2659a1d1240">eif_wifi_initialize</a></div><div class="ttdeci">esp_err_t eif_wifi_initialize(void)</div><div class="ttdoc">Launch the Wi-Fi subsystem and automated network services.</div></div>
 <div class="ttc" id="agroup__server__c_html_gad7cc3a063f611ce30b3900c839042b0d"><div class="ttname"><a href="group__server__c.html#gad7cc3a063f611ce30b3900c839042b0d">eif_server_initialize</a></div><div class="ttdeci">esp_err_t eif_server_initialize(void)</div><div class="ttdoc">Configures system-wide services and prepares the server networking environment.</div></div>
 </div><h1>Usage for creating end devices</h1>

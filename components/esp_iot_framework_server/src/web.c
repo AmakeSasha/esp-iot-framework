@@ -112,7 +112,7 @@
 #define HTTP_URI_MAX_LEN 16 * 1024
 #define HTTP_LOGS_CHUNK_SIZE 512
 
-#define MAX_REASONS_RESET_NUM 13
+#define MAX_REASONS_RESET_NUM 14
 #define MAC_NUMBERS_LEN 6U
 #define MAC_FORMATED_LEN 18U
 #define IP_FORMATED_LEN 16U
@@ -524,10 +524,10 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
         if (ret == ESP_OK) {
             /* { */
             (void)json_gen_start_object(&jgen);
-            /*   "ssid": ESP32_SETUP", */
+            /*   "ssid": "ESP32_SETUP", */
             (void)json_gen_obj_set_string(&jgen, "ssid", ssid);
             if (idx == 0U) {
-            /*   "password": 12345678" */
+            /*   "password": "12345678" */
                 (void)json_gen_obj_set_string(&jgen, "password", pass);
             }
             /* }, */
@@ -568,24 +568,20 @@ static esp_err_t h_wifi_info_json(httpd_req_t * const req) {
     #endif
 
     json_gen_str_t jgen = {0};
-    const char *band_str = "";
-    const char *proto_str = "";
-    const char *lwip_hostname = NULL;
+    const char * band_str = "";
+    const char * proto_str = "";
     wifi_ap_record_t ap_info = {0};
     char ip[IP_FORMATED_LEN] = {0};
     char gw[IP_FORMATED_LEN] = {0};
-    const char *auth_mode_str = "";
+    const char * auth_mode_str = "";
     esp_netif_ip_info_t ip_info = {0};
+    const char * lwip_hostname = NULL;
     char netmask[IP_FORMATED_LEN] = {0};
     char mac_str[MAC_FORMATED_LEN] = {0};
     char bssid_str[MAC_FORMATED_LEN] = {0};
     uint8_t own_mac[MAC_NUMBERS_LEN] = {0};
 
-    #ifdef CONFIG_EIF_CORE_ENABLE_MDNS
-        const char * const mdns_hostname = eif_get_mdns_hostname();
-    #else
-        const char * const mdns_hostname = NULL;
-    #endif
+    const char * const mdns_hostname = eif_get_mdns_hostname();
     esp_netif_t * netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
 
     EIF_IF_OK_CHECK_CONDITION(ret, netif == NULL, ESP_ERR_INVALID_STATE,
@@ -713,14 +709,9 @@ static esp_err_t h_wifi_info_json(httpd_req_t * const req) {
             /*   "lwip_hostname": null, */
             (void)json_gen_obj_set_null(&jgen, "lwip_hostname");
         }
-        if (mdns_hostname != NULL) {
-            /*   "mdns_hostname": "device-aabbcc", */
-            (void)json_gen_obj_set_string(&jgen, "mdns_hostname", mdns_hostname);
-        } else {
-            /*   "mdns_hostname": null, */
-            (void)json_gen_obj_set_null(&jgen, "mdns_hostname");
-        }
 
+        /*   "mdns_hostname": "device-aabbcc", */
+        (void)json_gen_obj_set_string(&jgen, "mdns_hostname", mdns_hostname);
         /*   "used_tls": true */
         (void)json_gen_obj_set_bool(&jgen, "used_tls", EIF_SERVER_TLS_VAL);
         /* } */
@@ -938,19 +929,20 @@ static esp_err_t h_wifi_result_json(httpd_req_t * const req) {
 
 static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     static const char* reasons[MAX_REASONS_RESET_NUM] = {
-        /*  0 */ "Power-On reset",
-        /*  1 */ "External pin reset",
-        /*  2 */ "System panic reset",
-        /*  3 */ "Panic reset",
-        /*  4 */ "Watchdog timer reset",
-        /*  5 */ "Task watchdog reset",
-        /*  6 */ "Interrupt watchdog reset",
-        /*  7 */ "Deep sleep wake-up reset",
-        /*  8 */ "SDIO reset",
-        /*  9 */ "USB reset",
-        /* 10 */ "JTAG reset",
-        /* 11 */ "RTC system reset",
-        /* 12 */ "RTC CPU reset"
+        /*  0 */ "",
+        /*  1 */ "Power-On reset",
+        /*  2 */ "External pin reset",
+        /*  3 */ "Software reset",
+        /*  4 */ "System panic reset",
+        /*  5 */ "Watchdog timer reset",
+        /*  6 */ "Task watchdog reset",
+        /*  7 */ "Interrupt watchdog reset",
+        /*  8 */ "Deep sleep wake-up reset",
+        /*  9 */ "SDIO reset",
+        /* 10 */ "USB reset",
+        /* 11 */ "JTAG reset",
+        /* 12 */ "RTC system reset",
+        /* 13 */ "RTC CPU reset",
     };
 
     esp_err_t ret = ESP_OK;
@@ -989,10 +981,13 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, format_mac_addr_to_buf(
         own_mac, mac_str, sizeof(mac_str)), "MAC formatting failed");
 
-    if ((reset_reason_int >= 1) && (reset_reason_int < MAX_REASONS_RESET_NUM)) {
-        reset_reason_str = reasons[reset_reason_int - 1];
-    } else {
-        ret = ESP_ERR_INVALID_STATE;
+    if (ret == ESP_OK) {
+        if ((reset_reason_int >= 1) && (reset_reason_int < MAX_REASONS_RESET_NUM)) {
+            reset_reason_str = reasons[reset_reason_int];
+        } else {
+            EIF_LOG_E("Failed to get reset reason");
+            ret = ESP_ERR_INVALID_STATE;
+        }
     }
 
     if (ret == ESP_OK) {

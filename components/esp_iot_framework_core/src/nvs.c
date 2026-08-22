@@ -398,7 +398,7 @@ esp_err_t eif_nvs_wifi_profile_load(
 
         if (ret == ESP_OK) {
             b64_pass = base64_encode(pass, pass_len);
-            EIF_IF_OK_CHECK_NOT_NULL(ret, b64_pass, ESP_ERR_INVALID_SIZE);
+            EIF_IF_OK_CHECK_NOT_NULL(ret, b64_pass, ESP_ERR_NO_MEM);
         }
 
         /* @note The 'admin:' credentials string is exactly 6 bytes. In Base64,

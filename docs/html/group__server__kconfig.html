@@ -54,7 +54,7 @@ $(document).ready(function(){initNavTree('group__server__kconfig.html',''); init
 </div><div class="contents">
 <p>Node SERVER <code>Kconfig</code> configuration options.  
 </p>
-<h1><a class="anchor" id="autotoc_md27"></a>
+<h1><a class="anchor" id="autotoc_md26"></a>
 Kconfig esp_iot_framework_server</h1>
 <p>This section describes the <code>esp_iot_framework_server</code> configuration parameters. All settings are available in the <code>idf.py menuconfig</code> configuration utility within the <code>ESP IoT Framework, SERVER</code> menu.</p>
 <hr  />
@@ -81,14 +81,6 @@ Kconfig esp_iot_framework_server</h1>
 </ul>
 <div style="background-color: #d1ecf1; border-left: 5px solid #17a2b8; padding: 12px; margin: 10px 0; color: #0c5460;"> <b>Note</b><br  />
 <code>ETag</code> validation occurs only <b>AFTER</b> this timer expires or if the user performs a manual refresh. </div><hr  />
-<div class="highlight-block" id="CONFIG_EIF_SERVER_ENABLE_BASIC_AUTH"> <code>EIF_SERVER_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>) </div><p>Name in the <code>menuconfig</code>: <code>Enable Basic Auth for the core URL (/_/*)</code></p>
-<p>Enables mandatory HTTP Basic Authentication for all administrative paths.</p>
-<ul>
-<li>If <code>y</code>: Any access to the Web GUI or the core JSON REST API requires a valid username (<code>admin</code>) and password verified against NVS storage.</li>
-<li>If <code>n</code>: Access control is bypassed. Anyone on the local network can change configuration, read logs, or trigger reboots.</li>
-</ul>
-<div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;"> <b>Warning</b><br  />
-Disabling authentication is highly dangerous for production. If <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">EIF_CORE_ENABLE_TLS</a></code> is disabled, credentials travel in plain text (Base64) and can be easily sniffed out of the air. </div><hr  />
 <div class="highlight-block" id="CONFIG_EIF_SERVER_WEB_SIZE_OTA_BUFFER"> <code>EIF_SERVER_WEB_SIZE_OTA_BUFFER</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>65536</code>, <em>default</em>: <code>4096</code>) </div><p>Name in the <code>menuconfig</code>: <code>OTA update buffer size (bytes)</code></p>
 <p>Size of the allocation buffer (in bytes) for receiving OTA firmware binaries via HTTP. This buffer size directly impacts throughput and is allocated dynamically from the heap only during an active OTA session.</p>
 <p>Recommended values:</p><ul>

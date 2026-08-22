@@ -40,13 +40,13 @@ enum {
     #ifdef CONFIG_EIF_SERVER_ENABLE_WEB_ADMIN_GUI
         + 7
     #endif
-    #ifdef CONFIG_EIF_SERVER_ENABLE_BASIC_AUTH
+    #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
         + 1
     #endif
     #ifdef CONFIG_EIF_CORE_ENABLE_TLS
         + 1
     #endif
-    #ifdef CONFIG_EIF_SERVER_LOG_ENABLE_REMOTE_DEBUG
+    #ifdef CONFIG_EIF_CORELOG_ENABLE_REMOTE_DEBUG
         + 1
     #endif
 };

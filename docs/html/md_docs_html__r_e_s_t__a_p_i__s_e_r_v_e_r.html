@@ -53,7 +53,7 @@ $(document).ready(function(){initNavTree('md_docs_html__r_e_s_t__a_p_i__s_e_r_v_
 <div class="title">REST_API_SERVER </div>  </div>
 </div><div class="contents">
 <div class="textblock"><p>The <code>esp_iot_framework_server</code> provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with <code>/_/</code> and support JSON format for requests and responses.</p>
-<h2><a class="anchor" id="autotoc_md39"></a>
+<h2><a class="anchor" id="autotoc_md37"></a>
 Authentication</h2>
 <p>When Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in <code>MAP URIs</code>) require HTTP Basic Authentication.</p>
 <p>To authenticate, include the following HTTP header in each of your requests: </p><div class="fragment"><div class="line">Authorization: Basic &lt;base64_encoded_credentials&gt;</div>
@@ -64,7 +64,7 @@ Replace the <code>&lt;base64_encoded_credentials&gt;</code> above with your Base
 <div class="line">Content-Length: 20</div>
 <div class="line"> </div>
 <div class="line">{&quot;profile_index&quot;: 1}</div>
-</div><h2><a class="anchor" id="autotoc_md40"></a>
+</div><h2><a class="anchor" id="autotoc_md38"></a>
 Map URIs</h2>
 <ul>
 <li><code>/_</code><ul>
@@ -119,7 +119,7 @@ Map URIs</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md41"></a>
+<h2><a class="anchor" id="autotoc_md39"></a>
 HTTP Status Codes</h2>
 <ul>
 <li><code>200 OK</code> - Successful GET request</li>
@@ -131,9 +131,9 @@ HTTP Status Codes</h2>
 <li><code>409 Conflict</code> - Resource conflict (e.g., OTA already in progress)</li>
 <li><code>500 Internal Server Error</code> - Server error</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md42"></a>
+<h2><a class="anchor" id="autotoc_md40"></a>
 API Endpoints</h2>
-<h3><a class="anchor" id="autotoc_md43"></a>
+<h3><a class="anchor" id="autotoc_md41"></a>
 Wi-Fi Management</h3>
 <p><a class="anchor" id="h_wifi_list_json"></a></p><ul>
 <li><p class="startli">List Wi-Fi profiles </p><div class="fragment"><div class="line">GET /_/wifi/list.json</div>
@@ -202,7 +202,7 @@ Wi-Fi Management</h3>
 <li><code>proto</code>: Wi-Fi protocol generation (mapped from <code>esp_wifi_get_protocol()</code>)</li>
 <li><code>band</code>: Active frequency band (<code>2.4 GHz</code> or <code>5 GHz</code>)</li>
 <li><code>lwip_hostname</code>: Device network name registered in the router DHCP client table (<code>null</code> if unassigned)</li>
-<li><code>mdns_hostname</code>: Local mDNS domain name (<code>null</code> if <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_MDNS">CONFIG_EIF_CORE_ENABLE_MDNS</a></code> is disabled)</li>
+<li><code>mdns_hostname</code>: Local mDNS domain name</li>
 <li><code>used_tls</code>: Whether TLS is enabled on the server or not</li>
 </ul>
 </li>
@@ -274,7 +274,7 @@ The use of <code>POST</code> is due to the fact that <code>Internet Explorer 8</
 Due to the change of Wi-Fi networks for the test, this request may be sent too early and the server may not even see it. To get the result, use a loop of requests after some time has passed since the test started (about 8 seconds) </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md50"></a>
+<h3><a class="anchor" id="autotoc_md48"></a>
 TLS Management</h3>
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
 Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_TLS">CONFIG_EIF_CORE_ENABLE_TLS</a></code> is enabled. </div><p><a class="anchor" id="h_tls_recreate_do"></a></p><ul>
@@ -286,7 +286,7 @@ Only available if the Kconfig option <code><a href="group__core__kconfig.html#CO
 After regenerating TLS keys and certificate, the device will automatically restart to apply the new configuration. The entire process usually takes less than 5 seconds. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md52"></a>
+<h3><a class="anchor" id="autotoc_md50"></a>
 System Management</h3>
 <p><a class="anchor" id="h_sys_logs_txt"></a></p><ul>
 <li><p class="startli">Get logs from the device </p><div class="fragment"><div class="line">GET /_/sys/logs.txt</div>
@@ -351,31 +351,29 @@ Only available if the Kconfig option <code><a href="group__core__kconfig.html#CO
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Code   </th><th class="markdownTableHeadNone">String    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>1</code>   </td><td class="markdownTableBodyNone"><code>Power-on reset</code>    </td></tr>
+<td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">Power-on reset    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>2</code>   </td><td class="markdownTableBodyNone"><code>External pin reset</code>    </td></tr>
+<td class="markdownTableBodyNone">2   </td><td class="markdownTableBodyNone">External pin reset    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>3</code>   </td><td class="markdownTableBodyNone"><code>Software reset</code>    </td></tr>
+<td class="markdownTableBodyNone">3   </td><td class="markdownTableBodyNone">Software reset    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>4</code>   </td><td class="markdownTableBodyNone"><code>System panic reset</code>    </td></tr>
+<td class="markdownTableBodyNone">4   </td><td class="markdownTableBodyNone">System panic reset    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>5</code>   </td><td class="markdownTableBodyNone"><code>Watchdog timer reset</code>    </td></tr>
+<td class="markdownTableBodyNone">5   </td><td class="markdownTableBodyNone">Watchdog timer reset    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>6</code>   </td><td class="markdownTableBodyNone"><code>Task watchdog reset</code>    </td></tr>
+<td class="markdownTableBodyNone">6   </td><td class="markdownTableBodyNone">Task watchdog reset    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>7</code>   </td><td class="markdownTableBodyNone"><code>Interrupt watchdog reset</code>    </td></tr>
+<td class="markdownTableBodyNone">7   </td><td class="markdownTableBodyNone">Interrupt watchdog reset    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>8</code>   </td><td class="markdownTableBodyNone"><code>Deep sleep wake-up reset</code>    </td></tr>
+<td class="markdownTableBodyNone">8   </td><td class="markdownTableBodyNone">Deep sleep wake-up reset    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>9</code>   </td><td class="markdownTableBodyNone"><code>SDIO reset</code>    </td></tr>
+<td class="markdownTableBodyNone">9   </td><td class="markdownTableBodyNone">SDIO reset    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>10</code>   </td><td class="markdownTableBodyNone"><code>USB reset</code>    </td></tr>
+<td class="markdownTableBodyNone">10   </td><td class="markdownTableBodyNone">USB reset    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>11</code>   </td><td class="markdownTableBodyNone"><code>JTAG reset</code>    </td></tr>
+<td class="markdownTableBodyNone">11   </td><td class="markdownTableBodyNone">JTAG reset    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>12</code>   </td><td class="markdownTableBodyNone"><code>RTC system reset</code>    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>13</code>   </td><td class="markdownTableBodyNone"><code>RTC CPU reset</code>   </td></tr>
+<td class="markdownTableBodyNone">12   </td><td class="markdownTableBodyNone">RTC system reset   </td></tr>
 </table>
 </li>
 </ul>
@@ -389,7 +387,7 @@ Only available if the Kconfig option <code><a href="group__core__kconfig.html#CO
 The device will reboot immediately after this request. All active connections will be closed. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md56"></a>
+<h3><a class="anchor" id="autotoc_md54"></a>
 OTA Updates</h3>
 <p><a class="anchor" id="h_ota_info_json"></a></p><ul>
 <li><p class="startli">Get firmware information </p><div class="fragment"><div class="line">GET /_/ota/info.json</div>
@@ -468,7 +466,7 @@ The device will automatically restart after a successful upload. This process us
 The device will automatically restart immediately after the rollback is initiated. This process usually takes less than 5 seconds. </div></li>
 </ul>
 <hr  />
-<h3><a class="anchor" id="autotoc_md61"></a>
+<h3><a class="anchor" id="autotoc_md59"></a>
 Authentication Management</h3>
 <div style="background-color: #e2f0fe; border-left: 5px solid #0066cc; padding: 12px; margin: 10px 0; color: #004085;"> <b>Note</b><br  />
 Only available if the Kconfig option <code><a href="group__core__kconfig.html#CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">CONFIG_EIF_CORE_ENABLE_BASIC_AUTH</a></code> is enabled. </div><p><a class="anchor" id="h_apass_update_do"></a></p><ul>

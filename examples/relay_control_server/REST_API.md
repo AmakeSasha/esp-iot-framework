@@ -53,7 +53,7 @@ The entire API is also available from the [SERVER](../../components/esp_iot_fram
 ---
 
 <a id="h_api_relay_off"></a>
-* Switch the direction of the relay to DOWN
+* Turn off the relay
     ```text
     POST /api/relay/off.do
     ```
@@ -65,7 +65,7 @@ The entire API is also available from the [SERVER](../../components/esp_iot_fram
 ---
 
 <a id="h_api_relay_toggle"></a>
-* Stop the movement of the relay
+* Toggle the relay
     ```text
     POST /api/relay/toggle.do
     ```
@@ -104,7 +104,7 @@ The entire API is also available from the [SERVER](../../components/esp_iot_fram
     **Response body**:
     ```json
     {
-      "ligoc_str": "INVERTED",
+      "logic_str": "INVERTED",
       "state_str": "PIN_OFF",
       "number_of_changes": 24
     }
