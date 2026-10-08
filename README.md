@@ -23,40 +23,40 @@
     <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
     <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
     <p>
-        <code>esp32</code> •
-        <code>esp32s2</code> •
-        <code>esp32s3</code> •
-        <code>esp32c2</code> •
-        <code>esp32c3</code> •
-        <code>esp32c6</code>
+        `esp32` •
+        `esp32s2` •
+        `esp32s3` •
+        `esp32c2` •
+        `esp32c3` •
+        `esp32c6`
     </p>
 </div>
 
-<h1>Core Architecture Concept</h1>
+# Core Architecture Concept
 
 The framework is built around three fundamental concepts, decoupling the infrastructure from your business logic:
 
-* <b>CORE (<code>[esp_iot_framework_core](./components/esp_iot_framework_core/README.md)</code>)</b> - The ecosystem engine. It handles connectivity, security, and device resilience, abstracting away low-level services like Wi-Fi, NVS, and TLS. Anything built on top of *CORE* inherits these critical properties for free.
+* <b>CORE ([`esp_iot_framework_core`](./components/esp_iot_framework_core/README.md))</b> - The ecosystem engine. It handles connectivity, security, and device resilience, abstracting away low-level services like Wi-Fi, NVS, and TLS. Anything built on top of *CORE* inherits these critical properties for free.
 
 ---
 
 * **Nodes** – Architectural components built on top of *CORE*. A Node encapsulates a specific environment or interaction model for the device-such as hosting a server, initiating client requests, or executing isolated scripts. It offloads all low-level routine and routing, providing a clean interface for business logic development.
 
   Examples of nodes:
- 
-  * <b>SERVER (<code>[esp_iot_framework_server](./components/esp_iot_framework_server/README.md)</code>)</b> - A framework node for deploying a standalone HTTP(S) server directly on the device to handle incoming requests.
 
-  * <b>CLIENT (<code>[esp_iot_framework_client](./components/esp_iot_framework_client/README.md)</code>)</b> - A framework node for enabling the device to initiate outbound HTTP(S) connections and send requests to other devices.
+  * <b>SERVER ([`esp_iot_framework_server`](./components/esp_iot_framework_server/README.md))</b> - A framework node for deploying a standalone HTTP(S) server directly on the device to handle incoming requests.
+
+  * <b>CLIENT ([`esp_iot_framework_client`](./components/esp_iot_framework_client/README.md))</b> - A framework node for enabling the device to initiate outbound HTTP(S) connections and send requests to other devices.
 
 ---
 
 * **End Devices** – The final products built by combining *CORE* with one or multiple *Nodes* and your specific business logic. Smart bulbs, relays, or complex controllers - any target scenario boils down to implementing unique product logic on top of the selected node stack.
 
   You can see examples of end devices in the [`examples`](./examples) folder.
- 
+
 ---
 
-<h1>Example of use</h1>
+# Example of use
 
 ```C
 #include <esp_err.h>
@@ -78,7 +78,7 @@ void app_main(void) {
     ESP_ERROR_CHECK(eif_core_initialize());
     ESP_ERROR_CHECK(eif_server_initialize());
     ESP_ERROR_CHECK(eif_nvs_initialize());
-    ESP_ERROR_CHECK(eif_set_uri_handlers(my_uris, 1));
+    ESP_ERROR_CHECK(eif_server_set_uri_handlers(my_uris, 1));
     ESP_ERROR_CHECK(eif_wifi_initialize());
 
     while (1) {
@@ -87,7 +87,7 @@ void app_main(void) {
 }
 ```
 
-<h1>Storage, documentation and mirrors</h1>
+# Storage, documentation and mirrors
 
 To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.
 
@@ -98,15 +98,15 @@ To protect against network restrictions, blockages, and infrastructure failures,
 | **GitCore** (mirror)   | [🔗 **Source code**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) <br>      **Without documentation**                                                              |
 | **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     [📄 **Documentation**](https://amakesasha.gitverse.site/esp-iot-framework/html/index.html) |
 
-<h1>Third-Party Components</h1>
+# Third-Party Components
 
 This framework bundles the following third-party components inside the `components/` directory:
 
-* <code>[json2](https://github.com/douglascrockford/JSON-js/)</code> - JSON in JavaScript (`Public Domain` or `CC0-1.0`, at your discretion)
-* <code>[jsmn](https://github.com/zserge/jsmn)</code> - JSMN: minimalistic JSON parser in C (`MIT license`)
-* <code>[json_generator](https://github.com/shahpiyushv/json_generator)</code> - A simple JSON (JavasScript Object Notation) generator with flushing capability (`Apache 2.0 license`)
+* [`json2`](https://github.com/douglascrockford/JSON-js/) - JSON in JavaScript (`Public Domain` or `CC0-1.0`, at your discretion)
+* [`jsmn`](https://github.com/zserge/jsmn) - JSMN: minimalistic JSON parser in C (`MIT license`)
+* [`json_generator`](https://github.com/shahpiyushv/json_generator) - A simple JSON (JavasScript Object Notation) generator with flushing capability (`Apache 2.0 license`)
 
-<h1>License</h1>
+# License
 
 This project is licensed under the [`Apache 2.0 License`](./LICENSE).
 

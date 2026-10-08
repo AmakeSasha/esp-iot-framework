@@ -19,37 +19,36 @@
  * limitations under the License.
  */
 
-#include <string.h>
 #include <esp_log.h>
 #include <esp_err.h>
-#include <mdns.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include "esp_idf_version.h"
 
 #include <esp_iot_framework_core.h>
 #include <esp_iot_framework_client.h>
+#include <esp_iot_framework_core_macros.h>
 
-void scan_my_mdns_devices(const char * const service) {
-    mdns_result_t *results = NULL;
-    
-    esp_err_t err = mdns_query_ptr(service, "_tcp", 2000, 10, &results);
-    
-    if (err != ESP_OK || !results) {
-        ESP_LOGI("SCAN", "No devices found for service %s", service);
-        return;
-    }
+static void scan_devices(const char *service) {
+    EIF_TAG_WITH_UNUSED "SCAN";
 
-    mdns_result_t *r = results;
-    while (r) {
-        if (r->addr) {
-            ESP_LOGI("SCAN", "Found OUR device! IP: " IPSTR, IP2STR(&(r->addr->addr.u_addr.ip4)));
+    esp_err_t ret = ESP_OK;
+    eif_mdns_device_t devices[EIF_MDNS_MAX_DEVICES];
+    uint8_t count = 0U;
+
+    ret = eif_mdns_scan(service, devices, &count);
+
+    if (ret == ESP_OK) {
+        for (uint8_t i = 0U; i < count; i++) {
+            EIF_LOG_I("Found device: %s", devices[i].hostname);
+            if (devices[i].ip.type == ESP_IPADDR_TYPE_V6) {
+                EIF_LOG_I("          IP: " IPV6STR, IPV62STR(devices[i].ip.u_addr.ip6));
+            } else {
+                EIF_LOG_I("          IP: " IPSTR, IP2STR(&(devices[i].ip.u_addr.ip4)));
+            }
         }
-
-        r = r->next;
+    } else {
+        EIF_LOG_I("No devices found for service %s", service);
     }
-
-    mdns_query_results_free(results);
 }
 
 void app_main(void) {
@@ -58,9 +57,8 @@ void app_main(void) {
     ESP_ERROR_CHECK(eif_wifi_initialize());
 
     while (1) {
-        scan_my_mdns_devices("_eif_https");
-        scan_my_mdns_devices("_eif_http");
-
-        vTaskDelay(pdMS_TO_TICKS(5000));
+        scan_devices("_eif_https");
+        scan_devices("_eif_http");
+        vTaskDelay(pdMS_TO_TICKS((uint32_t)5000));
     }
 }

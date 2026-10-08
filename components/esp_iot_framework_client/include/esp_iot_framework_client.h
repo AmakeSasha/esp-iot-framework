@@ -26,6 +26,16 @@
 #include <stdint.h>
 #include "lwip/ip_addr.h"
 
+#define EIF_MDNS_MAX_DEVICES 16
+#define EIF_MDNS_MAX_HOSTNAME 64
+#define EIF_MDNS_TIMEOUT_MS 2000
+
+typedef struct {
+    esp_ip_addr_t ip;
+    uint16_t port;
+    char hostname[EIF_MDNS_MAX_HOSTNAME];
+} eif_mdns_device_t;
+
 #ifdef __cplusplus
     extern "C" {
 #endif
@@ -36,9 +46,14 @@
  * @{
  */
 
-typedef void (*scan_callback_t)(ip4_addr_t *ip);
-
-void network_scan_ping(uint32_t timeout_ms, scan_callback_t callback);
+/**
+ * @brief Scan for mDNS devices
+ * @param[in] service Service name (e.g., "_eif_https")
+ * @param[out] devices Array to store found devices (caller-allocated)
+ * @param[out] out_count Pointer to store the number of found devices
+ * @return ESP_OK on success, error code otherwise
+ */
+esp_err_t eif_mdns_scan(const char *service, eif_mdns_device_t *devices, uint8_t *out_count);
 
 /** @} */
 

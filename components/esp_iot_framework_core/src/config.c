@@ -300,21 +300,26 @@ esp_err_t eif_set_mdns_records(
             txt_records_count, 0, EIF_MDNS_TXT_RECORDS_MAX_COUNT);
         ret = ESP_ERR_INVALID_ARG;
     }
-    if (txt_records_count > 0U) {
-        EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records, ESP_ERR_INVALID_ARG);
-    }
-
-    for (size_t i = 0; i < txt_records_count; i++) {
-        EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].key, ESP_ERR_INVALID_SIZE);
-        EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].value, ESP_ERR_INVALID_SIZE);
-
-        if (ret == ESP_OK) {
-            cfg.mdns_txt_records[i] = txt_records[i];
-        } else {
-            EIF_LOG_E("Invalid MDNS record at index %zu", i);
+    if (ret == ESP_OK) {
+        if (txt_records_count > 0U) {
+            EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records, ESP_ERR_INVALID_ARG);
         }
     }
+    
     if (ret == ESP_OK) {
+        for (size_t i = 0; i < txt_records_count; i++) {
+            EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].key, ESP_ERR_INVALID_SIZE);
+            EIF_IF_OK_CHECK_NOT_NULL(ret, txt_records[i].value, ESP_ERR_INVALID_SIZE);
+
+            if (ret == ESP_OK) {
+                cfg.mdns_txt_records[i] = txt_records[i];
+            } else {
+                EIF_LOG_E("Invalid MDNS record at index %zu", i);
+            }
+        }
+    }
+    
+    if (ret == ESP_OK) {        
         EIF_LOG_I("Successfully set %d 'mDNS TXT records'", txt_records_count);
     }
 

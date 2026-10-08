@@ -49,7 +49,6 @@
 #include "server_internal.h"
 #include <esp_iot_framework_server.h>
 #include <esp_iot_framework_core_ext.h>
-#include <esp_iot_framework_core_mdns.h>
 #include <esp_iot_framework_core_macros.h>
 
 #ifdef CONFIG_EIF_CORE_ENABLE_TLS
@@ -418,21 +417,6 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
     ) {
         esp_err_t ret = ESP_OK;
 
-        /* @deviation [Rule 18.4] Pointer subtraction is justified here because the
-         * asset length must be derived from two immutable bounds of a linker-defined
-         * binary object. The start and end symbols are generated automatically from
-         * an embedded HTTP resource, ensuring their existence and correct relative
-         * ordering at link time. This operation is necessary to provide the exact
-         * byte count required by the HTTP transmission API. The calculation is safe
-         * because both pointers reference the same contiguous memory block, and no
-         * out-of-bounds access is performed. */
-        /* @deviation [Rule 10.8] The explicit cast to 'size_t' is required to convert
-         * the pointer difference into the unsigned integer type expected by the web
-         * server API. This conversion is safe in this context because the calculated
-         * value represents the exact, valid size of the underlying linker-generated
-         * resource and is used strictly as a buffer length parameter. */
-        /* cppcheck-suppress misra-c2012-18.4 */
-        /* cppcheck-suppress misra-c2012-10.8 */
         const size_t size = (size_t)(file->end - file->start);
 
         EIF_IF_OK_CHECK_ESP_ERR_T(ret, set_cache(req, file->need_cache),
@@ -450,39 +434,33 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
         return ret;
     }
 
-    /* @note Cppcheck 2.21 incorrectly reports a syntax error on this macro. The code
-     * is valid and passes compilation with GCC/Clang. Excluded from linting to avoid
-     * false positives. Run Cppcheck with -D__CPPCHECK__ flag.
-     */
-    #ifndef __CPPCHECK__
-        #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
-             EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
-        #endif
-        #ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
-            EIF_DEFINE_HTTP_FILE(logs_html_gz,    RESP_TYPE_HTML, true)
-        #endif
-        EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
-        EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
-        EIF_DEFINE_HTTP_FILE(system_html_gz,  RESP_TYPE_HTML, true)
-        EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
-
-        EIF_DEFINE_HTTP_FILE(style_css_gz,    RESP_TYPE_CSS,  true)
-
-        EIF_DEFINE_HTTP_FILE(LICENSE_gz,      RESP_TYPE_TXT,  true)
-
-        EIF_DEFINE_HTTP_FILE(json2_js_gz,     RESP_TYPE_JS,   true)
-        EIF_DEFINE_HTTP_FILE(api_js_gz,       RESP_TYPE_JS,   true)
-
-        #ifdef CONFIG_EIF_SERVER_ENABLE_WEB_FAVICON
-            EIF_DEFINE_HTTP_FILE(logo_png_gz,     RESP_TYPE_PNG,  true)
-        #endif
-
-        static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
-            EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
-            httpd_resp_set_status(req, HTTPD_404);
-            return sendf_e404_html_gz(req);
-        }
+    #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
+        EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
     #endif
+    #ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
+        EIF_DEFINE_HTTP_FILE(logs_html_gz,    RESP_TYPE_HTML, true)
+    #endif
+    EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
+    EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
+    EIF_DEFINE_HTTP_FILE(system_html_gz,  RESP_TYPE_HTML, true)
+    EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
+
+    EIF_DEFINE_HTTP_FILE(style_css_gz,    RESP_TYPE_CSS,  true)
+
+    EIF_DEFINE_HTTP_FILE(LICENSE_gz,      RESP_TYPE_TXT,  true)
+
+    EIF_DEFINE_HTTP_FILE(json2_js_gz,     RESP_TYPE_JS,   true)
+    EIF_DEFINE_HTTP_FILE(api_js_gz,       RESP_TYPE_JS,   true)
+
+    #ifdef CONFIG_EIF_SERVER_ENABLE_WEB_FAVICON
+        EIF_DEFINE_HTTP_FILE(logo_png_gz,     RESP_TYPE_PNG,  true)
+    #endif
+
+    static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
+        EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
+        httpd_resp_set_status(req, HTTPD_404);
+        return sendf_e404_html_gz(req);
+    }
 #endif
 
 
@@ -1465,19 +1443,23 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     const httpd_uri_t* orig = (const httpd_uri_t*)req->user_ctx;
     esp_err_t (*real_handler)(httpd_req_t *) = (esp_err_t (*)(httpd_req_t *))orig->handler;
 
-    #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
-        if (strncmp(req->uri, "/_/", 3) == 0) {
-            ret = req_check_auth_admin(req);
-            if (ret != ESP_OK) {
-                EIF_LOG_W("Checker Basic Auth error: %s", esp_err_to_name(ret));
+    if (real_handler != NULL) {
+        #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
+            if (strncmp(req->uri, "/_/", 3) == 0) {
+                ret = req_check_auth_admin(req);
+                if (ret != ESP_OK) {
+                    EIF_LOG_W("Checker Basic Auth error: %s", esp_err_to_name(ret));
+                }
             }
-        }
-    #endif
-
-    if ((ret == ESP_OK) && (real_handler != NULL)) {
-        req->user_ctx = orig->user_ctx;
-        ret = real_handler(req);
-        EIF_LOG_I("Result(%u): %s", (size_t)start_time, esp_err_to_name(ret));
+            
+            if (ret == ESP_OK) {
+        #endif
+                req->user_ctx = orig->user_ctx;
+                ret = real_handler(req);
+                EIF_LOG_I("Result(%u): %s", (size_t)start_time, esp_err_to_name(ret));     
+        #ifdef CONFIG_EIF_CORE_ENABLE_BASIC_AUTH
+            }
+        #endif
     }
 
     (void)start_time;

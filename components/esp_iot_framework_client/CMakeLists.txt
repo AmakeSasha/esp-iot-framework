@@ -39,7 +39,7 @@ endif()
 
 set(COMPONENT_NAME esp_iot_framework_client)
 idf_component_register(
-    SRCS "src/test.c"
+    SRCS "src/mdns.c"
     INCLUDE_DIRS "include"
     PRIV_INCLUDE_DIRS "src" "private_include"
     PRIV_REQUIRES ${requires_components}

@@ -206,12 +206,6 @@ static inline size_t eif_strnlen(const char * const str, size_t max_allowed) {
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wstringop-overread"
     #endif
-        /* @deviation [Rule 21.18] The search limit is set to (max_allowed + 1)
-         * where possible to allow the caller to distinguish between a string
-         * that exactly fits the limit and one that exceeds it. Pre-check
-         * against 'SIZE_MAX' ensures no integer wrap-around occurs. Memory
-         * access is guaranteed to be within safe bounds as strnlen stops at
-         * the first null-terminator (`\0`) or the provided 'search_limit'. */
         return strnlen(str, search_limit);
     #if defined(__GNUC__) && (__GNUC__ >= 11)
         #pragma GCC diagnostic pop
@@ -1131,8 +1125,50 @@ esp_err_t eif_task_wifi_test_launch(uint8_t profile_index);
  *                               of an empty block of the required size.
  */
 esp_err_t eif_task_rollback_and_reboot_launch(void);
-
 /** @} */
+
+
+
+/**
+ * @defgroup eif_mdns_ext mDNS Extension
+ * @brief Network discovery and mDNS management
+ *
+ * This module provides more advanced and low-level tools for working with mDNS.
+ * @{
+ */
+
+/**
+ * @brief Get the currently configured mDNS hostname.
+ *
+ * Returns the device network name used for local mDNS domain routing.
+ * 
+ * @warning The returned pointer references the immutable internal configuration 
+ *          buffer owned by the core module. Do **NOT** attempt to explicitly
+ *          `free()` this pointer, and do **NOT** modify its contents via type
+ *          casting. Doing so will corrupt the core memory or cause an immediate
+ *          hardfault.
+ * 
+ * @return
+ *   `const char*`: Pointer to the null-terminated hostname string.
+ * 
+ * Example of use:
+ * @code{c}
+ * #include <esp_iot_framework_core_ext.h>
+ *
+ * void some_function(void) {
+ *     const char *hostname = eif_core_get_mdns_hostname();
+ *     if (hostname != NULL) {
+ *         // Use hostname...
+ *     } else {
+ *         // mDNS is disabled...
+ *     }
+ * }  
+ * @endcode
+ */
+const char* eif_get_mdns_hostname(void);
+/** @} */
+
+
 
 /**
  * @defgroup Ofher Other

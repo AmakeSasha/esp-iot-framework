@@ -136,25 +136,10 @@
  * }
  * @endcode
  */
-/* @deviation [Rule 1.1] The GNU/Clang '##__VA_ARGS__' extension is used to
- * safely eliminate trailing commas in empty variadic macro invocations. This
- * extension is fully supported and deterministic within the target Espressif
- * toolchains, posing zero risk of translation limit exhaustion or syntax
- * corruption.
- * @deviation [Rule 20.10] The '##' operator is constrained to the
- * compiler-specific variadic comma-deletion extension. It does not perform
- * arbitrary token modification and strictly expands to well-defined,
- * predictable C code.
- * @deviation [Rule 20.11] Type safety for variadic arguments is strictly
- * enforced at compile-time via the underlying
- * '__attribute__((format(printf, ...)))' integrated into the ESP-IDF logging
- * subsystem, supplemented by peer code reviews. */
 #if defined(CONFIG_EIF_CORE_LOG_SHOW_METADATA) || defined(DOXYGEN)
-    /* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, "%s:%d (%s) " m_format, __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 #endif
 #if !defined(CONFIG_EIF_CORE_LOG_SHOW_METADATA) && !defined(DOXYGEN)
-    /* Allowed by the @deviation [Rule 1.1, 20.10, 20.11] specified above */
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, m_format, ##__VA_ARGS__)
 #endif
 
@@ -229,13 +214,6 @@
  * }
  * @endcode
  */
-/* All of the '@deviation' listed below apply to all macros prefixed with
- *'EIF_LOG_' declared in this file:
- * @deviation [Rule 20.11] These interface macros act as strict pass-through
- * wrappers to the underlying EIF_PRINT layout. Type safety for all variadic
- * arguments is structurally enforced at compile-time by the toolchain via
- * printf compiler attributes, completely eliminating runtime type mismatch
- * risks. */
 /** @brief Logs an error message using the `ESP_LOGE` severity, is level `Error`. */
 #if CONFIG_EIF_CORE_LOG_LEVEL >= EIF_LOG_LEVEL_E || defined(DOXYGEN)
     #define EIF_LOG_E(...) EIF_PRINT(ESP_LOGE, __VA_ARGS__)
@@ -311,11 +289,6 @@ do { \
         const char* l_err_name = esp_err_to_name((m_result)); \
         EIF_LOG_W("%s: " m_format, \
             ((l_err_name != NULL) ? l_err_name : "UNKNOWN_ERROR") \
-            /* @deviation [Rule 20.10] The '##' token pasting operator is
-             * utilized strictly for the compiler-specific comma deletion
-             * extension. The expansion is completely deterministic and
-             * guaranteed to yield valid, predictable syntax without risk of
-             * expression corruption. */ \
             , ##__VA_ARGS__); \
     } \
 } while (false)
@@ -383,12 +356,6 @@ do { \
 do { \
     if ((m_result) == (ESP_OK)) { \
         if ((m_ptr) == NULL) { \
-            /* @deviation [Rule 20.10] The '#' stringification operator is used
-             * exclusively for diagnostic logging to evaluate the parameter
-             * identifier. The expansion evaluates strictly to a well-formed,
-             * immutable string literal, completely eliminating risks of side
-             * effects or undefined behavior. */ \
-            /* cppcheck-suppress misra-c2012-20.10 */ \
             EIF_LOG_E("PARAMETER_IS_NULL: '%s'", #m_ptr); \
             (m_result) = (m_error); \
         } \
@@ -454,11 +421,6 @@ do { \
             const char* l_err_name = esp_err_to_name((m_result)); \
             EIF_LOG_E("%s: " m_format, \
                 ((l_err_name != NULL) ? l_err_name : "UNKNOWN_ERROR") \
-                /* @deviation [Rule 20.10] The '##' token pasting operator is
-                 * utilized strictly for the compiler-specific comma deletion
-                 * extension. The expansion is completely deterministic and
-                 * guaranteed to yield valid, predictable syntax without risk
-                 * of expression corruption. */ \
                 , ##__VA_ARGS__); \
         } \
     } \
@@ -528,25 +490,12 @@ do { \
 do { \
     if ((m_ret) == ESP_OK) { \
         if ((m_cond)) { \
-            /* @deviation [Rule 20.10] The '##' token pasting operator is
-             * used here to delete the comma when '__VA_ARGS__' is empty.
-             * This is a necessary compiler-specific extension for
-             * variadic logging. Compilation is impossible without '##'. */ \
             EIF_LOG_E(m_format, ##__VA_ARGS__); \
             (m_ret) = (m_err); \
         } \
     } \
 } while(false)
 #else
-    /* @deviation [Rule 2.5] The 'EIF_IF_OK_CHECK_CONDITION' macro definition 
-     * within this #else branch provides a silent fallback when logging is disabled. 
-     * It mimics the logging-enabled API contract to keep code behavior and compilation 
-     * identical across different build configurations. This macro is triggered 
-     * dynamically, so it stays unused when error logging is globally active in the 
-     * system. Memory and logic safety are guaranteed because the macro only performs 
-     * safe status evaluation and contains no functional side effects or undefined 
-     * operations. */
-    /* cppcheck-suppress misra-c2012-2.5 */
     #define EIF_IF_OK_CHECK_CONDITION(m_ret, m_cond, m_err, m_format, ...) \
 do { \
     if ((m_ret) == ESP_OK) { \
@@ -677,21 +626,11 @@ do { \
  */
 #define EIF_TASK_LAUNCH(m_ret, m_handle, m_alias, m_worker) \
 do { \
-    /* @deviation [Rule 20.10] The '##' token pasting operator is utilized to
-     * enforce compile-time synchronization between task aliases and their
-     * respective system parameters (NAME, SIZE, PRIORITY). This compile-time
-     * binding enforces architecture-level mutual exclusion and prevents runtime
-     * mismatch risks. The macro expansion is strictly deterministic and
-     * guaranteed to resolve only into valid, well-defined C identifiers.
-     */ \
     (m_ret) = eif_task_common_spawn( \
         &(m_handle), \
         (m_worker), \
-        /* cppcheck-suppress misra-c2012-20.10 */ \
         TASK_##m_alias##_NAME, \
-        /* cppcheck-suppress misra-c2012-20.10 */ \
         TASK_##m_alias##_SIZE, \
-        /* cppcheck-suppress misra-c2012-20.10 */ \
         TASK_##m_alias##_PRIORITY \
     ); \
 } while (false)

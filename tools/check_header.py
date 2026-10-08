@@ -21,7 +21,7 @@ from pathlib import Path
 
 PROJECT_NAME = "esp-iot-framework"
 PROJECT_COPYRIGHT = "Copyright 2026 AmakeSasha"
-START_DIR = "../"
+START_DIR = "./"
 
 # ---------- CONSTS ----------
 BAN_LIST = {
@@ -30,7 +30,6 @@ BAN_LIST = {
     ".yml",
     ".yaml",
     "LICENSE",
-    ".cppcheck",
     "../NOTICE",
     ".gitignore",
     "dependencies.lock",
@@ -40,7 +39,6 @@ BAN_LIST = {
     "/build/",
     "/docs/html/",
     "/.devcontainer/",
-    "/esp-iot-framework_cppcheck/",
 }
 
 LICENSE = {

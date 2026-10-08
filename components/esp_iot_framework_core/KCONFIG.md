@@ -26,9 +26,8 @@ This section describes the `esp_iot_framework_core` configuration parameters. Al
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_TLS">
-  <code>EIF_CORE_ENABLE_TLS</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
-</div>
+<span id="CONFIG_EIF_CORE_ENABLE_TLS"></span>
+`EIF_CORE_ENABLE_TLS` - `bool` (*default*: `y`)
 
 Name in the `menuconfig`: `Enable HTTPS (TLS/SSL) Support`
 
@@ -51,9 +50,8 @@ Switch the web server from insecure `HTTP` to encrypted `HTTPS` (Port `443`).
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_ENABLE_BASIC_AUTH">
-  <code>EIF_CORE_ENABLE_BASIC_AUTH</code> - <code>bool</code> (<em>default</em>: <code>y</code>)
-</div>
+<span id="CONFIG_EIF_CORE_ENABLE_BASIC_AUTH"></span>
+`EIF_CORE_ENABLE_BASIC_AUTH` - `bool` (*default*: `y`)
 
 Name in the `menuconfig`: `Enable Basic Authentication for systemic resources`
 
@@ -69,9 +67,8 @@ Enables mandatory HTTP Basic Authentication for secure system-level resources, a
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_LEVEL">
-  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_LEVEL</code> - <code>int</code> (<em>range</em>: <code>0</code> - <code>4</code>, <em>default</em>: <code>3</code>)
-</div>
+<span id="CONFIG_EIF_CORE_LOG_LEVEL"></span>
+`Logging Settings` -> `EIF_CORE_LOG_LEVEL` - `int` (*range*: `0` - `4`, *default*: `3`)
 
 Name in the `menuconfig`: `Framework log verbosity`
 
@@ -90,9 +87,8 @@ Global logging level for all `esp_iot_framework` modules. Choosing a level enabl
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_SHOW_METADATA">
-  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_SHOW_METADATA</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
-</div>
+<span id="CONFIG_EIF_CORE_LOG_SHOW_METADATA"></span>
+`Logging Settings` -> `EIF_CORE_LOG_SHOW_METADATA` - `bool` (*default*: `n`)
 
 Name in the `menuconfig`: `Show metadata in logs (path, line, function)`
 
@@ -109,9 +105,8 @@ Show metadata in logs (path, line, function).
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_ENABLE_MEM_MONITOR">
-  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_ENABLE_MEM_MONITOR</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
-</div>
+<span id="CONFIG_EIF_CORE_LOG_ENABLE_MEM_MONITOR"></span>
+`Logging Settings` -> `EIF_CORE_LOG_ENABLE_MEM_MONITOR` - `bool` (*default*: `n`)
 
 Name in the `menuconfig`: `Enable memory status logging`
 
@@ -126,9 +121,8 @@ Name in the `menuconfig`: `Enable memory status logging`
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG">
-  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_ENABLE_REMOTE_DEBUG</code> - <code>bool</code> (<em>default</em>: <code>n</code>)
-</div>
+<span id="CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG"></span>
+`Logging Settings` -> `EIF_CORE_LOG_ENABLE_REMOTE_DEBUG` - `bool` (*default*: `n`)
 
 Name in the `menuconfig`: `Enable remote diagnostic logging engine`
 
@@ -145,9 +139,8 @@ Intercepts all system and application logs into an internal RAM ring buffer for 
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_LOG_REMOTE_BUFFER_SIZE">
-  <code>Logging Settings</code> -> <code>EIF_CORE_LOG_REMOTE_BUFFER_SIZE</code> - <code>int</code> (<em>range</em>: <code>1024</code> - <code>51200</code>, <em>default</em>: <code>4096</code>)
-</div>
+<span id="CONFIG_EIF_CORE_LOG_REMOTE_BUFFER_SIZE"></span>
+`Logging Settings` -> `EIF_CORE_LOG_REMOTE_BUFFER_SIZE` - `int` (*range*: `1024` - `51200`, *default*: `4096`)
 
 Name in the `menuconfig`: `Remote log ring buffer size (bytes)`
 
@@ -155,9 +148,8 @@ Size of the internal FreeRTOS ring buffer in RAM. `4096` bytes can store around 
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE">
-  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_MEM_MONITOR_CRITICAL_SIZE</code> - <code>int</code> (<em>range</em>: <code>12288</code> - <code>65536</code>, <em>default</em>: <code>12288</code>)
-</div>
+<span id="CONFIG_EIF_CORE_MEM_MONITOR_CRITICAL_SIZE"></span>
+`Memory Monitor Settings` -> `EIF_CORE_MEM_MONITOR_CRITICAL_SIZE` - `int` (*range*: `12288` - `65536`, *default*: `12288`)
 
 Name in the `menuconfig`: `The minimum allowed size of the largest block`
 
@@ -171,9 +163,8 @@ Minimum free block size (in bytes) that must be available for stable operation. 
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL">
-  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_MEM_MONITOR_CHECK_INTERVAL</code> - <code>int</code> (<em>range</em>: <code>1000</code> - <code>3600000</code>, <em>default</em>: <code>30000</code>)
-</div>
+<span id="CONFIG_EIF_CORE_MEM_MONITOR_CHECK_INTERVAL"></span>
+`Memory Monitor Settings` -> `EIF_CORE_MEM_MONITOR_CHECK_INTERVAL` - `int` (*range*: `1000` - `3600000`, *default*: `30000`)
 
 Name in the `menuconfig`: `Memory check interval (ms)`
 
@@ -185,9 +176,8 @@ Examples (when memory is fragmented):
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS">
-  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_MEM_MONITOR_NUMBER_CHECKS</code> - <code>int</code> (<em>range</em>: <code>2</code> - <code>60</code>, <em>default</em>: <code>3</code>)
-</div>
+<span id="CONFIG_EIF_CORE_MEM_MONITOR_NUMBER_CHECKS"></span>
+`Memory Monitor Settings` -> `EIF_CORE_MEM_MONITOR_NUMBER_CHECKS` - `int` (*range*: `2` - `60`, *default*: `3`)
 
 Name in the `menuconfig`: `Number of fragmentation confirmations before reboot`
 
@@ -197,9 +187,8 @@ This parameter prevents false reboots due to temporary memory spikes. The system
 
 ---
 
-<div class="highlight-block" id="CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE">
-  <code>Memory Monitor Settings</code> -> <code>EIF_CORE_REBOOT_TASK_STACK_SIZE</code> - <code>int</code> (<em>range</em>: <code>1536</code> - <code>16384</code>, <em>default</em>: <code>1536</code>)
-</div>
+<span id="CONFIG_EIF_CORE_REBOOT_TASK_STACK_SIZE"></span>
+`Memory Monitor Settings` -> `EIF_CORE_REBOOT_TASK_STACK_SIZE` - `int` (*range*: `1536` - `16384`, *default*: `1536`)
 
 Name in the `menuconfig`: `Reboot task stack size (words - 4 bytes)`
 

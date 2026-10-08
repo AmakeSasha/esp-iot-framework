@@ -31,7 +31,6 @@
 
 #include "esp_iot_framework_core.h"
 #include "esp_iot_framework_core_ext.h"
-#include "esp_iot_framework_core_mdns.h"
 
 /* config.c */
 

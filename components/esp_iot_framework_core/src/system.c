@@ -77,41 +77,15 @@
 #ifdef CONFIG_EIF_CORE_LOG_ENABLE_REMOTE_DEBUG
     static RingbufHandle_t core_log_buf = NULL;
 
-    /* @deviation [Rule 17.1] The use of '<stdarg.h>' features within thisfunction 
-     * is justified as it implements a system-level logging hook required by the 
-     * third-party ESP-IDF framework API. This hook intercepts all framework logs
-     * and buffers them in a ringbuffer for remote transmission over Wi-Fi.
-     * Complete removal of 'va_list' is impossible due to external SDK signature
-     * constraints. Memory safety is guaranteed by strictly bounds-checking the
-     * output via 'vsnprintf' with a fixed 'sizeof(line_buf)' limit, preventing
-     * stack overflow or memory corruption. Format string safety is enforced
-     * globally at the compiler level via explicit build verification flags. */
-    /* cppcheck-suppress misra-c2012-17.1 */
     static int core_global_log_vprintf(const char *fmt, va_list l) {
         RingbufHandle_t buf = core_log_buf;
 
         if (buf != NULL) {
             char line_buf[192] = {0};
-            /* @deviation [CWE-664] va_list 'args' is received pre-initialized
-             * from ESP-IDF's esp_log_set_vprintf() hook callback. Calling
-             * 'va_start()' on an already-initialized va_list is undefined behavior.
-             * The function correctly uses 'va_copy()'' to safely duplicate the
-             * list for internal buffering without modifying the original. */
-            /* cppcheck-suppress va_list_usedBeforeStarted */
-            /* cppcheck-suppress misra-c2012-17.1 */
             va_list args = {0};
 
-            /* cppcheck-suppress misra-c2012-17.1 */
             va_copy(args, l);
-            /* @deviation [Rule 21.6] vsnprintf() is unavoidable for implementing
-             * the ESP-IDF logging hook callback, which requires formatted
-             * variable-argument output. No MISRA-compliant alternative exists for
-             * safe string formatting. The bounded buffer size (192 bytes) and
-             * subsequent length validation prevent format string attacks and
-             * buffer overflows. */
-            /* cppcheck-suppress misra-c2012-21.6 */
             int len = vsnprintf(line_buf, sizeof(line_buf), fmt, args);
-            /* cppcheck-suppress misra-c2012-17.1 */
             va_end(args);
             
             if ((len > 0) && ((size_t)len < sizeof(line_buf))) {
@@ -142,16 +116,6 @@
             }
         }
 
-        /* @deviation [Rule 21.6] vprintf() is required as the return value of
-         * the ESP-IDF logging hook callback, mandated by the framework's
-         * 'esp_log_set_vprintf' API signature. This is a system-level integration
-         * point that cannot be avoided. The function operates safely because the
-         * format string 'fmt' originates from the framework (pre-validated) and
-         * the va_list 'l' is passed through without modification. vprintf() output
-         * semantics are defined by the standard library; this function merely
-         * forwards the logging data as required by the SDK. No memory corruption
-         * or buffer overflow risk exists within the scope of this function. */
-        /* cppcheck-suppress misra-c2012-21.6 */
         return vprintf(fmt, l);
     }
 
@@ -190,18 +154,9 @@
 
 /* Tasks */
 
-/* @deviation This is a false positive of the static analyzer. The function
- * parameters are correctly and fully declared with identical names in
- * 'esp_iot_framework_core_ext.h'. The tool's parser simply fails to track tokens
- * properly in this signature.
- * 
- * Entirely safe tool bug. The definition matches the header declaration perfectly,
- * and the compiler processes it without warnings. */
 esp_err_t eif_task_common_spawn(
     TaskHandle_t * const p_handle, const TaskFunction_t f_worker,
-    /* cppcheck-suppress funcArgNamesDifferentUnnamed */
     const char * const p_name, const uint32_t u32_stack,
-    /* cppcheck-suppress funcArgNamesDifferentUnnamed */
     const UBaseType_t u_prio
 ) {
     EIF_TAG_WITH_UNUSED "Task spawner";

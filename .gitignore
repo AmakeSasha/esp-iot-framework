@@ -1,7 +1,7 @@
 build/
 .codeassistant/
+.vscode/
 sdkconfig
 dependencies.lock
 sdkconfig.old
 cmd.exe
-esp-iot-framework_cppcheck

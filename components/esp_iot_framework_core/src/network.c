@@ -75,15 +75,6 @@ static esp_err_t mdns_initialize(void) {
         mdns_instance_name_set(cfg->mdns_instance_name),
         "Failed to set instance name: %s", cfg->mdns_instance_name);
 
-    /* @deviation [Rule 11.8] eif_core_get() intentionally returns a const pointer 
-     * to protect core configuration data from accidental modification, enforcing 
-     * changes strictly through dedicated setters. The explicit cast is required 
-     * only because the third-party ESP-IDF 'mdns_service_add()' function misses 
-     * 'const' in its signature for the TXT items argument. Making core data 
-     * non-const would break the system data protection model. Code review of the 
-     * ESP-IDF source confirms that 'mdns_service_add()' operates in read-only 
-     * mode and does not modify the buffer, making this cast completely safe. */
-    /* cppcheck-suppress misra-c2012-11.8 */
     EIF_IF_OK_CHECK_ESP_ERR_T(ret, mdns_service_add(
         cfg->mdns_instance_name, MDNS_PROTOCOL, "_tcp", MDNS_PORT,
         (mdns_txt_item_t *)cfg->mdns_txt_records,
@@ -110,11 +101,6 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
 
     char ssid[EIF_WIFI_SSID_MAX_LEN] = {0};
     char pass[EIF_WIFI_PASS_MAX_LEN] = {0};
-    /* @deviation [Rule 19.2] The use of 'union' is mandatory here as it is
-     * part of the 'wifi_config_t' structure defined by the ESP-IDF SDK.
-     * Manual zero-initialization via '{0}' used to ensure all union members
-     * are in a safe, predictable state before accessing specific fields. */
-    /* cppcheck-suppress misra-c2012-19.2 */
     wifi_config_t w_cfg;
 
     (void)memset(&w_cfg, 0, sizeof(w_cfg));
@@ -162,18 +148,7 @@ esp_err_t eif_wifi_set_config_from_profile(uint8_t index) {
 
 /* --- */
 
-/* @deviation The parameter 'event_data' cannot be declared as 'const void*'
- * because the signature of this callback must strictly match the
- * 'esp_event_handler_t' type defined by the ESP-IDF SDK. Adding 'const' would
- * force an unsafe function pointer typecast during registration, risking severe
- * stack corruption if the SDK signature changes.
- * 
- * This approach is entirely safe as 'event_data' is treated as strictly
- * read-only within the handler body. No data write or modification is performed,
- * ensuring complete type safety and preventing any accidental corruption of
- * the OS event subsystem memory. */
 static void wifi_event_handler(
-    // cppcheck-suppress constParameterCallback
     void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data
 ) {
     EIF_TAG_WITH_UNUSED "Wi-Fi Handler";
@@ -240,18 +215,7 @@ static void wifi_event_handler(
     (void)ret;
 }
 
-/* @deviation The parameter 'event_data' cannot be declared as 'const void*'
- * because the signature of this callback must strictly match the
- * 'esp_event_handler_t' type defined by the ESP-IDF SDK. Adding 'const' would
- * force an unsafe function pointer typecast during registration, risking severe
- * stack corruption if the SDK signature changes.
- * 
- * This approach is entirely safe as 'event_data' is treated as strictly
- * read-only within the handler body. No data write or modification is performed,
- * ensuring complete type safety and preventing any accidental corruption of
- * the OS event subsystem memory. */
 static void ip_event_handler(
-    // cppcheck-suppress constParameterCallback
     void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data
 ) {
     EIF_TAG_WITH_UNUSED "IP Handler";

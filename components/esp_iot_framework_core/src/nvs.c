@@ -328,7 +328,8 @@ esp_err_t eif_nvs_wifi_profile_load(
     /* Decryption:
      * - Login:    'admin'
      * - Password: ''      (yes, without password) */
-    #define EIF_BASIC_AUTH_LINE_DEFAULT "Basic YWRtaW46"
+    #define EIF_BASIC_AUTH_LINE_DEFAULT     "Basic YWRtaW46"
+    #define EIF_BASIC_AUTH_LINE_DEFAULT_LEN sizeof(EIF_BASIC_AUTH_LINE_DEFAULT) - 1U
     #define NVS_KEY_BASIC_AUTH_LINE "web_auth_pass"
 
     static inline uint32_t read_next_octet(
@@ -384,9 +385,7 @@ esp_err_t eif_nvs_wifi_profile_load(
         esp_err_t ret = ESP_OK;
         char line[EIF_BASIC_AUTH_LINE_MAX_LEN] = {0};
         char *b64_pass = NULL;
-        size_t pass_len = eif_strnlen(
-            (const char *)pass, EIF_BASIC_AUTH_PASS_MAX_LEN - 1U
-        );
+        size_t pass_len = eif_strnlen((const char *)pass, EIF_BASIC_AUTH_PASS_MAX_LEN - 1U);
 
         EIF_IF_OK_CHECK_NOT_NULL(ret, pass, ESP_ERR_INVALID_ARG);
         /* @note The macro includes the null-terminator, so 1 is subtracted
@@ -407,18 +406,14 @@ esp_err_t eif_nvs_wifi_profile_load(
          * to the default prefix, avoiding additional heap allocations for a
          * combined 'user:pass' buffer. */
         if (ret == ESP_OK) {
-            /* @deviation [Rule 21.6] The use of 'snprintf' is justified as the
-             * format string is constant and the inputs are strictly
-             * length-validated. Buffer safety is guaranteed by passing
-             * 'EIF_BASIC_AUTH_LINE_MAX_LEN' as the size limit and explicitly
-             * checking the return value to ensure the output is not truncated.
-             * This approach prevents malformed data from being written to NVS
-             * and is more maintainable than manual string concatenation. */
-            /* cppcheck-suppress misra-c2012-21.6 */
-            int res = snprintf(line, sizeof(line), "%s%s",
-                EIF_BASIC_AUTH_LINE_DEFAULT, b64_pass);
-            if ((res < 0) || (res >= (int)EIF_BASIC_AUTH_LINE_MAX_LEN)) {
+            size_t b64_len = eif_strnlen(b64_pass, EIF_BASIC_AUTH_PASS_MAX_LEN);
+            size_t total_len = EIF_BASIC_AUTH_LINE_DEFAULT_LEN + b64_len;
+
+            if (total_len >= sizeof(line)) {
                 ret = ESP_ERR_INVALID_SIZE;
+            } else {
+                (void)memcpy(line, EIF_BASIC_AUTH_LINE_DEFAULT, EIF_BASIC_AUTH_LINE_DEFAULT_LEN);
+                (void)memcpy(&line[EIF_BASIC_AUTH_LINE_DEFAULT_LEN], b64_pass, b64_len);
             }
         }
 
