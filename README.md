@@ -23,12 +23,12 @@
     <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
     <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
     <p>
-        `esp32` •
-        `esp32s2` •
-        `esp32s3` •
-        `esp32c2` •
-        `esp32c3` •
-        `esp32c6`
+        <code>esp32</code> &bull;
+        <code>esp32s2</code> &bull;
+        <code>esp32s3</code> &bull;
+        <code>esp32c2</code> &bull;
+        <code>esp32c3</code> &bull;
+        <code>esp32c6</code>
     </p>
 </div>
 
@@ -87,16 +87,14 @@ void app_main(void) {
 }
 ```
 
-# Storage, documentation and mirrors
+# Mirrors
 
 To protect against network restrictions, blockages, and infrastructure failures, the project source code and technical documentation are synchronized between independent platforms.
 
-| Platform               | Links                                                                                                                                                                      |
-|:---------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **SourceCraft** (main) | [🔗 **Source code**](https://sourcecraft.dev/amakesasha/esp-iot-framework) <br> [📄 **Documentation**](https://amakesasha.sourcecraft.site/esp-iot-framework/)             |
-| **GitHub** (mirror)    | [🔗 **Source code**](https://github.com/AmakeSasha/esp-iot-framework) <br>      [📄 **Documentation**](https://amakesasha.github.io/esp-iot-framework/html/index.html)     |
-| **GitCore** (mirror)   | [🔗 **Source code**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) <br>      **Without documentation**                                                              |
-| **GitVerse** (mirror)  | [🔗 **Source code**](https://gitverse.ru/amakesasha/esp-iot-framework) <br>     [📄 **Documentation**](https://amakesasha.gitverse.site/esp-iot-framework/html/index.html) |
+* [🔗 **SourceCraft**](https://sourcecraft.dev/amakesasha/esp-iot-framework) (main)
+* [🔗 **GitHub**](https://github.com/AmakeSasha/esp-iot-framework) (mirror)
+* [🔗 **GitCore**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) (mirror)
+* [🔗 **GitVerse**](https://gitverse.ru/amakesasha/esp-iot-framework) (mirror)
 
 # Third-Party Components
 

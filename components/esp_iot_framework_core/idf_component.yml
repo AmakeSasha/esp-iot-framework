@@ -1,9 +1,0 @@
-name: "esp_iot_framework_core"
-description: "A meta-framework for building reliable, node-based IoT frameworks on Espressif Systems devices"
-version: "0.2.1"
-dependencies:
-  idf: ">=4.4.0"
-  espressif/mdns:
-    version: "^1.0.0"
-    rules:
-      - if: "idf_version >= 5.0.0"

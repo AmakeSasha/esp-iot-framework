@@ -19,35 +19,6 @@
   limitations under the License.
 -->
 
-<!--
-                        FOR THE FUTURE:
- * [Project]
-      Add a script engine node
-      
- * [Project]
-      Add unity-based tests
-
- * [CLIENT]
-      Make it
-
- * [Examples]
-      Create a 'HUB' node
-
- * [CORE, include/esp_iot_framework_core_ext.c, Task Management]
-      Create proper documentation
--->
-
-<!--
-                        HUB FEATURES:
-
-  * Automatic discovery of ecosystem devices on the network
-  * Storing a list of devices and their status
-  * A system for periodically polling devices and their status
-  * Forwarding commands to the end device
-  * Automatic OTA device updates from a dedicated server
-  * A scripting language interpreter for executing custom logic
--->
-
 # Author's notes
 
 Here are the answers that I considered important, at least for me. I think it will be useful for me to read this in the future.
