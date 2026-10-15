@@ -1,9 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Folder: ./components/esp_iot_framework_server
-  File: REST_API.md
-  Library: esp_iot_framework_server
+  Path: ./components/esp_iot_framework/REST_API.md
   
   Copyright 2026 AmakeSasha
   

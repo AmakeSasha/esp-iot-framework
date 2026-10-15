@@ -1,8 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Path: ./components/esp_iot_framework_core/esp_iot_framework_core.md
-  Library: esp_iot_framework_core
+  Path: ./components/esp_iot_framework/include/esp_iot_framework.md
   
   Copyright 2026 AmakeSasha
   

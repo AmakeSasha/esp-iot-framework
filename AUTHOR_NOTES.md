@@ -1,8 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Folder: .
-  File: AUTHOR_NOTES.md
+  Path: ./AUTHOR_NOTES.md
   
   Copyright 2026 AmakeSasha
   

@@ -1,9 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  * Example: hello_world_server
- * Folder: ./examples/hello_world_server/main
- * File: main.c
- * 
+ * Path: ./examples/hello_world/main/main.c
+ *
  * Copyright 2026 AmakeSasha
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");

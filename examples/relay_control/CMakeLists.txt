@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Example: relay_control_server
-# Folder: ./examples/relay_control_server
-# File: CmakeLists.txt
-# 
+# Path: ./examples/relay_control/CMakeLists.txt
+#
 # Copyright 2026 AmakeSasha
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");

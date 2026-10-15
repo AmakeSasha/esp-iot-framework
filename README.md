@@ -1,8 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Folder: .
-  File: README.md
+  Path: ./README.md
   
   Copyright 2026 AmakeSasha
   
@@ -20,7 +19,7 @@
 -->
 
 <div align="center">
-    <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.2.1</font></small></h1>
+    <h1>esp_iot_framework <small><font color="gray" style="font-weight: normal;">v0.3.0</font></small></h1>
     <h3>A framework for building scalable IoT ecosystems, custom nodes, and smart end-devices</h3>
     <p>
         <code>esp32</code> &bull;
@@ -93,7 +92,7 @@ To protect against network restrictions, blockages, and infrastructure failures,
 
 * [🔗 **SourceCraft**](https://sourcecraft.dev/amakesasha/esp-iot-framework) (main)
 * [🔗 **GitHub**](https://github.com/AmakeSasha/esp-iot-framework) (mirror)
-* [🔗 **GitCore**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) (mirror)
+* [🔗 **GitCode**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) (mirror)
 * [🔗 **GitVerse**](https://gitverse.ru/amakesasha/esp-iot-framework) (mirror)
 
 # Third-Party Components

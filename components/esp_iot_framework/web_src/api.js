@@ -1,10 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
- * Folder: ./components/esp_iot_framework_server/web_src
- * File: api.js
- * Library: esp_iot_framework_server
- * 
+ * Path: ./components/esp_iot_framework/web_src/api.js
+ *
  * Copyright 2026 AmakeSasha
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");

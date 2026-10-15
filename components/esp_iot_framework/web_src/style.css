@@ -1,10 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
- * Folder: ./components/esp_iot_framework_server/web_src
- * File: style.css
- * Library: esp_iot_framework_server
- * 
+ * Path: ./components/esp_iot_framework/web_src/style.css
+ *
  * Copyright 2026 AmakeSasha
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -107,6 +105,12 @@ button:hover:not(:disabled),.button:hover:not(:disabled){
   border:2px solid yellow;
   text-align:center;
   font-size:13px;
+}
+.json-output-bar{
+  text-align:left;
+  font-size:16px;
+  background:yellow;
+  color:red;
 }
 .led {
   display:inline-block;

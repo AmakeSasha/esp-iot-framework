@@ -1,8 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Example: relay_control_server
-  Folder: ./examples/relay_control_server
-  File: README.md
+  Path: ./examples/relay_control/README.md
   
   Copyright 2026 AmakeSasha
   

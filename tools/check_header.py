@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
-# Folder: ./tools
-# File: check_header.py
+# Path: ./tools/check_header.py
 # 
 # Copyright 2026 AmakeSasha
 # 
@@ -33,12 +32,12 @@ BAN_LIST = {
     "../NOTICE",
     ".gitignore",
     "dependencies.lock",
-    "../docs/doxygen/header.html",
 
-    "/.git/",
+    ".git/",
     "/build/",
-    "/docs/html/",
-    "/.devcontainer/",
+    ".vscode/",
+    ".codeassistant",
+    ".devcontainer/",
 }
 
 LICENSE = {
@@ -102,7 +101,7 @@ def err_invalid_field_value(header, value, need_value):
     else:
         print(f"<--- Invalid header value: '{header}' is '{value}', need: '{need_value}'")
     return False
-# ---------- ENDERRORS -----------
+# ---------- ENDERRORS ----------
 
 
 
@@ -163,7 +162,7 @@ def check_metadata(path, metadata, lines):
     file_name = path.name
     raw_parent = path.parent.as_posix()
 
-    if raw_parent == "..":
+    if raw_parent == ".":
         folder_path = "."
     else:
         folder_path = f"./{raw_parent.replace('../', '')}"
@@ -171,47 +170,28 @@ def check_metadata(path, metadata, lines):
     if (len(lines[0]) == 0):
         del lines[:1]
 
+    need_path = f"{folder_path}/{file_name}" if folder_path != "." else f"./{file_name}"
+
+    if (metadata.get("Path") != need_path):
+        return err_invalid_field_value("Path", metadata.get("Path"), need_path)
+
     if (metadata.get("Project") == PROJECT_NAME):
         if (not check_copyright(lines, metadata, True)):
             return False
 
-        if "./components/" in folder_path:
-            component_name = folder_path.split("/")[2]
-            
-            if component_name != metadata["Library"]:
-                return err_invalid_field_value("Library", metadata["Library"], component_name)
-   
     elif (metadata.get("Library") != None):
         if (not check_copyright(lines, metadata, False)):
             return False
-
-        relative_folder = metadata.get("Relative folder")
-        if (relative_folder != None):
-
-            relative_folder = relative_folder.split("/")[1:]
-            component_name = folder_path.split("/")[:3]
-            absolute_folder = "/".join(component_name + relative_folder)
-
-            if (absolute_folder != folder_path):
-                need_relative_folder = "./" + "".join(folder_path.split("/", 3)[3:])
-                return err_invalid_field_value(
-                    "Relative folder", metadata["Relative folder"], need_relative_folder
-                )
 
     elif (metadata.get("Example") != None):
         if (not check_copyright(lines, metadata, True)):
             return False
 
-        if not "./examples/" in metadata["Folder"]:
-            return err_invalid_field_value("Folder", metadata["Folder"], folder_path)
+        if not "./examples/" in folder_path:
+            return err_invalid_field_value("Example", metadata["Example"], None)
 
     else:
-        return err_invalid_field_value("Project/Library", None, None)
-
-    if (metadata["Folder"].lower() != folder_path.lower()):
-        return err_invalid_field_value("Folder", metadata["Folder"], folder_path)
-    if (metadata["File"].lower() != file_name.lower()):
-        return err_invalid_field_value("File", metadata["File"], file_name)
+        return err_invalid_field_value("Project/Library/Example", None, None)
 
     license = metadata["SPDX-License-Identifier"]
 
@@ -237,7 +217,7 @@ def check_copyright(lines, metadata, is_my):
         del lines[:1]
         
     return True
-# ---------- END CHECKERS -----------
+# ---------- END CHECKERS ----------
 
 
 
@@ -284,7 +264,7 @@ def get_comment_type(path):
         return "hash"
     elif file_ext in COMMENT_C_STYLE:
         return "c_style"
-    elif file_ext in COMMENT_HTML:
+    elif file_ext in COMMENT_HTML or ".md" in file_name:
         return "html"
     else:
         return ""

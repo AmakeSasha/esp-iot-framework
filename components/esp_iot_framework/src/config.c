@@ -1,9 +1,6 @@
-/*
- * SPDX-License-Identifier: Apache-2.0
+/* SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
- * Folder: ./components/esp_iot_framework_core/src
- * File: config.c
- * Library: esp_iot_framework_core
+ * Path: ./components/esp_iot_framework/src/config.c
  * 
  * Copyright 2026 AmakeSasha
  * 

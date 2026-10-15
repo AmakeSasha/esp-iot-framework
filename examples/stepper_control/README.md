@@ -1,8 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Example: stepper_control_server
-  Folder: ./examples/stepper_control_server
-  File: README.md
+  Path: ./examples/stepper_control/README.md
   
   Copyright 2026 AmakeSasha
   

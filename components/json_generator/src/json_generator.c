@@ -1,9 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  * Library: json_generator
- * Folder: ./components/json_generator/src
- * File: json_generator.c
- * Relative folder: ./src
+ * Path: ./components/json_generator/src/json_generator.c
  * Original Author: Piyush Shah
  * Version: 1.2.0
  * Source: https://github.com/shahpiyushv/json_generator

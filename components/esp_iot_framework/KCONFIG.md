@@ -1,9 +1,7 @@
 <!--
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
-  Folder: ./components/esp_iot_framework_core
-  File: KCONFIG.md
-  Library: esp_iot_framework_core
+  Path: ./components/esp_iot_framework/KCONFIG.md
   
   Copyright 2026 AmakeSasha
   

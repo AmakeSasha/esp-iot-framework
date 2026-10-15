@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Example: stepper_control_server
-# Folder: ./examples/stepper_control_server
-# File: CmakeLists.txt
-# 
+# Path: ./examples/stepper_control/CMakeLists.txt
+#
 # Copyright 2026 AmakeSasha
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");

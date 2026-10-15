@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Library: jsmn
-# Folder: ./components/jsmn
-# File: CMakeLists.txt
-# Relative folder: .
+# Path: ./components/jsmn/CMakeLists.txt
 # Original Author: Serge Zaitsev
 # Version: 1.1.0
 # Source: https://github.com/zserge/jsmn

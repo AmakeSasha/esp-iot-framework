@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Example: hello_world_server
-# Folder: ./examples/hello_world_server/main
-# File: CmakeLists.txt
-# 
+# Path: ./examples/hello_world/main/CMakeLists.txt
+#
 # Copyright 2026 AmakeSasha
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");

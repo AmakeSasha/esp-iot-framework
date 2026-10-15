@@ -1,8 +1,7 @@
 /*
  * SPDX-License-Identifier: CC0-1.0
  * Library: json2.js
- * Folder: ./components/esp_iot_framework_server/web_src
- * File: json2.js
+ * Path: ./components/esp_iot_framework/web_src/json2.js
  * Original Author: Douglas Crockford
  * Version: 2023-05-10
  * Source: https://github.com/douglascrockford/JSON-js

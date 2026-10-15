@@ -1,9 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  * Example: relay_control_server
- * Folder: ./examples/relay_control_server/main
- * File: main.c
- * 
+ * Path: ./examples/relay_control/main/main.c
+ *
  * Copyright 2026 AmakeSasha
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");

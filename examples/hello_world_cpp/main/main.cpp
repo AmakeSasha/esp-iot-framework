@@ -1,9 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  * Example: hello_world_cpp_server
- * Folder: ./examples/hello_world_cpp_server/main
- * File: main.cpp
- * 
+ * Path: ./examples/hello_world_cpp/main/main.cpp
+ *
  * Copyright 2026 AmakeSasha
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
