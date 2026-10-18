@@ -1,22 +1,14 @@
-<!--
-  SPDX-License-Identifier: Apache-2.0
-  Example: relay_control_server
-  Path: ./examples/relay_control/REST_API.md
-  
-  Copyright 2026 AmakeSasha
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-      http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
+<!--  SPDX-License-Identifier: CC0-1.0 -->
+
+<style>
+  .md-alert { padding: 12px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+  .md-warn { background-color: #24211b; border-left: 4px solid #d29922; }
+  .md-warn strong { color: #e3b341; }
+  .md-note { background-color: #1f242c; border-left: 4px solid #388bfd; }
+  .md-note strong { color: #58a6ff; }
+</style>
+
+
 
 ## Map URIs
 
@@ -29,7 +21,7 @@
         * `/toggle_logic.do` - [Toggle the hardware logic mode of the relay (`INVERTED`/`DIRECT`)](#h_api_relay_toggle_logic)
         * `/status.json` - [Get the state of the relay](#h_api_relay_status)
 
-The entire API is also available from the [SERVER](../../components/esp_iot_framework_server/REST_API.md) node.
+The entire API is also available from the [`esp_iot_framework`](../../components/esp_iot_framework/REST_API.md) node.
 
 ## HTTP Status Codes
 
@@ -85,10 +77,10 @@ The entire API is also available from the [SERVER](../../components/esp_iot_fram
     
     **Response**: `HTTP 204 No Content`
 
-    <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin: 10px 0; color: #856404;">
-    <strong>Warning</strong><br>
-    Do not toggle this logic state unless absolutely necessary. Changing the logic mode does not physically update the current pin voltage level immediately, causing a temporary state mismatch between <code>/api/relay/status.json</code> and the actual relay hardware position.
-  </div>
+    <div class="md-alert md-warn">
+        <strong>⚠️ WARNING</strong><br>
+        Do not toggle this logic state unless absolutely necessary. Changing the logic mode does not physically update the current pin voltage level immediately, causing a temporary state mismatch between <code>/api/relay/status.json</code> and the actual relay hardware position.
+    </div>
 
 ---
 

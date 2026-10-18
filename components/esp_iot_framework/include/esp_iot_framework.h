@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/include/esp_iot_framework.h
  * 

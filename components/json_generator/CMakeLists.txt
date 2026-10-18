@@ -1,7 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Piyush Shah
 # SPDX-License-Identifier: Apache-2.0
 # Library: json_generator
 # Path: ./components/json_generator/CMakeLists.txt
-# Original Author: Piyush Shah
 # Version: 1.2.0
 # Source: https://github.com/espressif/json_generator
 # 

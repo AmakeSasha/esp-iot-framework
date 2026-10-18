@@ -1,8 +1,7 @@
-/*
+/* SPDX-FileCopyrightText: 2010 Serge Zaitsev
  * SPDX-License-Identifier: MIT
  * Library: jsmn
  * Path: ./components/jsmn/include/jsmn.h
- * Original Author: Serge Zaitsev
  * Version: 1.1.0
  * Source: https://github.com/zserge/jsmn
  * 

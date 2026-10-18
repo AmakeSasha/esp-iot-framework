@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/src/system.c
  * 
@@ -172,10 +173,11 @@ static TaskHandle_t x_exclusive_forced_handle = NULL;
 static void task_reboot(void *arg) {
     const eif_config_t * const cfg = eif_config_get();
 
-    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(250));
     if (cfg->sys_handler_reboot != NULL) {
         cfg->sys_handler_reboot();
     }
+    vTaskDelay(pdMS_TO_TICKS(250));
     esp_restart();
 
     /* Cleanup */

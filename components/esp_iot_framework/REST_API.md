@@ -1,4 +1,5 @@
 <!--
+  SPDX-FileCopyrightText: 2026 AmakeSasha
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
   Path: ./components/esp_iot_framework/REST_API.md
@@ -18,7 +19,7 @@
   limitations under the License.
 -->
 
-The `esp_iot_framework_server` provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with `/_/` and support JSON format for requests and responses.
+The `esp_iot_framework` provides a comprehensive REST API and static files for device management and monitoring. All API endpoints are prefixed with `/_/` and support JSON format for requests and responses.
 
 ## Authentication
 When Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_ENABLE_BASIC_AUTH">CONFIG_EIF_ENABLE_BASIC_AUTH</a></code> is enabled, all administrative endpoints (all endpoints listed in `MAP URIs`) require HTTP Basic Authentication.
@@ -53,11 +54,10 @@ Content-Length: 20
     * `/logs.html` - The page for viewing logs from the device
 
       Only if the Kconfig option <code><a href="../../docs/invalid_link.md" real_ref="group__core__kconfig.html#CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG">CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG</a></code> is enabled
+      
+    * `/` - Main interface container
     * `/api.js` - JavaScript API library
-    * `/json2.js` - JSON utility library
     * `/style.css` - Stylesheet
-    * `/license.txt` - License information
-    * `/index.html` - Main interface container
     * `/system.html` - System management page
     * `/network.html` - Network management page
   * `/wifi`
@@ -112,7 +112,6 @@ Content-Length: 20
   ```json
   {
     "current_profile_index": 0,
-    "used_tls": true,
     "rssi_now_profile": -65,
     "profiles": [
       {
@@ -130,7 +129,6 @@ Content-Length: 20
   ```
   **Fields**:
   - `current_profile_index`: Currently active profile (`0` - `X`, is set using `eif_set_wifi_profiles_count()`, otherwise it is <code>#EIF_WIFI_PROFILES_DEFAULT_COUNT</code>)
-  - `used_tls`: Whether TLS is enabled on the server or not
   - `rssi_now_profile`: RSSI of current connection in dBm
   - `profiles`: Array of Wi-Fi profiles
     - `ssid`: Network SSID (empty if not configured)
@@ -164,7 +162,6 @@ Content-Length: 20
     "band": "2.4 GHz",
     "lwip_hostname": "device-aabbcc",
     "mdns_hostname": "device-aabbcc",
-    "used_tls": true
   }
   ```
   **Fields**:
@@ -181,8 +178,6 @@ Content-Length: 20
   - `band`: Active frequency band (`2.4 GHz` or `5 GHz`)
   - `lwip_hostname`: Device network name registered in the router DHCP client table (`null` if unassigned)
   - `mdns_hostname`: Local mDNS domain name
-  - `used_tls`: Whether TLS is enabled on the server or not
-
 ---
 
 <a id="h_wifi_update_do"></a>

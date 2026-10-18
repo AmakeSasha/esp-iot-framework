@@ -23,13 +23,13 @@
 #include <esp_iot_framework.h>
 
 esp_err_t hello_world(httpd_req_t *req) {
-    const char *resp = "Hello World, from esp_iot_framework!";
+    const char *resp = "Hello World, from <code>esp_iot_framework</code>!";
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
 }
 
 static const httpd_uri_t my_uris[] = {
-    { .uri = "/hello", .method = HTTP_GET, .handler = hello_world }
+    { .uri = "/", .method = HTTP_GET, .handler = hello_world }
 };
 
 void app_main(void) {

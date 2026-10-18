@@ -1,4 +1,4 @@
-/*
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
  * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/web_src/api.js
@@ -18,106 +18,99 @@
  * limitations under the License.
  */
 
-!function(t) {
-  "use strict";
-  var n = {
-    // API
-    _addAnticash: function(t) {
-      var n = (new Date).getTime();
-      return t + (t.indexOf("?") >= 0 ? "&" : "?") + "t=" + n
-    },
-    _sendRaw: function(n, e, a, o, i) {
-      var s;
-      try {
-        s = t.XMLHttpRequest ? new XMLHttpRequest : new ActiveXObject("Microsoft.XMLHTTP")
-      } catch (errInit) {
-        return void(i && i("XHR_INIT_ERR"))
-      }
-      s.open(n, this._addAnticash(e), !0), o && s.setRequestHeader("Content-Type", o), s.onreadystatechange = function() {
-        if (4 === s.readyState) {
-          var t = 1223 === s.status ? 204 : s.status,
-            n = t >= 200 && t < 300,
-            e = s.responseText;
-          s.onreadystatechange = null, i && i(n ? null : t || "NET_ERR", e)
+// esp_iot_framework - Shared Web API Core Component
+// Copyright 2026 AmakeSasha. Apache-2.0 License.
+
+const API = {
+  loadJsonData: function(element, url) {
+    const output = document.getElementById(element);
+
+    return fetch(`${url}?t=${Date.now()}`, {
+      method: "GET"
+    }).then(function(response) {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
         }
-      };
-      try {
-        s.send(a || null)
-      } catch (errInit) {
-        i && i("SEND_ERR")
+
+        return response.json(); 
+      }).then(jsonBody => {
+        output.innerHTML  = JSON.stringify(jsonBody, null, 2);
+        return jsonBody;
+      }).catch(function(err) {
+        output.innerHTML  = `ERROR: ${err.message || err}`;
+        throw err;
+      });
+  },
+  
+  sendWithButton: function(url, payloadType, payload, btnName, successText, needTimer = true, time = 3000) {
+    const btn = document.getElementById(btnName);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), time); 
+    const options = { 
+      method: "POST",
+      signal: controller.signal
+    };
+
+    btn.disabled = true;
+    btn.style.color = "green";
+    btn.style.backgroundColor = "yellow";
+    btn.innerHTML = "⏳ Processing...";
+
+    if (payload) {
+      if (payloadType === "json") {
+        options.headers = { "Content-Type": "application/json" };
+        options.body = JSON.stringify(payload);
+      } else if (payloadType === "file") {
+        options.headers = { "Content-Type": "application/octet-stream" };
+        options.body = payload;
       }
-    },
-    _sendJson: function(t, n, e, a) {
-      var o = e ? JSON.stringify(e) : null;
-      this._sendRaw(t, n, o, "application/json", function(t, n) {
-        var e = null;
-        if (!t && n) try {
-          e = JSON.parse(n)
-        } catch (n) {
-          t = "JSON_PARSE_ERR"
-        }
-        a && a(t, e)
-      })
-    },
-
-    // Web
-    sendWithBtn: function(btn, apiFunc, addData, ok_func) {
-      if (!btn) return;
-
-      btn.style.backgroundColor = 'yellow';
-      btn.style.color = 'red';
-      btn.innerHTML = '⏳ Sending...';
-      if (btn.disabled) btn.disabled = true;
-
-      apiFunc(function(err, data) {
-        if (!err) {
-          btn.innerHTML = '⏳ Wait...';
-          ok_func(data);
-        } else {
-          btn.style.backgroundColor = 'red';
-          btn.style.color = 'yellow';
-          btn.innerHTML = '❌ FAIL (' + err + ')';
-          if (btn.disabled) btn.disabled = false;
-        }
-      }, addData);
-    },
-    reloadWindow: function(btn) {
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '♻️ Refreshing...';
-        btn.style.backgroundColor = 'grey';
-        btn.style.color = 'yellow';
-      }
-
-      var baseHost = top.location.protocol + "//" + top.location.host;
-      var fileName = window.location.pathname.split("/").pop();
-      var baseUri = top.location.pathname + "?p=" + fileName;
-      var finalUrl = baseHost + n._addAnticash(baseUri);
-
-      setTimeout(function() { top.location.href = finalUrl }, 5e3)
-    },
-
-    // JSON
-    formatJson: function(json) {
-      var res = JSON.stringify(json, null, 2);
-
-      res = res.replace(/("(\\.|[^"\\])*")/g, function(match) {
-          return '<span class="json-string">' + match + '</span>';
-      });
-      res = res.replace(/\b\d+\b/g, function(match, offset, fullString) {
-        var part = fullString.substring(0, offset);
-        if (part.lastIndexOf('<span class="json-string">') > part.lastIndexOf('</span>')) return match;
-        return '<span class="json-number">' + match + '</span>';
-      });
-      res = res.replace(/\b(true|false|null)\b/g, function(match, word, offset, fullString) {
-        var part = fullString.substring(0, offset);
-        if (part.lastIndexOf('<span class="json-string">') > part.lastIndexOf('</span>')) return match;
-        return '<span class="json-boolean">' + match + '</span>';
-      });
-      res = res.replace(/<span class="json-string">("[^"]+")<\/span>\s*:/g, '<span class="json-key">$1</span>:');
-     
-      return res;
     }
-  };
-  t.API = n
-}(window);
+
+    return fetch(`${url}?t=${Date.now()}`, options).then(res => {
+        clearTimeout(timeoutId); 
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        btn.style.color = "yellow";
+        btn.innerHTML = "✅ Successfully!";
+        btn.style.backgroundColor = "LimeGreen";
+      }).catch(err => {
+        clearTimeout(timeoutId); 
+
+        btn.innerHTML = `❌ Error: ${err.message || err}`;
+        btn.style.backgroundColor = "red";
+        btn.style.color = "white";
+        
+        throw err; 
+      }).finally(() => {
+        btn.disabled = false;
+        if (needTimer) {
+          setTimeout(() => {
+            btn.style.color = "";
+            btn.innerHTML = successText;
+            btn.style.backgroundColor = "";
+          }, 5000);
+        }
+      });
+  },
+
+  reloadWithButton: function(btnName) {
+    const btn = document.getElementById(btnName);
+
+    btn.disabled = true;
+    btn.style.backgroundColor = 'grey';
+    btn.style.color = 'yellow';
+
+    let secondsLeft = 5;
+    const timer = setInterval(() => {
+      if (secondsLeft > 0) {
+        btn.innerHTML = `♻️ Refreshing (${secondsLeft.toFixed(1)}s)...`;
+        secondsLeft -= 0.1;
+      } else {
+        clearInterval(timer);
+        btn.innerHTML = '♻️ Refresh...';
+        window.location.reload();
+      }
+    }, 100);
+  },
+};

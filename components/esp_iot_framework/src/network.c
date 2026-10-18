@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/src/network.c
  * 
@@ -66,11 +67,11 @@ static esp_err_t mdns_initialize(void) {
         cfg->mdns_txt_records_count
     ));
 
-    EIF_LOG_I("mDNS started. Link: %s://%s.local", WEB_PROTOCOL, cfg->mdns_hostname);
+    EIF_LOG_I("Started. Link: %s://%s.local", WEB_PROTOCOL, cfg->mdns_hostname);
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("mDNS initialization failed, err: %s", esp_err_to_name(ret));
+        EIF_LOG_E("Initialization failed, err: %s", esp_err_to_name(ret));
         (void)mdns_service_remove_all();
     }
     return ret;
@@ -114,7 +115,7 @@ esp_err_t eif_wifi_set_config_from_profile() {
 
 cleanup:
     if ((ret == ESP_ERR_WIFI_NOT_STARTED) || (ret == ESP_ERR_WIFI_STOP_STATE)) {
-        EIF_LOG_W("Wi-Fi driver is not ready yet, profile #%u queued", current_wifi_profile_index);
+        EIF_LOG_W("Driver is not ready yet, profile #%u queued", current_wifi_profile_index);
         ret = ESP_OK;
     } else if (ret == ESP_ERR_INVALID_STATE) {
         EIF_LOG_D("Profile #%u has an empty SSID, skipping...", current_wifi_profile_index);
@@ -130,7 +131,7 @@ cleanup:
 
 
 static void callback_on_wifi_sta_start(void* arg, esp_event_base_t base, int32_t id, void* data) {
-    EIF_LOG_I("Wi-Fi STA started. Loading first profile and connecting...");
+    EIF_LOG_I("STA started. Loading first profile and connecting...");
 
     (void)eif_wifi_set_config_from_profile(0);
     (void)esp_wifi_connect();
@@ -139,7 +140,7 @@ static void callback_on_wifi_sta_start(void* arg, esp_event_base_t base, int32_t
 static void callback_on_wifi_disconnect(void* arg, esp_event_base_t base, int32_t id, void* data) {
     bool profile_found = false;
 
-    EIF_LOG_W("Wi-Fi disconnected (reason: %d). Reconnecting...",
+    EIF_LOG_W("Disconnected (reason: %d). Reconnecting...",
               ((wifi_event_sta_disconnected_t*)data)->reason);
 
     for (uint8_t i = 0U; i < CONFIG_EIF_CUSTOM_WIFI_PROFILES_COUNT; i++) {
@@ -164,7 +165,7 @@ static void callback_on_wifi_disconnect(void* arg, esp_event_base_t base, int32_
 }
 
 static void callback_on_wifi_connected(void* arg, esp_event_base_t base, int32_t id, void* data) {
-    EIF_LOG_I("Wi-Fi connected successfully to AP: '%s' (channel: %d). Waiting for IP...",
+    EIF_LOG_I("Connected successfully to AP: '%s' (channel: %d). Waiting for IP...",
               ((wifi_event_sta_connected_t*)data)->ssid, 
               ((wifi_event_sta_connected_t*)data)->channel);
 }
@@ -225,16 +226,16 @@ esp_err_t wifi_initialize(void) {
     EIF_TRY(esp_wifi_start());
     
     if (esp_wifi_set_ps(cfg->wifi_power_mode) != ESP_OK) {
-        EIF_LOG_W("Failed to set Wi-Fi power save mode: %d", cfg->wifi_power_mode);
+        EIF_LOG_W("Failed to set power save mode: %d", cfg->wifi_power_mode);
     } else {
-        EIF_LOG_I("Wi-Fi power save mode set to: %d", cfg->wifi_power_mode);
+        EIF_LOG_I("Power save mode set to: %d", cfg->wifi_power_mode);
     }
     
-    EIF_LOG_I("Wi-Fi subsystem initialized");
+    EIF_LOG_I("Subsystem initialized");
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("Wi-Fi initialization failed, err: %s", esp_err_to_name(ret));
+        EIF_LOG_E("Initialization failed, err: %s", esp_err_to_name(ret));
     }
     return ret;
 }

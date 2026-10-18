@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/private_include/macros.h
  * 
@@ -22,7 +23,6 @@
 
 #include "sdkconfig.h"
 
-
 #if defined(CONFIG_EIF_LOG_SHOW_METADATA) || defined(DOXYGEN)
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, "%s:%d (%s) " m_format, __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 #endif
@@ -30,10 +30,6 @@
     #define EIF_PRINT(m_macro, m_format, ...) m_macro(TAG, m_format, ##__VA_ARGS__)
 #endif
 
-/**
- * @name Logging Severity Levels
- * @{
- */
 /** @brief Error log level severity, is level `Error`. */
 #define EIF_LOG_LEVEL_E 1
 /** @brief Warning log level severity, is level `Warning`. */
@@ -71,38 +67,13 @@
     #define EIF_LOG_D(...) ((void)0U)
 #endif
 
-#ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-    #define EIF_DEFINE_HTTP_FILE(m_filename, m_resp_type, m_need_cache) \
-        extern const uint8_t m_filename##_start[] asm("_binary_" #m_filename "_start"); \
-        extern const uint8_t m_filename##_end[]   asm("_binary_" #m_filename "_end");   \
-        static const eif_web_file_t file_##m_filename = { \
-            .start        = (m_filename##_start), \
-            .end          = (m_filename##_end), \
-            .content_type = (m_resp_type), \
-            .file_name    = (#m_filename), \
-            .need_cache   = (m_need_cache) \
-        }; \
-        static esp_err_t sendf_##m_filename(httpd_req_t * const req) { \
-            return httpd_resp_sendfile(req, &(file_##m_filename)); \
-        }
-#endif
-
-#if CONFIG_EIF_LOG_LEVEL > EIF_LOG_LEVEL_E || defined(DOXYGEN)
-    #define EIF_CHECK_NOT_NULL(m_ptr, m_error) do {       \
-        if ((m_ptr) == NULL) {                            \
-            EIF_LOG_E("PARAMETER_IS_NULL: '%s'", #m_ptr); \
-            ret = (m_error);                              \
-            goto cleanup;                                 \
-        }                                                 \
-    } while(false)
-#else
-    #define EIF_CHECK_NOT_NULL( m_ptr, m_error) do { \
-        if ((m_ptr) == NULL) {                       \
-            ret = (m_error);                         \
-            goto cleanup;                            \
-        }                                            \
-    } while(false)
-#endif
+#define EIF_CHECK_NOT_NULL(m_ptr, m_error) do {       \
+    if ((m_ptr) == NULL) {                            \
+        EIF_LOG_E("PARAMETER_IS_NULL: '%s'", #m_ptr); \
+        ret = (m_error);                              \
+        goto cleanup;                                 \
+    }                                                 \
+} while(false)
 
 #define EIF_FAILED(m_expr) (ret = (m_expr) != ESP_OK)
 

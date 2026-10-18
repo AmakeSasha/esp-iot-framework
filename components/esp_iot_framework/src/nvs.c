@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/src/nvs.c
  * 
@@ -72,15 +73,14 @@ static esp_err_t nvs_value_save(const char * const key, const char * const value
     EIF_TRY(nvs_set_str(handle, key, value));
     EIF_TRY(nvs_commit(handle));
 
-    EIF_LOG_I("NVS record for key '%s' saved", key);
+    EIF_LOG_I("[write] operation for key '%s' completed", key);
 
 cleanup:
     if (handle != NVS_CLEAN_HANDLE) {
         (void)nvs_close(handle);
     }
     if (ret != ESP_OK) {
-        EIF_LOG_E("NVS [write] operation failed for key '%s', err: %s", 
-            key, esp_err_to_name(ret));
+        EIF_LOG_E("[write] operation for key '%s' failed, err: %s", key, esp_err_to_name(ret));
     }
     return ret;
 }
@@ -102,14 +102,14 @@ static esp_err_t nvs_value_save2(
     EIF_TRY(nvs_set_str(handle, key2, value2));
     EIF_TRY(nvs_commit(handle));
 
-    EIF_LOG_I("NVS record for keys '%s', '%s' saved", key1, key2);
+    EIF_LOG_I("[write2] operation for keys '%s', '%s' completed", key1, key2);
 
 cleanup:
     if (handle != NVS_CLEAN_HANDLE) {
         (void)nvs_close(handle);
     }
     if (ret != ESP_OK) {
-        EIF_LOG_E("NVS [write] operation failed for keys '%s', '%s', err: %s", 
+        EIF_LOG_E("[write2] operation for keys '%s', '%s' failed, err: %s", 
                   key1, key2, esp_err_to_name(ret));
     }
     return ret;
@@ -128,24 +128,23 @@ static esp_err_t nvs_value_load(
     EIF_TRY(nvs_open(NVS_STORAGE_NAME, NVS_READONLY, &handle));
     EIF_TRY(nvs_get_str(handle, key, value_out, &length));
 
-    EIF_LOG_I("NVS record for key '%s' loaded", key);
+    EIF_LOG_I("[read] operation for key '%s' completed", key);
 
 cleanup:
     if (handle != NVS_CLEAN_HANDLE) {
         (void)nvs_close(handle);
     }
     if (ret == ESP_ERR_NVS_NOT_FOUND) {
-        EIF_LOG_W("NVS record for key '%s' does not exist", key); 
+        EIF_LOG_W("[read] key '%s' not found", key); 
     } else if (ret != ESP_OK) {
-        EIF_LOG_E("NVS [read] operation failed for key '%s', err: %s", 
-                  key, esp_err_to_name(ret));
+        EIF_LOG_E("[read] operation for key '%s' failed, err: %s", key, esp_err_to_name(ret));
     }
     return ret;
 }
 
 #ifdef CONFIG_EIF_ENABLE_TLS
     static esp_err_t nvs_value_load_malloc(
-        const char * key, char ** const value_out, size_t * const value_out_len
+        const char * const key, char ** const value_out, size_t * const value_out_len
     ) {
         size_t length = 0U;
         esp_err_t ret = ESP_OK;
@@ -173,7 +172,7 @@ cleanup:
         EIF_TRY(nvs_get_str(handle, key, *value_out, &length));
 
         *value_out_len = length;
-        EIF_LOG_I("NVS record for key '%s' loaded", key);
+        EIF_LOG_I("[read_malloc] operation for key '%s' completed", key);
 
     cleanup:
         if (handle != NVS_CLEAN_HANDLE) {
@@ -185,15 +184,42 @@ cleanup:
                 *value_out = NULL;
             }
             *value_out_len = 0U;
-
+            
             if (ret == ESP_ERR_NVS_NOT_FOUND) {
-                EIF_LOG_W("NVS record for key '%s' does not exist", key);
+                EIF_LOG_W("[read_malloc] key '%s' not found", key);
             } else if (ret == ESP_ERR_NO_MEM) {
-                EIF_LOG_E("Failed to allocate %u bytes for NVS key '%s'", (unsigned int)length, key);
+                EIF_LOG_E("[read_malloc] failed to allocate %u bytes for key '%s'", length, key);
             } else {
-                EIF_LOG_E("NVS [read malloc] operation failed for key '%s', err: %s", 
-                        key, esp_err_to_name(ret));
+                EIF_LOG_E("[read_malloc] operation for key '%s' failed, err: %s", 
+                          key, esp_err_to_name(ret));
             }
+        }
+        return ret;
+    }
+
+    static esp_err_t nvs_key_remove2(
+        const char * const key1, const char * const key2
+    ) {
+        esp_err_t ret = ESP_OK;
+        nvs_handle_t handle = NVS_CLEAN_HANDLE;
+
+        EIF_CHECK_NOT_NULL(key1, ESP_ERR_INVALID_ARG);
+        EIF_CHECK_NOT_NULL(key2, ESP_ERR_INVALID_ARG);
+
+        EIF_TRY(nvs_open(NVS_STORAGE_NAME, NVS_READWRITE, &handle));
+        EIF_TRY(nvs_erase_key(handle, key1));
+        EIF_TRY(nvs_erase_key(handle, key2));
+        EIF_TRY(nvs_commit(handle));
+
+        EIF_LOG_I("[remove2] operation for keys '%s', '%s' completed", key1, key2);
+
+    cleanup:
+        if (handle != NVS_CLEAN_HANDLE) {
+            (void)nvs_close(handle);
+        }
+        if (ret != ESP_OK) {
+            EIF_LOG_E("[remove2] operation for keys '%s', '%s' failed, err: %s", 
+                      key1, key2, esp_err_to_name(ret));
         }
         return ret;
     }
@@ -242,12 +268,11 @@ esp_err_t nvs_wifi_profile_save(
     nvs_wifi_gen_keys(index, &ssid_key, &pass_key);
     EIF_TRY(nvs_value_save2(ssid_key, *ssid, pass_key, *pass));
 
-    EIF_LOG_I("'Wi-Fi profile' at index %u saved to NVS", index);
+    EIF_LOG_I("'Wi-Fi profile' at index %u saved", index);
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("Failed to save 'Wi-Fi profile' at index %u to NVS, err: %s",
-                  index, esp_err_to_name(ret));
+        EIF_LOG_E("Failed to save 'Wi-Fi profile' at index %u, err: %s", index, esp_err_to_name(ret));
     }
     return ret;
 }
@@ -275,12 +300,11 @@ esp_err_t nvs_wifi_profile_load(
         (void)memcpy(*pass_out, NVS_WIFI_PASS_DEFAULT, sizeof(NVS_WIFI_PASS_DEFAULT));
     }
 
-    EIF_LOG_I("'Wi-Fi profile' at index %u loaded from NVS", index);
+    EIF_LOG_I("'Wi-Fi profile' at index %u loaded", index);
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("Failed to load 'Wi-Fi profile' at index %u from NVS, err: %s",
-                  index, esp_err_to_name(ret));
+        EIF_LOG_E("Failed to load 'Wi-Fi profile' at index %u, err: %s", index, esp_err_to_name(ret));
     }
     return ret;
 }
@@ -297,7 +321,7 @@ static inline esp_err_t nvs_initialize_wifi_profiles(void) {
      *       be overwritten or deleted.Thus, the valid user-accessible range starts from 1. */
     for (size_t index = 1U; index <= CONFIG_EIF_CUSTOM_WIFI_PROFILES_COUNT; index++) {
         if ((ret = nvs_wifi_profile_load(index, &wifi_ssid, &wifi_pass)) == ESP_ERR_NVS_NOT_FOUND) {
-            EIF_LOG_W("'Wi-Fi profile' at index %u not found in NVS. Creating empty...",
+            EIF_LOG_W("'Wi-Fi profile' at index %u not found. Creating empty...",
                       (unsigned int)index);
             EIF_TRY(nvs_wifi_profile_save(index, &empty_ssid, &empty_pass));
         } else if (ret != ESP_OK) {
@@ -349,13 +373,12 @@ esp_err_t nvs_basic_auth_line_save(const char (*pass)[NVS_BASIC_AUTH_PASS_MAX_LE
 
     EIF_TRY(nvs_value_save(NVS_KEY_BASIC_AUTH_LINE, line));
 
-    EIF_LOG_I("'Basic Auth credentials' saved to NVS");
+    EIF_LOG_I("'Basic Auth credentials' saved");
     (void)written_b64_bytes;
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("Failed to save 'Basic Auth credentials' to NVS, err: %s",
-                  esp_err_to_name(ret));
+        EIF_LOG_E("Failed to save 'Basic Auth credentials', err: %s", esp_err_to_name(ret));
     }
     return ret;
 }
@@ -367,12 +390,11 @@ esp_err_t nvs_basic_auth_line_load(char (*buf_out)[NVS_BASIC_AUTH_LINE_MAX_LEN +
     EIF_TRY(nvs_value_load(NVS_KEY_BASIC_AUTH_LINE, (char * const)(*buf_out),
                            NVS_BASIC_AUTH_LINE_MAX_LEN + 1U));
 
-    EIF_LOG_I("'Basic Auth credentials' loaded from NVS");
+    EIF_LOG_I("'Basic Auth credentials' loaded");
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("Failed to load 'Basic Auth credentials' from NVS, err: %s",
-                  esp_err_to_name(ret));
+        EIF_LOG_E("Failed to load 'Basic Auth credentials', err: %s", esp_err_to_name(ret));
     }
     return ret;
 }
@@ -384,7 +406,7 @@ static inline esp_err_t nvs_initialize_basic_auth(void) {
     char basic_auth_buffer[NVS_BASIC_AUTH_LINE_MAX_LEN + 1U] = {0};
 
     if ((ret = nvs_basic_auth_line_load(&basic_auth_buffer)) == ESP_ERR_NVS_NOT_FOUND) {
-        EIF_LOG_W("'Basic Auth credentials' not found in NVS. Creating default...");
+        EIF_LOG_W("'Basic Auth credentials' not found. Creating default...");
         EIF_TRY(nvs_basic_auth_line_save(&empty_auth_pass));
     }
     
@@ -413,12 +435,25 @@ cleanup:
 
         EIF_TRY(nvs_value_save2(NVS_KEY_TLS_CERT, cert, NVS_KEY_TLS_PRIV_KEY, priv_key));
 
-        EIF_LOG_I("'TLS credentials' saved to NVS");;
+        EIF_LOG_I("'TLS credentials' saved");
 
     cleanup:
         if (ret != ESP_OK) {
-            EIF_LOG_E("Failed to save 'TLS credentials' to NVS, err: %s",
-                      esp_err_to_name(ret));
+            EIF_LOG_E("Failed to save 'TLS credentials', err: %s", esp_err_to_name(ret));
+        }
+        return ret;
+    }
+    
+    esp_err_t nvs_tls_creds_remove(void) {
+        esp_err_t ret = ESP_OK;
+
+        EIF_TRY(nvs_key_remove2(NVS_KEY_TLS_CERT, NVS_KEY_TLS_PRIV_KEY));
+
+        EIF_LOG_I("'TLS credentials' removed");
+
+    cleanup:
+        if (ret != ESP_OK) {
+            EIF_LOG_E("Failed to remove 'TLS credentials', err: %s", esp_err_to_name(ret));
         }
         return ret;
     }
@@ -437,7 +472,7 @@ cleanup:
         EIF_TRY(nvs_value_load_malloc(NVS_KEY_TLS_CERT,     cert,     cert_len));
         EIF_TRY(nvs_value_load_malloc(NVS_KEY_TLS_PRIV_KEY, priv_key, priv_key_len));
 
-        EIF_LOG_I("'TLS credentials' loaded from NVS");
+        EIF_LOG_I("'TLS credentials' loaded");
         EIF_LOG_I("Cert len: '%u', Private Key len: '%u'",
                   (unsigned int)*cert_len, (unsigned int)*priv_key_len);
 
@@ -454,7 +489,7 @@ cleanup:
                 *priv_key = NULL;
             }
 
-            EIF_LOG_E("Failed to load 'TLS credentials' from NVS, err: %s",
+            EIF_LOG_E("Failed to load 'TLS credentials', err: %s",
                       esp_err_to_name(ret));
         }
         return ret;
@@ -473,7 +508,7 @@ cleanup:
         }
 
         if (ret == ESP_ERR_NVS_NOT_FOUND) {
-            EIF_LOG_W("'TLS credentials' not found in NVS. Creating new ones...");
+            EIF_LOG_W("'TLS credentials' not found. Creating new ones...");
             
             bootloader_random_enable();
             EIF_TRY(sys_generate_tls_credentials_sync());
@@ -486,13 +521,15 @@ cleanup:
 
         EIF_LOG_I("'TLS credentials' initialization finished");
     cleanup:
-        if (buf_cert != NULL) {
-            vPortFree(buf_cert);
-        }
-        if (buf_priv_key != NULL) {
-            vPortFree(buf_priv_key);
-        }
         if (ret != ESP_OK) {
+            /* @note Free only on failure; on success, pointers are stored in server configuration
+             *       for later use. */
+            if (buf_cert != NULL) {
+                vPortFree(buf_cert);
+            }
+            if (buf_priv_key != NULL) {
+                vPortFree(buf_priv_key);
+            }
             EIF_LOG_E("'TLS credentials' initialization failed, err: %s", esp_err_to_name(ret));
         }
         return ret;
@@ -508,7 +545,7 @@ esp_err_t nvs_initialize(void) {
     
     ret = nvs_flash_init();
     if ((ret == ESP_ERR_NVS_NO_FREE_PAGES) || (ret == ESP_ERR_NVS_NEW_VERSION_FOUND)) {
-        EIF_LOG_W("NVS flash storage is full or has a new version. Erasing and retrying...");
+        EIF_LOG_W("Storage is full or has a new version. Erasing and retrying...");
          
         EIF_TRY(nvs_flash_erase());
         EIF_TRY(nvs_flash_init());
@@ -524,11 +561,11 @@ esp_err_t nvs_initialize(void) {
         EIF_TRY(nvs_initialize_tls());
     #endif
 
-    EIF_LOG_I("'NVS subsystem' initialization finished");
+    EIF_LOG_I("'subsystem' initialization finished");
 
 cleanup:
     if (ret != ESP_OK) {
-        EIF_LOG_E("'NVS subsystem' initialization failed, err: %s", esp_err_to_name(ret));
+        EIF_LOG_E("'subsystem' initialization failed, err: %s", esp_err_to_name(ret));
     }
     return ret;
 }

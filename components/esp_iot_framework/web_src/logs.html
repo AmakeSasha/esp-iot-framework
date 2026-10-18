@@ -1,4 +1,5 @@
 <!--
+  SPDX-FileCopyrightText: 2026 AmakeSasha
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
   Path: ./components/esp_iot_framework/web_src/logs.html
@@ -166,15 +167,18 @@
     function pollLogChunk() {
       if (!streamEnabled) return;
 
-      window.API._sendRaw("GET", "/_/sys/logs.txt", null, null, function(err, responseText) {
-        if (!err && responseText) {
-          processAndAppendLogs(responseText);
+      return fetch(`/_/sys/logs?t=${Date.now()}`, { method: "GET" }).then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        
+          return res.text(); 
+        }).then(rawText => {
+          processAndAppendLogs(rawText);
           if (autoScrollEnabled) {
             monitor.scrollTop = monitor.scrollHeight;
           }
-        }
-        setTimeout(pollLogChunk, 1000);
-      });
+        }).catch(err => {
+          console.error(err);
+        }).finally(() => setTimeout(pollLogChunk, 1000));
     }
 
     window.onload = function() {

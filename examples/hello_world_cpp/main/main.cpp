@@ -20,27 +20,26 @@
 
 #include <esp_err.h>
 #include <esp_http_server.h>
-#include <esp_iot_framework_core.h>
-#include <esp_iot_framework_server.h>
+#include <esp_iot_framework.h>
 
 esp_err_t hello_world(httpd_req_t *req) {
-    const char *resp = "Hello World, from esp_iot_framework!";
+    const char *resp = "Hello World, from <code>esp_iot_framework</code>!";
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
 }
 
 static const httpd_uri_t my_uris[] = {
-    { .uri = "/hello", .method = HTTP_GET, .handler = hello_world }
+    { .uri = "/", .method = HTTP_GET, .handler = hello_world }
 };
 
 extern "C" void app_main(void) {
-    ESP_ERROR_CHECK(eif_core_initialize());
-    ESP_ERROR_CHECK(eif_server_initialize());
-    ESP_ERROR_CHECK(eif_nvs_initialize());
-    ESP_ERROR_CHECK(eif_server_set_uri_handlers(my_uris, sizeof(my_uris) / sizeof(my_uris[0])));
-    ESP_ERROR_CHECK(eif_wifi_initialize());
+    eif_init_config_t cfg = eif_init_config_default();
 
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+    cfg.mdns_hostname = "ymnaya-lampa";
+    cfg.server_uri_handlers = my_uris;
+    cfg.server_uri_handlers_count = sizeof(my_uris) / sizeof(my_uris[0]);
+
+    ESP_ERROR_CHECK(eif_initialize(&cfg));
+
+    vTaskDelete(NULL);
 }

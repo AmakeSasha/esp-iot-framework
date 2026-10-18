@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 AmakeSasha
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
 # Path: ./components/esp_iot_framework/Kconfig.projbuild
@@ -16,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-menu "ESP IoT framework, CORE"
+menu "ESP IoT framework"
     config EIF_ENABLE_TLS
         bool "Enable HTTPS (TLS/SSL) Support"
         default y

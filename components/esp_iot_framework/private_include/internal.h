@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/private_include/internal.h
  * 
@@ -134,6 +135,7 @@ esp_err_t nvs_basic_auth_line_load(char (*pass)[NVS_BASIC_AUTH_LINE_MAX_LEN + 1U
 
 #ifdef CONFIG_EIF_ENABLE_TLS
     esp_err_t nvs_tls_creds_save(const char * const cert, const char * const priv_key);
+    esp_err_t nvs_tls_creds_remove(void);
     esp_err_t nvs_tls_creds_load(
         char ** const cert,     size_t * const cert_len,
         char ** const priv_key, size_t * const priv_key_len

@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 AmakeSasha
 # SPDX-License-Identifier: Apache-2.0
 # Project: esp-iot-framework
 # Path: ./components/esp_iot_framework/CMakeLists.txt
@@ -30,26 +31,37 @@ set(requires_components
 
 if(CONFIG_EIF_ENABLE_WEB_ADMIN_GUI)
     set(embed_files
-        "web/api.js.gz"
-        "web/LICENSE.gz"
-        "web/json2.js.gz"
-        "web/e404.html.gz"
-        "web/style.css.gz"
-        "web/index.html.gz"
-        "web/system.html.gz"
-        "web/network.html.gz"
+        "web_src/api.js"
+        "web_src/style.css"
+        "web_src/index.html"
+        "web_src/system.html"
+        "web_src/network.html"
     )
-    message(STATUS "EIF: component 'Web GUI' included")
-    if(CONFIG_EIF_ENABLE_BASIC_AUTH)
-        list(APPEND embed_files "web/e401.html.gz")
-    endif()
     if(CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG)
-        list(APPEND embed_files "web/logs.html.gz")
+        list(APPEND embed_files "web_src/logs.html")
     endif()
+    message(STATUS "EIF: component 'Web GUI' included")
 else()
     set(embed_files "")
     message(STATUS "EIF: component 'Web GUI' excluded")
 endif()
+
+set(gz_files "")
+foreach(file ${embed_files})
+    get_filename_component(file_name ${file} NAME)
+    set(src_file "${CMAKE_CURRENT_SOURCE_DIR}/${file}")
+    set(gz_file "${CMAKE_CURRENT_BINARY_DIR}/eif_${file_name}.gz")
+    
+    add_custom_command(
+        OUTPUT "${gz_file}"
+        COMMAND ${CMAKE_COMMAND} -E copy "${src_file}" "${CMAKE_CURRENT_BINARY_DIR}/eif_${file_name}"
+        COMMAND gzip -f -9 "${CMAKE_CURRENT_BINARY_DIR}/eif_${file_name}"
+        DEPENDS "${src_file}"
+        COMMENT "Compressing ${file_name} to GZIP..."
+        VERBATIM
+    )
+    list(APPEND gz_files "${gz_file}")
+endforeach()
 
 if(CONFIG_EIF_ENABLE_TLS)
     list(APPEND requires_components mbedtls esp_https_server esp_https_ota)
@@ -70,7 +82,7 @@ idf_component_register(
     INCLUDE_DIRS "include"
     PRIV_INCLUDE_DIRS "."
     PRIV_REQUIRES ${requires_components}
-    EMBED_FILES ${embed_files}
+    EMBED_FILES ${gz_files}
 )
 
 set(comp_target "__idf_${COMPONENT_NAME}")

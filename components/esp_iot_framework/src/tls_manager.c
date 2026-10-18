@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/src/tls_manager.c
  * 
@@ -72,7 +73,7 @@ static int generate_ecc_keypair(uint8_t * const key_pem, size_t * const key_len)
 
     *key_len = strnlen((const char *)key_pem, KEY_PEM_LEN) + 1U;
 
-    EIF_LOG_I("ECC keypair generated. PEM length: %u bytes", (unsigned int)key_len);
+    EIF_LOG_I("ECC keypair generated. PEM length: %u bytes", (unsigned int)*key_len);
 
 cleanup:
     mbedtls_pk_free(&key);

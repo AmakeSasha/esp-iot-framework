@@ -1,28 +1,9 @@
-/*
- * SPDX-License-Identifier: Apache-2.0
- * Example: stepper_control_server
- * Path: ./examples/stepper_control/main/main.c
- *
- * Copyright 2026 AmakeSasha
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* SPDX-License-Identifier: CC0-1.0 */
 
 #include <esp_err.h>
 #include <json_generator.h>
 #include <esp_http_server.h>
-#include <esp_iot_framework_core.h>
-#include <esp_iot_framework_server.h>
+#include <esp_iot_framework.h>
 
 #include "stepper.h"
 
@@ -133,8 +114,10 @@ esp_err_t stepper_status_handler(httpd_req_t *req) {
     json_gen_obj_set_bool(&jgen, "is_powered", cfg->is_powered);
     /*   "step_counter": 12345, */
     json_gen_obj_set_int(&jgen, "step_counter", cfg->step_counter);
+    if (cfg->steps_to_move != 0U) {
     /*   "steps_to_move": 995, */
-    json_gen_obj_set_int(&jgen, "steps_to_move", cfg->steps_to_move);
+        json_gen_obj_set_int(&jgen, "steps_to_move", cfg->steps_to_move);
+    }
     /* } */
     json_gen_end_object(&jgen);
 
@@ -167,24 +150,24 @@ static const httpd_uri_t my_uris[] = {
     { .uri = "/api/stepper/status.json", .method = HTTP_GET, .handler = stepper_status_handler }
 };
 
-esp_err_t reboot_logic(void) {
+void reboot_logic(void) {
     stepper_set_dir(STEPPER_STOP);
     stepper_set_power(false);
-
-    return ESP_OK;
 }
 
 void app_main(void) {
-    ESP_ERROR_CHECK(eif_core_initialize());
-    ESP_ERROR_CHECK(eif_register_handler_system_reboot(reboot_logic));
-    ESP_ERROR_CHECK(eif_server_initialize());
-    ESP_ERROR_CHECK(eif_nvs_initialize());
-    ESP_ERROR_CHECK(eif_server_set_uri_handlers(my_uris, sizeof(my_uris) / sizeof(my_uris[0])));
-    ESP_ERROR_CHECK(eif_wifi_initialize());
+    eif_init_config_t cfg = eif_init_config_default();
 
+    cfg.mdns_hostname = "stepper_control";
+    cfg.mdns_instance_name = "EIF: Stepper control";
+
+    cfg.server_uri_handlers = my_uris;
+    cfg.server_uri_handlers_count = sizeof(my_uris) / sizeof(my_uris[0]);
+
+    cfg.sys_handler_reboot = reboot_logic;
+
+    ESP_ERROR_CHECK(eif_initialize(&cfg));
     stepper_init();
     
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+    vTaskDelete(NULL);
 }

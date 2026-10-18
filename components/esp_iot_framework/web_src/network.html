@@ -1,4 +1,5 @@
 <!--
+  SPDX-FileCopyrightText: 2026 AmakeSasha
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
   Path: ./components/esp_iot_framework/web_src/network.html
@@ -26,20 +27,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="/_/files/api.js"></script>
+  <link rel="stylesheet" type="text/css" href="/_/files/style.css">
   <style>
-    #btnSaveProfile {
-      background-color: red;
-    }
-    #btnClearProfile {
-      background-color: red;
+    #btnSaveProfile, #btnClearProfile, #btnUpdateCert {
+      background-color:red;
     }
     #btnTestProfile {
-      background-color: DodgerBlue;
+      background-color:DodgerBlue;
     }
   </style>
 </head>
 <body>
+  <script>
+    window.onload = function() {
+      refreshJsonOutputs();
+    };
+
+    function refreshJsonOutputs() {
+      API.loadJsonData("jsonOutInfo", "/_/wifi/info");
+      API.loadJsonData("jsonOutList", "/_/wifi/list");
+    }
+  </script>
+  <!-- Wi-Fi profiles -->
   <div class="window">
     <div class="title">📶 WiFi Settings</div>
 
@@ -73,60 +83,10 @@
         <button onclick="saveNetwork()" id="btnSaveProfile" style="width:25%; float:left; margin-right:2%;">💾 Save</button>
         <button onclick="clearCard()" id="btnClearProfile" style="width:25%; float:left;; margin-right:2%;">🧹 Clear</button>
         <button onclick="testNetwork()" id="btnTestProfile" style="width:46%; float:left;">📶 Test</button>
+      </div>
     </div>
   </div>
   <script language="JavaScript">
-    // Strict open-source ES6 mock engine for local file:// testing
-if (window.location.protocol === 'file:') {
-  window.fetch = (url, options = {}) => {
-    console.log(`[MOCK FETCH] Intercepted URL: ${url}`, options);
-
-    let responseData = { status: "mock_ok" };
-
-    // Route GET requests
-    if (!options.method || options.method.toUpperCase() === 'GET') {
-      if (url.includes('/_/wifi/info.json')) {
-        responseData = {
-          status: "connected",
-          ssid: "OpenSource_AP",
-          ip: "192.168.4.1",
-          rssi: -56
-        };
-      } else if (url.includes('/_/wifi/list.json')) {
-        responseData = [
-          { index: 1, ssid: "Home_WiFi", pass: "********" },
-          { index: 2, ssid: "Office_Net", pass: "********" },
-          { index: 3, ssid: "Framework_Test_Zone", pass: "********" }
-        ];
-      }
-    }
-
-    // Route POST requests (logging payload to console)
-    if (options.method && options.method.toUpperCase() === 'POST' && options.body) {
-      console.log(`[MOCK PAYLOAD] Received:`, JSON.parse(options.body));
-      
-      if (url.includes('/_/wifi/save.json')) {
-        responseData = { status: "ok", message: "Saved to flash" };
-      } else if (url.includes('/_/wifi/test.json')) {
-        responseData = { status: "connected", signal: "excellent" };
-      }
-    }
-
-    // Emulate ESP32 network delay (400ms) via Promise
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({
-          ok: true,
-          status: 200,
-          json: () => Promise.resolve(responseData),
-          text: () => Promise.resolve(JSON.stringify(responseData))
-        });
-      }, 400);
-    });
-  };
-}
-
-    /* API */
     function saveNetwork() {
       const idx = document.getElementById("profileInputIndex");
       const ssid = document.getElementById("profileInputSsid");
@@ -137,11 +97,11 @@ if (window.location.protocol === 'file:') {
       if (!pass.checkValidity()) return pass.reportValidity();
       if (!confirm(`Edit profile #${idx.value}?`)) return;
 
-      sendWithButton('/_/wifi/save.json', { 
+      API.sendWithButton("/_/wifi/update", "json", { 
         profile_index: parseInt(idx.value), 
         ssid: ssid.value, 
-        pass: pass.value 
-      }, "btnSaveProfile", "💾 Save").then(() => cleanInputsAndRefresh());
+        password: pass.value 
+      }, "btnSaveProfile", "📶 Test").then(() => cleanInputsAndRefresh());
     }
 
     function clearCard() {
@@ -149,7 +109,7 @@ if (window.location.protocol === 'file:') {
       if (!idx.checkValidity()) return idx.reportValidity();
       if (!confirm(`Clear profile #${idx.value}?`)) return;
 
-      sendWithButton('/_/wifi/clear.do', {
+      API.sendWithButton("/_/wifi/clear", "json", {
         profile_index: parseInt(idx.value)
       }, "btnClearProfile", "🧹 Clear").then(() => cleanInputsAndRefresh());
     }
@@ -161,89 +121,37 @@ if (window.location.protocol === 'file:') {
       refreshJsonOutputs();
     }
 
-    function sendWithButton(url, payload, btnName, successText) {
-      const btn = document.getElementById(btnName);
+    function testNetwork() {
+      const idx = document.getElementById("profileInputIndex");
+      if (!idx.checkValidity()) return idx.reportValidity();
 
-      btn.disabled = true;
-      btn.style.color = 'green';
-      btn.style.backgroundColor = 'yellow';
-      btn.innerHTML = '⏳ Processing...';
-
-      return fetch(`${url}?t=${Date.now()}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-          btn.style.color = 'yellow';
-          btn.innerHTML = "✅ Successfully!";
-          btn.style.backgroundColor = 'LimeGreen';
-        }).catch(err => {
-          btn.innerHTML = `❌ Error: ${err.message || err}`;
-          btn.style.backgroundColor = 'red';
-          btn.style.color = 'white';
-        }).then(() => {
-          btn.disabled = false;
-
-          setTimeout(() => {
-            btn.style.color = '';
-            btn.innerHTML = successText;
-            btn.style.backgroundColor = '';
-          }, 5000);
-        });
+      API.sendWithButton("/_/wifi/test", "json", {
+        profile_index: parseInt(idx.value)
+      }, "btnTestProfile", "📶 Test", true, 10000);
     }
-
-    /* Load */
-    function loadJsonData(element, url) {
-      const output = document.getElementById(element);
-
-      fetch(`${url}?t=${Date.now()}`, {
-        method: 'GET'
-      }).then(function(response) {
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-
-          return response.json(); 
-        }).then(jsonBody => {
-          output.innerHTML  = JSON.stringify(jsonBody, null, 2);
-        }).catch(function(err) {
-          output.innerHTML  = `ERROR: ${err.message || err}`;
-        });
-    }
-
-    function refreshJsonOutputs() {
-      loadJsonData("jsonOutInfo", "/_/wifi/info.json");
-      loadJsonData("jsonOutList", "/_/wifi/list.json");
-    }
-
-    window.onload = function() {
-      refreshJsonOutputs();
-    };
   </script>
   <br>
-  <div id="tldWindow" style="display: none;" class="window">
+  <!-- TLS -->
+  <div id="tldWindow" class="window">
     <div class="title">🔒 TLS Settings</div>
     <div class="card">
-      <button onclick="updateCert()" id="btnUpdateCert" data-state="error" style="width:100%">🔃 RECREATE TLS SYSTEM</button>
+      <button onclick="updateCert()" id="btnUpdateCert" style="width:100%">🔃 RECREATE TLS SYSTEM</button>
     </div>
   </div>
   <script language="JavaScript">
     function updateCert() {
-      if (!confirm('Regenerate SSL/TLS keys and certificate?')) return;
+      if (!confirm("Regenerate SSL/TLS keys and certificate?")) return;
 
-      var btn = document.getElementById('btnUpdateCert');
-      btn.removeAttribute('data-state');
-      API.sendWithBtn(btn, API.recreateTLS, null, function() {
-        API.reloadWindow(btn);
-      });
+      API.sendWithButton(
+        "/_/tls/recreate", null, null, "btnUpdateCert", "🔃 RECREATE TLS SYSTEM"
+      ).then(() => API.reloadWithButton("btnUpdateCert"));
     }
   </script>
+  <!-- Footer -->
   <div>
     <center>
       <footer>
-        <p>© 2026 AmakeSasha, esp_iot_framework. Distributed under a license <a href="/_/files/license.txt">Apache-2.0</a>.</p>
+        <p>© 2026 AmakeSasha, esp_iot_framework. Distributed under a license <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener">Apache-2.0</a>.</p>
       </footer>
     </center>
   </div>

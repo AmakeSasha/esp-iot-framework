@@ -1,4 +1,5 @@
-/* SPDX-License-Identifier: Apache-2.0
+/* SPDX-FileCopyrightText: 2026 AmakeSasha
+ * SPDX-License-Identifier: Apache-2.0
  * Project: esp-iot-framework
  * Path: ./components/esp_iot_framework/src/http_server.c
  * 
@@ -51,14 +52,12 @@
     #define TAG "HTTP server"
 #endif
 
-
 /* --- */
  
-
 #define HTTPD_202 "202 Accepted"
-#define HTTPD_304 "304 Not Modified"
 #define HTTPD_401 "401 Unauthorized"
 #define HTTPD_409 "409 Conflict"
+#define HTTPD_422 "422 Unprocessable Entity"
 
 #define RESP_TYPE_JSON "application/json; charset=UTF-8"
 #define RESP_TYPE_TXT  "text/plain; charset=UTF-8"
@@ -66,16 +65,12 @@
 #define RESP_TYPE_HTML "text/html; charset=UTF-8"
 #define RESP_TYPE_JS   "application/javascript; charset=UTF-8"
 
-#define ESP_WARN_CACHE_HIT 1234
-#define ETAG_VALUE "\"" __DATE__ " " __TIME__ "\""
-
 #ifdef CONFIG_EIF_ENABLE_TLS
     #define EIF_SERVER_TLS_VAL true
 #else
     #define EIF_SERVER_TLS_VAL false
 #endif
 
-#define HTTP_BASIC_AUTH_REALM "Basic realm=\"web_basic_auth\""
 #define SERVER_JSON_OUT_BUF_SIZE 1024
 #define SERVER_JSON_IN_BUF_SIZE 256
 #define SERVER_JSON_MAX_TOKENS 16U
@@ -87,6 +82,7 @@
 #define MAC_NUMBERS_LEN 6U
 #define MAC_FORMATED_LEN 18U
 #define IP_FORMATED_LEN 16U
+
 
 #define JSON_END_WRITE_AND_SEND(m_jgen, m_req) do {                               \
     int json_len = json_gen_str_end(&(m_jgen));                                   \
@@ -101,10 +97,26 @@
     json_gen_str_start(&(m_jgen), g_server_json_buffer, SERVER_JSON_OUT_BUF_SIZE, NULL, NULL); \
 } while (false)
 
-#define HTTPD_RESP_SENDSTATUS(m_ret, m_status) do {   \
-    (void)httpd_resp_set_status((m_ret), (m_status)); \
-    (void)httpd_resp_sendstr((m_ret), "");            \
+
+#define HTTPD_RESP_SENDSTATUS(m_req, m_status) do {   \
+    (void)httpd_resp_set_status((m_req), (m_status)); \
+    (void)httpd_resp_sendstr((m_req), "");            \
 } while (false)
+
+#define HTTPD_RESP_SENDFILE(m_req, m_type, m_start, m_end) do {           \
+    httpd_resp_set_type(req, (m_type));                                   \
+    httpd_resp_set_hdr(req, "Content-Encoding", "gzip");                  \
+    return httpd_resp_send(req, (const char *)m_start, m_end -  m_start); \
+} while (false)
+
+#define HTTPD_RESP_NO_CACHE(m_req) do {                                                  \
+    httpd_resp_set_hdr((m_req), "Cache-Control", "no-store, no-cache, must-revalidate"); \
+} while (false)
+
+#define HTTPD_RESP_SET_CACHE(m_req) do {                                  \
+    httpd_resp_set_hdr((m_req), "Cache-Control", "public, max-age=3600"); \
+} while (false)
+
 
 
 /* Other */
@@ -208,8 +220,8 @@ static esp_err_t req_json_get_field(
         }
     }
 
-    EIF_TRY_CONDITION((val_idx < 0) || (ctx->tokens[val_idx].type != JSMN_STRING),
-                      ESP_ERR_INVALID_ARG);
+    EIF_TRY_CONDITION((val_idx < 0) || (ctx->tokens[val_idx].type != JSMN_STRING && 
+                      ctx->tokens[val_idx].type != JSMN_PRIMITIVE), ESP_ERR_INVALID_ARG);
 
     const int diff = ctx->tokens[val_idx].end - ctx->tokens[val_idx].start;
     const size_t tok_len = (size_t)diff;
@@ -235,7 +247,7 @@ static esp_err_t req_json_get_profile_index(
     esp_err_t ret = ESP_OK;
     char num_buf[4] = {0};
 
-    EIF_TRY(req_json_get_field(ctx, num_buf, "profile_index", 1U, sizeof(num_buf)));
+    EIF_TRY(req_json_get_field(ctx, num_buf, "profile_index", 0U, sizeof(num_buf)));
 
     int val = atoi(num_buf);
     EIF_TRY_CONDITION((val < 0) || (val > (int)CONFIG_EIF_CUSTOM_WIFI_PROFILES_COUNT),
@@ -255,78 +267,49 @@ cleanup:
 
 /* Files */
 
-static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
-    esp_err_t ret = ESP_OK;
-
-    if (is_need) {
-        #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-            char if_none_match[64] = {0};
-            if (httpd_req_get_hdr_value_str(
-                req, "If-None-Match", if_none_match, sizeof(if_none_match)
-            ) == ESP_OK) {
-                if (strcmp(if_none_match, ETAG_VALUE) == 0) {
-                    httpd_resp_set_status(req, HTTPD_304);
-                    httpd_resp_send(req, NULL, 0);
-                    ret = ESP_WARN_CACHE_HIT;
-                }
-            }
-            if (ret == ESP_OK) {
-                httpd_resp_set_hdr(req, "ETag", ETAG_VALUE);
-                httpd_resp_set_hdr(req, "Cache-Control", "public, max-age=6600");
-            }
-        #endif
-    } else {
-        httpd_resp_set_hdr(req, "Cache-Control", "no-store, no-cache, must-revalidate");
-        httpd_resp_set_hdr(req, "Expires", "0");
-        httpd_resp_set_hdr(req, "Connection", "close");
-        httpd_resp_set_hdr(req, "Pragma", "no-cache");
-    }
-
-    /* Cleanup */
-    return ret;
-}
-
 #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-    static esp_err_t httpd_resp_sendfile(
-        httpd_req_t * const req, const eif_web_file_t * const file
-    ) {
-        esp_err_t ret = ESP_OK;
-
-        EIF_TRY(set_cache(req, file->need_cache));
-
-        httpd_resp_set_type(req, file->content_type);
-        httpd_resp_set_hdr(req, "Content-Encoding", "gzip");
-        ret = httpd_resp_send(req, (const char *)file->start, (size_t)(file->end - file->start));
-
-    cleanup:
-        if (ret == ESP_WARN_CACHE_HIT) {
-            ret = ESP_OK;
-        }
-        return ret;
+    extern const uint8_t api_js_gz_start[] asm("_binary_eif_api_js_gz_start");
+    extern const uint8_t api_js_gz_end[]   asm("_binary_eif_api_js_gz_end");
+    esp_err_t sendf_api_js_gz(httpd_req_t *req) {
+        HTTPD_RESP_SET_CACHE(req);
+        HTTPD_RESP_SENDFILE(req, RESP_TYPE_JS, api_js_gz_start, api_js_gz_end);
     }
 
-    #ifdef CONFIG_EIF_ENABLE_BASIC_AUTH
-        EIF_DEFINE_HTTP_FILE(e401_html_gz, RESP_TYPE_HTML, false)
-    #endif
+    extern const uint8_t index_html_gz_start[] asm("_binary_eif_index_html_gz_start");
+    extern const uint8_t index_html_gz_end[]   asm("_binary_eif_index_html_gz_end");
+    esp_err_t sendf_index_html_gz(httpd_req_t *req) {
+        HTTPD_RESP_SET_CACHE(req);
+        HTTPD_RESP_SENDFILE(req, RESP_TYPE_HTML, index_html_gz_start, index_html_gz_end);
+    }
+
     #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
-        EIF_DEFINE_HTTP_FILE(logs_html_gz,    RESP_TYPE_HTML, true)
+        extern const uint8_t logs_html_gz_start[] asm("_binary_eif_logs_html_gz_start");
+        extern const uint8_t logs_html_gz_end[]   asm("_binary_eif_logs_html_gz_end");
+        esp_err_t sendf_logs_html_gz(httpd_req_t *req) {
+            HTTPD_RESP_SET_CACHE(req);
+            HTTPD_RESP_SENDFILE(req, RESP_TYPE_HTML, logs_html_gz_start, logs_html_gz_end);
+        }
     #endif
-    EIF_DEFINE_HTTP_FILE(e404_html_gz,    RESP_TYPE_HTML, false)
-    EIF_DEFINE_HTTP_FILE(index_html_gz,   RESP_TYPE_HTML, true)
-    EIF_DEFINE_HTTP_FILE(system_html_gz,  RESP_TYPE_HTML, true)
-    EIF_DEFINE_HTTP_FILE(network_html_gz, RESP_TYPE_HTML, true)
 
-    EIF_DEFINE_HTTP_FILE(style_css_gz,    RESP_TYPE_CSS,  true)
+    extern const uint8_t network_html_gz_start[] asm("_binary_eif_network_html_gz_start");
+    extern const uint8_t network_html_gz_end[]   asm("_binary_eif_network_html_gz_end");
+    esp_err_t sendf_network_html_gz(httpd_req_t *req) {
+        HTTPD_RESP_SET_CACHE(req);
+        HTTPD_RESP_SENDFILE(req, RESP_TYPE_HTML, network_html_gz_start, network_html_gz_end);
+    }
 
-    EIF_DEFINE_HTTP_FILE(LICENSE_gz,      RESP_TYPE_TXT,  true)
+    extern const uint8_t style_css_gz_start[] asm("_binary_eif_style_css_gz_start");
+    extern const uint8_t style_css_gz_end[]   asm("_binary_eif_style_css_gz_end");
+    esp_err_t sendf_style_css_gz(httpd_req_t *req) {
+        HTTPD_RESP_SET_CACHE(req);
+        HTTPD_RESP_SENDFILE(req, RESP_TYPE_CSS, style_css_gz_start, style_css_gz_end);
+    }
 
-    EIF_DEFINE_HTTP_FILE(json2_js_gz,     RESP_TYPE_JS,   true)
-    EIF_DEFINE_HTTP_FILE(api_js_gz,       RESP_TYPE_JS,   true)
-
-    static esp_err_t httpd_err_404(httpd_req_t *req, httpd_err_code_t error) {
-        EIF_LOG_W("HTTP 404 error from '%s'", req->uri);
-        httpd_resp_set_status(req, HTTPD_404);
-        return sendf_e404_html_gz(req);
+    extern const uint8_t system_html_gz_start[] asm("_binary_eif_system_html_gz_start");
+    extern const uint8_t system_html_gz_end[]   asm("_binary_eif_system_html_gz_end");
+    esp_err_t sendf_system_html_gz(httpd_req_t *req) {
+        HTTPD_RESP_SET_CACHE(req);
+        HTTPD_RESP_SENDFILE(req, RESP_TYPE_HTML, system_html_gz_start, system_html_gz_end);
     }
 #endif
 
@@ -337,12 +320,12 @@ static esp_err_t set_cache(httpd_req_t * const req, bool is_need) {
 static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
+    HTTPD_RESP_NO_CACHE(req);
+
     json_gen_str_t jgen = {0};
     wifi_ap_record_t info = {0};
     char ssid[NVS_WIFI_SSID_MAX_LEN + 1U] = {0};
     char pass[NVS_WIFI_PASS_MAX_LEN + 1U] = {0};
-
-    (void)set_cache(req, false);
 
     EIF_TRY(esp_wifi_sta_get_ap_info(&info));
 
@@ -351,8 +334,6 @@ static esp_err_t h_wifi_list_json(httpd_req_t * const req) {
     (void)json_gen_start_object(&jgen);
     /*   "current_profile_index": 2, */
     (void)json_gen_obj_set_int(&jgen, "current_profile_index", wifi_get_current_profile_index());
-    /*   "used_tls": true, */
-    (void)json_gen_obj_set_int(&jgen, "used_tls", EIF_SERVER_TLS_VAL);
     /*   "rssi_now_profile": -45, */
     (void)json_gen_obj_set_int(&jgen, "rssi_now_profile", info.rssi);
     /*   "profiles": [ */
@@ -388,6 +369,8 @@ cleanup:
 
 static esp_err_t h_wifi_info_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
+
+    HTTPD_RESP_NO_CACHE(req);
 
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
         wifi_protocol_type_t proto = 0U;
@@ -521,8 +504,6 @@ static esp_err_t h_wifi_info_json(httpd_req_t * const req) {
     (void)json_gen_obj_set_string(&jgen, "lwip_hostname", lwip_hostname);
     /*   "mdns_hostname": "device-aabbcc", */
     (void)json_gen_obj_set_string(&jgen, "mdns_hostname", cfg->mdns_hostname);
-    /*   "used_tls": true */
-    (void)json_gen_obj_set_bool(&jgen,   "used_tls",      EIF_SERVER_TLS_VAL);
     /* } */
     (void)json_gen_end_object(&jgen);
     JSON_END_WRITE_AND_SEND(jgen, req);
@@ -538,12 +519,12 @@ cleanup:
 static esp_err_t h_wifi_update_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
+    HTTPD_RESP_NO_CACHE(req);
+
     uint8_t index = 0;
     json_parser_ctx_t parser_ctx = {0};
     char ssid[NVS_WIFI_SSID_MAX_LEN + 1U] = {0};
     char pass[NVS_WIFI_PASS_MAX_LEN + 1U] = {0};
-
-    (void)set_cache(req, false);
 
     EIF_TRY(req_http_parse_json(req, &parser_ctx));
     EIF_TRY(req_json_get_profile_index(&parser_ctx, &index));
@@ -569,13 +550,13 @@ cleanup:
 
 static esp_err_t h_wifi_clear_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
+    
+    HTTPD_RESP_NO_CACHE(req);
 
     uint8_t index = 0;
     json_parser_ctx_t parser_ctx = {0};
     const char empty_ssid[NVS_WIFI_SSID_MAX_LEN + 1U] = {0};
     const char empty_pass[NVS_WIFI_PASS_MAX_LEN + 1U] = {0};
-
-    (void)set_cache(req, false);
 
     EIF_TRY(req_http_parse_json(req, &parser_ctx));
     EIF_TRY(req_json_get_profile_index(&parser_ctx, &index));
@@ -593,15 +574,15 @@ cleanup:
     return ret;
 }
 
-static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
+static esp_err_t h_wifi_test_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
+    
+    HTTPD_RESP_NO_CACHE(req);
 
     uint8_t index = 0;
     json_parser_ctx_t parser_ctx = {0};
     char ssid[NVS_WIFI_SSID_MAX_LEN + 1U] = {0};
     char pass[NVS_WIFI_PASS_MAX_LEN + 1U] = {0};
-
-    (void)set_cache(req, false);
 
     EIF_TRY(req_http_parse_json(req, &parser_ctx));
     EIF_TRY(req_json_get_profile_index(&parser_ctx, &index));
@@ -612,12 +593,12 @@ static esp_err_t h_wifi_check_do(httpd_req_t * const req) {
         HTTPD_RESP_SENDSTATUS(req, HTTPD_204);
     } else {
         EIF_LOG_W("SSID '%s' not found", ssid);
-        HTTPD_RESP_SENDSTATUS(req, HTTPD_404);
+        HTTPD_RESP_SENDSTATUS(req, HTTPD_422);
     }
 
 cleanup:
     if (ret != ESP_OK) {
-        HTTPD_RESP_SENDSTATUS(req, HTTPD_400);
+        HTTPD_RESP_SENDSTATUS(req, HTTPD_422);
     } 
     return ret;
 }
@@ -629,10 +610,10 @@ cleanup:
 #ifdef CONFIG_EIF_ENABLE_TLS
     static esp_err_t h_tls_recreate_do(httpd_req_t * const req) {
         esp_err_t ret = ESP_OK;
+    
+        HTTPD_RESP_NO_CACHE(req);
 
-        (void)set_cache(req, false);
-
-        EIF_TRY(nvs_tls_creds_save("", ""));
+        EIF_TRY(nvs_tls_creds_remove());
         HTTPD_RESP_SENDSTATUS(req, HTTPD_202);
         sys_launch_task_reboot();
 
@@ -668,6 +649,8 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
 
     esp_err_t ret = ESP_OK;
     
+    HTTPD_RESP_NO_CACHE(req);
+    
     uint32_t cpu_freq = 0;
     uint32_t flash_size = 0;
     json_gen_str_t jgen = {0};
@@ -677,8 +660,6 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     uint8_t own_mac[MAC_NUMBERS_LEN] = {0};
     int reset_reason_int = esp_rom_get_reset_reason(0);
     int largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
-
-    (void)set_cache(req, false);
     
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
         uint32_t freq_hz = 0;
@@ -756,7 +737,7 @@ cleanup:
 static esp_err_t h_sys_reboot_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
 
-    (void)set_cache(req, false);
+    HTTPD_RESP_NO_CACHE(req);
 
     HTTPD_RESP_SENDSTATUS(req, HTTPD_202);
     sys_launch_task_reboot();
@@ -768,6 +749,9 @@ static esp_err_t h_sys_reboot_do(httpd_req_t * const req) {
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
     static esp_err_t h_sys_logs_txt(httpd_req_t *req) {
         esp_err_t ret = ESP_OK;
+    
+        HTTPD_RESP_NO_CACHE(req);
+
         char tx_buffer[HTTP_LOGS_CHUNK_SIZE] = {0};
         
         (void)httpd_resp_set_type(req, RESP_TYPE_TXT);
@@ -791,6 +775,8 @@ static esp_err_t h_sys_reboot_do(httpd_req_t * const req) {
 
 static esp_err_t h_ota_info_json(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
+    
+    HTTPD_RESP_NO_CACHE(req);
 
     char sha_str[65] = {0};
     json_gen_str_t jgen = {0};
@@ -803,8 +789,6 @@ static esp_err_t h_ota_info_json(httpd_req_t * const req) {
         const esp_app_desc_t *app = esp_ota_get_app_description();
     #endif
     const esp_partition_t *running = esp_ota_get_running_partition();
-
-    (void)set_cache(req, false);
 
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
         esp_app_get_elf_sha256(sha_str, sizeof(sha_str));
@@ -875,13 +859,13 @@ static esp_err_t h_ota_update_do(httpd_req_t * const req) {
     static bool is_ota_busy = false;
 
     esp_err_t ret = ESP_OK;
+    
+    HTTPD_RESP_NO_CACHE(req);
 
     char * buf = NULL;
     esp_ota_handle_t update_handle = 0;
     size_t remaining = req->content_len;
     const esp_partition_t * update_partition = NULL;
-
-    (void)set_cache(req, false);
 
     if (is_ota_busy) {
         EIF_LOG_W("OTA Update already in progress. Rejecting request.");
@@ -951,7 +935,7 @@ cleanup:
 }
 
 static esp_err_t h_ota_confirm_do(httpd_req_t * const req) {
-    (void)set_cache(req, false);
+    HTTPD_RESP_NO_CACHE(req);
 
     if (esp_ota_mark_app_valid_cancel_rollback() == ESP_OK) {
         HTTPD_RESP_SENDSTATUS(req, HTTPD_202);
@@ -966,7 +950,7 @@ static esp_err_t h_ota_confirm_do(httpd_req_t * const req) {
 static esp_err_t h_ota_rollback_do(httpd_req_t * const req) {
     const eif_config_t * const cfg = eif_config_get();
 
-    (void)set_cache(req, false);
+    HTTPD_RESP_NO_CACHE(req);
 
     HTTPD_RESP_SENDSTATUS(req, HTTPD_202);
 
@@ -986,6 +970,8 @@ static esp_err_t h_ota_rollback_do(httpd_req_t * const req) {
 
 static esp_err_t h_apass_update_do(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
+    
+    HTTPD_RESP_NO_CACHE(req);
 
     json_parser_ctx_t parser_ctx = {0};
     char pass[NVS_BASIC_AUTH_PASS_MAX_LEN + 1U] = {0};
@@ -1065,30 +1051,22 @@ static esp_err_t req_check_auth_admin(httpd_req_t *req) {
 
     ret = httpd_req_get_hdr_value_str(req, "Authorization", buf, sizeof(buf));
     if ((ret != ESP_OK) && (ret != ESP_ERR_NOT_FOUND)) {
-        (void)set_cache(req, false);
+        HTTPD_RESP_NO_CACHE(req);
         HTTPD_RESP_SENDSTATUS(req, HTTPD_400);
     }
 
     if (ret == ESP_OK) {
         ret = nvs_basic_auth_line_load(&current_pw);
         if ((ret != ESP_OK) && (ret != ESP_ERR_NOT_FOUND)) {
-            (void)set_cache(req, false);
+            HTTPD_RESP_NO_CACHE(req);
             HTTPD_RESP_SENDSTATUS(req, HTTPD_500);
         }
     }
 
     if ((ret == ESP_ERR_NOT_FOUND) || (strcmp(buf, current_pw) != 0)) {
-        (void)set_cache(req, false);
         EIF_LOG_W("UNAUTHORIZED");
-
-        httpd_resp_set_hdr(req, "WWW-Authenticate", HTTP_BASIC_AUTH_REALM);
-
-        #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-            httpd_resp_set_status(req, HTTPD_401);
-            (void)sendf_e401_html_gz(req);
-        #else
-            (void)HTTPD_RESP_SENDSTATUS(req, HTTPD_401);
-        #endif
+        httpd_resp_set_hdr(req, "WWW-Authenticate", "Basic realm=\"web_basic_auth\"");
+        HTTPD_RESP_SENDSTATUS(req, HTTPD_401);
     }
 
     return ret;
@@ -1098,7 +1076,7 @@ static esp_err_t middleware_universal(httpd_req_t * const req) {
     esp_err_t ret = ESP_OK;
     uint32_t start_time = esp_log_timestamp();
 
-    EIF_LOG_I("%s %s HTTP/1.1", method_to_str(req->method), req->uri);
+    EIF_LOG_I("%s %s", method_to_str(req->method), req->uri);
 
     const httpd_uri_t* orig = (const httpd_uri_t*)req->user_ctx;
     esp_err_t (*real_handler)(httpd_req_t *) = (esp_err_t (*)(httpd_req_t *))orig->handler;
@@ -1152,57 +1130,54 @@ static const httpd_uri_t handlers[] = {
         #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
             {"/_/files/logs.html", HTTP_GET, sendf_logs_html_gz,   NULL},
         #endif
+        {"/_/",                   HTTP_GET, sendf_index_html_gz,   NULL},
         {"/_/files/api.js",       HTTP_GET, sendf_api_js_gz,       NULL},
-        {"/_/files/json2.js",     HTTP_GET, sendf_json2_js_gz,     NULL},
-
         {"/_/files/style.css",    HTTP_GET, sendf_style_css_gz,    NULL},
-        {"/_/files/license.txt",  HTTP_GET, sendf_LICENSE_gz,      NULL},
-            
-        {"/_/files/index.html",   HTTP_GET, sendf_index_html_gz,   NULL},
         {"/_/files/system.html",  HTTP_GET, sendf_system_html_gz,  NULL},
         {"/_/files/network.html", HTTP_GET, sendf_network_html_gz, NULL},
     #endif
 
     /* ----------------------- WiFi API ---------------------- */
     /* Get parameters of all WiFi profiles */
-    {"/_/wifi/list.json",   HTTP_GET,  h_wifi_list_json, NULL},
+    {"/_/wifi/list",   HTTP_GET,  h_wifi_list_json, NULL},
     /* Get Wi-Fi and network information */
-    {"/_/wifi/info.json",   HTTP_GET,  h_wifi_info_json, NULL},
+    {"/_/wifi/info",   HTTP_GET,  h_wifi_info_json, NULL},
     /* Update WiFi profile under index X */
-    {"/_/wifi/update.do",   HTTP_POST, h_wifi_update_do, NULL},
+    {"/_/wifi/update", HTTP_POST, h_wifi_update_do, NULL},
     /* Clear WiFi profile under index X */
-    {"/_/wifi/clear.do",    HTTP_POST, h_wifi_clear_do,  NULL},
+    {"/_/wifi/clear",  HTTP_POST, h_wifi_clear_do,  NULL},
     /* Check WiFi availability using parameters under index X */
-    {"/_/wifi/check.do",    HTTP_POST, h_wifi_check_do,  NULL},
+    {"/_/wifi/test",  HTTP_POST, h_wifi_test_do,  NULL},
 
     #ifdef CONFIG_EIF_ENABLE_TLS
         /* ----------------------- TLS API ---------------- ---- */
         /* Generate new TLS keys and certificate */
-        {"/_/tls/recreate.do", HTTP_POST, h_tls_recreate_do, NULL},
+        {"/_/tls/recreate", HTTP_POST, h_tls_recreate_do, NULL},
      #endif
 
     /* ----------------------- System API ------------------------ */
-    /* Getting information about the current system */
-    {"/_/sys/info.json", HTTP_GET,  h_sys_info_json, NULL},
-    /* Reboot system (ESP) */
-    {"/_/sys/reboot.do", HTTP_POST, h_sys_reboot_do, NULL},
     #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
-        {"/_/sys/logs.txt", HTTP_GET, h_sys_logs_txt, NULL},
+        /* Get logs from the device */
+        {"/_/sys/logs", HTTP_GET,  h_sys_logs_txt,  NULL},
     #endif
+    /* Getting information about the current system */
+    {"/_/sys/info",     HTTP_GET,  h_sys_info_json, NULL},
+    /* Reboot system (ESP) */
+    {"/_/sys/reboot",   HTTP_POST, h_sys_reboot_do, NULL},
 
     /* ----------------------- OTA API ----------------------- */
     /* Getting information about the current firmware */
-    {"/_/ota/info.json",   HTTP_GET,  h_ota_info_json, NULL},
+    {"/_/ota/info",     HTTP_GET,  h_ota_info_json,   NULL},
     /* Receiving new firmware */
-    {"/_/ota/update.do",   HTTP_POST, h_ota_update_do, NULL},
+    {"/_/ota/update",   HTTP_POST, h_ota_update_do,   NULL},
     /* Confirmation of a successful firmware update */
-    {"/_/ota/confirm.do",  HTTP_POST, h_ota_confirm_do, NULL},
+    {"/_/ota/confirm",  HTTP_POST, h_ota_confirm_do,  NULL},
     /* Rollback to previous firmware */
-    {"/_/ota/rollback.do", HTTP_POST, h_ota_rollback_do, NULL},
+    {"/_/ota/rollback", HTTP_POST, h_ota_rollback_do, NULL},
 
     /* ---------------- Admin Password API ---------------- */
-    /* Update Admin Password (for Web GUI) */
-    {"/_/apass/update.do", HTTP_POST, h_apass_update_do, NULL},
+    /* Update Admin Password */
+    {"/_/apass/update", HTTP_POST, h_apass_update_do, NULL},
 };
 const size_t http_server_default_handlers_count = sizeof(handlers) / sizeof(handlers[0]);
 
@@ -1225,18 +1200,14 @@ esp_err_t server_launch(void) {
     EIF_TRY(register_uris_with_middleware(cfg->server_uri_handlers,
                                           cfg->server_uri_handlers_count, false));
 
-    #ifdef CONFIG_EIF_ENABLE_WEB_ADMIN_GUI
-        EIF_TRY(ret, httpd_register_err_handler(g_server_handle, HTTPD_404_NOT_FOUND, httpd_err_404));
-    #endif
-
-    EIF_LOG_I("%s launched successfully", TAG);
+    EIF_LOG_I("Launched successfully");
 
 cleanup:
     if (ret == ESP_ERR_HTTPD_ALLOC_MEM) {
         EIF_LOG_E("Failed to allocate memory for %s, largest free block: %u",
                   TAG, heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
     } else if (ret != ESP_OK) {
-        EIF_LOG_E("Server launch failed, err: %s", esp_err_to_name(ret));
+        EIF_LOG_E("Launch failed, err: %s", esp_err_to_name(ret));
     }
     return ret;
 }

@@ -1,4 +1,5 @@
 <!--
+  SPDX-FileCopyrightText: 2026 AmakeSasha
   SPDX-License-Identifier: Apache-2.0
   Project: esp-iot-framework
   Path: ./README.md
@@ -99,12 +100,13 @@ To protect against network restrictions, blockages, and infrastructure failures,
 
 This framework bundles the following third-party components inside the `components/` directory:
 
-* [`json2`](https://github.com/douglascrockford/JSON-js/) - JSON in JavaScript (`Public Domain` or `CC0-1.0`, at your discretion)
 * [`jsmn`](https://github.com/zserge/jsmn) - JSMN: minimalistic JSON parser in C (`MIT license`)
 * [`json_generator`](https://github.com/shahpiyushv/json_generator) - A simple JSON (JavasScript Object Notation) generator with flushing capability (`Apache 2.0 license`)
 
 # License
 
-This project is licensed under the [`Apache 2.0 License`](./LICENSE).
+The source code of the framework and its documentation are licensed under the [`Apache-2.0 License`](./LICENSE.txt).
+
+All code examples (located in the `./examples` directory) are dedicated to the public domain under the [`CC0-1.0`](./examples/LICENSE.txt).
 
 Please also refer to the [`NOTICE`](./NOTICE) file.
