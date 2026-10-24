@@ -134,12 +134,6 @@ The repository is synchronized between independent platforms to ensure availabil
 
 ---
 
-# Development status
-
-> ℹ️ Continuous Integration (CI) is not configured yet. The project is tested manually on ESP-IDF `v4.4.8` and `v5.5`, with both `CONFIG_EIF_ENABLE_TLS` and the Web Admin GUI toggled on and off.
-
----
-
 # Third-Party Components
 
 This framework bundles the following third-party components inside the `components/` directory:
