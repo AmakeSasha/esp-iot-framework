@@ -64,7 +64,7 @@ foreach(file ${embed_files})
 endforeach()
 
 if(CONFIG_EIF_ENABLE_TLS)
-    list(APPEND requires_components mbedtls esp_https_server esp_https_ota)
+    list(APPEND requires_components mbedtls esp_https_server)
     message(STATUS "EIF: component 'mbedTLS', 'TLS' included, using 'HTTPS'")
 else()
     list(APPEND requires_components esp_http_server)
@@ -91,7 +91,7 @@ target_compile_options(${comp_target} PRIVATE "-fmacro-prefix-map=${CMAKE_CURREN
 
 if(TARGET ${comp_target})
     if(CONFIG_EIF_ENABLE_TLS)
-        target_link_libraries(${comp_target} PRIVATE idf::mbedtls idf::esp_https_server idf::esp_https_ota)
+        target_link_libraries(${comp_target} PRIVATE idf::mbedtls idf::esp_https_server)
     else()
         target_link_libraries(${comp_target} PRIVATE idf::esp_http_server)
     endif()

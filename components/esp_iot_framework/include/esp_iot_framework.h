@@ -64,7 +64,7 @@ static inline eif_init_config_t eif_init_config_default(void) {
     eif_init_config_t cfg = {
         .wifi_power_mode = WIFI_PS_NONE,
         .mdns_hostname = "eif-device",
-        .mdns_instance_name = "Smart Device",
+        .mdns_instance_name = "EIF device",
         .mdns_txt_records = NULL,
         .mdns_txt_records_count = 0,
         .sys_handler_reboot = NULL,

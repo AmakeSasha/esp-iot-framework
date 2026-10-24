@@ -91,7 +91,7 @@ menu "ESP IoT framework"
                 
                 If enabled:
                 ```
-                I (8536) HTTPS server: src/web.c:990 (eif_server_launch) HTTP Server started.
+                I (8536) HTTPS server: src/http_server.c:990 (server_launch) HTTP Server started.
                 ```
                 If disabled:
                 ```
@@ -159,9 +159,9 @@ menu "ESP IoT framework"
             help
                 Stack size for the task that manages the system shutdown sequence.
                
-                The task stops the Wi-Fi driver halts the HTTP server, and
-                executes the 'handler_system_reboot' before calling esp_restart().
-                Increase this value if 'handler_system_reboot' performs stack-heavy
+                The task waits for pending delays, invokes the user-defined
+                'sys_handler_reboot' callback, and then calls esp_restart().
+                Increase this value if 'sys_handler_reboot' performs stack-heavy
                 operations like NVS writes or complex logging.
 
                 Note: Defined in 4-byte words. The critical block threshold

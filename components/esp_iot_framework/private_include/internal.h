@@ -117,7 +117,7 @@ esp_err_t server_launch(void);
 /** Example of the value: '1234567890qwerty0qwerty0qwerty01' */
 #define NVS_BASIC_AUTH_PASS_MAX_LEN 32U
 
-esp_err_t nvs_initialize();
+esp_err_t nvs_initialize(void);
 
 esp_err_t nvs_wifi_profile_save(
     uint8_t index,
@@ -154,7 +154,7 @@ void sys_launch_task_reboot(void);
 #ifdef CONFIG_EIF_ENABLE_TLS
     esp_err_t sys_generate_tls_credentials_sync(void);
 #endif /* CONFIG_EIF_ENABLE_TLS */
-esp_err_t sys_launch_task_rollback_and_reboot(void);
+void sys_launch_task_ota_rollback(void);
 esp_err_t sys_launch_task_memory_monitor(void);
 
 

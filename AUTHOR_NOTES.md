@@ -25,14 +25,6 @@ Here are the answers that I considered important, at least for me. I think it wi
 
 ---
 
-## Reliability
-
-* **Why might documentation sometimes not match the code or contradict itself?**
-
-  At the moment, I am developing this project entirely on my own. Managing everything solo means constantly switching between different tasks like coding, writing documentation, and fixing bugs. This can sometimes make it tricky to keep track of every minor detail. Since I don't review the entire codebase from top to bottom before every single commit, small inconsistencies can occasionally slip through. However, whenever I come across them while working on the code, I fix them right away. If you spot any of these gaps, please feel free to open an Issues, and I will make sure to fix them!
-
----
-
 ## Motivation
 
 * **How did this project start?**

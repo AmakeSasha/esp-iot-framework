@@ -1,5 +1,4 @@
 build/
-.codeassistant/
 .vscode/
 sdkconfig
 dependencies.lock

@@ -87,7 +87,7 @@ cleanup:
 
 #define TAG "EIF Wi-Fi"
 
-esp_err_t eif_wifi_set_config_from_profile() {
+static esp_err_t eif_wifi_set_config_from_profile(void) {
     esp_err_t ret = ESP_OK;
     char ssid[NVS_WIFI_SSID_MAX_LEN + 1U] = {0};
     char pass[NVS_WIFI_PASS_MAX_LEN + 1U] = {0};
@@ -133,7 +133,7 @@ cleanup:
 static void callback_on_wifi_sta_start(void* arg, esp_event_base_t base, int32_t id, void* data) {
     EIF_LOG_I("STA started. Loading first profile and connecting...");
 
-    (void)eif_wifi_set_config_from_profile(0);
+    (void)eif_wifi_set_config_from_profile();
     (void)esp_wifi_connect();
 }
 
@@ -143,7 +143,7 @@ static void callback_on_wifi_disconnect(void* arg, esp_event_base_t base, int32_
     EIF_LOG_W("Disconnected (reason: %d). Reconnecting...",
               ((wifi_event_sta_disconnected_t*)data)->reason);
 
-    for (uint8_t i = 0U; i < CONFIG_EIF_CUSTOM_WIFI_PROFILES_COUNT; i++) {
+    for (uint8_t i = 0U; i <= CONFIG_EIF_CUSTOM_WIFI_PROFILES_COUNT; i++) {
         current_wifi_profile_index++;
         if (current_wifi_profile_index >= CONFIG_EIF_CUSTOM_WIFI_PROFILES_COUNT) {
             current_wifi_profile_index = 0U;

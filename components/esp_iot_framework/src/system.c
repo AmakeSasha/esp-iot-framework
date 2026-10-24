@@ -23,8 +23,10 @@
 #include <string.h>
 #include <esp_log.h>
 #include <inttypes.h>
+#include <esp_system.h>
 #include <driver/gpio.h>
 #include <esp_ota_ops.h>
+#include <esp_heap_caps.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
@@ -34,11 +36,14 @@
 #include "private_include/macros.h"
 #include "private_include/internal.h"
 
-#define TASK_REBOOT_SIZE     (CONFIG_EIF_REBOOT_TASK_STACK_SIZE)
-#define TASK_REBOOT_PRIORITY (configMAX_PRIORITIES - 1)
+#define TASK_REBOOT_SIZE             (CONFIG_EIF_REBOOT_TASK_STACK_SIZE)
+#define TASK_REBOOT_PRIORITY         (configMAX_PRIORITIES - 1)
 
-#define TASK_TLS_CREATING_SIZE     10240U
-#define TASK_TLS_CREATING_PRIORITY 5
+#define TASK_OTA_ROLLBACK_SIZE       (CONFIG_EIF_REBOOT_TASK_STACK_SIZE + 512)
+#define TASK_OTA_ROLLBACK_PRIORITY   (configMAX_PRIORITIES - 1)
+
+#define TASK_TLS_CREATING_SIZE       10240U
+#define TASK_TLS_CREATING_PRIORITY   5
 
 #ifdef CONFIG_EIF_LOG_ENABLE_REMOTE_DEBUG
     #define TASK_MEMORY_MONITOR_SIZE 1512
@@ -52,7 +57,7 @@
     #error "EIF_MEM_MONITOR_CRITICAL_SIZE must be at least 8 times larger than EIF_REBOOT_TASK_STACK_SIZE!"
 #endif
 
-#define TAG "EIF System"
+#define TAG "EIF sys"
 
 /* Logging */
 
@@ -134,38 +139,6 @@
 
 
 
-/* Tasks */
-
-static esp_err_t task_common_spawn(
-    TaskHandle_t * const p_handle, const TaskFunction_t f_worker,
-    const char * const p_name, const uint32_t u32_stack,
-    const UBaseType_t u_prio
-) {
-    esp_err_t ret = ESP_OK;
-
-    EIF_CHECK_NOT_NULL(p_handle, ESP_ERR_INVALID_ARG);
-    EIF_CHECK_NOT_NULL(f_worker, ESP_ERR_INVALID_ARG);
-    EIF_CHECK_NOT_NULL(p_name,   ESP_ERR_INVALID_ARG);
-
-    if (*p_handle != NULL) {
-        EIF_LOG_W("[%s] already exists", p_name);
-        return ESP_ERR_INVALID_STATE;
-    }
-
-    if (xTaskCreate(f_worker, p_name, u32_stack, NULL, u_prio, p_handle) != pdPASS) {
-        EIF_LOG_E("Failed to create [%s], free heap: %" PRIu32 " bytes",
-                  p_name, esp_get_free_heap_size());
-
-        *p_handle = NULL;
-        ret = ESP_ERR_NO_MEM;
-    }
-
-cleanup:
-    return ret;
-}
-
-
-
 /* ===================== EXCLUSIVE FORCED TASKS ====================== */
 static TaskHandle_t x_exclusive_forced_handle = NULL;
 
@@ -186,13 +159,45 @@ static void task_reboot(void *arg) {
 }
 
 void sys_launch_task_reboot(void) {
-    if (task_common_spawn(
-        &x_exclusive_forced_handle, &task_reboot, "task_reboot", TASK_REBOOT_SIZE, TASK_REBOOT_PRIORITY
-    ) != ESP_OK) {
-        EIF_LOG_E("Create ['task_reboot'] failed, force restart...");
+    if (xTaskCreate(
+        task_reboot, "reboot", TASK_REBOOT_SIZE, NULL, TASK_REBOOT_PRIORITY, x_exclusive_forced_handle
+    ) != pdPASS) {
+        EIF_LOG_E("Failed to create [reboot], free heap: %" PRIu32 " bytes",
+                  esp_get_free_heap_size());
+        EIF_LOG_E("Force restart...");
         /* @note If the reboot task cannot be spawned, it indicates a critical system state
          *       (likely heap exhaustion). In this case, an immediate hardware restart is the only
          *       reliable way to recover the device. */
+        esp_restart();
+    }
+}
+
+
+static void task_ota_rollback(void *arg) {
+    const eif_config_t * const cfg = eif_config_get();
+
+    vTaskDelay(pdMS_TO_TICKS(250));
+    if (cfg->sys_handler_reboot != NULL) {
+        cfg->sys_handler_reboot();
+    }
+    vTaskDelay(pdMS_TO_TICKS(250));
+    esp_ota_mark_app_invalid_rollback_and_reboot();
+
+    /* Cleanup */
+    x_exclusive_forced_handle = NULL;
+    vTaskDelete(NULL);
+}
+
+void sys_launch_task_ota_rollback(void) {
+    if (xTaskCreate(
+        task_ota_rollback, "ota_rollback", TASK_OTA_ROLLBACK_SIZE, NULL,
+        TASK_OTA_ROLLBACK_PRIORITY, x_exclusive_forced_handle
+    ) != pdPASS) {
+        EIF_LOG_E("Failed to create [ota_rollback], free heap: %" PRIu32 " bytes",
+                  esp_get_free_heap_size());
+        EIF_LOG_E("Force restart...");
+        /* @note If the rollback task cannot be spawned, a hardware restart is the only 
+         *       way to force the firmware rollback (OTA) and recover the device. */
         esp_restart();
     }
 }
@@ -241,8 +246,9 @@ void sys_launch_task_reboot(void) {
             task_tls_generation_worker, "tls_gen", TASK_TLS_CREATING_SIZE,
             (void *)xTaskGetCurrentTaskHandle(), TASK_TLS_CREATING_PRIORITY, NULL
         ) != pdPASS) {
-            EIF_LOG_E("Failed to create TLS generation task");
-            return ESP_ERR_NO_MEM;
+            EIF_LOG_E("Failed to create [tls_gen], free heap: %" PRIu32 " bytes",
+                       esp_get_free_heap_size());
+            ret = ESP_ERR_NO_MEM;
         }
 
         (void)ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -294,8 +300,18 @@ static void task_memory_monitor(void *arg) {
 }
 
 esp_err_t sys_launch_task_memory_monitor(void) {
-    return task_common_spawn(
-        &x_service_task_handle, &task_memory_monitor, "task_memory_monitor",
-        TASK_MEMORY_MONITOR_SIZE, TASK_MEMORY_MONITOR_PRIORITY);
+    esp_err_t ret = ESP_OK;
+
+    if (xTaskCreate(
+        task_memory_monitor, "memory_monitor", TASK_MEMORY_MONITOR_SIZE, NULL,
+        TASK_MEMORY_MONITOR_PRIORITY, x_service_task_handle
+    ) != pdPASS) {
+        EIF_LOG_E("Failed to create [memory_monitor], free heap: %" PRIu32 " bytes",
+                  esp_get_free_heap_size());
+        
+        ret = ESP_ERR_NO_MEM;
+    }
+
+    return ret;
 }
 /* ================ EXCLUSIVE MEMORY MONITOR TASKS END ================ */

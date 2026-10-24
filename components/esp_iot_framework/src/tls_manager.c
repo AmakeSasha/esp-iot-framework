@@ -145,7 +145,7 @@ static int generate_self_signed_cert(
 
     /* 4. Random Serial */
     #if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER >= 0x03000000)
-        EIF_TRY_INT(mbedtls_x509write_crt_set_serial_raw(&crt, serial_buf, sizeof(serial_buf)));
+        EIF_TRY_INT(mbedtls_x509write_crt_set_serial_raw(&crt, &rand_pool[32], 32U));
     #else
         EIF_TRY_INT(mbedtls_mpi_read_binary(&serial, &rand_pool[32], 32U)); /* 32B serial */
         EIF_TRY_INT(mbedtls_x509write_crt_set_serial(&crt, &serial));

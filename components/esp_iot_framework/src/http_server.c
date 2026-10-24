@@ -28,6 +28,7 @@
 #include <esp_flash.h>
 #include <esp_timer.h>
 #include <esp_ota_ops.h>
+#include <esp_system.h>
 #include <esp_chip_info.h>
 #include <json_generator.h>
 #include <esp_app_format.h>
@@ -103,10 +104,10 @@
     (void)httpd_resp_sendstr((m_req), "");            \
 } while (false)
 
-#define HTTPD_RESP_SENDFILE(m_req, m_type, m_start, m_end) do {           \
-    httpd_resp_set_type(req, (m_type));                                   \
-    httpd_resp_set_hdr(req, "Content-Encoding", "gzip");                  \
-    return httpd_resp_send(req, (const char *)m_start, m_end -  m_start); \
+#define HTTPD_RESP_SENDFILE(m_req, m_type, m_start, m_end) do {              \
+    httpd_resp_set_type((m_req), (m_type));                                  \
+    httpd_resp_set_hdr((m_req), "Content-Encoding", "gzip");                 \
+    return httpd_resp_send((m_req), (const char *)m_start, m_end - m_start); \
 } while (false)
 
 #define HTTPD_RESP_NO_CACHE(m_req) do {                                                  \
@@ -226,7 +227,7 @@ static esp_err_t req_json_get_field(
     const int diff = ctx->tokens[val_idx].end - ctx->tokens[val_idx].start;
     const size_t tok_len = (size_t)diff;
 
-    EIF_TRY_CONDITION((tok_len < min_limit) || (tok_len >= max_limit),
+    EIF_TRY_CONDITION((tok_len < min_limit) || (tok_len > max_limit),
                       ESP_ERR_INVALID_ARG);
     
     for (size_t k = 0U; k < tok_len; k++) {
@@ -587,18 +588,21 @@ static esp_err_t h_wifi_test_do(httpd_req_t * const req) {
     EIF_TRY(req_http_parse_json(req, &parser_ctx));
     EIF_TRY(req_json_get_profile_index(&parser_ctx, &index));
 
-    EIF_TRY(nvs_wifi_profile_load(index, &ssid, &pass));
-    if (wifi_is_ssid_available(ssid)) {
-        EIF_LOG_I("SSID '%s' detected", ssid);
-        HTTPD_RESP_SENDSTATUS(req, HTTPD_204);
+    if (nvs_wifi_profile_load(index, &ssid, &pass) == ESP_OK) {
+        if (wifi_is_ssid_available(ssid)) {
+            EIF_LOG_I("SSID '%s' detected", ssid);
+            HTTPD_RESP_SENDSTATUS(req, HTTPD_204);
+        } else {
+            EIF_LOG_W("SSID '%s' not found", ssid);
+            HTTPD_RESP_SENDSTATUS(req, HTTPD_422);
+        }
     } else {
-        EIF_LOG_W("SSID '%s' not found", ssid);
-        HTTPD_RESP_SENDSTATUS(req, HTTPD_422);
+        HTTPD_RESP_SENDSTATUS(req, HTTPD_500);
     }
 
 cleanup:
     if (ret != ESP_OK) {
-        HTTPD_RESP_SENDSTATUS(req, HTTPD_422);
+        HTTPD_RESP_SENDSTATUS(req, HTTPD_400);
     } 
     return ret;
 }
@@ -630,21 +634,18 @@ cleanup:
 /* System */
 
 static esp_err_t h_sys_info_json(httpd_req_t * const req) {
-    static const char* reasons[MAX_REASONS_RESET_NUM] = {
-        /*  0 */ "",
-        /*  1 */ "Power-On reset",
-        /*  2 */ "External pin reset",
-        /*  3 */ "Software reset",
-        /*  4 */ "System panic reset",
-        /*  5 */ "Watchdog timer reset",
-        /*  6 */ "Task watchdog reset",
-        /*  7 */ "Interrupt watchdog reset",
-        /*  8 */ "Deep sleep wake-up reset",
-        /*  9 */ "SDIO reset",
-        /* 10 */ "USB reset",
-        /* 11 */ "JTAG reset",
-        /* 12 */ "RTC system reset",
-        /* 13 */ "RTC CPU reset",
+    static const char* reasons[] = {
+        [ESP_RST_UNKNOWN]   = "Unknown reset reason",
+        [ESP_RST_POWERON]   = "Power-On reset",
+        [ESP_RST_EXT]       = "External pin reset",
+        [ESP_RST_SW]        = "Software reset",
+        [ESP_RST_PANIC]     = "System panic reset",
+        [ESP_RST_BROWNOUT]  = "Brownout reset",
+        [ESP_RST_SDIO]      = "SDIO reset",
+        [ESP_RST_WDT]       = "Watchdog timer reset",
+        [ESP_RST_TASK_WDT]  = "Task watchdog reset",
+        [ESP_RST_INT_WDT]   = "Interrupt watchdog reset",
+        [ESP_RST_DEEPSLEEP] = "Deep sleep wake-up reset",
     };
 
     esp_err_t ret = ESP_OK;
@@ -658,7 +659,7 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     const char *reset_reason_str = "";
     char mac_str[MAC_FORMATED_LEN] = {0};
     uint8_t own_mac[MAC_NUMBERS_LEN] = {0};
-    int reset_reason_int = esp_rom_get_reset_reason(0);
+    esp_reset_reason_t reset_reason = esp_reset_reason();
     int largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT);
     
     #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
@@ -679,12 +680,12 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     EIF_TRY(esp_read_mac(own_mac, ESP_MAC_WIFI_STA));
     EIF_TRY(format_mac_addr_to_buf(own_mac, mac_str, sizeof(mac_str)));
 
-    if ((reset_reason_int >= 1) && (reset_reason_int < MAX_REASONS_RESET_NUM)) {
-        reset_reason_str = reasons[reset_reason_int];
+    if (((int)reset_reason < MAX_REASONS_RESET_NUM) && (reasons[reset_reason] != NULL)) {
+        reset_reason_str = reasons[reset_reason];
     } else {
-        ret = ESP_ERR_INVALID_STATE;
-        goto cleanup;
+        reset_reason_str = "Unknown/Unsupported reset reason";
     }
+
 
     JSON_START_WRITE(jgen);
     /* { */
@@ -706,7 +707,7 @@ static esp_err_t h_sys_info_json(httpd_req_t * const req) {
     /*   "cpu_freq": 240, */
     (void)json_gen_obj_set_int(&jgen, "cpu_freq", cpu_freq);
     /*   "reset_reason": 1, */
-    (void)json_gen_obj_set_int(&jgen, "reset_reason", reset_reason_int);
+    (void)json_gen_obj_set_int(&jgen, "reset_reason", (int)reset_reason);
     /*   "reset_reason_str": "Power-On Reset", */
     (void)json_gen_obj_set_string(&jgen, "reset_reason_str", reset_reason_str);
     /*   "chip_model": "ESP32", */
@@ -948,17 +949,10 @@ static esp_err_t h_ota_confirm_do(httpd_req_t * const req) {
 }
 
 static esp_err_t h_ota_rollback_do(httpd_req_t * const req) {
-    const eif_config_t * const cfg = eif_config_get();
-
     HTTPD_RESP_NO_CACHE(req);
 
     HTTPD_RESP_SENDSTATUS(req, HTTPD_202);
-
-    vTaskDelay(pdMS_TO_TICKS(100));
-    if (cfg->sys_handler_reboot != NULL) {
-        cfg->sys_handler_reboot();
-    }
-    sys_launch_task_reboot();
+    sys_launch_task_ota_rollback();
     
     /* Cleanup */
     return ESP_OK;

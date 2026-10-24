@@ -23,9 +23,8 @@
 #include <esp_iot_framework.h>
 
 esp_err_t hello_world(httpd_req_t *req) {
-    const char *resp = "Hello World, from <code>esp_iot_framework</code>!";
-    httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
-    return ESP_OK;
+    const char *resp = "Hello World, from esp_iot_framework!";
+    return httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
 }
 
 static const httpd_uri_t my_uris[] = {
@@ -35,7 +34,6 @@ static const httpd_uri_t my_uris[] = {
 extern "C" void app_main(void) {
     eif_init_config_t cfg = eif_init_config_default();
 
-    cfg.mdns_hostname = "ymnaya-lampa";
     cfg.server_uri_handlers = my_uris;
     cfg.server_uri_handlers_count = sizeof(my_uris) / sizeof(my_uris[0]);
 

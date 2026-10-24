@@ -52,14 +52,21 @@ static esp_err_t check_snprintf_result(int res, size_t limit, const char *field_
 static esp_err_t config_initialize(const eif_init_config_t *config) {
     esp_err_t ret = ESP_OK;
 
-    EIF_CHECK_NOT_NULL(config->server_uri_handlers, ESP_ERR_INVALID_ARG);
+    if (config->server_uri_handlers_count > 0U) {
+        EIF_CHECK_NOT_NULL(config->server_uri_handlers, ESP_ERR_INVALID_ARG);
 
-    size_t size_array_user_uris = config->server_uri_handlers_count * sizeof(httpd_uri_t);
+        size_t size_array_user_uris = config->server_uri_handlers_count * sizeof(httpd_uri_t);
+
+        device_cfg.server_uri_handlers = pvPortMalloc(size_array_user_uris);
+        EIF_CHECK_NOT_NULL(device_cfg.server_uri_handlers, ESP_ERR_NO_MEM);
+        (void)memcpy(device_cfg.server_uri_handlers, config->server_uri_handlers, size_array_user_uris);
+    } else {
+        /* @note A NULL pointer with a zero count is allowed: the user does not
+         *       have to register any custom endpoints. */
+        device_cfg.server_uri_handlers = NULL;
+    }
+
     size_t handlers_count = http_server_default_handlers_count + config->server_uri_handlers_count;
-
-    device_cfg.server_uri_handlers = pvPortMalloc(size_array_user_uris);
-    EIF_CHECK_NOT_NULL(device_cfg.server_uri_handlers, ESP_ERR_NO_MEM);
-    (void)memcpy(device_cfg.server_uri_handlers, config->server_uri_handlers, size_array_user_uris);
 
     device_cfg.sys_handler_reboot = config->sys_handler_reboot;
     device_cfg.wifi_power_mode = config->wifi_power_mode;
