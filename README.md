@@ -68,7 +68,7 @@ project(<PROJECT_NAME>)
 ```
 
 > 📌 NOTE
->
+> 
 > If the Kconfig option `CONFIG_EIF_ENABLE_WEB_ADMIN_GUI` is enabled (*default*: `y`), building requires the `gzip` utility available in `PATH` to compress the embedded web assets. It is preinstalled on Linux/macOS; on Windows use Git Bash, WSL, or MSYS2.
 
 ## Usage Examples
