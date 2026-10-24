@@ -1,0 +1,22 @@
+name: Sync code
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Git Sync
+        env:
+          ORIGIN_URL: ${{ secrets.SYNC_ORIGIN_URL }}
+          MIRROR_URL: ${{ secrets.SYNC_MIRROR_URL }}
+          TOKEN: ${{ secrets.SYNC_GITHUB_TOKEN }}
+        run: |
+          set -e
+          git clone --mirror "https://$ORIGIN_URL" repo
+          cd repo
+          git push --mirror \
+            "https://x-access-token:${TOKEN}@${MIRROR_URL}"
