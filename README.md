@@ -127,10 +127,10 @@ You can modify the following fields before calling `eif_initialize`:
 # Mirrors
 
 The repository is synchronized between independent platforms to ensure availability:
-* [**GitVerse**](https://gitverse.ru/amakesasha/esp-iot-framework) (main)
+* [**SourceCraft**](https://sourcecraft.dev/amakesasha/esp-iot-framework) (main)
+* [**GitVerse**](https://gitverse.ru/amakesasha/esp-iot-framework) (mirror)
 * [**GitHub**](https://github.com/AmakeSasha/esp-iot-framework) (mirror)
 * [**GitCode**](https://gitcode.com/AmakeSashaDev/esp-iot-framework) (mirror)
-* [**SourceCraft**](https://sourcecraft.dev/amakesasha/esp-iot-framework) (mirror)
 
 ---
 
