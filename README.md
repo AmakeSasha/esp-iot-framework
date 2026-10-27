@@ -35,6 +35,11 @@
     </p>
 </div>
 
+> **Project status**  
+> This project was created to make it possible to build a reliable IoT device in a single evening by writing only the business logic.  
+> It has already succeeded at this task — it is finished.  
+> I am moving on to explore other projects. I may return to this one someday, but for now it simply sits idle.
+
 `esp_iot_framework` significantly reduces the need for embedded developers to write repetitive infrastructure boilerplate for Espressif chips, providing a robust foundation for transforming a microcontroller into an autonomous, secure, and resilient local network server node.
 
 Out of the box, it provides an event-driven Wi-Fi management loop that automatically cycles through stored profiles to restore connectivity, alongside a native mDNS responder that makes the device discoverable through a stable hostname rather than a changing IP address.

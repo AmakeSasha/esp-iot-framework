@@ -117,10 +117,9 @@ def discover_devices(timeout: int = 3) -> Dict[str, List[Dict[str, Any]]]:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="mDNS Active Discovery for ESP IoT Framework", add_help=False)
     parser.add_argument("--timeout", type=int, default=3, help="Network scan timeout in seconds (default: 3)")
-    
     args, unknown = parser.parse_known_args()
-    devices = discover_devices(args.timeout)
 
+    devices = discover_devices(args.timeout)
     print(json.dumps(devices, indent=2, ensure_ascii=False))
 
     if "error" in devices:
